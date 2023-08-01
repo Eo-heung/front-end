@@ -12,13 +12,19 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import { CSSTransition } from 'react-transition-group';
+import LinearWithValueLabel from './LinearWithValueLabel';
 
 const Password3 = () => {
   const [inProp, setInProp] = useState(false);
+  const [showGauge, setShowGauge] = useState(false);
+  const [progress, setProgress] = useState(0);
 
   useEffect(() => {
-    setInProp(true);
+    setInProp(true); // Password3 페이지가 열릴 때
+    setShowGauge(true);
+    setTimeout(() => {
+      setProgress(100);
+    }, 3000);
   }, []);
 
   function Copyright(props) {
@@ -56,23 +62,22 @@ const Password3 = () => {
             alignItems: 'center',
           }}
         >
-          <Typography variant="h5" fontSize="10pt" gutterBottom>
+          <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
             인증번호를 보내드렸어요!
           </Typography>
-          <Typography variant="h6" fontSize="20pt">
+          <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
             문자함에서 확인한<br />내 인증번호를 입력해주세요!
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2} justifyContent="center">
+            <Grid container spacing={2}>
               <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
-                  id="email"
+                  id="code"
                   label="인증번호 입력"
-                  name="email"
+                  name="code"
                   autoComplete="off"
-                  sx={{ transform: 'scale(1.5)', transformOrigin: 'top left' }}
                 />
               </Grid>
             </Grid>
@@ -81,31 +86,24 @@ const Password3 = () => {
               sx={{
                 display: 'flex',
                 flexDirection: 'column',
-                alignItems: 'flex-end',
+                alignItems: 'center',
                 mt: 3,
               }}
             >
-              <Box sx={{ alignSelf: 'flex-end', mt: 3 }}>
-                <Button
-                  type="submit"
-                  variant="contained"
-                  color="primary"
-                  sx={{ width: '33%', marginLeft: '20px' }} // 여기에 marginLeft 추가
-                >
-                  인증하기
-                </Button>
-              </Box>
-              <Link href="#" variant="body2">
-                Already have an account? Sign in
-              </Link>
-              <CSSTransition
-                in={inProp}
-                timeout={10000}
-                classNames="gauge-bar"
-                unmountOnExit
+              <Button
+                type="submit"
+                fullWidth
+                variant="contained"
+                color="primary"
+                sx={{ mt: 3, mb: 2 }}
               >
-                <div className="gauge-bar"></div>
-              </CSSTransition>
+                인증하기
+              </Button>
+              <Link href="/login" variant="body2">
+                로그인하러가기
+              </Link>
+
+              {showGauge && <LinearWithValueLabel value={progress} />} {/* 추가: 프로그레스 바 */}
             </Box>
           </Box>
         </Box>
