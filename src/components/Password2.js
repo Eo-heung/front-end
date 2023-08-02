@@ -1,39 +1,49 @@
-import React, { useState, useEffect } from 'react';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import LinearWithValueLabel from './LinearWithValueLabel';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import LinearProgress from '@mui/material/LinearProgress';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import React, { useState } from 'react';
 
 
 const Password2 = () => {
-    const [inProp, setInProp] = useState(false);
-    const [showGauge, setShowGauge] = useState(false);
     const [progress, setProgress] = useState(0);
 
-    useEffect(() => {
-        setInProp(true); // Password3 페이지가 열릴 때
-        setShowGauge(true);
-        setTimeout(() => {
-            setProgress(100);
-        }, 3000);
-    }, []);
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#E55C25', // 원하는 색상으로 변경
+            },
+        },
+    });
 
-    function Copyright(props) {
+    function LinearProgressWithLabel() {
+        const [progress, setProgress] = React.useState(0);
+
+        React.useEffect(() => {
+            const timer = setTimeout(() => {
+                setProgress(33);
+            }, 500);
+
+            return () => {
+                clearTimeout(timer);
+            };
+        }, []);
+
         return (
-            <Typography variant="body2" color="text.secondary" align="center" {...props}>
-                {'Copyright © '}
-                <Link color="inherit" href="https://mui.com/">
-                    Your Website
-                </Link>{' '}
-                {new Date().getFullYear()}
-                {'.'}
-            </Typography>
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', mr: 1 }}>
+                    <LinearProgress variant="determinate" value={progress} /> {/* 변경: color prop 제거 */}
+                </Box>
+                <Box sx={{ minWidth: 35 }}>
+                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                </Box>
+            </Box>
         );
     }
 
@@ -109,7 +119,11 @@ const Password2 = () => {
                             <Link href="#" variant="body2">
                                 Already have an account? Sign in
                             </Link>
-                            {showGauge && <LinearWithValueLabel value={progress} />}
+                            <ThemeProvider theme={theme}>
+                                <Box sx={{ width: '100%' }}>
+                                    <LinearProgressWithLabel value={progress} />
+                                </Box>
+                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
