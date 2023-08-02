@@ -12,7 +12,7 @@ import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
 import Typography from '@mui/material/Typography';
 import Container from '@mui/material/Container';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
-import LinearWithValueLabel from './LinearWithValueLabel';
+import LinearWithValueLabel from './LinearWithValueLabel3';
 
 const Password3 = () => {
   const [inProp, setInProp] = useState(false);
@@ -95,7 +95,14 @@ const Password3 = () => {
                 fullWidth
                 variant="contained"
                 color="primary"
-                sx={{ mt: 3, mb: 2 }}
+                sx={{
+                  mt: 3,
+                  mb: 2,
+                  backgroundColor: '#D9D9D9', // 평소 색상
+                  '&:hover': {
+                    backgroundColor: '#E55C25', // 호버 시 색상
+                  },
+                }}
               >
                 인증하기
               </Button>
