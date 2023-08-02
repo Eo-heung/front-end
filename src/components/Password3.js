@@ -63,21 +63,23 @@ const Password3 = () => {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            height: '608.57px',
+            marginTop: 8
           }}
         >
           <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
             인증번호를 보내드렸어요!
           </Typography>
+          <br></br>
+          <br></br>
           <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
             문자함에서 확인한<br />내 인증번호를 입력해주세요!
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
+          <br></br>
+          <br></br>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+            <Grid container spacing={2} >
+              <Grid item xs={12} >
                 <TextField
                   required
                   fullWidth
@@ -118,7 +120,7 @@ const Password3 = () => {
               </Link>
 
               <ThemeProvider theme={theme}>
-                <Box sx={{ width: '100%' }}>
+                <Box sx={{ width: '100%', marginTop: "47%" }}>
                   <LinearProgressWithLabel value={progress} />
                 </Box>
               </ThemeProvider>

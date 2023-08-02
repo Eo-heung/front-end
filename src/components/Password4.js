@@ -76,18 +76,20 @@ const Password4 = () => {
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        height: '608.57px',
+                        marginTop: 8
                     }}
                 >
                     <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
                         어흥!
                     </Typography>
+                    <br></br>
+                    <br></br>
                     <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
                         변경할 비밀번호를 입력해주세요
                     </Typography>
+                    <br></br>
+                    <br></br>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -149,7 +151,7 @@ const Password4 = () => {
                             </Link>
 
                             <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%' }}>
+                                <Box sx={{ width: '100%', marginTop: "40%" }}>
                                     <LinearProgressWithLabel value={progress} />
                                 </Box>
                             </ThemeProvider> {/* 추가: 프로그레스 바 */}

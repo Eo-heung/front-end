@@ -63,10 +63,7 @@ const Password2 = () => {
                 <CssBaseline />
                 <Box
                     sx={{
-                        width: '100%',
-                        maxWidth: { xs: '100%', sm: '958px' },
-                        height: { xs: 'auto', sm: '613px' },
-                        margin: 'auto',
+                        height: '608.57px',
                         marginTop: 8
                     }}
                 >
@@ -108,19 +105,19 @@ const Password2 = () => {
                                 sx={{
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: 'grey',
+                                    backgroundColor: '#FFB471', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25',
+                                        backgroundColor: '#E55C25', // 호버 시 색상
                                     }
                                 }}
                             >
                                 번호인증
                             </Button>
                             <Link href="#" variant="body2">
-                                Already have an account? Sign in
+                                로그인하러가기
                             </Link>
                             <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%' }}>
+                                <Box sx={{ width: '100%', marginTop: "58%" }}>
                                     <LinearProgressWithLabel value={progress} />
                                 </Box>
                             </ThemeProvider>
