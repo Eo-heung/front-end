@@ -1,44 +1,17 @@
-import React, { useState, useEffect } from 'react';
-import Avatar from '@mui/material/Avatar';
-import Button from '@mui/material/Button';
-import CssBaseline from '@mui/material/CssBaseline';
-import TextField from '@mui/material/TextField';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Checkbox from '@mui/material/Checkbox';
-import Link from '@mui/material/Link';
-import Grid from '@mui/material/Grid';
 import Box from '@mui/material/Box';
-import LockOutlinedIcon from '@mui/icons-material/LockOutlined';
-import Typography from '@mui/material/Typography';
+import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
-import LinearWithValueLabel from './LinearWithValueLabel3';
+import CssBaseline from '@mui/material/CssBaseline';
+import Grid from '@mui/material/Grid';
+import LinearProgress from '@mui/material/LinearProgress';
+import Link from '@mui/material/Link';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import React, { useEffect, useState } from 'react';
 
 const Password3 = () => {
-  const [inProp, setInProp] = useState(false);
-  const [showGauge, setShowGauge] = useState(false);
   const [progress, setProgress] = useState(0);
-
-  useEffect(() => {
-    setInProp(true); // Password3 페이지가 열릴 때
-    setShowGauge(true);
-    setTimeout(() => {
-      setProgress(100);
-    }, 3000);
-  }, []);
-
-  function Copyright(props) {
-    return (
-      <Typography variant="body2" color="text.secondary" align="center" {...props}>
-        {'Copyright © '}
-        <Link color="inherit" href="https://mui.com/">
-          Your Website
-        </Link>{' '}
-        {new Date().getFullYear()}
-        {'.'}
-      </Typography>
-    );
-  }
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -50,6 +23,40 @@ const Password3 = () => {
   };
 
   const defaultTheme = createTheme();
+
+  function LinearProgressWithLabel() {
+    const [progress, setProgress] = useState(33);
+
+    useEffect(() => {
+      const timer = setTimeout(() => {
+        setProgress(66);
+      }, 500);
+
+      return () => {
+        clearTimeout(timer);
+      };
+    }, []);
+
+    return (
+      <Box sx={{ display: 'flex', alignItems: 'center' }}>
+        <Box sx={{ width: '100%', mr: 1 }}>
+          <LinearProgress variant="determinate" value={progress} /> {/* 변경: color prop 제거 */}
+        </Box>
+        <Box sx={{ minWidth: 35 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  }
+
+  const theme = createTheme({
+    palette: {
+      primary: {
+        main: '#E55C25', // 원하는 색상으로 변경
+      },
+    },
+  });
+
   return (
     <ThemeProvider theme={defaultTheme}>
       <Container component="main" maxWidth="xs">
@@ -98,7 +105,7 @@ const Password3 = () => {
                 sx={{
                   mt: 3,
                   mb: 2,
-                  backgroundColor: '#D9D9D9', // 평소 색상
+                  backgroundColor: '#FFB471', // 평소 색상
                   '&:hover': {
                     backgroundColor: '#E55C25', // 호버 시 색상
                   },
@@ -110,7 +117,11 @@ const Password3 = () => {
                 로그인하러가기
               </Link>
 
-              {showGauge && <LinearWithValueLabel value={progress} />} {/* 추가: 프로그레스 바 */}
+              <ThemeProvider theme={theme}>
+                <Box sx={{ width: '100%' }}>
+                  <LinearProgressWithLabel value={progress} />
+                </Box>
+              </ThemeProvider>
             </Box>
           </Box>
         </Box>
