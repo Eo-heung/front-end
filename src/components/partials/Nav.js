@@ -1,15 +1,29 @@
 import React from 'react'
+import '../../css/partials/Style.css';
 
 const Nav = () => {
     return (
-        <>
-            <nav class="sidebar sidebar-offcanvas" id="sidebar">
-                <div class="sidebar-brand-wrapper d-none d-lg-flex align-items-center justify-content-center fixed-top">로고자리</div>
-                <div class="profile-desc">프로필자리</div>
-                <div class="작명해주세용">친구화면</div>
+        <div class="sb-nav-fixed mainpage">
+            <div id="layoutSidenav">
+                <div id="layoutSidenav_nav">
+                    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
+                        <div class="sb-sidenav-menu">
+                            <div class="nav">
 
-            </nav>
-        </>
+                                <div class="sb-sidenav-menu-heading">공간확보!</div>
+
+
+                                <div class="sb-sidenav-menu-heading">공간확보!</div>
+                            </div>
+                        </div>
+                        <div class="sb-sidenav-footer">
+                            <div class="small">Logged in as:</div>
+                            Start Bootstrap
+                        </div>
+                    </nav>
+                </div>
+            </div>
+        </div>
     )
 }
 
