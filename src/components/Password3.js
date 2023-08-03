@@ -9,6 +9,20 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
+import { styled } from '@mui/system';
+
+// 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
+const Circle = styled('div')(({ progress }) => ({
+  position: 'absolute',
+  left: `calc(${progress}% - 5px)`,
+  top: '50%',
+  transform: 'translateY(-50%)',
+  width: '10px',
+  height: '10px',
+  borderRadius: '50%',
+  backgroundColor: 'orange',
+  zIndex: 2,
+}));
 
 const Password3 = () => {
   const [progress, setProgress] = useState(0);
@@ -38,11 +52,12 @@ const Password3 = () => {
     }, []);
 
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Box sx={{ width: '100%', mr: 1 }}>
-          <LinearProgress variant="determinate" value={progress} /> {/* 변경: color prop 제거 */}
+      <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
+        <Box sx={{ position: 'relative', flex: 14 }}>
+          <LinearProgress variant="determinate" value={progress} />
+          <Circle progress={progress} />
         </Box>
-        <Box sx={{ minWidth: 35 }}>
+        <Box sx={{ flex: 1, marginLeft: 1 }}>
           <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
         </Box>
       </Box>
@@ -52,10 +67,11 @@ const Password3 = () => {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#E55C25', // 원하는 색상으로 변경
+        main: '#E55C25',
       },
     },
   });
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
