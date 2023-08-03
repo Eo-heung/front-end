@@ -1,6 +1,8 @@
+import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
+import PropTypes from 'prop-types';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -24,11 +26,37 @@ const Circle = styled('div')(({ progress }) => ({
     zIndex: 2,
 }));
 
+function LinearProgressWithLabel(props) {
+    return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ width: '100%', mr: 1 }}>
+                <LinearProgress variant="determinate" {...props} />
+            </Box>
+            <Box sx={{ minWidth: 35 }}>
+                <Typography variant="body2" color="text.secondary">{`${Math.round(
+                    props.value,
+                )}%`}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
 const Password4 = () => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
     const [progress, setProgress] = useState(66);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setProgress(100);
+        }, 500);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
 
     const theme = createTheme({
         palette: {
@@ -64,27 +92,34 @@ const Password4 = () => {
         );
     }
 
+    LinearProgressWithLabel.propTypes = {
+        value: PropTypes.number.isRequired,
+    };
+
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
+        setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
     };
 
     const handleConfirmPasswordChange = (event) => {
         setConfirmPassword(event.target.value);
+        setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         if (password === confirmPassword) {
-            // 비밀번호 일치하는 경우
+            setIsAuthenticated(true);
             console.log('비밀번호 일치:', password);
         } else {
-            // 비밀번호 불일치하는 경우
+            setIsAuthenticated(false);
             setPasswordMatch(false);
             console.log('비밀번호가 일치하지 않습니다.');
         }
     };
 
     const defaultTheme = createTheme();
+
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
@@ -153,23 +188,27 @@ const Password4 = () => {
                                 sx={{
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: isAuthenticated ? '#4CAF50' : '#FFB471',
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: isAuthenticated ? '#4CAF50' : '#E55C25',
                                     },
                                 }}
                             >
-                                인증하기
+                                {isAuthenticated ? '변경 성공!' : '변경하기'}
                             </Button>
+                            {isAuthenticated && (
+                                <Typography variant="body2" color="text.secondary" mt={1}>
+                                    비밀번호 변경에 성공했어요!
+                                </Typography>
+                            )}
                             <Link href="/login" variant="body2">
                                 로그인하러가기
                             </Link>
-
                             <ThemeProvider theme={theme}>
                                 <Box sx={{ width: '100%', marginTop: "40%" }}>
                                     <LinearProgressWithLabel value={progress} />
                                 </Box>
-                            </ThemeProvider> {/* 추가: 프로그레스 바 */}
+                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
