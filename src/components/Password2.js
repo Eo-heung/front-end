@@ -35,6 +35,8 @@ const Password2 = () => {
         borderRadius: '50%',
         backgroundColor: 'orange',
         zIndex: 2,
+        transition: "left 500ms ease-out"
+
     }));
 
     const defaultTheme = createTheme();

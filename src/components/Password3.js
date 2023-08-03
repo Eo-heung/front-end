@@ -22,6 +22,7 @@ const Circle = styled('div')(({ progress }) => ({
   borderRadius: '50%',
   backgroundColor: 'orange',
   zIndex: 2,
+  transition: "left 500ms ease-out",
 }));
 
 const Password3 = () => {
