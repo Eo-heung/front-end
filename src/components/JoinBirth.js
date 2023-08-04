@@ -10,7 +10,7 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/system';
-
+import thumbImage from '../public/image.png.png';
 
 const JoinBirth = () => {
     const [progress, setProgress] = useState(0);
@@ -24,19 +24,20 @@ const JoinBirth = () => {
         });
     };
 
+
+
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
     const Circle = styled('div')(({ progress }) => ({
         position: 'absolute',
-        left: `calc(${progress}% - ${progress * 0.1}px)`, // 원의 반지름만큼 왼쪽으로 이동
+        left: `calc(${progress}% - 5px)`,
         top: '50%',
         transform: 'translateY(-50%)',
-        width: '10px',
-        height: '10px',
-        borderRadius: '50%',
-        backgroundColor: 'orange',
+        width: '40px',
+        height: '40px',
+        backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
+        backgroundSize: 'cover', // 필요에 따라 배경 이미지 크기를 조절합니다.
         zIndex: 2,
         transition: "left 500ms ease-out"
-
     }));
 
     const defaultTheme = createTheme();

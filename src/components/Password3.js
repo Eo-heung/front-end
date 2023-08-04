@@ -28,6 +28,7 @@ const Circle = styled('div')(({ progress }) => ({
 
 const Password3 = () => {
   const [progress, setProgress] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
@@ -36,6 +37,15 @@ const Password3 = () => {
       email: data.get('email'),
       password: data.get('password'),
     });
+  };
+
+  const handleCodeChange = (event) => {
+    const code = event.target.value;
+    // 정규식을 사용하여 숫자 이외의 다른 문자가 있는지 확인합니다.
+    const containsNonDigit = /\D/.test(code);
+
+    // 숫자 이외의 다른 문자가 포함되어 있으면 hasError를 true로 설정합니다.
+    setHasError(containsNonDigit);
   };
 
   const defaultTheme = createTheme();
@@ -105,6 +115,9 @@ const Password3 = () => {
                   label="인증번호 입력"
                   name="code"
                   autoComplete="off"
+                  onChange={handleCodeChange} // 코드 입력 시 handleChange 함수 호출
+                  error={hasError} // hasError 상태에 따라 에러 스타일 적용
+                  helperText={hasError ? '숫자 이외의 다른 문자가 입력되었습니다.' : ''} // 에러 메시지
                 />
               </Grid>
             </Grid>
