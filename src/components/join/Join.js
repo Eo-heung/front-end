@@ -6,6 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
+
 const Join = ({ handleClick }) => {
 
     const defaultTheme = createTheme();
@@ -33,11 +34,10 @@ const Join = ({ handleClick }) => {
                     </Typography>
                     <br></br>
                     <br></br>
-
                 </Box>
-                <box sx={{ width: '100%', height: '100%', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', height: '100%', alignItems: 'center' }}>
                     <img style={{ width: '100%', height: '100%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
-                </box>
+                </Box>
                 <Button onClick={handleClick}
                     fullWidth
                     variant="contained"
@@ -51,7 +51,7 @@ const Join = ({ handleClick }) => {
                         },
                     }}
                 >
-                    어흥 시작하기
+                    회원가입 하기
                 </Button>
             </Container>
         </ThemeProvider>
