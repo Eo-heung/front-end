@@ -1,21 +1,21 @@
-import logo from './logo.svg';
-import './App.css';
 import { Route, Routes } from 'react-router';
-import Join from './components/Join';
-import JoinBirth from './components/JoinBirth';
-import JoinLocal1 from './components/JoinLocal1';
-import JoinLocal2 from './components/JoinLocal2';
-import JoinLocal3 from './components/JoinLocal3';
-import JoinName from './components/JoinName';
-import JoinPhoneNum1 from './components/JoinPhoneNum1';
-import JoinPhoneNum2 from './components/JoinPhoneNum2';
-import JoinPW from './components/JoinPW';
-import JoinComplete from './components/JoinComplete';
-import JoinFavorite from './components/JoinFavorite';
+import SignUp from './components/SignUp';
+import Join from './components/join/Join';
+import JoinBirth from './components/join/JoinBirth';
+import JoinComplete from './components/join/JoinComplete';
+import JoinFavorite from './components/join/JoinFavorite';
+import JoinLocal1 from './components/join/JoinLocal1';
+import JoinLocal2 from './components/join/JoinLocal2';
+import JoinLocal3 from './components/join/JoinLocal3';
+import JoinName from './components/join/JoinName';
+import JoinPW from './components/join/JoinPW';
+import JoinPhoneNum1 from './components/join/JoinPhoneNum1';
+import JoinPhoneNum2 from './components/join/JoinPhoneNum2';
 
 function App() {
   return (
     <Routes>
+      <Route path='/signup' element={<SignUp></SignUp>}></Route>
       <Route path='/join' element={<Join></Join>}></Route>
       <Route path='/join1' element={<JoinPhoneNum1></JoinPhoneNum1>}></Route>
       <Route path='/join2' element={<JoinPhoneNum2></JoinPhoneNum2>}></Route>
