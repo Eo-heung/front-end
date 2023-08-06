@@ -107,16 +107,28 @@ const Login = () => {
                     }}
                 >
                     {/* 캐러셀 내부에 이미지 넣고 싶으면, 아래에 paper 복사해서 Carousel 내부에 추가한 후, img src 맞춰서 넣으면 됨. */}
-                    <Carousel height={600} animation='slide' navButtonsAlwaysVisible='true' duration={1000} sx={{ width: '100%', height: '100%' }}>
-                        <Paper sx={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <img style={{ width: '80%', height: '80%' }} src={"https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"} />
-                        </Paper>
-                        <Paper sx={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <img style={{ width: '80%', height: '80%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
-                        </Paper>
-                        <Paper sx={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <img style={{ width: '80%', height: '80%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832"} />
-                        </Paper>
+                    <Carousel height={600} animation='slide' navButtonsAlwaysVisible='true' indicatorContainerProps={{
+                        style: {
+                            marginBottom: '10%', // 5
+                            textAlign: 'center' // 4
+                        }
+
+                    }} duration={1000} sx={{ width: '100%', height: '100%' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <img style={{ width: '80%', height: '80%' }} src={"https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"} />
+                            </Paper>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <img style={{ width: '80%', height: '80%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
+                            </Paper>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <img style={{ width: '80%', height: '80%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832"} />
+                            </Paper>
+                        </Box>
                     </Carousel>
 
                 </Grid>
@@ -144,7 +156,6 @@ const Login = () => {
                                 id="userId"
                                 label="휴대폰 번호를 입력해 주세요."
                                 name="userId"
-                                autoComplete="userId"
                                 autoFocus
                                 type='text'
                                 required
@@ -158,7 +169,6 @@ const Login = () => {
                                 name="userPw"
                                 label="비밀번호를 입력해 주세요."
                                 id="userPw"
-                                autoComplete="current-password"
                                 type={showPassword ? 'text' : 'password'}
                                 required
                                 onChange={changeUserPw}
