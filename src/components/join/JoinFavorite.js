@@ -4,24 +4,19 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/system';
+import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const JoinFavorite = () => {
+const JoinFavorite = ({ handleClick }) => {
     const [progress, setProgress] = useState(0);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        handleClick();
     };
 
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
@@ -184,7 +179,7 @@ const JoinFavorite = () => {
                             </Button>
 
                             <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%', marginTop: "47%" }}>
+                                <Box sx={{ width: '100%', marginTop: "20%" }}>
                                     <LinearProgressWithLabel value={progress} />
                                 </Box>
                             </ThemeProvider>

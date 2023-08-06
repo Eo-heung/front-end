@@ -7,7 +7,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 
 
-const JoinComplete = () => {
+const JoinComplete = ({ join }) => {
 
     const defaultTheme = createTheme();
 
@@ -42,10 +42,11 @@ const JoinComplete = () => {
                 <Box sx={{ width: '100%', height: '100%', alignItems: 'center' }}>
                     <img style={{ width: '100%', height: '100%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
                 </Box>
-                <Button type="submit"
+                <Button type="button"
                     fullWidth
                     variant="contained"
                     color="primary"
+                    onClick={join}
                     sx={{
                         mt: 3,
                         mb: 2,

@@ -1,4 +1,5 @@
-import React, { useCallback, useState } from 'react';
+import axios from 'axios';
+import React, { useState } from 'react';
 import Join from './join/Join';
 import JoinBirth from './join/JoinBirth';
 import JoinComplete from './join/JoinComplete';
@@ -16,17 +17,44 @@ const SignUp = () => {
     const [pageIndex, setPageIndex] = useState(0);
     const [userTel, setUserTel] = useState(0);
     const [userPw, setUserPw] = useState('');
+    const [userName, setUserName] = useState('');
+    const [userBirth, setUserBirth] = useState('');
+    const [userAddr1, setUserAddr1] = useState('');
+    const [userAddr2, setUserAddr2] = useState('');
+    const [userAddr3, setUserAddr3] = useState('');
+
+    const user = {
+        userId: userTel,
+        userPw: userPw,
+        userName: userName,
+        userTel: userTel,
+        userAddr1: userAddr1,
+        userAddr2: userAddr2,
+        userAddr3: userAddr3
+    };
 
     const handleClick = () => {
         if (pageIndex < 10) {
             setPageIndex(pageIndex + 1);
         }
-        console.log(userTel);
     };
 
-    const changeUserPw = useCallback((e) => {
-        setUserPw(() => e.target.value);
-    }, []);
+    const doubleClick = () => {
+        setPageIndex(pageIndex + 2);
+    }
+
+    const backClick = () => {
+        setPageIndex(pageIndex + -1);
+    }
+
+    const join = async () => {
+        try {
+            const response = await axios.post('http://localhost:9000/join', user);
+
+            console.log(response)
+        } catch (error) {
+        }
+    };
 
     const renderPage = () => {
         switch (pageIndex) {
@@ -37,21 +65,21 @@ const SignUp = () => {
             case 2:
                 return <JoinPhoneNum2 handleClick={handleClick} />;
             case 3:
-                return <JoinPW handleClick={handleClick} changeUserPw={changeUserPw} />;
+                return <JoinPW handleClick={handleClick} setUserPw={setUserPw} />;
             case 4:
-                return <JoinName handleClick={handleClick} />;
+                return <JoinName handleClick={handleClick} setUserName={setUserName} />;
             case 5:
-                return <JoinBirth handleClick={handleClick} />;
+                return <JoinBirth handleClick={handleClick} setUserBirth={setUserBirth} />;
             case 6:
-                return <JoinLocal1 handleClick={handleClick} />;
+                return <JoinLocal1 handleClick={handleClick} doubleClick={doubleClick} setUserAddr1={setUserAddr1} setUserAddr2={setUserAddr2} setUserAddr3={setUserAddr3} />;
             case 7:
-                return <JoinLocal2 handleClick={handleClick} />;
+                return <JoinLocal2 handleClick={handleClick} setUserAddr1={setUserAddr1} setUserAddr2={setUserAddr2} setUserAddr3={setUserAddr3} />;
             case 8:
-                return <JoinLocal3 handleClick={handleClick} />;
+                return <JoinLocal3 handleClick={handleClick} backClick={backClick} userAddr1={userAddr1} userAddr2={userAddr2} userAddr3={userAddr3} />;
             case 9:
                 return <JoinFavorite handleClick={handleClick} />;
             case 10:
-                return <JoinComplete handleClick={handleClick} />;
+                return <JoinComplete handleClick={handleClick} join={join} />;
             default:
                 return <Join />;
         }

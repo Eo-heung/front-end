@@ -99,7 +99,7 @@ const JoinPhoneNum2 = ({ handleClick }) => {
                     </Typography>
                     <br></br>
                     <br></br>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
                                 <TextField

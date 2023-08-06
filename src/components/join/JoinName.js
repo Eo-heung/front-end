@@ -4,24 +4,30 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/system';
+import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const JoinName = () => {
+const JoinName = ({ handleClick, setUserName }) => {
     const [progress, setProgress] = useState(0);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+
+        const message = `이름을 ${data.get('name')} 이 맞나요??`
+
+        if (window.confirm(message)) {
+            setUserName(() => data.get('name'));
+            handleClick();
+        } else {
+            console.log("다시 입력해주세요");
+        }
+
+
     };
 
     const Circle = styled('div')(({ progress }) => ({
@@ -95,15 +101,15 @@ const JoinName = () => {
                     </Typography>
                     <br></br>
                     <br></br>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
                                 <TextField
                                     required
                                     fullWidth
-                                    id="code"
+                                    id="name"
                                     label="실명을 입력해주세요"
-                                    name="code"
+                                    name="name"
                                     autoComplete="off"
                                 />
                             </Grid>
