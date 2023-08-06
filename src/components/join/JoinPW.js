@@ -11,17 +11,36 @@ import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const JoinPW = () => {
+const JoinPW = ({ handleClick, setUserPw }) => {
     const [progress, setProgress] = useState(0);
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordMatch, setPasswordMatch] = useState(true);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    const handlePasswordChange = (event) => {
+        setPassword(event.target.value);
+        console.log(password);
+        setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
+    };
+
+    const handleConfirmPasswordChange = (event) => {
+        setConfirmPassword(event.target.value);
+        setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
+    };
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+        if (password === confirmPassword) {
+            setIsAuthenticated(true);
+            setUserPw(password);
+            handleClick();
+        } else {
+            setIsAuthenticated(false);
+            setPasswordMatch(false);
+        }
     };
+
 
     const Circle = styled('div')(({ progress }) => ({
         position: 'absolute',
@@ -96,24 +115,31 @@ const JoinPW = () => {
                     </Typography>
                     <br></br>
                     <br></br>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
                                 <TextField
                                     required
                                     fullWidth
-                                    id="code"
+                                    id="password"
                                     label="비밀번호 입력"
-                                    name="code"
+                                    name="password"
                                     autoComplete="off"
+                                    type='password'
+                                    value={password}
+                                    onChange={handlePasswordChange}
                                 />
                                 <TextField
                                     required
                                     fullWidth
-                                    id="code"
+                                    id="confirmPassword"
                                     label="한번 더 입력해주세요"
-                                    name="code"
+                                    name="confirmPassword"
+                                    type='password'
                                     autoComplete="off"
+                                    onChange={handleConfirmPasswordChange}
+                                    error={!passwordMatch}
+                                    helperText={!passwordMatch ? '비밀번호가 일치하지 않습니다.' : ''}
                                 />
                             </Grid>
                         </Grid>
@@ -127,20 +153,20 @@ const JoinPW = () => {
                             }}
                         >
                             <Button
-                                type="submit"
+                                type='submit'
                                 fullWidth
                                 variant="contained"
                                 color="primary"
                                 sx={{
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: isAuthenticated ? '#4CAF50' : '#FFB471', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: isAuthenticated ? '#4CAF50' : '#E55C25', // 호버 시 색상
                                     },
                                 }}
                             >
-                                입력완료
+                                {isAuthenticated ? '변경 성공!' : '변경하기'}
                             </Button>
 
                             <ThemeProvider theme={theme}>
