@@ -4,24 +4,27 @@ import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
-import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/system';
+import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const JoinLocal2 = () => {
+const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 }) => {
     const [progress, setProgress] = useState(0);
+    const [selectedButton, setSelectedButton] = useState(null);
 
     const handleSubmit = (event) => {
         event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+
+        if (selectedButton === 'valid') {
+            handleClick();
+        }
+        if (selectedButton === 'invalid') {
+            backClick();
+        }
+
     };
 
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
@@ -99,20 +102,22 @@ const JoinLocal2 = () => {
                     </Typography>
                     <br></br>
                     <br></br>
-                    <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
                                 <TextField
-                                    required
                                     fullWidth
                                     id="code"
-                                    label="사용자가 입력한 지역"
+                                    label="나의 주소"
                                     name="code"
+                                    value={userAddr1 + " " + userAddr2 + " " + userAddr3}
                                     autoComplete="off"
+                                    readOnly
                                 />
                             </Grid>
                         </Grid>
-
+                        <br></br>
+                        <br></br>
                         <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
                             이곳이 맞나요?
                         </Typography>
@@ -128,22 +133,7 @@ const JoinLocal2 = () => {
                             <Button
                                 type="submit"
                                 fullWidth
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    mt: 3,
-                                    mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
-                                    '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
-                                    },
-                                }}
-                            >
-                                아니에요
-                            </Button>
-                            <Button
-                                type="submit"
-                                fullWidth
+                                onClick={() => setSelectedButton('valid')}
                                 variant="contained"
                                 color="primary"
                                 sx={{
@@ -157,9 +147,26 @@ const JoinLocal2 = () => {
                             >
                                 맞아요
                             </Button>
+                            <Button
+                                type="submit"
+                                fullWidth
+                                onClick={() => setSelectedButton('invalid')}
+                                variant="contained"
+                                color="primary"
+                                sx={{
+                                    mt: 3,
+                                    mb: 2,
+                                    backgroundColor: '#FFB471', // 평소 색상
+                                    '&:hover': {
+                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                    },
+                                }}
+                            >
+                                아니에요
+                            </Button>
 
                             <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%', marginTop: "47%" }}>
+                                <Box sx={{ width: '100%', marginTop: "30%" }}>
                                     <LinearProgressWithLabel value={progress} />
                                 </Box>
                             </ThemeProvider>
