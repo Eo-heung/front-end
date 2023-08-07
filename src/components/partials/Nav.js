@@ -1,25 +1,109 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react';
 import '../../css/partials/Style.css';
+import { data } from './data.js';
+import { Link } from 'react-router-dom';
+
 
 const Nav = () => {
+    //DB에서 Orderby로 끌어오기
+    const [friend, setFriend] = useState(data);
+
+    const [appoint, setAppoint] = useState(null);
+    const exAppo = [
+        { startTime: new Date('2023-08-06T10:00:00'), content: '아침 회의' },
+        { startTime: new Date('2023-08-07T12:30:00'), content: '점심 약속' },
+        { startTime: new Date('2023-08-07T23:00:00'), content: '오후 회의' },
+    ]
+
+    useEffect(() => {
+        // 현재 시간 이후의 약속을 필터링
+        const futureAppointments = exAppo.filter(
+            appointment => appointment.startTime > new Date()
+        );
+
+        // 현재 시간과 가장 가까운 약속을 찾음
+        const closest = futureAppointments.reduce((prev, curr) =>
+            prev.startTime < curr.startTime ? prev : curr,
+            futureAppointments[0]
+        );
+
+        setAppoint(closest);
+    }, []);
+    // style={{ width: '45%' }}
+    function List(props) {
+        return (
+            <tr>
+                <td style={{ width: '100px' }}>{props.friend.pic}</td>
+                <td style={{ width: '100px' }}>{props.friend.fName}</td>
+                <td style={{ width: '50px' }}>{props.friend.log}</td>
+            </tr>
+        )
+    }
+
+
     return (
-        <div class="sb-nav-fixed mainpage">
+        <div className="sb-nav-fixed mainpage">
             <div id="layoutSidenav">
                 <div id="layoutSidenav_nav">
-                    <nav class="sb-sidenav accordion sb-sidenav-dark" id="sidenavAccordion">
-                        <div class="sb-sidenav-menu">
-                            <div class="nav">
+                    <nav className="sb-sidenav accordion sb-sidenav-light" id="sidenavAccordion">
 
-                                <div class="sb-sidenav-menu-heading">공간확보!</div>
+                        {/* 프로필 영역 */}
+                        <div className="sb-sidenav-profile">
+                            <div className="sidenav-profile-welcome" style={{ height: '25%' }}>
+                                <h2>ooo님, <br />
+                                    오늘도 어흥!</h2>
+                            </div>
+                            <div className="sidenav-profile-mypic" style={{ height: '45%' }}>
+                                <img className='sidenav-profile-img' src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'></img>
+                            </div>
+                            <div className="sidenav-profile-appoint" style={{ height: '10%' }}>
+                                <h4>오늘의 약속이에요!</h4>
+                            </div>
+                            <div className="sidenav-profile-appointList" style={{ height: '20%' }}>
+                                <div className="sidenav-profile-appointListItem">
+                                    {appoint ? (
+                                        <tr>
+                                            <td>{appoint.startTime.toLocaleTimeString('ko-KR', { hour: '2-digit', minute: '2-digit', hour12: true })}</td>
+                                            <td style={{ textAlign: 'center' }}>{appoint.content}</td>
+
+                                        </tr>
 
 
-                                <div class="sb-sidenav-menu-heading">공간확보!</div>
+                                    ) : (
+                                        <li>약속이 없어요!</li>
+                                    )}
+
+                                </div>
                             </div>
                         </div>
-                        <div class="sb-sidenav-footer">
-                            <div class="small">Logged in as:</div>
-                            Start Bootstrap
+
+                        {/* 친구영역 */}
+                        <div className="sb-sidenav-menu">
+                            <div className="nav">
+
+                                <div className="sb-sidenav-friend">
+                                    <div className="sb-sidenav-friend-more">
+                                        <Link to="#">더보기</Link>
+                                    </div>
+                                    <div className="sb-sidenav-friend-title">
+                                        <h5>접속한 친구목록</h5>
+                                    </div>
+                                    <div className="sb-sidenav-fri-container">
+                                        <table className="sb-sidenav-fri">
+                                            {
+                                                friend.map((a, i) => {
+                                                    return (
+                                                        <List friend={friend[i]} i={i}></List>
+                                                    )
+                                                })
+                                            }
+                                        </table>
+                                    </div>
+                                </div>
+
+                            </div>
                         </div>
+
                     </nav>
                 </div>
             </div>
@@ -27,4 +111,6 @@ const Nav = () => {
     )
 }
 
-export default Nav
+
+
+export default Nav;
