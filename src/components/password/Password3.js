@@ -8,9 +8,9 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React, { useEffect, useState } from 'react';
 import { styled } from '@mui/system';
-import thumbImage from '../public/image.png.png';
+import React, { useEffect, useState } from 'react';
+import thumbImage from '../../public/image.png.png';
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled('div')(({ progress }) => ({
@@ -26,17 +26,14 @@ const Circle = styled('div')(({ progress }) => ({
   transition: "left 500ms ease-out"
 }));
 
-const Password3 = () => {
+const Password3 = ({ handleClick }) => {
   const [progress, setProgress] = useState(0);
   const [hasError, setHasError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    handleClick();
   };
 
   const handleCodeChange = (event) => {
@@ -105,7 +102,7 @@ const Password3 = () => {
           </Typography>
           <br></br>
           <br></br>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
             <Grid container spacing={2} >
               <Grid item xs={12} >
                 <TextField

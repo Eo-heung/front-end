@@ -1,8 +1,6 @@
-import React, { useState, useEffect } from 'react';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
-import PropTypes from 'prop-types';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
@@ -11,7 +9,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
-import thumbImage from '../public/image.png.png';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import thumbImage from '../../public/image.png.png';
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled('div')(({ progress }) => ({
@@ -41,7 +41,7 @@ function LinearProgressWithLabel(props) {
     );
 }
 
-const Password4 = () => {
+const Password4 = ({ setUserPw }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
@@ -111,6 +111,7 @@ const Password4 = () => {
         if (password === confirmPassword) {
             setIsAuthenticated(true);
             console.log('비밀번호 일치:', password);
+            setUserPw(() => password);
         } else {
             setIsAuthenticated(false);
             setPasswordMatch(false);

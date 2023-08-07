@@ -1,3 +1,4 @@
+import { Button } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -5,7 +6,7 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
-const Password1 = () => {
+const Password1 = ({ handleClick }) => {
 
   const defaultTheme = createTheme();
 
@@ -38,6 +39,21 @@ const Password1 = () => {
         <box sx={{ width: '100%', height: '100%', alignItems: 'center' }}>
           <img style={{ width: '100%', height: '100%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
         </box>
+        < Button onClick={handleClick}
+          fullWidth
+          variant="contained"
+          color="primary"
+          sx={{
+            mt: 3,
+            mb: 2,
+            backgroundColor: '#FFB471', // 평소 색상
+            '&:hover': {
+              backgroundColor: '#E55C25', // 호버 시 색상
+            },
+          }}
+        >
+          비밀번호 찾으러 가기
+        </Button>
       </Container>
     </ThemeProvider>
   );
