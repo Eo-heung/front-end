@@ -6,15 +6,11 @@ const Footer = () => {
     return (
         <div id="layoutSidenav">
             <div id="layoutSidenav_content">
-                <footer class="py-4 bg-light mt-auto">
-                    <div class="container-fluid px-4">
-                        <div class="d-flex align-items-center justify-content-between small">
-                            <div class="text-muted">Copyright &copy; Your Website 2023</div>
-                            <div>
-                                <a href="#">Privacy Policy</a>
-                                &middot;
-                                <a href="#">Terms &amp; Conditions</a>
-                            </div>
+                <footer className="py-4 bg-light mt-auto">
+                    <div className="container-fluid px-4">
+                        <div className='copyRight'>
+                            Copyright ⓒ 2023 by T-co All rights reserved.
+
                         </div>
                     </div>
                 </footer>
