@@ -1,17 +1,15 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
-import LinearProgress from '@mui/material/LinearProgress';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
+import {
+    Box, Button, Container, CssBaseline, FormControl, Grid,
+    InputLabel, LinearProgress, MenuItem, Select, TextField, Typography,
+    ThemeProvider, createTheme, styled
+} from '@mui/material';
 import thumbImage from '../../public/image.png.png';
 
 const JoinFavorite = ({ handleClick }) => {
+    const [interest, setInterest] = useState('');
+    const [hobby, setHobby] = useState('');
+    const [food, setFood] = useState('');
     const [progress, setProgress] = useState(0);
 
     const handleSubmit = (event) => {
@@ -94,38 +92,61 @@ const JoinFavorite = ({ handleClick }) => {
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="code"
-                                    label="좋아하는 음식"
-                                    name="code"
-                                    autoComplete="off"
-                                />
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="code"
-                                    label="좋아하는 색"
-                                    name="code"
-                                    autoComplete="off"
-                                />
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="code"
-                                    label="취미"
-                                    name="code"
-                                    autoComplete="off"
-                                />
-                                <TextField
-                                    required
-                                    fullWidth
-                                    id="code"
-                                    label="관심사"
-                                    name="code"
-                                    autoComplete="off"
-                                />
+
+                                <FormControl fullWidth>
+                                    <InputLabel>관심사</InputLabel>
+                                    <Select
+                                        value={hobby}
+                                        onChange={(e) => setHobby(e.target.value)}
+                                        sx={{ marginBottom: '10px' }}
+                                    >
+                                        <MenuItem value="hobby1">인문학/책 </MenuItem>
+                                        <MenuItem value="hobby2">운동</MenuItem>
+                                        <MenuItem value="hobby3">요리/맛집</MenuItem>
+                                        <MenuItem value="hobby4">공예/만들기</MenuItem>
+                                        <MenuItem value="hobby5">원예</MenuItem>
+                                        <MenuItem value="hobby5">동네친구</MenuItem>
+                                        <MenuItem value="hobby5">음악/악기</MenuItem>
+                                        <MenuItem value="hobby5">반려동물</MenuItem>
+                                        <MenuItem value="hobby5">여행</MenuItem>
+                                        <MenuItem value="hobby5">기타</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <FormControl fullWidth>
+                                    <InputLabel>좋아하는 음악종류</InputLabel>
+                                    <Select
+                                        value={interest}
+                                        onChange={(e) => setInterest(e.target.value)}
+                                        sx={{ marginBottom: '10px' }}
+                                    >
+                                        <MenuItem value="music1">클래식</MenuItem>
+                                        <MenuItem value="music2">재즈</MenuItem>
+                                        <MenuItem value="music3">POP</MenuItem>
+                                        <MenuItem value="music4">발라드</MenuItem>
+                                        <MenuItem value="music5">힘합</MenuItem>
+                                        <MenuItem value="music6">디스코</MenuItem>
+                                        <MenuItem value="music6">록</MenuItem>
+                                        <MenuItem value="music6">KPOP</MenuItem>
+                                        <MenuItem value="music6">트로트</MenuItem>
+                                        <MenuItem value="music6">EDM</MenuItem>
+                                        <MenuItem value="music6">댄스</MenuItem>
+                                        <MenuItem value="music6">기타</MenuItem>
+                                    </Select>
+                                </FormControl>
+                                <FormControl fullWidth>
+                                    <InputLabel>좋아하는 음식</InputLabel>
+                                    <Select
+                                        value={food}
+                                        onChange={(e) => setFood(e.target.value)}
+                                        sx={{ marginBottom: '10px' }}
+                                    >
+                                        <MenuItem value="food1">한식</MenuItem>
+                                        <MenuItem value="food2">중식</MenuItem>
+                                        <MenuItem value="food3">일식</MenuItem>
+                                        <MenuItem value="food4">양식</MenuItem>
+                                        <MenuItem value="food5">기타</MenuItem>
+                                    </Select>
+                                </FormControl>
                                 <TextField
                                     required
                                     fullWidth

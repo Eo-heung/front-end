@@ -62,7 +62,7 @@ const JoinPhoneNum2 = ({ handleClick }) => {
                     <Circle progress={progress} />
                 </Box>
                 <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                    <Typography variant="body2" color="text.secondary">{'2/8'}</Typography>
                 </Box>
             </Box>
         );
@@ -79,11 +79,12 @@ const JoinPhoneNum2 = ({ handleClick }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" minHeight='608.57px' maxHeight='608.57px'>
                 <CssBaseline />
                 <Box
                     sx={{
-                        height: '608.57px',
+                        minHeight: '608.57px',
+                        maxHeight: '608.57px',
                         marginTop: 8
                     }}
                 >
@@ -138,15 +139,17 @@ const JoinPhoneNum2 = ({ handleClick }) => {
                                 인증하기
                             </Button>
 
-                            <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%', marginTop: "47%" }}>
-                                    <LinearProgressWithLabel value={progress} />
-                                </Box>
-                            </ThemeProvider>
+
                         </Box>
                     </Box>
                 </Box>
+                <ThemeProvider theme={theme}>
+                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                        <LinearProgressWithLabel value={progress} />
+                    </Box>
+                </ThemeProvider>
             </Container>
+
         </ThemeProvider>
     );
 };

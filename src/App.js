@@ -6,6 +6,7 @@ import Password3 from './components/Password3';
 import Password4 from './components/Password4';
 import Layout from './components/partials/Layout';
 import MainContent from './components/partials/MainContent';
+import SignUp from './components/SignUp';
 
 
 function App() {
@@ -19,7 +20,7 @@ function App() {
       <Route path="/password3" element={<Password3></Password3>}></Route>
       <Route path="/password4" element={<Password4></Password4>}></Route>
       <Route path='/login' element={<Login></Login>}></Route>
-
+      <Route path='/signup' element={<SignUp></SignUp>}></Route>
     </Routes>
   );
 };

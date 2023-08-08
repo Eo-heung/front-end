@@ -170,7 +170,8 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                 <CssBaseline />
                 <Box
                     sx={{
-                        height: '608.57px',
+                        minHeight: '608.57px',
+                        maxHeight: '608.57px',
                         marginTop: 8
                     }}
                 >
@@ -231,15 +232,14 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                             >
                                 내 위치로 찾아주세요
                             </Button>
-
-                            <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%', marginTop: "47%" }}>
-                                    <LinearProgressWithLabel value={progress} />
-                                </Box>
-                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
+                <ThemeProvider theme={theme}>
+                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                        <LinearProgressWithLabel value={progress} />
+                    </Box>
+                </ThemeProvider>
             </Container>
         </ThemeProvider>
     );

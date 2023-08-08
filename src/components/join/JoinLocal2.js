@@ -133,7 +133,8 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
                 <CssBaseline />
                 <Box
                     sx={{
-                        height: '608.57px',
+                        minHeight: '608.57px',
+                        maxHeight: '608.57px',
                         marginTop: 8
                     }}
                 >
@@ -227,15 +228,14 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
                             >
                                 다음
                             </Button>
-
-                            <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%', marginTop: "47%" }}>
-                                    <LinearProgressWithLabel value={progress} />
-                                </Box>
-                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
+                <ThemeProvider theme={theme}>
+                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                        <LinearProgressWithLabel value={progress} />
+                    </Box>
+                </ThemeProvider>
             </Container>
         </ThemeProvider>
     );
