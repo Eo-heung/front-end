@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef } from 'react';
 import '../../css/partials/Style.css';
 import '../../css/partials/Header.css';
-import { Link } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Paper } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
 import Typography from '@mui/material/Typography';
@@ -11,6 +11,7 @@ const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
     const [isDesktop, setIsDesktop] = useState(window.innerWidth > 992);
     const menuRef = useRef();
+    const navi = useNavigate();
 
     const icons = [
         { text: "홈", link: "/" },
@@ -19,6 +20,13 @@ const Header = () => {
         { text: "예시", link: "/" },
         { text: "예시", link: "/" },
     ];
+
+    const handleLogout = () => {
+        sessionStorage.removeItem("ACCESS_TOKEN");//토큰제거
+        sessionStorage.removeItem("userId");//추가적으로 저장된 userId도 제거
+        alert("로그아웃 되었습니다.")
+        navi("/login"); //로그인 페이지로 리다이렉트.
+    }
 
     useEffect(() => {
         const handleResize = () => setIsDesktop(window.innerWidth > 992);
@@ -70,7 +78,7 @@ const Header = () => {
                         </Typography>
                     </Link>
                 ))}
-                <Link className="navbar-logout" to="/"><StyledTypography variant="h6" fontWeight="bold">로그아웃</StyledTypography></Link>
+                <Link className="navbar-logout" onClick={handleLogout}><StyledTypography variant="h6" fontWeight="bold">로그아웃</StyledTypography></Link>
                 <Link className="navbar-credit" to="/"><StyledTypography variant="h6" fontWeight="bold">곶감 충전</StyledTypography></Link>
             </nav>
         </div >
