@@ -1,3 +1,4 @@
+import { Link } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -11,7 +12,7 @@ import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const JoinPhoneNum2 = ({ handleClick }) => {
+const JoinPhoneNum2 = ({ handleClick, backClick }) => {
     const [progress, setProgress] = useState(0);
 
     const handleSubmit = (e) => {
@@ -111,6 +112,7 @@ const JoinPhoneNum2 = ({ handleClick }) => {
                                     name="code"
                                     autoComplete="off"
                                 />
+                                <Link sx={{ float: 'right' }} onClick={backClick}>전화번호를 잘못입력하셨나요??</Link>
                             </Grid>
                         </Grid>
 
