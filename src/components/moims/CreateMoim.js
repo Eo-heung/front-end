@@ -76,8 +76,7 @@ const CreateMoim = () => {
     const [moimTitleLength, setMoimTitleLength] = useState(0);
     const [inputs, setInputs] = useState({
         moimCategory: "",
-        userName: sessionStorage.getItem("userName"),
-        userAddr3: "",
+        userId: sessionStorage.getItem("userId"),
         moimTitle: "",
         maxMoimUser: "",
         moimContent: ""
@@ -151,6 +150,13 @@ const CreateMoim = () => {
             document.getElementsByName("maxMoimUser")[0].focus();
             return;
         }
+
+        const input = {
+            moimCategory: inputs.moimCategory,
+            moimTitle: inputs.moimTitle,
+            maxMoimUser: inputs.maxMoimUser,
+            moimContent: inputs.moimContent
+        };
 
         const createMoimAxios = async () => {
             try {

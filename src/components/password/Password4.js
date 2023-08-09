@@ -8,13 +8,55 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
-import React, { useState } from 'react';
+import { styled } from '@mui/system';
+import PropTypes from 'prop-types';
+import React, { useEffect, useState } from 'react';
+import thumbImage from '../../public/image.png.png';
 
-const Password4 = () => {
+// 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
+const Circle = styled('div')(({ progress }) => ({
+    position: 'absolute',
+    left: `calc(${progress}% - 5px)`,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '40px',
+    height: '40px',
+    backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
+    backgroundSize: 'cover', // 필요에 따라 배경 이미지 크기를 조절합니다.
+    zIndex: 2,
+    transition: "left 500ms ease-out"
+}));
+function LinearProgressWithLabel(props) {
+    return (
+        <Box sx={{ display: 'flex', alignItems: 'center' }}>
+            <Box sx={{ width: '100%', mr: 1 }}>
+                <LinearProgress variant="determinate" {...props} />
+            </Box>
+            <Box sx={{ minWidth: 50 }}>
+                <Typography variant="body2" color="text.secondary">{`${Math.round(
+                    props.value,
+                )}%`}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
+const Password4 = ({ setUserPw }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
     const [progress, setProgress] = useState(66);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setProgress(100);
+        }, 500);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
 
     const theme = createTheme({
         palette: {
@@ -38,56 +80,67 @@ const Password4 = () => {
         }, []);
 
         return (
-            <Box sx={{ display: 'flex', alignItems: 'center' }}>
-                <Box sx={{ width: '100%', mr: 1 }}>
-                    <LinearProgress variant="determinate" value={progress} /> {/* 변경: color prop 제거 */}
+            <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
+                <Box sx={{ position: 'relative', flex: 14 }}>
+                    <LinearProgress variant="determinate" value={progress} />
+                    <Circle progress={progress} />
                 </Box>
-                <Box sx={{ minWidth: 35 }}>
+                <Box sx={{ flex: 1, marginLeft: 1 }}>
                     <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
                 </Box>
             </Box>
         );
     }
 
+    LinearProgressWithLabel.propTypes = {
+        value: PropTypes.number.isRequired,
+    };
+
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
+        setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
     };
 
     const handleConfirmPasswordChange = (event) => {
         setConfirmPassword(event.target.value);
+        setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
     };
 
     const handleSubmit = (event) => {
         event.preventDefault();
         if (password === confirmPassword) {
-            // 비밀번호 일치하는 경우
+            setIsAuthenticated(true);
             console.log('비밀번호 일치:', password);
+            setUserPw(() => password);
         } else {
-            // 비밀번호 불일치하는 경우
+            setIsAuthenticated(false);
             setPasswordMatch(false);
             console.log('비밀번호가 일치하지 않습니다.');
         }
     };
 
     const defaultTheme = createTheme();
+
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
                     sx={{
-                        marginTop: 8,
-                        display: 'flex',
-                        flexDirection: 'column',
-                        alignItems: 'center',
+                        height: '608.57px',
+                        marginTop: 8
                     }}
                 >
                     <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
                         어흥!
                     </Typography>
+                    <br></br>
+                    <br></br>
                     <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
                         변경할 비밀번호를 입력해주세요
                     </Typography>
+                    <br></br>
+                    <br></br>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
                         <Grid container spacing={2}>
                             <Grid item xs={12}>
@@ -136,23 +189,27 @@ const Password4 = () => {
                                 sx={{
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: isAuthenticated ? '#4CAF50' : '#FFB471',
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: isAuthenticated ? '#4CAF50' : '#E55C25',
                                     },
                                 }}
                             >
-                                인증하기
+                                {isAuthenticated ? '변경 성공!' : '변경하기'}
                             </Button>
+                            {isAuthenticated && (
+                                <Typography variant="body2" color="text.secondary" mt={1}>
+                                    비밀번호 변경에 성공했어요!
+                                </Typography>
+                            )}
                             <Link href="/login" variant="body2">
                                 로그인하러가기
                             </Link>
-
                             <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%' }}>
+                                <Box sx={{ width: '100%', marginTop: "40%" }}>
                                     <LinearProgressWithLabel value={progress} />
                                 </Box>
-                            </ThemeProvider> {/* 추가: 프로그레스 바 */}
+                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
