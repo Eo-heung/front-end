@@ -22,15 +22,22 @@ const SignUp = () => {
     const [userAddr1, setUserAddr1] = useState('');
     const [userAddr2, setUserAddr2] = useState('');
     const [userAddr3, setUserAddr3] = useState('');
+    const [userHobby1, setUserHobby1] = useState('');
+    const [userHobby2, setUserHobby2] = useState('');
+    const [userHobby3, setUserHobby3] = useState('');
 
     const user = {
         userId: userTel,
         userPw: userPw,
         userName: userName,
         userTel: userTel,
+        userBirth: userBirth,
         userAddr1: userAddr1,
         userAddr2: userAddr2,
-        userAddr3: userAddr3
+        userAddr3: userAddr3,
+        userHobby1: userHobby1,
+        userHobby2: userHobby2,
+        userHobby3: userHobby3
     };
 
     const handleClick = () => {
@@ -77,7 +84,7 @@ const SignUp = () => {
             case 8:
                 return <JoinLocal3 handleClick={handleClick} backClick={backClick} userAddr1={userAddr1} userAddr2={userAddr2} userAddr3={userAddr3} />;
             case 9:
-                return <JoinFavorite handleClick={handleClick} />;
+                return <JoinFavorite handleClick={handleClick} setUserHobby1={setUserHobby1} setUserHobby2={setUserHobby2} setUserHobby3={setUserHobby3} />;
             case 10:
                 return <JoinComplete handleClick={handleClick} join={join} />;
             default:

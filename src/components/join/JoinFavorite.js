@@ -1,4 +1,5 @@
 import React, { useEffect, useState } from 'react';
+import axios from 'axios';
 import {
     Box, Button, Container, CssBaseline, FormControl, Grid,
     InputLabel, LinearProgress, MenuItem, Select, TextField, Typography,
@@ -6,15 +7,20 @@ import {
 } from '@mui/material';
 import thumbImage from '../../public/image.png.png';
 
-const JoinFavorite = ({ handleClick }) => {
-    const [interest, setInterest] = useState('');
+const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3 }) => {
     const [hobby, setHobby] = useState('');
+    const [interest, setInterest] = useState('');
     const [food, setFood] = useState('');
     const [progress, setProgress] = useState(0);
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
-        handleClick();
+
+        setUserHobby1(() => hobby);
+        setUserHobby2(() => interest);
+        setUserHobby3(() => food);
+
+        handleClick(); // 여기서 handleClick은 props로 전달된 함수입니다.
     };
 
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
@@ -100,16 +106,16 @@ const JoinFavorite = ({ handleClick }) => {
                                         onChange={(e) => setHobby(e.target.value)}
                                         sx={{ marginBottom: '10px' }}
                                     >
-                                        <MenuItem value="hobby1">인문학/책 </MenuItem>
-                                        <MenuItem value="hobby2">운동</MenuItem>
-                                        <MenuItem value="hobby3">요리/맛집</MenuItem>
-                                        <MenuItem value="hobby4">공예/만들기</MenuItem>
-                                        <MenuItem value="hobby5">원예</MenuItem>
-                                        <MenuItem value="hobby5">동네친구</MenuItem>
-                                        <MenuItem value="hobby5">음악/악기</MenuItem>
-                                        <MenuItem value="hobby5">반려동물</MenuItem>
-                                        <MenuItem value="hobby5">여행</MenuItem>
-                                        <MenuItem value="hobby5">기타</MenuItem>
+                                        <MenuItem value="101">인문학/책 </MenuItem>
+                                        <MenuItem value="102">운동</MenuItem>
+                                        <MenuItem value="103">요리/맛집</MenuItem>
+                                        <MenuItem value="104">공예/만들기</MenuItem>
+                                        <MenuItem value="105">원예</MenuItem>
+                                        <MenuItem value="106">동네친구</MenuItem>
+                                        <MenuItem value="107">음악/악기</MenuItem>
+                                        <MenuItem value="108">반려동물</MenuItem>
+                                        <MenuItem value="109">여행</MenuItem>
+                                        <MenuItem value="110">기타</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <FormControl fullWidth>
@@ -119,18 +125,18 @@ const JoinFavorite = ({ handleClick }) => {
                                         onChange={(e) => setInterest(e.target.value)}
                                         sx={{ marginBottom: '10px' }}
                                     >
-                                        <MenuItem value="music1">클래식</MenuItem>
-                                        <MenuItem value="music2">재즈</MenuItem>
-                                        <MenuItem value="music3">POP</MenuItem>
-                                        <MenuItem value="music4">발라드</MenuItem>
-                                        <MenuItem value="music5">힘합</MenuItem>
-                                        <MenuItem value="music6">디스코</MenuItem>
-                                        <MenuItem value="music6">록</MenuItem>
-                                        <MenuItem value="music6">KPOP</MenuItem>
-                                        <MenuItem value="music6">트로트</MenuItem>
-                                        <MenuItem value="music6">EDM</MenuItem>
-                                        <MenuItem value="music6">댄스</MenuItem>
-                                        <MenuItem value="music6">기타</MenuItem>
+                                        <MenuItem value="201">클래식</MenuItem>
+                                        <MenuItem value="202">재즈</MenuItem>
+                                        <MenuItem value="203">POP</MenuItem>
+                                        <MenuItem value="204">발라드</MenuItem>
+                                        <MenuItem value="205">힘합</MenuItem>
+                                        <MenuItem value="206">디스코</MenuItem>
+                                        <MenuItem value="207">록</MenuItem>
+                                        <MenuItem value="208">KPOP</MenuItem>
+                                        <MenuItem value="209">트로트</MenuItem>
+                                        <MenuItem value="210">EDM</MenuItem>
+                                        <MenuItem value="211">댄스</MenuItem>
+                                        <MenuItem value="212">기타</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <FormControl fullWidth>
@@ -140,11 +146,11 @@ const JoinFavorite = ({ handleClick }) => {
                                         onChange={(e) => setFood(e.target.value)}
                                         sx={{ marginBottom: '10px' }}
                                     >
-                                        <MenuItem value="food1">한식</MenuItem>
-                                        <MenuItem value="food2">중식</MenuItem>
-                                        <MenuItem value="food3">일식</MenuItem>
-                                        <MenuItem value="food4">양식</MenuItem>
-                                        <MenuItem value="food5">기타</MenuItem>
+                                        <MenuItem value="301">한식</MenuItem>
+                                        <MenuItem value="302">중식</MenuItem>
+                                        <MenuItem value="303">일식</MenuItem>
+                                        <MenuItem value="304">양식</MenuItem>
+                                        <MenuItem value="305">기타</MenuItem>
                                     </Select>
                                 </FormControl>
                                 <TextField
