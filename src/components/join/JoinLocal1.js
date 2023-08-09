@@ -8,7 +8,6 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import axios from 'axios';
-import CryptoJS from 'crypto-js';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
@@ -24,72 +23,27 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
             const response = await axios.get('https://ipinfo.io?token=bbcd593b7e1ceb');
             setIpData(() => response.data.ip);
         } catch (error) {
+            alert("adblock 크롬 확장자를 종료해주시거나, '내가 직접 입력할래요'를 통해서 입력부탁드립니다.")
         }
     };
 
-    function makeSignature(timestamp, accessKey, secretKey, ip) {
-        var space = " ";				// one space
-        var newLine = "\n";				// new line
-        var method = "GET";				// method
-        var url = "/geolocation/v2/geoLocation?ip=" + ip + "&responseFormatType=json";	// url (include query string)
-
-        var hmac = CryptoJS.algo.HMAC.create(CryptoJS.algo.SHA256, secretKey);
-        hmac.update(method);
-        hmac.update(space);
-        hmac.update(url);
-        hmac.update(newLine);
-        hmac.update(timestamp);
-        hmac.update(newLine);
-        hmac.update(accessKey);
-
-        var hash = hmac.finalize();
-
-        return hash.toString(CryptoJS.enc.Base64);
-    }
-
-    async function getGeoLocation() {
-        const timestamp = Date.now().toString();
-        const accessKey = '68NSDY1QB7C7QACw2KsJ';
-        const secretKey = 'rY2VzROP9LsE1XIUz0hkyK2rmpbVXWd8Xb95i8nY';
-
-        const signature = makeSignature(timestamp, accessKey, secretKey, ipData);
-
+    async function getLocation(ip) {
         try {
-            console.log(ipData + signature)
+            console.log(ipData);
 
-            const response = await axios.get('https://proxy.cors.sh/https://geolocation.apigw.ntruss.com/geolocation/v2/geoLocation', {
+            const response = await axios.get('http://localhost:9000/getlocation', {
                 params: {
-                    'ip': ipData,
-                    'responseFormatType': 'json',
-                },
-                headers: {
-                    'x-cors-api-key': 'temp_6f485b2f379d20b65ecbcdcb03664f46',
-                    'x-ncp-apigw-timestamp': timestamp,
-                    'x-ncp-iam-access-key': accessKey,
-                    'x-ncp-apigw-signature-v2': signature,
+                    ip: ip
                 }
             });
 
-            if (response.data.geoLocation.r1 === '서울특별시' || '경기도' || '인천광역시') {
-                setUserAddr1(() => '수도권');
-            } else if (response.data.geoLocation.r1 === '강원도') {
-                setUserAddr1(() => '강원권');
-            } else if (response.data.geoLocation.r1 === '충청북도' || '충청남도' || '대전광역시' || '세종특별자치시') {
-                setUserAddr1(() => '충청권');
-            } else if (response.data.geoLocation.r1 === '전라북도' || '전라남도' || '광주광역시') {
-                setUserAddr1(() => '전라권');
-            } else if (response.data.geoLocation.r1 === '경상북도' || '경상남도' || '부산광역시' || '대구광역시' || '울산광역시') {
-                setUserAddr1(() => '경상권');
-            } else if (response.data.geoLocation.r1 === '제주특별자치도') {
-                setUserAddr1(() => '제주권');
-            }
+            console.log(response);
+            setUserAddr1(() => response.data.item.geoLocation.r1);
+            setUserAddr2(() => response.data.item.geoLocation.r2);
+            setUserAddr3(() => response.data.item.geoLocation.r3);
 
-            setUserAddr2(() => response.data.geoLocation.r1);
-            setUserAddr3(() => response.data.geoLocation.r2);
+        } catch {
 
-            doubleClick();
-
-        } catch (error) {
         }
     }
 
@@ -107,7 +61,8 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
         }
         if (selectedButton === 'location') {
             if (ipData) {
-                getGeoLocation(ipData);
+                getLocation(ipData);
+                doubleClick();
             }
         }
     };

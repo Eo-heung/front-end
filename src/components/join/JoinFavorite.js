@@ -1,10 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import {
     Box, Button, Container, CssBaseline, FormControl, Grid,
-    InputLabel, LinearProgress, MenuItem, Select, TextField, Typography,
-    ThemeProvider, createTheme, styled
+    InputLabel, LinearProgress, MenuItem, Select, TextField,
+    ThemeProvider,
+    Typography,
+    createTheme, styled
 } from '@mui/material';
+import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
 const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3 }) => {
@@ -103,6 +104,7 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                     <InputLabel>관심사</InputLabel>
                                     <Select
                                         value={hobby}
+                                        label='관심사'
                                         onChange={(e) => setHobby(e.target.value)}
                                         sx={{ marginBottom: '10px' }}
                                     >
@@ -121,6 +123,7 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                 <FormControl fullWidth>
                                     <InputLabel>좋아하는 음악종류</InputLabel>
                                     <Select
+                                        label='좋아하는 음악종류'
                                         value={interest}
                                         onChange={(e) => setInterest(e.target.value)}
                                         sx={{ marginBottom: '10px' }}
@@ -142,6 +145,7 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                 <FormControl fullWidth>
                                     <InputLabel>좋아하는 음식</InputLabel>
                                     <Select
+                                        label='좋아하는 음식'
                                         value={food}
                                         onChange={(e) => setFood(e.target.value)}
                                         sx={{ marginBottom: '10px' }}

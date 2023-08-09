@@ -33,8 +33,12 @@ const JoinPW = ({ handleClick, setUserPw }) => {
         event.preventDefault();
         if (password === confirmPassword) {
             setIsAuthenticated(true);
-            setUserPw(password);
-            handleClick();
+            if (/^.{8,20}$/.test(password)) {
+                setUserPw(password);
+                handleClick();
+            } else {
+                alert("8-20자 사이의 비밀번호를 설정해주세요.")
+            }
         } else {
             setIsAuthenticated(false);
             setPasswordMatch(false);
@@ -129,6 +133,7 @@ const JoinPW = ({ handleClick, setUserPw }) => {
                                     type='password'
                                     value={password}
                                     onChange={handlePasswordChange}
+                                    sx={{ marginBottom: '7px' }}
                                 />
                                 <TextField
                                     required
@@ -161,13 +166,13 @@ const JoinPW = ({ handleClick, setUserPw }) => {
                                 sx={{
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: isAuthenticated ? '#4CAF50' : '#FFB471', // 평소 색상
+                                    backgroundColor: '#FFB471', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: isAuthenticated ? '#4CAF50' : '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#E55C25', // 호버 시 색상
                                     },
                                 }}
                             >
-                                {isAuthenticated ? '변경 성공!' : '변경하기'}
+                                {'변경하기'}
                             </Button>
                         </Box>
                     </Box>
