@@ -29,6 +29,7 @@ const Login = () => {
     const [userId, setUserId] = useState('');
     const [userPw, setUserPw] = useState('');
     const [token, setToken] = useState();
+    const [remember, setRemember] = useState(false);
 
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -55,9 +56,19 @@ const Login = () => {
     };
 
     useEffect(() => {
-        if (sessionStorage.getItem("ACCESS_TOKEN")) {
+        if (localStorage.getItem("REFRESH_TOKEN") != null) {
+
+            if (sessionStorage.getItem("ACCESS_TOKEN") != null) {
+                setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+                console.log(token);
+            }
+            else {
+                sessionStorage.setItem("ACCESS_TOKEN", localStorage.getItem("REFRESH_TOKEN"));
+                setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+            }
+        }
+        else {
             setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
-            console.log(token);
         }
     }, []);
 
@@ -95,11 +106,21 @@ const Login = () => {
                 console.log(response);
 
                 if (response.data && response.data.item.token) {
-                    alert(`${response.data.item.userName}님 환영합니다.`);
-                    localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
-                    sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
-                    sessionStorage.setItem("userId", response.data.item.userId);
-                    navi("/success");
+                    console.log(`remember login : ${remember}`);
+
+                    if (remember == false) {
+                        alert(`${response.data.item.userName}님 환영합니다.`);
+                        sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
+                        sessionStorage.setItem("userId", response.data.item.userId);
+                        navi("/success");
+                    }
+                    else if (remember == true) {
+                        alert(`${response.data.item.userName}님 환영합니다.!!!!!!!!!!!!`);
+                        localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
+                        sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
+                        sessionStorage.setItem("userId", response.data.item.userId);
+                        navi("/success");
+                    }
                 }
             } catch (e) {
                 console.log(e);
@@ -124,6 +145,7 @@ const Login = () => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            {console.log(`remember : ${remember}`)}
             <Grid container component="main" sx={{ minWidth: '512px', width: '60%', height: '100vh', alignItems: 'center', margin: 'auto' }}>
                 <CssBaseline />
                 <Grid
@@ -224,7 +246,14 @@ const Login = () => {
                                 }}
                             />
                             <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
+                                control={
+                                    <Checkbox
+                                        checked={remember}
+                                        onChange={(e) => setRemember(e.target.checked)}
+                                        value="remember"
+                                        color="primary"
+                                    />
+                                }
                                 label="날 기억해줘!"
                             />
                             <Button
