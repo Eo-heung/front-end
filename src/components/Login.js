@@ -90,12 +90,15 @@ const Login = () => {
 
     const login = useCallback((e) => {
         e.preventDefault();
+        console.log(`remember1: ${remember}`);
         const loginAxios = async () => {
 
             const user = {
                 userId: userId,
                 userPw: userPw
             };
+
+            const remembers = remember;
 
             console.log(user);
 
@@ -105,16 +108,15 @@ const Login = () => {
                 console.log(response);
 
                 if (response.data && response.data.item.token) {
-                    console.log(`remember login : ${remember}`);
-
-                    if (remember == false) {
+                    console.log(`remember login : ${remembers}`);
+                    if (remembers === false) {
                         alert(`${response.data.item.userName}님 환영합니다.`);
                         sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                         sessionStorage.setItem("userId", response.data.item.userId);
                         navi("/success");
                     }
-                    else if (remember == true) {
-                        alert(`${response.data.item.userName}님 환영합니다.!!!!!!!!!!!!`);
+                    else if (remembers === true) {
+                        alert(`${response.data.item.userName}님 환영합니다.`);
                         localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
                         sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                         sessionStorage.setItem("userId", response.data.item.userId);
@@ -137,7 +139,7 @@ const Login = () => {
         }
 
         loginAxios();
-    }, [userId, userPw]);
+    });
 
 
     const defaultTheme = createTheme();
