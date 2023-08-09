@@ -8,6 +8,7 @@ const Password = () => {
     const [pageIndex, setPageIndex] = useState(0);
     const [userTel, setUserTel] = useState('');
     const [userPw, setUserPw] = useState('');
+    const [checkNum, setCheckNum] = useState('');
 
     const handleClick = () => {
         if (pageIndex < 10) {
@@ -15,14 +16,18 @@ const Password = () => {
         }
     };
 
+    const backClick = () => {
+        setPageIndex(pageIndex + -1);
+    }
+
     const renderPage = () => {
         switch (pageIndex) {
             case 0:
                 return <Password1 handleClick={handleClick} />;
             case 1:
-                return <Password2 handleClick={handleClick} setUserTel={setUserTel} />;
+                return <Password2 handleClick={handleClick} setUserTel={setUserTel} setCheckNum={setCheckNum} />;
             case 2:
-                return <Password3 handleClick={handleClick} />;
+                return <Password3 handleClick={handleClick} backClick={backClick} checkNum={checkNum} />;
             case 3:
                 return <Password4 handleClick={handleClick} setUserPw={setUserPw} />;
             default:

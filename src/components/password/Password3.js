@@ -26,14 +26,21 @@ const Circle = styled('div')(({ progress }) => ({
   transition: "left 500ms ease-out"
 }));
 
-const Password3 = ({ handleClick }) => {
+const Password3 = ({ handleClick, backClick, checkNum }) => {
   const [progress, setProgress] = useState(0);
   const [hasError, setHasError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    handleClick();
+    console.log(data.get('code'));
+    if (data.get('code') !== checkNum) {
+      alert("인증번호를 다시 확인해주세요.");
+    } else {
+      alert("인증번호이 완료되었습니다.");
+      handleClick();
+    }
+
   };
 
   const handleCodeChange = (event) => {
@@ -116,6 +123,7 @@ const Password3 = ({ handleClick }) => {
                   error={hasError} // hasError 상태에 따라 에러 스타일 적용
                   helperText={hasError ? '숫자 이외의 다른 문자가 입력되었습니다.' : ''} // 에러 메시지
                 />
+                <Link sx={{ float: 'right' }} onClick={backClick}>전화번호를 잘못입력하셨나요??</Link>
               </Grid>
             </Grid>
 

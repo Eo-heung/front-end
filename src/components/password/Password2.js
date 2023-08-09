@@ -9,12 +9,25 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const Password2 = ({ handleClick, setUserTel }) => {
+const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
     const [progress, setProgress] = useState(0);
     const [isTelValid, setIsTelValid] = useState(true);
+
+
+    const checkPhone = (tel) => {
+        axios.post('http://localhost:9000/checkphone', tel)
+            .then(response => {
+                console.log(response.data); // 서버로부터의 응답을 출력합니다.
+                setCheckNum(() => response.data.item)
+            })
+            .catch(error => {
+                console.error('An error occurred:', error); // 오류를 출력합니다.
+            });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
@@ -24,6 +37,7 @@ const Password2 = ({ handleClick, setUserTel }) => {
         } else {
             setIsTelValid(true);
             setUserTel(() => data.get('userTel'))
+            checkPhone(data.get('userTel'));
             alert("인증번호를 발송해드렸습니다.");
             handleClick();
         }
