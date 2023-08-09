@@ -1,10 +1,11 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
+import "../css/partials/CameraChatting.css";
+
 // import "../css/partials/Style.css";
 
 const CameraChatting = () => {
   const [roomHidden, setRoomHidden] = useState(false);
-  const [test, setTest] = useState(0);
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [myStreamState, setMyStreamState] = useState(null);
@@ -20,8 +21,8 @@ const CameraChatting = () => {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
-
+    socket.current = io("http://192.168.0.64:5000");
+    console.log("5000");
     socket.current.on("welcome", async () => {
       // myDataChannel.current =
       //   myPeerConnection.current.createDataChannel("chat");
@@ -212,53 +213,50 @@ const CameraChatting = () => {
       <div class="sb-nav-fixed mainpage">
         <div id="layoutSidenav">
           <div id="layoutSidenav_content">
-            <main>
-              <div class="container-fluid px-4">
-                <div id="welcome" hidden={roomHidden}>
-                  <form onSubmit={handleRoomSubmit}>
-                    <input
-                      placeholder="room name"
-                      name="roomName"
-                      required
-                      type="text"
-                    />
-                    <button>Enter room</button>
-                  </form>
-                </div>
-                <div id="call" hidden={!roomHidden}>
-                  <div id="myStreamState">
-                    <video
-                      ref={myFaceRef}
-                      muted
-                      autoPlay
-                      playsInline
-                      width="400"
-                      height="400"
-                    />
-                    <button onClick={() => handleMuteClick()}>
-                      {isMuted ? "UnMute" : "Mute"}
-                    </button>
-                    <button onClick={() => handleCameraOnOff()}>
-                      {isCameraOff ? "Turn Camera On" : "Turn Camera Off"}
-                    </button>
-                    {/* <select
-                      ref={cameraSelectRef}
-                      onChange={() => handleCameraChange()}
-                    /> */}
-                    <video
-                      ref={peerFaceRef}
-                      autoPlay
-                      playsInline
-                      width="400"
-                      height="400"
-                    />
-                  </div>
-                </div>
+            <div id="welcome" hidden={roomHidden}>
+              <form onSubmit={handleRoomSubmit}>
+                <input
+                  placeholder="room name"
+                  name="roomName"
+                  required
+                  type="text"
+                />
+                <button>Enter room</button>
+              </form>
+            </div>
+            <div id="call" hidden={!roomHidden}>
+              <div id="myStreamState">
+                <video
+                  ref={myFaceRef}
+                  muted
+                  autoPlay
+                  playsInline
+                  width="400"
+                  height="400"
+                />
+                <button onClick={() => handleMuteClick()}>
+                  {isMuted ? "UnMute" : "Mute"}
+                </button>
+                <button onClick={() => handleCameraOnOff()}>
+                  {isCameraOff ? "Turn Camera On" : "Turn Camera Off"}
+                </button>
+
+                <video
+                  ref={peerFaceRef}
+                  autoPlay
+                  playsInline
+                  width="400"
+                  height="400"
+                />
               </div>
-            </main>
+            </div>
           </div>
         </div>
       </div>
+      {/* <select
+                      ref={cameraSelectRef}
+                      onChange={() => handleCameraChange()}
+                    /> */}
     </div>
   );
 };

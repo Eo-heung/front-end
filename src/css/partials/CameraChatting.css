@@ -1,0 +1,104 @@
+form {
+  display: flex;
+  margin-bottom: 20px;
+}
+
+form input {
+  flex-grow: 1;
+  padding: 10px;
+  margin-right: 10px;
+  border-radius: 3px;
+  border: 1px solid #ddd;
+}
+#myStreamState {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+#myStreamState video {
+  margin-bottom: 15px;
+}
+
+#control-buttons {
+  display: flex;
+  gap: 10px; /* 버튼 사이의 간격을 조정 */
+  margin-bottom: 15px; /* 버튼과 아래 비디오 사이의 간격을 조정 */
+}
+
+#myStreamState button {
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  background-color: #007bff;
+  color: white;
+  font-size: 16px;
+  transition: background-color 0.3s ease;
+}
+
+#myStreamState button:hover {
+  background-color: #0056b3;
+}
+form button {
+  padding: 10px 15px;
+  border: none;
+  border-radius: 3px;
+  background-color: #ffb471;
+  color: white;
+  cursor: pointer;
+}
+
+form button:hover {
+  background-color: #f58d33;
+}
+
+form#msg {
+  margin-bottom: 0;
+}
+
+ul {
+  list-style-type: none;
+  padding-left: 0;
+  margin-bottom: 20px;
+}
+
+ul.message-list {
+  display: flex;
+  flex-direction: column;
+}
+
+ul {
+  list-style: none;
+  padding: 0;
+}
+
+.sent {
+  background-color: #e6f7ff;
+  color: #000;
+  text-align: right;
+  margin: 15px 10px; /* 위아래 간격 조정 */
+  border-radius: 20px; /* 둥글게 만들기 위해 값 증가 */
+  margin-left: 40%;
+}
+
+.received {
+  background-color: #d4e1f2;
+  color: #000;
+  text-align: left;
+  margin: 15px 10px; /* 위아래 간격 조정 */
+  border-radius: 20px; /* 둥글게 만들기 위해 값 증가 */
+  margin-right: 40%;
+}
+
+#chat-container {
+  max-height: 500px; /* 기존의 500px에서 조금 줄여 입력 창과 겹치지 않게 하기 */
+  min-height: 500px;
+  overflow-y: scroll;
+  scrollbar-width: none;
+  -ms-overflow-style: none;
+}
+
+#chat-container::-webkit-scrollbar {
+  display: none; /* Chrome, Safari에서 스크롤바 숨김 */
+}
