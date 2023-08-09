@@ -1,5 +1,6 @@
 import axios from 'axios';
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router';
 import Join from './join/Join';
 import JoinBirth from './join/JoinBirth';
 import JoinComplete from './join/JoinComplete';
@@ -13,6 +14,7 @@ import JoinPhoneNum1 from './join/JoinPhoneNum1';
 import JoinPhoneNum2 from './join/JoinPhoneNum2';
 
 const SignUp = () => {
+    const navi = useNavigate();
 
     const [pageIndex, setPageIndex] = useState(0);
     const [userTel, setUserTel] = useState(0);
@@ -25,6 +27,7 @@ const SignUp = () => {
     const [userHobby1, setUserHobby1] = useState('');
     const [userHobby2, setUserHobby2] = useState('');
     const [userHobby3, setUserHobby3] = useState('');
+    const [checkNum, setCheckNum] = useState('');
 
     const user = {
         userId: userTel,
@@ -59,6 +62,8 @@ const SignUp = () => {
             const response = await axios.post('http://localhost:9000/join', user);
 
             console.log(response)
+            navi('/login');
+
         } catch (error) {
         }
     };
@@ -68,9 +73,9 @@ const SignUp = () => {
             case 0:
                 return <Join handleClick={handleClick} />;
             case 1:
-                return <JoinPhoneNum1 handleClick={handleClick} setUserTel={setUserTel} />;
+                return <JoinPhoneNum1 handleClick={handleClick} setUserTel={setUserTel} setCheckNum={setCheckNum} />;
             case 2:
-                return <JoinPhoneNum2 handleClick={handleClick} backClick={backClick} />;
+                return <JoinPhoneNum2 handleClick={handleClick} backClick={backClick} checkNum={checkNum} />;
             case 3:
                 return <JoinPW handleClick={handleClick} setUserPw={setUserPw} backClick={backClick} />;
             case 4:
