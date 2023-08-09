@@ -1,30 +1,49 @@
-import { Link } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
+import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const JoinPhoneNum2 = ({ handleClick, backClick }) => {
+const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
     const [progress, setProgress] = useState(0);
+    const [isTelValid, setIsTelValid] = useState(true);
+
+
+    const checkPhone = (tel) => {
+        axios.post('http://localhost:9000/checkphone', tel)
+            .then(response => {
+                console.log(response.data); // 서버로부터의 응답을 출력합니다.
+                setCheckNum(() => response.data.item)
+            })
+            .catch(error => {
+                console.error('An error occurred:', error); // 오류를 출력합니다.
+            });
+    };
 
     const handleSubmit = (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
-        alert("인증 완료되었습니다.");
-        handleClick();
+        if (!/^[0-9]{3}[0-9]{3,4}[0-9]{4}$/.test(data.get('userTel'))) {
+            setIsTelValid(false);
+        } else {
+            setIsTelValid(true);
+            setUserTel(() => data.get('userTel'))
+            checkPhone(data.get('userTel'));
+            alert("인증번호를 발송해드렸습니다.");
+            handleClick();
+        }
     };
+
+
 
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
     const Circle = styled('div')(({ progress }) => ({
@@ -43,11 +62,11 @@ const JoinPhoneNum2 = ({ handleClick, backClick }) => {
     const defaultTheme = createTheme();
 
     function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(14.2857);
+        const [progress, setProgress] = useState(0);
 
         useEffect(() => {
             const timer = setTimeout(() => {
-                setProgress(28.5714);
+                setProgress(33);
             }, 500);
 
             return () => {
@@ -63,7 +82,7 @@ const JoinPhoneNum2 = ({ handleClick, backClick }) => {
                     <Circle progress={progress} />
                 </Box>
                 <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{'2/8'}</Typography>
+                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
                 </Box>
             </Box>
         );
@@ -80,24 +99,21 @@ const JoinPhoneNum2 = ({ handleClick, backClick }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs" minHeight='608.57px' maxHeight='608.57px'>
+            <Container component="main" maxWidth="xs">
                 <CssBaseline />
                 <Box
                     sx={{
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
+                        height: '608.57px',
                         marginTop: 8
                     }}
                 >
                     <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
-                        어흥이 인증번호를 보내드렸어요!
+                        어흥이 알고있는
                     </Typography>
                     <br></br>
                     <br></br>
                     <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        문자함에서 확인한
-                        <br></br>
-                        내 인증번호는?
+                        내 핸드폰 번호는?
                     </Typography>
                     <br></br>
                     <br></br>
@@ -107,12 +123,15 @@ const JoinPhoneNum2 = ({ handleClick, backClick }) => {
                                 <TextField
                                     required
                                     fullWidth
-                                    id="code"
-                                    label="인증번호 입력"
-                                    name="code"
+                                    id="userTel"
+                                    label="핸드폰 번호 입력"
+                                    name="userTel"
                                     autoComplete="off"
+                                    placeholder='01012345678'
+                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                                    error={!isTelValid}
+                                    helperText={!isTelValid && "전화번호 형식에 맞추어 입력해 주세요."}
                                 />
-                                <Link sx={{ float: 'right' }} onClick={backClick}>전화번호를 잘못입력하셨나요??</Link>
                             </Grid>
                         </Grid>
 
@@ -138,22 +157,23 @@ const JoinPhoneNum2 = ({ handleClick, backClick }) => {
                                     },
                                 }}
                             >
-                                인증하기
+                                번호인증
                             </Button>
+                            <Link href="/login" variant="body2">
+                                로그인하러가기
+                            </Link>
 
-
+                            <ThemeProvider theme={theme}>
+                                <Box sx={{ width: '100%', marginTop: "47%" }}>
+                                    <LinearProgressWithLabel value={progress} />
+                                </Box>
+                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
-                <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "10%" }}>
-                        <LinearProgressWithLabel value={progress} />
-                    </Box>
-                </ThemeProvider>
             </Container>
-
         </ThemeProvider>
     );
 };
 
-export default JoinPhoneNum2;
+export default Password2;

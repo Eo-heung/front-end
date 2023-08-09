@@ -70,23 +70,23 @@ const SignUp = () => {
             case 1:
                 return <JoinPhoneNum1 handleClick={handleClick} setUserTel={setUserTel} />;
             case 2:
-                return <JoinPhoneNum2 handleClick={handleClick} />;
+                return <JoinPhoneNum2 handleClick={handleClick} backClick={backClick} />;
             case 3:
-                return <JoinPW handleClick={handleClick} setUserPw={setUserPw} />;
+                return <JoinPW handleClick={handleClick} setUserPw={setUserPw} backClick={backClick} />;
             case 4:
-                return <JoinName handleClick={handleClick} setUserName={setUserName} />;
+                return <JoinName handleClick={handleClick} setUserName={setUserName} backClick={backClick} />;
             case 5:
-                return <JoinBirth handleClick={handleClick} setUserBirth={setUserBirth} />;
+                return <JoinBirth handleClick={handleClick} setUserBirth={setUserBirth} backClick={backClick} />;
             case 6:
-                return <JoinLocal1 handleClick={handleClick} doubleClick={doubleClick} setUserAddr1={setUserAddr1} setUserAddr2={setUserAddr2} setUserAddr3={setUserAddr3} />;
+                return <JoinLocal1 handleClick={handleClick} doubleClick={doubleClick} setUserAddr1={setUserAddr1} setUserAddr2={setUserAddr2} setUserAddr3={setUserAddr3} backClick={backClick} />;
             case 7:
-                return <JoinLocal2 handleClick={handleClick} setUserAddr1={setUserAddr1} setUserAddr2={setUserAddr2} setUserAddr3={setUserAddr3} />;
+                return <JoinLocal2 handleClick={handleClick} setUserAddr1={setUserAddr1} setUserAddr2={setUserAddr2} setUserAddr3={setUserAddr3} backClick={backClick} />;
             case 8:
                 return <JoinLocal3 handleClick={handleClick} backClick={backClick} userAddr1={userAddr1} userAddr2={userAddr2} userAddr3={userAddr3} />;
             case 9:
-                return <JoinFavorite handleClick={handleClick} setUserHobby1={setUserHobby1} setUserHobby2={setUserHobby2} setUserHobby3={setUserHobby3} />;
+                return <JoinFavorite handleClick={handleClick} setUserHobby1={setUserHobby1} setUserHobby2={setUserHobby2} setUserHobby3={setUserHobby3} backClick={backClick} />;
             case 10:
-                return <JoinComplete handleClick={handleClick} join={join} />;
+                return <JoinComplete handleClick={handleClick} join={join} backClick={backClick} />;
             default:
                 return <Join />;
         }

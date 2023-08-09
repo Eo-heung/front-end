@@ -16,9 +16,10 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios';
-import React, { useCallback, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
 
@@ -26,6 +27,7 @@ const Login = () => {
 
     const [userId, setUserId] = useState('');
     const [userPw, setUserPw] = useState('');
+    const [token, setToken] = useState();
 
 
     const [showPassword, setShowPassword] = React.useState(false);
@@ -44,9 +46,39 @@ const Login = () => {
         setUserPw(() => e.target.value);
     }, []);
 
+    const SocialKakao = () => {
+        const Rest_api_key = 'd85c142dc0c92939902ad3248688e8ad'; //REST API KEY
+        const redirect_uri = 'http://localhost:1234/auth'; //Redirect URI
+        const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+        window.location.href = kakaoURL;
+    };
+
+    useEffect(() => {
+        if (sessionStorage.getItem("ACCESS_TOKEN")) {
+            setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+            console.log(token);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (token) {
+            axios.post('http://localhost:9000/verify', token)
+                .then(response => {
+                    console.log(response);
+                    if (response.data.item) {
+                        navi("/success"); // 토큰이 유효하면 지정된 경로로 이동
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                    localStorage.removeItem("REFRESH_TOKEN");
+                    sessionStorage.removeItem("ACCESS_TOKEN");
+                });
+        }
+    }, [token]);
+
     const login = useCallback((e) => {
         e.preventDefault();
-
         const loginAxios = async () => {
 
             const user = {
@@ -63,9 +95,10 @@ const Login = () => {
 
                 if (response.data && response.data.item.token) {
                     alert(`${response.data.item.userName}님 환영합니다.`);
+                    localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
                     sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                     sessionStorage.setItem("userId", response.data.item.userId);
-                    navi("/");
+                    navi("/success");
                 }
             } catch (e) {
                 console.log(e);
@@ -116,7 +149,9 @@ const Login = () => {
                     }} duration={1000} sx={{ width: '100%', height: '100%' }}>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
                             <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
-                                <img style={{ width: '80%', height: '80%' }} src={"https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"} />
+                                <img style={{ width: '80%', height: '80%', cursor: 'pointer' }}
+                                    src={"https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"}
+                                />
                             </Paper>
                         </Box>
                         <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
@@ -230,7 +265,7 @@ const Login = () => {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Link href="#">
+                                    <Link href="#" onClick={SocialKakao}>
                                         <Box
                                             sx={{
                                                 width: '100%',
