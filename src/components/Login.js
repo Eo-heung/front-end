@@ -16,10 +16,9 @@ import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios';
-import React, { useCallback, useState, useEffect } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { useNavigate } from 'react-router-dom';
-import KakaoLogin from "react-kakao-login"
 
 
 const Login = () => {
