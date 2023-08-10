@@ -1,6 +1,13 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import "../css/partials/CameraChatting.css";
+import SvgIcon from "@mui/material/SvgIcon";
+import { SvgIconComponent } from "@mui/icons-material";
+import MicIcon from "@mui/icons-material/Mic";
+import MicOffIcon from "@mui/icons-material/MicOff";
+import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
+import DesktopAccessDisabledIcon from "@mui/icons-material/DesktopAccessDisabled";
+import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
 
 // import "../css/partials/Style.css";
 
@@ -12,6 +19,7 @@ const CameraChatting = () => {
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
 
+  const [isStarted, setIsStarted] = useState(false);
   const roomNameRef = useRef(null);
   const myPeerConnection = useRef(null); // useRef는 연결 객체가 변경될 때마다 컴포넌트를 리렌더링하지 않도록 하기 위해 사용됩니다.
   const myDataChannel = useRef(null);
@@ -24,6 +32,7 @@ const CameraChatting = () => {
   const socket = useRef();
 
   useEffect(() => {
+    getMedia();
     socket.current = io("http://192.168.0.64:5000");
     initCall();
 
@@ -132,13 +141,18 @@ const CameraChatting = () => {
     console.log("sent candidate");
     socket.current.emit("ice", data.candidate, roomNameRef.current);
   };
-
-  const processIceCandidateQueue = () => {
-    console.log(iceCandidateQueue);
-    while (iceCandidateQueue.current.length) {
-      const iceCandidate = iceCandidateQueue.current.shift();
-      myPeerConnection.current.addIceCandidate(iceCandidate);
+  const startVideo = async () => {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      myFaceRef.current.srcObject = stream; // 여기서 myFaceRef는 useRef를 사용해 video 요소에 연결된 참조입니다.
+    } catch (err) {
+      console.error("비디오 시작 중 오류가 발생했습니다:", err);
     }
+  };
+
+  const startChatting = () => {
+    setIsStarted(true);
+    startVideo();
   };
 
   const handleTrack = (event) => {
@@ -262,56 +276,108 @@ const CameraChatting = () => {
       <div class="sb-nav-fixed mainpage">
         <div id="layoutSidenav">
           <div id="layoutSidenav_content">
-            <div id="call">
-              <div id="myStreamState">
-                <h1>Socket.io 연결 상태: {connectionStatus}</h1>
-                <video
-                  ref={myFaceRef}
-                  muted
-                  autoPlay
-                  playsInline
-                  width="400"
-                  height="400"
-                />
-                <button onClick={() => handleMuteClick()}>
-                  {isMuted ? "UnMute" : "Mute"}
-                </button>
-                <button onClick={() => handleCameraOnOff()}>
-                  {isCameraOff ? "Turn Camera On" : "Turn Camera Off"}
-                </button>
-                <button
-                  onClick={() => handleStartRandomChat()}
-                  hidden={isStartedHidden}
-                >
-                  시작
-                </button>
-                <button
-                  onClick={() => handleStopRandomChat()}
-                  hidden={!isStartedHidden}
-                >
-                  종료
-                </button>
-
-                {connectionStatus == "매칭됨" ? (
+            {/* 시작 화면 */}
+            {!isStarted ? (
+              <div className="start-video">
+                <div className="start-screen">
                   <video
-                    ref={peerFaceRef}
+                    ref={myFaceRef}
+                    className="video-style"
+                    muted
+                    autoPlay
+                    playsInline
+                  />
+                  <div className="button-container">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleMuteClick}
+                    >
+                      {isMuted ? <MicOffIcon /> : <MicIcon />}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCameraOnOff}
+                    >
+                      {isCameraOff ? (
+                        <DesktopAccessDisabledIcon />
+                      ) : (
+                        <DesktopWindowsIcon />
+                      )}
+                    </Button>
+                    <button onClick={handleCameraOnOff}>
+                      {isCameraOff ? "너에게로" : "곧 감"}
+                    </button>
+
+                    <button className="start-button" onClick={startChatting}>
+                      채팅시작
+                    </button>
+                  </div>
+                </div>
+              </div>
+            ) : (
+              <div id="call">
+                <div id="myStreamState">
+                  <h1>Socket.io 연결 상태: {connectionStatus}</h1>
+                  <video
+                    ref={myFaceRef}
+                    className="video-style"
+                    muted
                     autoPlay
                     playsInline
                     width="400"
                     height="400"
                   />
-                ) : (
-                  <div>상대 찾는중 어흥!</div>
-                )}
+                  <div className="button-container">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleMuteClick}
+                    >
+                      {isMuted ? <MicOffIcon /> : <MicIcon />}
+                    </Button>
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCameraOnOff}
+                    >
+                      {isCameraOff ? (
+                        <DesktopAccessDisabledIcon />
+                      ) : (
+                        <DesktopWindowsIcon />
+                      )}
+                    </Button>
+                    <button
+                      onClick={handleStartRandomChat}
+                      hidden={isStartedHidden}
+                    >
+                      다음
+                    </button>
+                    <button
+                      onClick={handleStopRandomChat}
+                      hidden={!isStartedHidden}
+                    >
+                      종료
+                    </button>
+                  </div>
+                  {connectionStatus === "매칭됨" ? (
+                    <video
+                      ref={peerFaceRef}
+                      autoPlay
+                      playsInline
+                      width="400"
+                      height="400"
+                    />
+                  ) : (
+                    <div>상대 찾는중 어흥!</div>
+                  )}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         </div>
       </div>
-      {/* <select
-                      ref={cameraSelectRef}
-                      onChange={() => handleCameraChange()}
-                    /> */}
     </div>
   );
 };

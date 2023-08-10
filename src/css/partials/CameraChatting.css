@@ -27,18 +27,23 @@ form input {
 }
 
 #myStreamState button {
-  padding: 10px 20px;
+  margin: 0 10px; /* 버튼 주변의 좌우 여백 */
+  width: 75px; /* 버튼 너비 */
+  height: 75px; /* 버튼 높이 */
+  padding: 0; /* 패딩을 0으로 설정 */
   border: none;
-  border-radius: 5px;
-  cursor: pointer;
-  background-color: #007bff;
-  color: white;
-  font-size: 16px;
-  transition: background-color 0.3s ease;
+  border-radius: 37.5px; /* 버튼 모서리 둥글게 */
+  background-color: #adbed2; /* 버튼 배경 색 */
+  color: white; /* 글자색 */
+  font-size: 24px; /* 글자 크기 */
+  text-align: center; /* 글자 가운데 정렬 */
+  line-height: 75px; /* 글자를 수직으로 가운데 정렬 */
+  cursor: pointer; /* 마우스를 올렸을 때 손 모양으로 변경 */
+  transition: background-color 0.3s; /* 배경색이 부드럽게 변경되게 함 */
 }
 
 #myStreamState button:hover {
-  background-color: #0056b3;
+  background-color: #fecdce; /* 마우스를 올렸을 때의 배경 색 */
 }
 form button {
   padding: 10px 15px;
@@ -101,4 +106,61 @@ ul {
 
 #chat-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari에서 스크롤바 숨김 */
+}
+
+/* App.css */
+
+/* 시작 화면 스타일 */
+
+.start-video {
+  display: flex; /* 비디오를 블록 요소로 설정 */
+  width: 100%;
+  height: 100%;
+  justify-content: center; /* 수평 중앙 정렬 */
+  align-items: center; /* 수직 중앙 정렬 */
+}
+
+.video-style {
+  width: 650px;
+  border-radius: 30px;
+}
+
+.start-screen .button-container {
+  display: flex; /* 버튼 컨테이너를 flex로 설정하여 버튼을 수평으로 배치 */
+  margin: 10px 0; /* 버튼 컨테이너의 위아래 여백 */
+}
+
+.start-screen button {
+  margin: 0 10px; /* 버튼 주변의 좌우 여백 */
+  width: 70px; /* 버튼 너비 */
+  height: 70px; /* 버튼 높이 */
+  padding: 0; /* 패딩을 0으로 설정 */
+  border: none;
+  border-radius: 37.5px; /* 버튼 모서리 둥글게 */
+  background-color: #adbed2; /* 버튼 배경 색 */
+  color: white; /* 글자색 */
+  font-size: 24px; /* 글자 크기 */
+  text-align: center; /* 글자 가운데 정렬 */
+  line-height: 75px; /* 글자를 수직으로 가운데 정렬 */
+  cursor: pointer; /* 마우스를 올렸을 때 손 모양으로 변경 */
+  transition: background-color 0.3s; /* 배경색이 부드럽게 변경되게 함 */
+}
+.start-screen .start-button {
+  width: 150px;
+  height: 70px;
+  margin-left: 220px;
+  line-height: 70px; /* 수직 중앙 정렬을 위해 버튼 높이와 동일하게 설정 */
+  border-radius: 0;
+  font-size: 16px;
+  border: none;
+  background-color: #eb8f90;
+  color: white;
+  font-size: 24px;
+  text-align: center; /* 수평 중앙 정렬 */
+  transition: background-color 0.3s;
+  border-radius: 10px; /* 버튼 모서리 둥글게 */
+}
+
+.start-screen button:hover {
+  background-color: #fecdce; /* 마우스를 올렸을 때의 배경 색 */
 }
