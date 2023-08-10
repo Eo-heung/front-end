@@ -2,6 +2,7 @@ import { Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
 import Password from "./components/Password";
 import SuccessPage from "./components/SuccessPage";
+import Layout from "./components/partials/Layout";
 
 function App() {
   return (

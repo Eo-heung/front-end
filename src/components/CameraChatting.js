@@ -5,12 +5,12 @@ import "../css/partials/CameraChatting.css";
 // import "../css/partials/Style.css";
 
 const CameraChatting = () => {
-  const [roomHidden, setRoomHidden] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [isStartedHidden, setIsStartedHidden] = useState(false);
   const [myStreamState, setMyStreamState] = useState(null);
   const [selectedCamera, setSelectedCamera] = useState(null);
+  const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
 
   const roomNameRef = useRef(null);
   const myPeerConnection = useRef(null); // useRef는 연결 객체가 변경될 때마다 컴포넌트를 리렌더링하지 않도록 하기 위해 사용됩니다.
@@ -26,14 +26,26 @@ const CameraChatting = () => {
   useEffect(() => {
     socket.current = io("http://192.168.0.64:5000");
     initCall();
+
+    // 연결됐을 때
+    socket.current.on("connect", () => {
+      setConnectionStatus("연결됨");
+    });
+
+    // 연결이 끊어졌을 때
+    socket.current.on("disconnect", () => {
+      setConnectionStatus("연결 끊김");
+    });
+
+    // 연결 에러 발생 시
+    socket.current.on("connect_error", () => {
+      setConnectionStatus("연결 에러");
+    });
+
     socket.current.on("matched", async (roomName) => {
-      // 여기에서 상대방과의 채팅 로직을 시작하실 수 있습니다.
       console.log(`Matched with user in room ${roomName}`);
+      setConnectionStatus("매칭됨");
       roomNameRef.current = roomName;
-      // const offer = await myPeerConnection.current.createOffer();
-      // myPeerConnection.current.setLocalDescription(offer);
-      // console.log("sent the offer");
-      // socket.current.emit("offer", offer, roomNameRef.current);
     });
 
     socket.current.on("welcome", async () => {
@@ -75,6 +87,12 @@ const CameraChatting = () => {
     socket.current.on("ice", (ice) => {
       console.log(`received candidate `);
       myPeerConnection.current.addIceCandidate(ice);
+    });
+
+    socket.current.on("user-disconnected", (id) => {
+      console.log("User disconnected:", id);
+      setConnectionStatus("한명 나감");
+      // 이제 여기에서 필요한 UI 변경을 처리하면 됩니다.
     });
 
     // 클린업 (component unmount 또는 dependencies 변경 시 실행됨)
@@ -188,16 +206,19 @@ const CameraChatting = () => {
     makeConnection();
   };
 
-  const handleRoomSubmit = async (e) => {
-    e.preventDefault();
-    await initCall();
-    roomNameRef.current = e.target.roomName.value;
-    socket.current.emit("join_room", roomNameRef.current);
+  const handleStartRandomChat = () => {
+    socket.current.emit("request_random_chat");
+    if (socket.current.disconnected) {
+      socket.current.connect();
+      makeConnection();
+    }
+    setIsStartedHidden(!isStartedHidden);
   };
 
-  const handleStartRandomChat = async () => {
+  const handleStopRandomChat = () => {
+    socket.current.emit("stop_random_chat");
+    socket.current.disconnect();
     setIsStartedHidden(!isStartedHidden);
-    socket.current.emit("request_random_chat");
   };
 
   const handleMuteClick = () => {
@@ -241,19 +262,9 @@ const CameraChatting = () => {
       <div class="sb-nav-fixed mainpage">
         <div id="layoutSidenav">
           <div id="layoutSidenav_content">
-            {/* <div id="welcome" hidden={roomHidden}>
-              <form onSubmit={handleRoomSubmit}>
-                <input
-                  placeholder="room name"
-                  name="roomName"
-                  required
-                  type="text"
-                />
-                <button>Enter room</button>
-              </form>
-            </div> */}
-            <div id="call" hidden={roomHidden}>
+            <div id="call">
               <div id="myStreamState">
+                <h1>Socket.io 연결 상태: {connectionStatus}</h1>
                 <video
                   ref={myFaceRef}
                   muted
@@ -274,14 +285,24 @@ const CameraChatting = () => {
                 >
                   시작
                 </button>
+                <button
+                  onClick={() => handleStopRandomChat()}
+                  hidden={!isStartedHidden}
+                >
+                  종료
+                </button>
 
-                <video
-                  ref={peerFaceRef}
-                  autoPlay
-                  playsInline
-                  width="400"
-                  height="400"
-                />
+                {connectionStatus == "매칭됨" ? (
+                  <video
+                    ref={peerFaceRef}
+                    autoPlay
+                    playsInline
+                    width="400"
+                    height="400"
+                  />
+                ) : (
+                  <div>상대 찾는중 어흥!</div>
+                )}
               </div>
             </div>
           </div>
