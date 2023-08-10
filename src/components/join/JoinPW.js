@@ -1,3 +1,5 @@
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { IconButton, InputAdornment } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -17,6 +19,15 @@ const JoinPW = ({ handleClick, setUserPw }) => {
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const [showPassword1, setShowPassword1] = useState(false);
+    const [showPassword2, setShowPassword2] = useState(false);
+
+    const handleClickShowPassword1 = () => setShowPassword1((show) => !show);
+    const handleClickShowPassword2 = () => setShowPassword2((show) => !show);
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -62,11 +73,11 @@ const JoinPW = ({ handleClick, setUserPw }) => {
     const defaultTheme = createTheme();
 
     function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(28.5714);
+        const [progress, setProgress] = useState(16.67);
 
         useEffect(() => {
             const timer = setTimeout(() => {
-                setProgress(42.8571);
+                setProgress(33.333);
             }, 500);
 
             return () => {
@@ -77,12 +88,12 @@ const JoinPW = ({ handleClick, setUserPw }) => {
 
         return (
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
+                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Circle progress={progress} />
                 </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                <Box sx={{ flex: 1, marginLeft: 3 }}>
+                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'2 / 6'}</Typography>
                 </Box>
             </Box>
         );
@@ -99,27 +110,21 @@ const JoinPW = ({ handleClick, setUserPw }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
                     sx={{
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
-                        marginTop: 8
+                        marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
                         어흥 입장시에 사용할
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        비밀번호를
-                        <br></br>
-                        입력해주세요
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                        비밀번호를 입력해 주세요
                     </Typography>
-                    <br></br>
-                    <br></br>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
@@ -130,22 +135,50 @@ const JoinPW = ({ handleClick, setUserPw }) => {
                                     label="비밀번호 입력"
                                     name="password"
                                     autoComplete="off"
-                                    type='password'
+                                    type={showPassword1 ? 'text' : 'password'}
                                     value={password}
                                     onChange={handlePasswordChange}
-                                    sx={{ marginBottom: '7px' }}
+                                    sx={{ marginBottom: '16px' }}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword1}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword1 ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
                                 />
                                 <TextField
                                     required
                                     fullWidth
                                     id="confirmPassword"
-                                    label="한번 더 입력해주세요"
+                                    label="비밀번호 확인"
                                     name="confirmPassword"
-                                    type='password'
+                                    type={showPassword2 ? 'text' : 'password'}
                                     autoComplete="off"
                                     onChange={handleConfirmPasswordChange}
                                     error={!passwordMatch}
                                     helperText={!passwordMatch ? '비밀번호가 일치하지 않습니다.' : ''}
+                                    InputProps={{
+                                        endAdornment: (
+                                            <InputAdornment position="end">
+                                                <IconButton
+                                                    aria-label="toggle password visibility"
+                                                    onClick={handleClickShowPassword2}
+                                                    onMouseDown={handleMouseDownPassword}
+                                                    edge="end"
+                                                >
+                                                    {showPassword2 ? <VisibilityOff /> : <Visibility />}
+                                                </IconButton>
+                                            </InputAdornment>
+                                        )
+                                    }}
                                 />
                             </Grid>
                         </Grid>
@@ -164,21 +197,23 @@ const JoinPW = ({ handleClick, setUserPw }) => {
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
-                                {'변경하기'}
+                                {'다음'}
                             </Button>
                         </Box>
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

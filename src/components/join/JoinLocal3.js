@@ -11,12 +11,11 @@ import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
 
-const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 }) => {
+const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 }) => {
     const [progress, setProgress] = useState(0);
     const [selectedButton, setSelectedButton] = useState(null);
 
     const handleSubmit = (event) => {
-        event.preventDefault();
 
         if (selectedButton === 'valid') {
             handleClick();
@@ -47,11 +46,11 @@ const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
     const defaultTheme = createTheme();
 
     function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(80.9523);
+        const [progress, setProgress] = useState(83.333);
 
         useEffect(() => {
             const timer = setTimeout(() => {
-                setProgress(85.7142);
+                setProgress(83.333);
             }, 500);
 
             return () => {
@@ -62,12 +61,12 @@ const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
 
         return (
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
+                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Circle progress={progress} />
                 </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                <Box sx={{ flex: 1, marginLeft: 3 }}>
+                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'5 / 6'}</Typography>
                 </Box>
             </Box>
         );
@@ -83,45 +82,38 @@ const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
 
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+        <ThemeProvider theme={theme}>
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
                     sx={{
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
-                        marginTop: 8
+                        marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
-                        어흥을 시작할
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} >
+                        어흥을 이용할
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        내 지역은
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                        이 지역이 맞나요?
                     </Typography>
-                    <br></br>
-                    <br></br>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
                                 <TextField
                                     fullWidth
                                     id="code"
-                                    label="나의 주소"
+                                    label="내 지역"
                                     name="code"
                                     value={userAddr1 + " " + userAddr2 + " " + userAddr3}
                                     autoComplete="off"
                                     readOnly
+                                    sx={{ color: 'black' }}
                                 />
                             </Grid>
                         </Grid>
-                        <br></br>
-                        <br></br>
-                        <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                            이곳이 맞나요?
-                        </Typography>
+
 
                         <Box
                             sx={{
@@ -138,11 +130,12 @@ const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
-                                    mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
@@ -155,11 +148,13 @@ const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
@@ -169,7 +164,7 @@ const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>
@@ -178,4 +173,4 @@ const JoinLocal2 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
     );
 };
 
-export default JoinLocal2;
+export default JoinLocal3;

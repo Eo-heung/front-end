@@ -13,7 +13,7 @@ const Join = ({ handleClick }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
                     sx={{
@@ -23,14 +23,13 @@ const Join = ({ handleClick }) => {
                         alignItems: 'center',
                     }}
                 >
-                    <Typography sx={{ fontSize: '5px' }}
-                    >대충 회사 로고나 이름</Typography>
+                    <img src="https://i.postimg.cc/TwkbNDNV/aa.png" />
                     <br></br>
                     <br></br>
                     <Typography component="h1" variant="h5" textAlign={'center'}>
                         어흥! 반가워요!<br></br>
-                        당신에 대해 알려주면<br></br>
-                        제가 추천 해드릴게요!
+                        당신에 대해 알려주세요<br></br>
+
                     </Typography>
                     <br></br>
                     <br></br>
@@ -43,11 +42,13 @@ const Join = ({ handleClick }) => {
                     variant="contained"
                     color="primary"
                     sx={{
+                        color: 'black',
+                        height: '44px',
                         mt: 3,
                         mb: 2,
-                        backgroundColor: '#FFB471', // 평소 색상
+                        backgroundColor: '#FEA53D', // 평소 색상
                         '&:hover': {
-                            backgroundColor: '#E55C25', // 호버 시 색상
+                            backgroundColor: '#FEB158', // 호버 시 색상
                         },
                     }}
                 >

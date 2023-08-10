@@ -3,7 +3,6 @@ import React, { useState } from 'react';
 import { useNavigate } from 'react-router';
 import Join from './join/Join';
 import JoinBirth from './join/JoinBirth';
-import JoinComplete from './join/JoinComplete';
 import JoinFavorite from './join/JoinFavorite';
 import JoinLocal1 from './join/JoinLocal1';
 import JoinLocal2 from './join/JoinLocal2';
@@ -44,7 +43,7 @@ const SignUp = () => {
     };
 
     const handleClick = () => {
-        if (pageIndex < 10) {
+        if (pageIndex < 9) {
             setPageIndex(pageIndex + 1);
         }
     };
@@ -54,7 +53,7 @@ const SignUp = () => {
     }
 
     const backClick = () => {
-        setPageIndex(pageIndex + -1);
+        setPageIndex(pageIndex - 1);
     }
 
     const join = async () => {
@@ -89,9 +88,7 @@ const SignUp = () => {
             case 8:
                 return <JoinLocal3 handleClick={handleClick} backClick={backClick} userAddr1={userAddr1} userAddr2={userAddr2} userAddr3={userAddr3} />;
             case 9:
-                return <JoinFavorite handleClick={handleClick} setUserHobby1={setUserHobby1} setUserHobby2={setUserHobby2} setUserHobby3={setUserHobby3} backClick={backClick} />;
-            case 10:
-                return <JoinComplete handleClick={handleClick} join={join} backClick={backClick} />;
+                return <JoinFavorite handleClick={handleClick} setUserHobby1={setUserHobby1} setUserHobby2={setUserHobby2} setUserHobby3={setUserHobby3} backClick={backClick} join={join} userName={userName} />;
             default:
                 return <Join />;
         }

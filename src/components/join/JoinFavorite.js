@@ -6,22 +6,33 @@ import {
     createTheme, styled
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 import thumbImage from '../../public/image.png.png';
 
-const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3 }) => {
+const JoinFavorite = ({ setUserHobby1, setUserHobby2, setUserHobby3, userName, join }) => {
     const [hobby, setHobby] = useState('');
     const [interest, setInterest] = useState('');
     const [food, setFood] = useState('');
     const [progress, setProgress] = useState(0);
+    const [onclick, setOnclick] = useState(false);
+
+    const navi = useNavigate();
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
-        setUserHobby1(() => hobby);
-        setUserHobby2(() => interest);
-        setUserHobby3(() => food);
+        if (onclick) {
+            setUserHobby1(() => hobby);
+            setUserHobby2(() => interest);
+            setUserHobby3(() => food);
+            alert(`어흥과 함께할 ${userName}님을 진심으로 환영합니다!`);
+            join();
+        }
+        else {
+            alert(`어흥과 함께할 ${userName}님을 진심으로 환영합니다!`);
+            join();
+        }
 
-        handleClick(); // 여기서 handleClick은 props로 전달된 함수입니다.
     };
 
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
@@ -41,7 +52,7 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
     const defaultTheme = createTheme();
 
     function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(85.7142);
+        const [progress, setProgress] = useState(83.333);
 
         useEffect(() => {
             const timer = setTimeout(() => {
@@ -56,12 +67,12 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
 
         return (
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
+                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Circle progress={progress} />
                 </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                <Box sx={{ flex: 1, marginLeft: 3 }}>
+                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'6 / 6'}</Typography>
                 </Box>
             </Box>
         );
@@ -78,24 +89,21 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
                     sx={{
-                        height: '608.57px',
-                        marginTop: 8
+                        minHeight: '608.57px',
+                        maxHeight: '608.57px',
+                        marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
                         어흥과 함께할
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        내 이름은?
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                        {`\'${userName}\' 님에 대해 알려주세요`}
                     </Typography>
-                    <br></br>
-                    <br></br>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
@@ -106,7 +114,7 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                         value={hobby}
                                         label='관심사'
                                         onChange={(e) => setHobby(e.target.value)}
-                                        sx={{ marginBottom: '10px' }}
+                                        sx={{ marginBottom: '16px' }}
                                     >
                                         <MenuItem value="101">인문학/책 </MenuItem>
                                         <MenuItem value="102">운동</MenuItem>
@@ -121,12 +129,12 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                     </Select>
                                 </FormControl>
                                 <FormControl fullWidth>
-                                    <InputLabel>좋아하는 음악종류</InputLabel>
+                                    <InputLabel>좋아하는 음악 장르</InputLabel>
                                     <Select
-                                        label='좋아하는 음악종류'
+                                        label='좋아하는 음악 장르'
                                         value={interest}
                                         onChange={(e) => setInterest(e.target.value)}
-                                        sx={{ marginBottom: '10px' }}
+                                        sx={{ marginBottom: '16px' }}
                                     >
                                         <MenuItem value="201">클래식</MenuItem>
                                         <MenuItem value="202">재즈</MenuItem>
@@ -148,7 +156,7 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                         label='좋아하는 음식'
                                         value={food}
                                         onChange={(e) => setFood(e.target.value)}
-                                        sx={{ marginBottom: '10px' }}
+                                        sx={{ marginBottom: '16px' }}
                                     >
                                         <MenuItem value="301">한식</MenuItem>
                                         <MenuItem value="302">중식</MenuItem>
@@ -158,10 +166,9 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                     </Select>
                                 </FormControl>
                                 <TextField
-                                    required
                                     fullWidth
                                     id="code"
-                                    label="기타 등등.."
+                                    label="그 외 관심사를 입력해 주세요."
                                     name="code"
                                     autoComplete="off"
                                 />
@@ -182,41 +189,45 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
-                                    mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
-                                나중에 알려줄래:)
+                                나중에 알려줄게요
                             </Button>
                             <Button
                                 type="submit"
+                                onClick={() => setOnclick(true)}
                                 fullWidth
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
                                 선택 완료!
                             </Button>
 
-                            <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%', marginTop: "20%" }}>
-                                    <LinearProgressWithLabel value={progress} />
-                                </Box>
-                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
+                <ThemeProvider theme={theme}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+                        <LinearProgressWithLabel value={progress} />
+                    </Box>
+                </ThemeProvider>
             </Container>
         </ThemeProvider>
     );

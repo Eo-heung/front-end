@@ -31,7 +31,7 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
     const handleSubmit = (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
-        if (!/^[0-9]{3}[0-9]{3,4}[0-9]{4}$/.test(data.get('userTel'))) {
+        if (!/^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/.test(data.get('userTel'))) {
             setIsTelValid(false);
         } else {
             setIsTelValid(true);
@@ -65,7 +65,7 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
 
         useEffect(() => {
             const timer = setTimeout(() => {
-                setProgress(14.2857);
+                setProgress(16.67);
             }, 500);
 
             return () => {
@@ -76,12 +76,12 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
 
         return (
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
+                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Circle progress={progress} />
                 </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{'1/8'}</Typography>
+                <Box sx={{ flex: 1, marginLeft: 3 }}>
+                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'1 / 6'}</Typography>
                 </Box>
             </Box>
         );
@@ -90,7 +90,13 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
     const theme = createTheme({
         palette: {
             primary: {
+                light: '#ff7961',
                 main: '#E55C25',
+                dark: '#ba000d',
+
+            },
+            secondary: {
+                main: '#1976d2', // 원하는 secondary 색상 값
             },
         },
     });
@@ -98,25 +104,22 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs" >
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }} >
                 <CssBaseline />
                 <Box
                     sx={{
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
-                        marginTop: 8
+                        marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
+
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ marginBottom: '5px' }}>
                         어흥과 함께할
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
                         내 핸드폰 번호는?
                     </Typography>
-                    <br></br>
-                    <br></br>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
@@ -128,7 +131,7 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
                                     name="userTel"
                                     autoComplete="off"
                                     placeholder='01012345678'
-                                    inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                                    inputProps={{ maxLength: 11 }}
                                     error={!isTelValid}
                                     helperText={!isTelValid && "전화번호 형식에 맞추어 입력해 주세요."}
                                 />
@@ -149,21 +152,23 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
-                                번호인증
+                                인증번호 보내기
                             </Button>
                         </Box>
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>
