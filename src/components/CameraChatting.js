@@ -8,6 +8,7 @@ const CameraChatting = () => {
   const [roomHidden, setRoomHidden] = useState(false);
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
+  const [isStartedHidden, setIsStartedHidden] = useState(false);
   const [myStreamState, setMyStreamState] = useState(null);
   const [selectedCamera, setSelectedCamera] = useState(null);
 
@@ -18,12 +19,25 @@ const CameraChatting = () => {
   const myFaceRef = useRef(null);
   const cameraSelectRef = useRef(null);
   const peerFaceRef = useRef(null);
+  const iceCandidateQueue = useRef([]);
+
   const socket = useRef();
 
   useEffect(() => {
     socket.current = io("http://192.168.0.64:5000");
-    console.log("5000");
+    initCall();
+    socket.current.on("matched", async (roomName) => {
+      // 여기에서 상대방과의 채팅 로직을 시작하실 수 있습니다.
+      console.log(`Matched with user in room ${roomName}`);
+      roomNameRef.current = roomName;
+      // const offer = await myPeerConnection.current.createOffer();
+      // myPeerConnection.current.setLocalDescription(offer);
+      // console.log("sent the offer");
+      // socket.current.emit("offer", offer, roomNameRef.current);
+    });
+
     socket.current.on("welcome", async () => {
+      console.log("welcome");
       // myDataChannel.current =
       //   myPeerConnection.current.createDataChannel("chat");
       // myDataChannel.current.addEventListener("message", (event) => {
@@ -45,21 +59,21 @@ const CameraChatting = () => {
       //   });
       // });
       console.log("received the offer");
-      myPeerConnection.current.setRemoteDescription(offer);
+      await myPeerConnection.current.setRemoteDescription(offer);
+
       const answer = await myPeerConnection.current.createAnswer();
-      myPeerConnection.current.setLocalDescription(answer);
+      await myPeerConnection.current.setLocalDescription(answer);
       socket.current.emit("answer", answer, roomNameRef.current);
       console.log("sent the answer");
     });
 
-    socket.current.on("answer", (answer) => {
+    socket.current.on("answer", async (answer) => {
       console.log("received the answer");
       myPeerConnection.current.setRemoteDescription(answer);
     });
 
     socket.current.on("ice", (ice) => {
       console.log(`received candidate `);
-      // console.log(ice)
       myPeerConnection.current.addIceCandidate(ice);
     });
 
@@ -69,6 +83,7 @@ const CameraChatting = () => {
       socket.current.off("offer");
       socket.current.off("answer");
       socket.current.off("ice");
+      socket.current.disconnect();
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
 
@@ -100,7 +115,16 @@ const CameraChatting = () => {
     socket.current.emit("ice", data.candidate, roomNameRef.current);
   };
 
+  const processIceCandidateQueue = () => {
+    console.log(iceCandidateQueue);
+    while (iceCandidateQueue.current.length) {
+      const iceCandidate = iceCandidateQueue.current.shift();
+      myPeerConnection.current.addIceCandidate(iceCandidate);
+    }
+  };
+
   const handleTrack = (event) => {
+    console.log("track");
     const stream = event.streams[0];
     peerFaceRef.current.srcObject = stream;
   };
@@ -160,7 +184,6 @@ const CameraChatting = () => {
   };
 
   const initCall = async () => {
-    setRoomHidden(true);
     await getMedia();
     makeConnection();
   };
@@ -170,6 +193,11 @@ const CameraChatting = () => {
     await initCall();
     roomNameRef.current = e.target.roomName.value;
     socket.current.emit("join_room", roomNameRef.current);
+  };
+
+  const handleStartRandomChat = async () => {
+    setIsStartedHidden(!isStartedHidden);
+    socket.current.emit("request_random_chat");
   };
 
   const handleMuteClick = () => {
@@ -213,7 +241,7 @@ const CameraChatting = () => {
       <div class="sb-nav-fixed mainpage">
         <div id="layoutSidenav">
           <div id="layoutSidenav_content">
-            <div id="welcome" hidden={roomHidden}>
+            {/* <div id="welcome" hidden={roomHidden}>
               <form onSubmit={handleRoomSubmit}>
                 <input
                   placeholder="room name"
@@ -223,8 +251,8 @@ const CameraChatting = () => {
                 />
                 <button>Enter room</button>
               </form>
-            </div>
-            <div id="call" hidden={!roomHidden}>
+            </div> */}
+            <div id="call" hidden={roomHidden}>
               <div id="myStreamState">
                 <video
                   ref={myFaceRef}
@@ -239,6 +267,12 @@ const CameraChatting = () => {
                 </button>
                 <button onClick={() => handleCameraOnOff()}>
                   {isCameraOff ? "Turn Camera On" : "Turn Camera Off"}
+                </button>
+                <button
+                  onClick={() => handleStartRandomChat()}
+                  hidden={isStartedHidden}
+                >
+                  시작
                 </button>
 
                 <video
