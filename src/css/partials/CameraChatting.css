@@ -120,9 +120,52 @@ ul {
   align-items: center; /* 수직 중앙 정렬 */
 }
 
+.test {
+  display: flex;
+  justify-content: center;
+  align-items: flex-start; /* 이 부분 추가 */
+  width: 100%;
+  height: 100%;
+}
+
 .video-style {
-  width: 650px;
+  display: inline;
+  width: 1000px;
+  height: 500px;
   border-radius: 30px;
+  object-fit: fill; /*비율무시하고 설정한 길이대로 꽉 채우기*/
+}
+.chat-image {
+  width: 500px;
+  height: 500px;
+  border-radius: 30px 0px 0px 30px;
+  object-fit: fill;
+  border-left: 2px solid black; /* 좌측 테두리 */
+  border-top: 2px solid black; /* 상단 테두리 */
+  border-bottom: 2px solid black; /* 하단 테두리 */
+}
+.video-style3 {
+  display: inline;
+  width: 500px;
+  height: 500px;
+  border-radius: 30px 0px 0px 30px;
+  object-fit: fill; /*비율무시하고 설정한 길이대로 꽉 채우기*/
+  border-left: 2px solid black; /* 좌측 테두리 */
+  border-top: 2px solid black; /* 상단 테두리 */
+  border-bottom: 2px solid black; /* 하단 테두리 */
+}
+
+.video-style2 {
+  display: inline;
+  width: 500px;
+  height: 500px;
+  border-radius: 0px 30px 30px 0px;
+  object-fit: fill; /*비율무시하고 설정한 길이대로 꽉 채우기*/
+  border-left: 2px solid black; /* 좌측 테두리 */
+
+  border-right: 2px solid black; /* 우측 테두리 */
+  border-top: 2px solid black; /* 상단 테두리 */
+  border-bottom: 2px solid black; /* 하단 테두리 */
 }
 
 .start-screen .button-container {
@@ -135,6 +178,7 @@ ul {
   width: 70px; /* 버튼 너비 */
   height: 70px; /* 버튼 높이 */
   padding: 0; /* 패딩을 0으로 설정 */
+  margin-left: 20px;
   border: none;
   border-radius: 37.5px; /* 버튼 모서리 둥글게 */
   background-color: #adbed2; /* 버튼 배경 색 */
@@ -148,7 +192,7 @@ ul {
 .start-screen .start-button {
   width: 150px;
   height: 70px;
-  margin-left: 220px;
+  margin-left: 380px;
   line-height: 70px; /* 수직 중앙 정렬을 위해 버튼 높이와 동일하게 설정 */
   border-radius: 0;
   font-size: 16px;
@@ -163,4 +207,20 @@ ul {
 
 .start-screen button:hover {
   background-color: #fecdce; /* 마우스를 올렸을 때의 배경 색 */
+}
+
+#myStreamState .end-button {
+  width: 150px;
+  height: 70px;
+  margin-right: 520px;
+  line-height: 70px; /* 수직 중앙 정렬을 위해 버튼 높이와 동일하게 설정 */
+  border-radius: 0;
+  font-size: 16px;
+  border: none;
+  background-color: #eb8f90;
+  color: white;
+  font-size: 24px;
+  text-align: center; /* 수평 중앙 정렬 */
+  transition: background-color 0.3s;
+  border-radius: 10px; /* 버튼 모서리 둥글게 */
 }

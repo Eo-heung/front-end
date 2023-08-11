@@ -1,14 +1,15 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
 import "../css/partials/CameraChatting.css";
-import SvgIcon from "@mui/material/SvgIcon";
-import { SvgIconComponent } from "@mui/icons-material";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
 import DesktopAccessDisabledIcon from "@mui/icons-material/DesktopAccessDisabled";
 import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
-
+import EoheungImg from "../css/partials/랜덤.png";
+import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
+import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
+import TextChatting from "./CameraInTextChatting";
 // import "../css/partials/Style.css";
 
 const CameraChatting = () => {
@@ -18,7 +19,7 @@ const CameraChatting = () => {
   const [myStreamState, setMyStreamState] = useState(null);
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
-
+  const [textChatVisible, setTextChatVisible] = useState(false); // 텍스트 채팅 표시 여부 상태
   const [isStarted, setIsStarted] = useState(false);
   const roomNameRef = useRef(null);
   const myPeerConnection = useRef(null); // useRef는 연결 객체가 변경될 때마다 컴포넌트를 리렌더링하지 않도록 하기 위해 사용됩니다.
@@ -33,7 +34,7 @@ const CameraChatting = () => {
 
   useEffect(() => {
     getMedia();
-    socket.current = io("http://192.168.0.64:5000");
+    socket.current = io("http://localhost:5000");
     initCall();
 
     // 연결됐을 때
@@ -320,16 +321,49 @@ const CameraChatting = () => {
               <div id="call">
                 <div id="myStreamState">
                   <h1>Socket.io 연결 상태: {connectionStatus}</h1>
-                  <video
-                    ref={myFaceRef}
-                    className="video-style"
-                    muted
-                    autoPlay
-                    playsInline
-                    width="400"
-                    height="400"
-                  />
+                  <div
+                    className="test"
+                    style={{ display: "flex", justifyContent: "center" }}
+                  >
+                    {/* 상대방 비디오 혹은 대기 이미지 */}
+                    {connectionStatus === "매칭됨" ? (
+                      <video
+                        ref={peerFaceRef}
+                        className="video-style3"
+                        autoPlay
+                        playsInline
+                      />
+                    ) : (
+                      <img
+                        src={EoheungImg}
+                        alt="상대 찾는중"
+                        className="chat-image"
+                      />
+                    )}
+
+                    <video
+                      ref={myFaceRef}
+                      className="video-style2"
+                      muted
+                      autoPlay
+                      playsInline
+                    />
+                  </div>
                   <div className="button-container">
+                    <button
+                      className="end-button"
+                      onClick={handleStartRandomChat}
+                      hidden={isStartedHidden}
+                    >
+                      시작
+                    </button>
+                    <button
+                      className="end-button"
+                      onClick={handleStopRandomChat}
+                      hidden={!isStartedHidden}
+                    >
+                      종료
+                    </button>
                     <Button
                       variant="contained"
                       color="primary"
@@ -348,30 +382,29 @@ const CameraChatting = () => {
                         <DesktopWindowsIcon />
                       )}
                     </Button>
-                    <button
-                      onClick={handleStartRandomChat}
-                      hidden={isStartedHidden}
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={handleCameraOnOff}
                     >
-                      다음
-                    </button>
-                    <button
-                      onClick={handleStopRandomChat}
-                      hidden={!isStartedHidden}
+                      {isCameraOff ? "곧 감" : "너에게"}
+                    </Button>
+
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={() => setTextChatVisible(!textChatVisible)}
                     >
-                      종료
-                    </button>
+                      {!textChatVisible ? (
+                        <SpeakerNotesIcon />
+                      ) : (
+                        <SpeakerNotesOffIcon />
+                      )}
+                    </Button>
+
+                    {/* 텍스트 채팅 컴포넌트 */}
+                    {textChatVisible && <TextChatting />}
                   </div>
-                  {connectionStatus === "매칭됨" ? (
-                    <video
-                      ref={peerFaceRef}
-                      autoPlay
-                      playsInline
-                      width="400"
-                      height="400"
-                    />
-                  ) : (
-                    <div>상대 찾는중 어흥!</div>
-                  )}
                 </div>
               </div>
             )}
