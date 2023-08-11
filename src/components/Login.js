@@ -2,7 +2,8 @@ import '@fontsource/roboto/300.css';
 import '@fontsource/roboto/400.css';
 import '@fontsource/roboto/500.css';
 import '@fontsource/roboto/700.css';
-import { Divider } from '@mui/material';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Divider, IconButton, InputAdornment } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Checkbox from '@mui/material/Checkbox';
@@ -11,13 +12,14 @@ import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import Link from '@mui/material/Link';
 import Paper from '@mui/material/Paper';
-import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 
 const Login = () => {
@@ -118,16 +120,126 @@ const Login = () => {
     }, [userId, userPw]);
 
 
-    const defaultTheme = createTheme();
+    const [userId, setUserId] = useState('');
+    const [userPw, setUserPw] = useState('');
+    const [token, setToken] = useState();
+    const [cookies, setCookie] = useCookies(['userName', 'userAddr3']);
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        const data = new FormData(event.currentTarget);
-        console.log({
-            email: data.get('email'),
-            password: data.get('password'),
-        });
+    const loginSuccessHandler = (data) => {
+        console.log("Received data:", data);
+        if (data.userName) {
+            setCookie('userName', data.userName, { path: '/' });
+        }
+        if (data.userAddr3) {
+            setCookie('userAddr3', data.userAddr3, { path: '/' });
+        }
     };
+
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const changeUserId = useCallback((e) => {
+        setUserId(() => e.target.value);
+    }, []);
+
+    const changeUserPw = useCallback((e) => {
+        setUserPw(() => e.target.value);
+    }, []);
+
+    const SocialKakao = () => {
+        const Rest_api_key = 'd85c142dc0c92939902ad3248688e8ad'; //REST API KEY
+        const redirect_uri = 'http://localhost:1234/auth'; //Redirect URI
+        const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+        window.location.href = kakaoURL;
+    };
+
+    useEffect(() => {
+        if (sessionStorage.getItem("ACCESS_TOKEN")) {
+            setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+            console.log(token);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (token) {
+            axios.post('http://localhost:9000/verify', token)
+                .then(response => {
+                    console.log(response);
+                    if (response.data.item) {
+                        navi("/success"); // 토큰이 유효하면 지정된 경로로 이동
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                    localStorage.removeItem("REFRESH_TOKEN");
+                    sessionStorage.removeItem("ACCESS_TOKEN");
+                });
+        }
+    }, [token]);
+
+    const login = useCallback((e) => {
+        e.preventDefault();
+        const loginAxios = async () => {
+
+            const user = {
+                userId: userId,
+                userPw: userPw
+            };
+
+            console.log(user);
+
+            try {
+                const response = await axios.post('http://localhost:9000/login', { userId: userId, userPw: userPw });
+
+                console.log(response);
+
+                if (response.data && response.data.item.token) {
+                    alert(`${response.data.item.userName}님 환영합니다.`);
+                    localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
+                    sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
+                    sessionStorage.setItem("userId", response.data.item.userId);
+                    navi("/success");
+
+                    console.log(sessionStorage.getItem("ACCESS_TOKEN"));
+
+                    try {
+                        const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
+                            headers: {
+                                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                            }
+                        });
+                        if (userInfoResponse.data && userInfoResponse.data.item) {
+                            loginSuccessHandler(userInfoResponse.data.item);
+                        }
+                    } catch (e) {
+                        console.log("Error fetching user info: ", e);
+                    }
+                }
+            } catch (e) {
+                console.log(e);
+                // if (e.response.data.errorMessage === 'id not exist') {
+                //     alert("아이디가 존재하지 않습니다.");
+                //     return;
+                // } else if (e.response.data.errorMessage === 'wrong pw') {
+                //     alert("비밀번호가 틀렸습니다.");
+                //     return;
+                // } else {
+                //     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
+                //     return;
+                // }
+            }
+        }
+
+        loginAxios();
+    }, [userId, userPw]);
+
+
+    const defaultTheme = createTheme();
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -175,10 +287,7 @@ const Login = () => {
                     </Carousel>
 
                 </Grid>
-                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square sx={{
-                    height: '70%',
-
-                }}>
+                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square sx={{ height: '70%', }}>
                     <Box
                         sx={{
                             my: 8,
@@ -195,24 +304,43 @@ const Login = () => {
                         <Typography component="h1" variant="h4" sx={{ fontWeight: 'bold' }}>
                             어 흥!
                         </Typography>
-                        <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 1 }}>
+                        <Box component="form" onSubmit={login} sx={{ mt: 1 }}>
                             <TextField
                                 margin="dense"
                                 fullWidth
-                                id="email"
+                                id="userId"
                                 label="휴대폰 번호를 입력해 주세요."
-                                name="email"
-                                autoComplete="email"
+                                name="userId"
                                 autoFocus
+                                type='text'
+                                required
+                                FormHelperTextProps={{ hidden: true }}
+                                inputProps={{ inputMode: 'numeric', pattern: '[0-9]*' }}
+                                onChange={changeUserId}
                             />
                             <TextField
                                 margin="dense"
                                 fullWidth
-                                name="password"
+                                name="userPw"
                                 label="비밀번호를 입력해 주세요."
-                                type="password"
-                                id="password"
-                                autoComplete="current-password"
+                                id="userPw"
+                                type={showPassword ? 'text' : 'password'}
+                                required
+                                onChange={changeUserPw}
+                                InputProps={{
+                                    endAdornment: (
+                                        <InputAdornment position="end">
+                                            <IconButton
+                                                aria-label="toggle password visibility"
+                                                onClick={handleClickShowPassword}
+                                                onMouseDown={handleMouseDownPassword}
+                                                edge="end"
+                                            >
+                                                {showPassword ? <VisibilityOff /> : <Visibility />}
+                                            </IconButton>
+                                        </InputAdornment>
+                                    )
+                                }}
                             />
                             <FormControlLabel
                                 control={<Checkbox value="remember" color="primary" />}
@@ -233,7 +361,7 @@ const Login = () => {
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link href="<Join></Join>" variant="body2">
+                                    <Link href="/join" variant="body2">
                                         {"계정이 없으신가요?"}
                                     </Link>
                                 </Grid>
@@ -300,8 +428,8 @@ const Login = () => {
                     </Box>
                 </Grid>
             </Grid>
-        </ThemeProvider>
+        </ThemeProvider >
     );
-}
+};
 
-export default Login
+export default Login;

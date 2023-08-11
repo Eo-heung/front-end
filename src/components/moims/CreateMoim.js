@@ -2,7 +2,13 @@ import React, { useCallback, useState, useEffect } from 'react';
 import axios from 'axios';
 import { Link, useNavigate } from 'react-router-dom';
 import { TextField, Box, Button, FormControl, FormLabel, Select, MenuItem, Typography } from '@mui/material';
+import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
+import { useCookies } from 'react-cookie';
+
+const StyledBox = styled(Box)`
+    margin-top: 2rem;
+`;
 
 const StyledForm = styled('form')`
     display: flex;
@@ -27,7 +33,7 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledTypography = styled(Typography)`
-  margin-bottom: 3px;
+  margin-bottom: 5px;
 `;
 
 const CounterTypography = styled(Typography)`
@@ -82,22 +88,22 @@ const CreateMoim = () => {
         moimContent: ""
     });
 
+    const [cookies] = useCookies(['userName', 'userAddr3']);
+    const [userData, setUserData] = useState({
+        userName: '',
+        userAddr3: ''
+    });
+
     useEffect(() => {
-        const fetchUserData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:9000/user/${sessionStorage.getItem("userId")}`);
-                const userData = response.data;
-                setInputs(prev => ({
-                    ...prev,
-                    userName: userData.userName,
-                    userAddr3: userData.userAddr3
-                }));
-            } catch (e) {
-                console.error("Error fetching user data:", e);
-            }
-        };
-        fetchUserData();
-    }, []);
+        if (cookies.userName && cookies.userAddr3) {
+            setUserData({
+                userName: cookies.userName,
+                userAddr3: cookies.userAddr3
+            });
+        }
+
+        console.log(userData);
+    }, [cookies.userName, cookies.userAddr3]);
 
     const handleTitleChange = (e) => {
         if (e.target.value.length <= 24) {
@@ -151,17 +157,9 @@ const CreateMoim = () => {
             return;
         }
 
-        const input = {
-            moimCategory: inputs.moimCategory,
-            userId: sessionStorage.getItem("userId"),
-            moimTitle: inputs.moimTitle,
-            maxMoimUser: inputs.maxMoimUser,
-            moimContent: inputs.moimContent
-        }
-
         const createMoimAxios = async () => {
             try {
-                const response = await axios.post('http://localhost:9000/moim/create-moim', input, {
+                const response = await axios.post('http://localhost:9000/moim/create-moim', inputs, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
@@ -183,8 +181,8 @@ const CreateMoim = () => {
     return (
         <>
             <StyledForm id="createForm" onSubmit={createMoim}>
-                <Typography variant="h5">새로운 모임 만들기</Typography>
-                <Box display="flex" flexDirection="column" alignItems="flex-start" width="700px">
+                <StyledBox display="flex" flexDirection="column" alignItems="flex-start" width="700px">
+                    <Typography variant="h4" style={{ marginBottom: "1rem" }}>새로운 모임을 만들어요.</Typography>
                     <StyledFormControl variant="outlined">
                         <FormLabel component="legend"></FormLabel>
                         <Select
@@ -202,13 +200,15 @@ const CreateMoim = () => {
                             ))}
                         </Select>
                     </StyledFormControl>
-                    <Box border={0} my={0}>
-                        <Typography variant="h6" fontWeight="bold">모임장 {inputs.userName}</Typography>
+                    <Box border={0} my={0} display="flex" alignItems="center">
+                        <Typography variant="h7" fontWeight="bold" style={{ width: '110px' }}>모임장</Typography>
+                        <Typography variant="body1" color={grey[600]}>{userData.userName}</Typography>
                     </Box>
-                    <Box border={0} my={2}>
-                        <Typography variant="h6" fontWeight="bold">모임지역 {inputs.userAddr3}</Typography>
+                    <Box border={0} my={2} display="flex" alignItems="center">
+                        <Typography variant="h7" fontWeight="bold" style={{ width: '110px' }}>모임지역</Typography>
+                        <Typography variant="body1" color={grey[600]}>{userData.userAddr3}</Typography>
                     </Box>
-                    <StyledTypography variant="h6" fontWeight="bold">모임명</StyledTypography>
+                    <StyledTypography variant="h7" fontWeight="bold">모임명</StyledTypography>
                     <StyledTextField
                         name="moimTitle"
                         onChange={handleTitleChange}
@@ -217,11 +217,11 @@ const CreateMoim = () => {
                         value={inputs.moimTitle}
                     />
                     <CounterTypography align="right">{moimTitleLength}/24자</CounterTypography>
-                    <StyledTypography variant="h6" fontWeight="bold">모집인원</StyledTypography>
+                    <StyledTypography variant="h7" fontWeight="bold">모집인원</StyledTypography>
                     <StyledTextField name="maxMoimUser" placeholder="최대 50명까지 모집할 수 있어요." onChange={handleInputChange} variant="outlined" />
-                    <StyledTypography variant="h6" fontWeight="bold" style={{ marginTop: "1rem" }}>모임소개</StyledTypography>
+                    <StyledTypography variant="h7" fontWeight="bold" style={{ marginTop: "1rem" }}>모임소개</StyledTypography>
                     <StyledTextField name="moimContent" placeholder="주제 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요." onChange={handleInputChange} variant="outlined" multiline rows={4} />
-                </Box>
+                </StyledBox>
                 <StyledButton type="submit" variant="contained" color="primary">모임 등록</StyledButton>
             </StyledForm>
             <Link to="/">모임 목록</Link>

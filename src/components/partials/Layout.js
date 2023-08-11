@@ -1,5 +1,4 @@
 import React from 'react';
-import { Outlet } from 'react-router-dom';
 import Header from '../partials/Header';
 import Footer from '../partials/Footer';
 import Nav from '../partials/Nav';
@@ -13,9 +12,7 @@ const Layout = () => {
 
             <Nav></Nav>
 
-            <Main>
-                <Outlet></Outlet>
-            </Main>
+            <Main></Main>
 
             <Footer></Footer>
 
