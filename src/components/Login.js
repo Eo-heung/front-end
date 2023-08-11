@@ -47,12 +47,17 @@ const Login = () => {
         setUserPw(() => e.target.value);
     }, []);
 
+
+
     const SocialKakao = () => {
-        const Rest_api_key = 'd85c142dc0c92939902ad3248688e8ad'; //REST API KEY
-        const redirect_uri = 'http://localhost:1234/auth'; //Redirect URI
+        const Rest_api_key = 'd85c142dc0c92939902ad3248688e8ad'; // 환경 변수에서 API 키 가져오기
+        const redirect_uri = 'http://localhost:1234/auth';
         const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+
         window.location.href = kakaoURL;
+
     };
+
 
     useEffect(() => {
         if (localStorage.getItem("REFRESH_TOKEN") != null) {
@@ -140,8 +145,6 @@ const Login = () => {
 
         loginAxios();
     });
-
-
     const defaultTheme = createTheme();
 
     return (
