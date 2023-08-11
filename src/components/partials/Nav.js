@@ -49,17 +49,17 @@ const Nav = () => {
 
                         {/* 프로필 영역 */}
                         <div className="sb-sidenav-profile">
-                            <div className="sidenav-profile-welcome" style={{ height: '25%' }}>
-                                <h2>ooo님, <br />
-                                    오늘도 어흥!</h2>
-                            </div>
-                            <div className="sidenav-profile-mypic" style={{ height: '45%' }}>
+                            {/* <div className="sidenav-profile-welcome" style={{ height: '10%' }}>
+                                <h4>ooo님, 오늘도 어흥!</h4>
+                            </div> */}
+                            <div className="sidenav-profile-mypic" style={{ height: '60%' }}>
                                 <img className='sidenav-profile-img' src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'></img>
                             </div>
-                            <div className="sidenav-profile-appoint" style={{ height: '10%' }}>
+                            <div className="sidenav-profile-appoint" style={{ height: '20%' }}>
+                                <h4>000님,</h4>
                                 <h4>오늘의 약속이에요!</h4>
                             </div>
-                            <div className="sidenav-profile-appointList" style={{ height: '20%' }}>
+                            <div className="sidenav-profile-appointList" style={{ height: '15%' }}>
                                 <div className="sidenav-profile-appointListItem">
                                     {appoint ? (
                                         <tr>
@@ -78,29 +78,20 @@ const Nav = () => {
                         </div>
 
                         {/* 친구영역 */}
-                        <div className="sb-sidenav-menu">
-                            <div className="nav">
-
-                                <div className="sb-sidenav-friend">
-                                    <div className="sb-sidenav-friend-more">
-                                        <Link to="#">더보기</Link>
-                                    </div>
-                                    <div className="sb-sidenav-friend-title">
-                                        <h5>접속한 친구목록</h5>
-                                    </div>
-                                    <div className="sb-sidenav-fri-container">
-                                        <table className="sb-sidenav-fri">
-                                            {
-                                                friend.map((a, i) => {
-                                                    return (
-                                                        <List friend={friend[i]} i={i}></List>
-                                                    )
-                                                })
-                                            }
-                                        </table>
-                                    </div>
-                                </div>
-
+                        <div className="sb-sidenav-friend">
+                            <div className="sb-sidenav-friend-title">
+                                <h5>접속한 친구목록</h5>
+                            </div>
+                            <div className="sb-sidenav-fri-container">
+                                <table className="sb-sidenav-fri">
+                                    {
+                                        friend.map((a, i) => {
+                                            return (
+                                                <List friend={friend[i]} i={i}></List>
+                                            )
+                                        })
+                                    }
+                                </table>
                             </div>
                         </div>
 

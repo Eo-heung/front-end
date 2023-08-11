@@ -27,7 +27,7 @@ const Header = () => {
     }, []);
 
     const StyledTypography = styled(Typography)`
-        color: #12406A;
+        color: #000;
         cursor: pointer;
 
         &:hover {
@@ -35,12 +35,16 @@ const Header = () => {
         }
     `;
 
+    const StyledRightContainer = styled.div`
+        margin-left: auto;
+    `;
+
     return (
         <div className={`sb-nav-fixed mainpage ${(isDesktop || isOpen) ? 'open' : 'closed'}`}>
             <nav className="sb-topnav navbar navbar-expand navbar-light bg-light">
                 <Link className="navbar-brand" to="/">
-                    <Paper style={{ width: '100%', height: '100%' }}>
-                        <img src="https://i.postimg.cc/TwkbNDNV/aa.png" />
+                    <Paper elevation={0} style={{ width: '100%', height: '100%' }}>
+                        <img src="https://i.postimg.cc/RFMVM5qM/logo.png" />
                     </Paper>
                 </Link>
                 {!isDesktop && (
@@ -55,7 +59,7 @@ const Header = () => {
                                 <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
                                     {icons.map((icon, index) => (
                                         <li key={index}><Link className="dropdown-item" to={icon.link}>
-                                            <Typography variant="h4" fontWeight="bold" className="btn btn-link btn-lg order-1 order-lg-0">{icon.text}</Typography>
+                                            <Typography variant="h6" fontWeight="bold" className="btn btn-link btn-lg order-1 order-lg-0">{icon.text}</Typography>
                                         </Link></li>
                                     ))}
                                 </ul>
@@ -65,13 +69,15 @@ const Header = () => {
                 )}
                 {isDesktop && icons.map((icon, index) => (
                     <Link to={icon.link} key={index}>
-                        <Typography variant="h4" fontWeight="bold" className="btn btn-link btn-lg order-1 order-lg-0" id={`sidebarToggle${index}`}>
+                        <Typography variant="h6" fontWeight="bold" className="btn btn-link btn-lg order-1 order-lg-0" id={`sidebarToggle${index}`}>
                             {icon.text}
                         </Typography>
                     </Link>
                 ))}
-                <Link className="navbar-logout" to="/"><StyledTypography variant="h6" fontWeight="bold">로그아웃</StyledTypography></Link>
-                <Link className="navbar-credit" to="/"><StyledTypography variant="h6" fontWeight="bold">곶감 충전</StyledTypography></Link>
+                <StyledRightContainer>
+                    <Link className="navbar-logout" to="/"><StyledTypography variant="body2">로그아웃</StyledTypography></Link>
+                    <Link className="navbar-credit" to="/"><StyledTypography variant="body2">곶감 충전</StyledTypography></Link>
+                </StyledRightContainer>
             </nav>
         </div >
     );

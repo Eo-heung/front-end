@@ -31,7 +31,7 @@ const Main = () => {
     `;
 
     const StyledTypography = styled(Typography)`
-        color: #12406A;
+        color: #000;
         cursor: pointer;
 
         &:hover {
@@ -48,7 +48,7 @@ const Main = () => {
                             <div className="row">
                                 {isDesktop && (
                                     <div className="carousel-container" style={{ marginBottom: "10px" }}>
-                                        <Carousel height={230} animation='slide' navButtonsAlwaysVisible='true' duration={3000}
+                                        <Carousel height={230} animation='slide' duration={5000}
                                             indicators={true} indicatorContainerProps={{
                                                 style: {
                                                     zIndex: 1,
@@ -72,7 +72,7 @@ const Main = () => {
                                             <div className="card-header">
                                                 <CardTitle>
                                                     <CardLink to="/">
-                                                        <StyledTypography variant="body1" fontWeight="bold">
+                                                        <StyledTypography variant="body1">
                                                             {header}
                                                         </StyledTypography>
                                                     </CardLink>

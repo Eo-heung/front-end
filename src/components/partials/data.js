@@ -3,37 +3,37 @@
 let data = [
     {
         pic: <img src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/03/912/203912_20230510135615_500.jpg?593164768efda9b7ece5a552d7331118/melon/resize/416/quality/80/optimize'></img>,
-        fName: "가",
+        fName: "박준형",
         log: "On"
     },
     {
-        pic: 2,
-        fName: "나",
+        pic: <img src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/007/38/480/738480_20230419182323_500.jpg?2400995b633343d70384a160993f6a88/melon/resize/416/quality/80/optimize'></img>,
+        fName: "양재민",
         log: "Off"
     },
     {
-        pic: 3,
-        fName: "다",
+        pic: <img src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/009/94/944/994944_20230605114643_500.jpg?b6bf522bb7e1a2b2b4d516c7b6e9287d/melon/resize/416/quality/80/optimize'></img>,
+        fName: "박선준",
         log: "Off"
     },
     {
-        pic: 4,
-        fName: "라",
+        pic: <img src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/019/56/543/1956543_20230808165954_500.jpg?bebb54a055830b3800681b3967ab0b06/melon/resize/416/quality/80/optimize'></img>,
+        fName: "성지민",
         log: "On"
     },
     {
-        pic: 5,
-        fName: "마",
+        pic: <img src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/007/25/987/725987_20230714111757_500.jpg?8d2f58275e6f89e0c606ffaa6c24bd5d/melon/resize/416/quality/80/optimize'></img>,
+        fName: "문다원",
         log: "Off"
     },
     {
-        pic: 6,
-        fName: "바",
+        pic: <img src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/006/73/033/673033_20230714134339_500.jpg?4325ecca01b19a698b84cd52380bb9c8/melon/resize/416/quality/80/optimize'></img>,
+        fName: "정현아",
         log: "On"
     },
     {
-        pic: 7,
-        fName: "사",
+        pic: <img src='https://cdnimg.melon.co.kr/cm2/artistcrop/images/007/25/985/725985_20230324113918_500.jpg?70abec416602afd31ea5228f022d154b/melon/resize/416/quality/80/optimize'></img>,
+        fName: "동효준",
         log: "On"
     },
     {
