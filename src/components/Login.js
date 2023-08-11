@@ -14,7 +14,6 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
