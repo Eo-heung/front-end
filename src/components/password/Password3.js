@@ -8,18 +8,48 @@ import Link from '@mui/material/Link';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
+import thumbImage from '../../public/image.png.png';
 
-const Password3 = () => {
+// 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
+const Circle = styled('div')(({ progress }) => ({
+  position: 'absolute',
+  left: `calc(${progress}% - 5px)`,
+  top: '50%',
+  transform: 'translateY(-50%)',
+  width: '40px',
+  height: '40px',
+  backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
+  backgroundSize: 'cover', // 필요에 따라 배경 이미지 크기를 조절합니다.
+  zIndex: 2,
+  transition: "left 500ms ease-out"
+}));
+
+const Password3 = ({ handleClick, backClick, checkNum }) => {
   const [progress, setProgress] = useState(0);
+  const [hasError, setHasError] = useState(false);
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log({
-      email: data.get('email'),
-      password: data.get('password'),
-    });
+    console.log(data.get('code'));
+    if (data.get('code') !== checkNum) {
+      alert("인증번호를 다시 확인해주세요.");
+    } else {
+      alert("인증번호이 완료되었습니다.");
+      handleClick();
+    }
+
+  };
+
+  const handleCodeChange = (event) => {
+    const code = event.target.value;
+    // 정규식을 사용하여 숫자 이외의 다른 문자가 있는지 확인합니다.
+    const containsNonDigit = /\D/.test(code);
+
+    // 숫자 이외의 다른 문자가 포함되어 있으면 hasError를 true로 설정합니다.
+    setHasError(containsNonDigit);
   };
 
   const defaultTheme = createTheme();
@@ -38,11 +68,12 @@ const Password3 = () => {
     }, []);
 
     return (
-      <Box sx={{ display: 'flex', alignItems: 'center' }}>
-        <Box sx={{ width: '100%', mr: 1 }}>
-          <LinearProgress variant="determinate" value={progress} /> {/* 변경: color prop 제거 */}
+      <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
+        <Box sx={{ position: 'relative', flex: 14 }}>
+          <LinearProgress variant="determinate" value={progress} />
+          <Circle progress={progress} />
         </Box>
-        <Box sx={{ minWidth: 35 }}>
+        <Box sx={{ flex: 1, marginLeft: 1 }}>
           <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
         </Box>
       </Box>
@@ -52,10 +83,11 @@ const Password3 = () => {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#E55C25', // 원하는 색상으로 변경
+        main: '#E55C25',
       },
     },
   });
+
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -63,21 +95,23 @@ const Password3 = () => {
         <CssBaseline />
         <Box
           sx={{
-            marginTop: 8,
-            display: 'flex',
-            flexDirection: 'column',
-            alignItems: 'center',
+            height: '608.57px',
+            marginTop: 8
           }}
         >
           <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
             인증번호를 보내드렸어요!
           </Typography>
+          <br></br>
+          <br></br>
           <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
             문자함에서 확인한<br />내 인증번호를 입력해주세요!
           </Typography>
-          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2}>
-              <Grid item xs={12}>
+          <br></br>
+          <br></br>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+            <Grid container spacing={2} >
+              <Grid item xs={12} >
                 <TextField
                   required
                   fullWidth
@@ -85,7 +119,11 @@ const Password3 = () => {
                   label="인증번호 입력"
                   name="code"
                   autoComplete="off"
+                  onChange={handleCodeChange} // 코드 입력 시 handleChange 함수 호출
+                  error={hasError} // hasError 상태에 따라 에러 스타일 적용
+                  helperText={hasError ? '숫자 이외의 다른 문자가 입력되었습니다.' : ''} // 에러 메시지
                 />
+                <Link sx={{ float: 'right' }} onClick={backClick}>전화번호를 잘못입력하셨나요??</Link>
               </Grid>
             </Grid>
 
@@ -118,7 +156,7 @@ const Password3 = () => {
               </Link>
 
               <ThemeProvider theme={theme}>
-                <Box sx={{ width: '100%' }}>
+                <Box sx={{ width: '100%', marginTop: "47%" }}>
                   <LinearProgressWithLabel value={progress} />
                 </Box>
               </ThemeProvider>

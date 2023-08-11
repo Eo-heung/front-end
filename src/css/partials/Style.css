@@ -92,7 +92,8 @@
 }
 
 .mainpage {
-  margin: 0;
+  margin: 0 auto;
+  width: 90%;
   font-family: var(--bs-body-font-family);
   font-size: var(--bs-body-font-size);
   font-weight: var(--bs-body-font-weight);
@@ -104,44 +105,82 @@
   -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
 }
 
+
+@font-face {
+  font-family: 'font-light';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/KBO-Dia-Gothic_light.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'font-medium';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/KBO-Dia-Gothic_medium.woff') format('woff');
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'font-bold';
+  src: url('https://cdn.jsdelivr.net/gh/projectnoonnu/noonfonts_2304-2@1.0/KBO-Dia-Gothic_bold.woff') format('woff');
+  font-style: normal;
+}
+
+
+.main-top-space {
+  padding-top: 115px;
+}
+
+
 /* 사이드바 프로필 시작 */
 .sb-sidenav-profile {
-  margin: 10px;
+  margin: 10px 10px 10px 10px;
   padding: 5px;
-  height: 450px;
-  border-radius: 5%;
-
-  background-image: url('../../profile-background.jpg');
-  background-size: cover;
+  height: 410px;
+  border: 5px solid #ffe35a;
+  border-radius: 10px;
 }
 
 .sidenav-profile-welcome, .sidenav-profile-appoint {
   font-weight: 900;
-  color: white;
+  color: black;
   padding-left: 5%;
 }
 
 .sidenav-profile-welcome {
-  padding-top: 5px;
-  line-height: 4;
+  padding-top: 3px;
+  line-height: 0.1;
+}
+
+.sidenav-profile-mypic {
+  padding-top: 30px;
+}
+
+.sidenav-profile-img {
+  height: 160px;
+  width: 160px;
+  border-radius: 100%;
+  text-align: center;
+  display: block;
+  margin-left: auto;
+  margin-right: auto;
+}
+
+.sidenav-profile-appoint{
+  color:#828f9e; /*Casper컬러 좀 더 진하게 */
 }
 
 .sidenav-profile-appointListItem {
   width: 90%;
   padding: 5px 5px 5px 5%;
   margin: 5px auto;
-  background-color: lightgray;
+  color: white;
+  background-color: #FCBE71;
+  border-radius: 10px;
 }
 
-.sidenav-profile-img {
-  margin-top: 10px;
-  height: 120px;
-  width: 120px;
-  border-radius: 100%;
+
+.sidenav-profile-appointListItem li {
+  list-style-type: none;
   text-align: center;
-  display: block;
-  margin-left: auto;
-  margin-right: auto;
 }
 
 /* 사이드바 프로필 종료 */
@@ -151,32 +190,25 @@
 /* 친구목록 시작 */
 .sb-sidenav-friend{
   margin: 10px;
-  height: calc(100% - 450px);
-  background-color: #ADBED2;
+  height: calc(100% - 410px);
   color: black;
- }
+  }
  
  .sb-sidenav-friend-title {
-  padding-top: 5px;
+  padding-top: 10px;
   padding-bottom: 5px;
+  background-color: #ffe35a;
+  border-radius: 10px 10px 0 0;
+  /* background-color: #FCBE71; */
+  color: #616a74; /*Casper컬러 좀 더더 진하게 */
   text-align: center;
   font-weight: 900;
  }
 
- .sb-sidenav-friend-more {
-  float: right;
-  cursor: pointer;
-  text-decoration: none;
- }
 
- .sb-sidenav-friend-more a {
-  color: inherit;
-  text-decoration: none;
- }
-
- .sb-sidenav-fri-container { /* 테이블을 감싸는 div에 대한 스타일 */
-  max-height: calc(100% - 20px); /* 원하는 높이로 조정 */
-  overflow-y: auto; /* 세로 스크롤 적용 */
+ .sb-sidenav-fri-container { 
+  max-height: calc(100% - 20px); 
+  overflow-y: auto;
   scrollbar-width: none; /* 파이어폭스용 스크롤바 숨기기 */
 }
 
@@ -186,18 +218,25 @@
 
 .sb-sidenav-fri {
   table-layout: fixed;
-
 }
 
 .sb-sidenav-fri tr {
-  height: 70px;
+  height: 80px;
   box-sizing: border-box;
   border-radius: 50%;
 }
 
+.sb-sidenav-fri td {
+  border-bottom: 1px solid #CED7D4;
+}
+
+table tr:last-child td{
+  border-bottom: none; 
+}
+
 .sb-sidenav-fri img {
-  width: 60px;
-  height: 60px;
+  width: 55px;
+  height: 55px;
   border-radius: 50%;
 }
 
@@ -4400,7 +4439,7 @@ textarea.form-control-lg {
 }
 .card-header:first-child {
   border-radius: var(--bs-card-inner-border-radius) var(--bs-card-inner-border-radius) 0 0;
-}
+} 
 
 .card-footer {
   padding: var(--bs-card-cap-padding-y) var(--bs-card-cap-padding-x);
@@ -6951,13 +6990,21 @@ textarea.form-control-lg {
   --bs-aspect-ratio: 42.8571428571%;
 }
 
-.fixed-top, .sb-nav-fixed #layoutSidenav #layoutSidenav_nav, .sb-nav-fixed .sb-topnav {
+.fixed-top {
   position: fixed;
   top: 0;
-  right: 0;
   left: 0;
+  right: 0;
   z-index: 1030;
 }
+
+.sb-nav-fixed #layoutSidenav #layoutSidenav_nav, .sb-nav-fixed .sb-topnav {
+  position: fixed;
+  top: 0;
+  margin: 0 auto;
+  z-index: 1030;
+}
+
 
 .fixed-bottom {
   position: fixed;
@@ -8330,7 +8377,7 @@ textarea.form-control-lg {
 .bg-dark {
   --bs-bg-opacity: 1;
   background-color: rgba(var(--bs-dark-rgb), var(--bs-bg-opacity)) !important;
-}
+} 
 
 .bg-black {
   --bs-bg-opacity: 1;
@@ -11073,6 +11120,7 @@ body {
   width: 280px;
   height: 100vh;
   z-index: 1038;
+
 }
 .sb-nav-fixed #layoutSidenav #layoutSidenav_nav .sb-sidenav {
   padding-top: 115px;

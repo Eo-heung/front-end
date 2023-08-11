@@ -14,23 +14,110 @@ import Paper from '@mui/material/Paper';
 import { createTheme, ThemeProvider } from '@mui/material/styles';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import React from 'react';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
+import { useNavigate } from 'react-router-dom';
+
 
 const Login = () => {
 
-    // function Copyright(props) {
-    //     return (
-    //         <Typography variant="body2" color="text.secondary" align="center" {...props}>
-    //             {'Copyright © '}
-    //             <Link color="inherit" href="https://mui.com/">
-    //                 Eo Heung
-    //             </Link>{' '}
-    //             {new Date().getFullYear()}
-    //             {'.'}
-    //         </Typography>
-    //     );
-    // }
+    const navi = useNavigate();
+
+    const [userId, setUserId] = useState('');
+    const [userPw, setUserPw] = useState('');
+    const [token, setToken] = useState();
+
+
+    const [showPassword, setShowPassword] = React.useState(false);
+
+    const handleClickShowPassword = () => setShowPassword((show) => !show);
+
+    const handleMouseDownPassword = (event) => {
+        event.preventDefault();
+    };
+
+    const changeUserId = useCallback((e) => {
+        setUserId(() => e.target.value);
+    }, []);
+
+    const changeUserPw = useCallback((e) => {
+        setUserPw(() => e.target.value);
+    }, []);
+
+    const SocialKakao = () => {
+        const Rest_api_key = 'd85c142dc0c92939902ad3248688e8ad'; //REST API KEY
+        const redirect_uri = 'http://localhost:1234/auth'; //Redirect URI
+        const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+        window.location.href = kakaoURL;
+    };
+
+    useEffect(() => {
+        if (sessionStorage.getItem("ACCESS_TOKEN")) {
+            setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+            console.log(token);
+        }
+    }, []);
+
+    useEffect(() => {
+        if (token) {
+            axios.post('http://localhost:9000/verify', token)
+                .then(response => {
+                    console.log(response);
+                    if (response.data.item) {
+                        navi("/success"); // 토큰이 유효하면 지정된 경로로 이동
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                    localStorage.removeItem("REFRESH_TOKEN");
+                    sessionStorage.removeItem("ACCESS_TOKEN");
+                });
+        }
+    }, [token]);
+
+    const login = useCallback((e) => {
+        e.preventDefault();
+        const loginAxios = async () => {
+
+            const user = {
+                userId: userId,
+                userPw: userPw
+            };
+
+            console.log(user);
+
+            try {
+                const response = await axios.post('http://localhost:9000/login', { userId: userId, userPw: userPw });
+
+                console.log(response);
+
+                if (response.data && response.data.item.token) {
+                    alert(`${response.data.item.userName}님 환영합니다.`);
+                    localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
+                    sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
+                    sessionStorage.setItem("userId", response.data.item.userId);
+                    navi("/success");
+                }
+            } catch (e) {
+                console.log(e);
+                // if (e.response.data.errorMessage === 'id not exist') {
+                //     alert("아이디가 존재하지 않습니다.");
+                //     return;
+                // } else if (e.response.data.errorMessage === 'wrong pw') {
+                //     alert("비밀번호가 틀렸습니다.");
+                //     return;
+                // } else {
+                //     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
+                //     return;
+                // }
+            }
+        }
+
+        loginAxios();
+    }, [userId, userPw]);
+
 
     const defaultTheme = createTheme();
 
@@ -62,16 +149,30 @@ const Login = () => {
                     }}
                 >
                     {/* 캐러셀 내부에 이미지 넣고 싶으면, 아래에 paper 복사해서 Carousel 내부에 추가한 후, img src 맞춰서 넣으면 됨. */}
-                    <Carousel height={600} animation='slide' navButtonsAlwaysVisible='true' duration={1000} sx={{ width: '100%', height: '100%' }}>
-                        <Paper sx={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <img src={"https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"} />
-                        </Paper>
-                        <Paper sx={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <img src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
-                        </Paper>
-                        <Paper sx={{ position: 'absolute', top: '55%', left: '50%', transform: 'translate(-50%, -50%)' }}>
-                            <img src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832"} />
-                        </Paper>
+                    <Carousel height={600} animation='slide' navButtonsAlwaysVisible='true' indicatorContainerProps={{
+                        style: {
+                            marginBottom: '10%', // 5
+                            textAlign: 'center' // 4
+                        }
+
+                    }} duration={1000} sx={{ width: '100%', height: '100%' }}>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <img style={{ width: '80%', height: '80%', cursor: 'pointer' }}
+                                    src={"https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"}
+                                />
+                            </Paper>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <img style={{ width: '80%', height: '80%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
+                            </Paper>
+                        </Box>
+                        <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+                            <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+                                <img style={{ width: '80%', height: '80%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832"} />
+                            </Paper>
+                        </Box>
                     </Carousel>
 
                 </Grid>
@@ -157,7 +258,7 @@ const Login = () => {
                                     </Link>
                                 </Grid>
                                 <Grid item xs={3}>
-                                    <Link href="#">
+                                    <Link href="#" onClick={SocialKakao}>
                                         <Box
                                             sx={{
                                                 width: '100%',
