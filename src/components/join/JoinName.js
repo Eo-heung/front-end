@@ -18,7 +18,7 @@ const JoinName = ({ handleClick, setUserName }) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        const message = `이름이 '${data.get('name')}' 이(가) 맞나요??`
+        const message = `'${data.get('name')}' 님이 맞나요?`
 
         if (window.confirm(message)) {
             setUserName(() => data.get('name'));

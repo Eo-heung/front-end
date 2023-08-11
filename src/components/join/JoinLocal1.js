@@ -134,7 +134,7 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                         어흥을 이용할
                     </Typography>
                     <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
-                        내 지역는?
+                        내 지역은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >

@@ -24,7 +24,7 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
         var month = Number(dateStr.substr(4, 2)); // 입력한 값의 4번째 자리부터 2자리 숫자 (월)
         var day = Number(dateStr.substr(6, 2)); // 입력한 값 6번째 자리부터 2자리 숫자 (일)
 
-        const message = `생년월일이 ${year}년 ${month}월 ${day}일이 맞나요??`
+        const message = `생년월일이 ${year}년 ${month}월 ${day}일이 맞나요?`
 
         if (window.confirm(message)) {
             var today = new Date(); // 날짜 변수 선언
@@ -144,7 +144,7 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                     }}
                 >
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
-                        나이 알려주면 안 잡아먹을
+                        어흥
                     </Typography>
                     <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
                         내 생일은?
