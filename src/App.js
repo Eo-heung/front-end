@@ -1,11 +1,11 @@
 import { CookiesProvider } from 'react-cookie';
 import { Route, Routes } from 'react-router-dom';
 import Login from './components/Login';
-import Mypage from './components/Mypage';
 import Password from './components/Password';
 import SuccessPage from './components/SuccessPage';
 import CreateMoim from './components/moims/CreateMoim';
 import ViewMoim from './components/moims/ViewMoim';
+import Mypage from './components/mypage/Mypage';
 import Layout from './components/partials/Layout';
 import MainContent from './components/partials/MainContent';
 
