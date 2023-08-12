@@ -24,12 +24,15 @@ const StyledContainerBase = ({ children, ...props }) => {
 };
 
 const BasicBoard = styled(StyledContainerBase)`
-                                margin: 10px auto;
-                                padding: 10px;
-                                max-width: 730px;
-                                border: 1px solid #FCBE71;
-                                box-sizing: border-box;
-                                text-align: left;
-                                `;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    margin: 10px auto;
+    padding: 10px;
+    width: 100%;
+    border: 1px solid #FCBE71;
+    box-sizing: border-box;
+    text-align: left;
+`;
 
 export default BasicBoard;

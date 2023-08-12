@@ -1,6 +1,6 @@
 let data = [
     {
-        id: 1,
+        moimId: 1,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "논현동",
         currentMoimUser: 3,
@@ -10,7 +10,7 @@ let data = [
         moimContent: "매주 토요일 아침 함께 러닝하는 모임입니다. 힘차게 달리며 무릎 관절을 마모시켜 봅시다."
     },
     {
-        id: 2,
+        moimId: 2,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "역삼동",
         currentMoimUser: 17,
@@ -20,7 +20,7 @@ let data = [
         moimContent: "매일 밤 10시부터 한 시간씩 책 읽자."
     },
     {
-        id: 3,
+        moimId: 3,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "갈월동",
         currentMoimUser: 5,
@@ -30,7 +30,7 @@ let data = [
         moimContent: "먹으려고 사는 사람들."
     },
     {
-        id: 4,
+        moimId: 4,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "가리봉동",
         currentMoimUser: 20,
@@ -40,7 +40,7 @@ let data = [
         moimContent: "가리봉동으로 오세요."
     },
     {
-        id: 5,
+        moimId: 5,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "지산리",
         currentMoimUser: 3,
@@ -50,7 +50,7 @@ let data = [
         moimContent: "베 짜러 오세요."
     },
     {
-        id: 6,
+        moimId: 6,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "초산리",
         currentMoimUser: 7,
@@ -60,7 +60,7 @@ let data = [
         moimContent: "농부 모임"
     },
     {
-        id: 7,
+        moimId: 7,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "평산리",
         currentMoimUser: 3,
@@ -70,7 +70,7 @@ let data = [
         moimContent: "개 키우는 사람 모임"
     },
     {
-        id: 8,
+        moimId: 8,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "두류동",
         currentMoimUser: 14,
@@ -80,7 +80,7 @@ let data = [
         moimContent: "삑삑"
     },
     {
-        id: 9,
+        moimId: 9,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "문현2동",
         currentMoimUser: 9,
@@ -90,7 +90,7 @@ let data = [
         moimContent: "내 새끼 자랑하고 싶은 사람 다 모여"
     },
     {
-        id: 10,
+        moimId: 10,
         imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "충장동",
         currentMoimUser: 33,

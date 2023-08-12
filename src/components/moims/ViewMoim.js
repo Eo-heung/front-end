@@ -1,17 +1,11 @@
 import React, { useEffect, useState } from 'react';
-import { Box, Typography, Container } from '@mui/material';
+import { Box, Typography } from '@mui/material';
+import { Link } from 'react-router-dom';
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import { data as detaildata } from './data2.js';
-
-const StyledBox = styled(Box)`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    margin-top: 1rem;
-`;
 
 const StyledTypography = styled(Typography)`
     margin-bottom: 10px;
@@ -22,6 +16,11 @@ const MoimInfoRow = styled('div')`
     display: flex;
     justify-content: flex-start;
     gap: 30px;
+`;
+
+const StyledLink = styled(Link)`
+    margin: 1rem auto;
+    text-decoration: none;
 `;
 
 const ViewMoim = () => {
@@ -44,16 +43,18 @@ const ViewMoim = () => {
 
     return (
         <BasicBoard>
-            <StyledBox>
-                <StyledTypography variant="h6">{moimDetail.moimCategory}</StyledTypography>
-                <StyledTypography variant="h4">{moimDetail.moimTitle}</StyledTypography>
-                <MoimInfoRow>
-                    <Typography variant="body1">{moimDetail.moimAddr}</Typography>
-                    <Typography variant="body1">{moimDetail.currentMoimUser}/{moimDetail.maxMoimUser}</Typography>
-                </MoimInfoRow>
-                <StyledTypography variant="h6">{moimDetail.userNickname}</StyledTypography>
-                <StyledTypography variant="body1">{moimDetail.moimContent}</StyledTypography>
-            </StyledBox>
+            <StyledTypography variant="h6" style={{ marginTop: "1rem" }}>{moimDetail.moimCategory}</StyledTypography>
+            <StyledTypography variant="h4">{moimDetail.moimTitle}</StyledTypography>
+            <MoimInfoRow>
+                <Typography variant="body1">모임장</Typography>
+                <Typography variant="body1">{moimDetail.userNickname}</Typography>
+            </MoimInfoRow>
+            <MoimInfoRow>
+                <Typography variant="body1">{moimDetail.moimAddr}</Typography>
+                <Typography variant="body1">{moimDetail.currentMoimUser}/{moimDetail.maxMoimUser}</Typography>
+            </MoimInfoRow>
+            <StyledTypography variant="body1">{moimDetail.moimContent}</StyledTypography>
+            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };

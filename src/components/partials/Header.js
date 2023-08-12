@@ -15,7 +15,7 @@ const Header = () => {
     const icons = [
         { text: "홈", link: "/" },
         { text: "채팅", link: "/" },
-        { text: "모임", link: "/" },
+        { text: "모임", link: "/list-moim" },
         { text: "예시", link: "/" },
         { text: "예시", link: "/" },
     ];

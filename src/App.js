@@ -19,7 +19,7 @@ function App() {
             <Route index element={<MainContent></MainContent>}></Route>
             <Route path='/basicboard' element={<BasicBoard></BasicBoard>}></Route>
             <Route path='/create-moim' element={<CreateMoim></CreateMoim>}></Route>
-            <Route path='/view-moim' element={<ViewMoim></ViewMoim>}></Route>
+            <Route path='/view-moim/:moimId' element={<ViewMoim></ViewMoim>}></Route>
             <Route path='/list-moim' element={<ListMoim></ListMoim>}></Route>
           </Route>
           <Route path='/login' element={<Login></Login>}></Route>

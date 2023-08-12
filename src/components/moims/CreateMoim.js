@@ -7,17 +7,17 @@ import { styled } from '@mui/system';
 import { useCookies } from 'react-cookie';
 import BasicBoard from '../utils/BasicBoard';
 
-const StyledBox = styled(Box)`
-    margin-top: 1rem;
-    width: 100%;
-`;
-
 const StyledForm = styled('form')`
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    max-width: 100%;
+    width: 100%;
+`;
+
+const StyledBox = styled(Box)`
+    margin-top: 1rem;
+    width: 100%;
 `;
 
 const StyledButton = styled(Button)`
@@ -39,8 +39,14 @@ const CounterTypography = styled(Typography)`
   align-self: flex-end;
 `;
 
+const CounterBox = styled(Box)`
+    width: 100%;
+    max-width: 700px;
+`;
+
 const StyledTextField = styled(TextField)`
-    width: 100%;;
+    width: 100%;
+    max-width: 700px;
     & .MuiOutlinedInput-root {
         &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
             border-color: #FCBE71;
@@ -74,6 +80,10 @@ const StyledMenuItem = styled(MenuItem)`
     }
 `;
 
+const StyledLink = styled(Link)`
+    margin: 1rem auto;
+    text-decoration: none;
+`;
 
 const CreateMoim = () => {
     const navi = useNavigate();
@@ -168,7 +178,7 @@ const CreateMoim = () => {
                 console.log(response);
                 if (response.data && response.data.item.msg) {
                     alert(response.data.item.msg);
-                    navi('/');
+                    navi('/list-moim');
                 }
             } catch (e) {
                 console.log(e);
@@ -182,7 +192,7 @@ const CreateMoim = () => {
     return (
         <BasicBoard>
             <StyledForm id="createForm" onSubmit={createMoim}>
-                <StyledBox display="flex" flexDirection="column" alignItems="flex-start" width="700px">
+                <StyledBox display="flex" flexDirection="column" alignItems="flex-start">
                     <Typography variant="h4" style={{ marginBottom: "1rem" }}>새로운 모임을 만들어요.</Typography>
                     <StyledFormControl variant="outlined">
                         <FormLabel component="legend"></FormLabel>
@@ -210,22 +220,24 @@ const CreateMoim = () => {
                         <Typography variant="body1" color={grey[600]}>{userData.userAddr3}</Typography>
                     </Box>
                     <StyledTypography variant="h7" fontWeight="bold">모임명</StyledTypography>
-                    <StyledTextField
-                        name="moimTitle"
-                        onChange={handleTitleChange}
-                        variant="outlined"
-                        placeholder="모임명은 짧을수록 기억하기 쉬워요."
-                        value={inputs.moimTitle}
-                    />
-                    <CounterTypography align="right">{moimTitleLength}/24자</CounterTypography>
+                    <CounterBox>
+                        <StyledTextField
+                            name="moimTitle"
+                            onChange={handleTitleChange}
+                            variant="outlined"
+                            placeholder="모임명은 짧을수록 기억하기 쉬워요."
+                            value={inputs.moimTitle}
+                        />
+                        <CounterTypography align="right">{moimTitleLength}/24자</CounterTypography>
+                    </CounterBox>
                     <StyledTypography variant="h7" fontWeight="bold">모집인원</StyledTypography>
                     <StyledTextField name="maxMoimUser" placeholder="최대 50명까지 모집할 수 있어요." onChange={handleInputChange} variant="outlined" />
                     <StyledTypography variant="h7" fontWeight="bold" style={{ marginTop: "1rem" }}>모임소개</StyledTypography>
                     <StyledTextField name="moimContent" placeholder="주제 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요." onChange={handleInputChange} variant="outlined" multiline rows={4} />
                 </StyledBox>
-                <StyledButton type="submit" variant="contained" color="primary">모임 등록</StyledButton>
+                <StyledButton type="submit" variant="contained" size="large">모임 등록</StyledButton>
             </StyledForm>
-            <Link to="/">모임 목록</Link>
+            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };

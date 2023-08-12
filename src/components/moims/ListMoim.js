@@ -1,41 +1,26 @@
 import React, { useState, useEffect } from 'react';
+import { Card, CardContent, Typography, CardMedia, TextField, Select, MenuItem, Button } from '@mui/material';
+import { Link } from 'react-router-dom';
 import axios from 'axios';
-import { Card, CardContent, Typography, CardMedia, TextField, Select, MenuItem } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
 import { data as importedData } from './data.js';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
 
-const StyledBox = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    background-color: #fff;
-`;
-
 const TitleContainer = styled.div`
     margin-top: 1rem;
     margin-bottom: 1.5rem;
-    margin-right: 101px;
-    
-    @media (max-width: 992px) {
-        margin-left: 0;
-    }
 `;
 
 const StyledCard = styled(Card)`
     display: flex;
-    width: 700px;
+    width: 100%;
     gap: 20px;
     margin-bottom: 1.5rem;
     background-color: #fff;
     color: #000;
     cursor: pointer;
-    
-    @media (max-width: 992px) {
-        width: 400px;
-    }
 `;
 
 const StyledCardMedia = styled(CardMedia)`
@@ -109,12 +94,16 @@ const StyledSelect = styled(Select)`
     }
 `;
 
-
 const StyledMenuItem = styled(MenuItem)`
     &&:hover {
         background-color: #FCBE71;
         color: white;
     }
+`;
+
+const StyledLink = styled(Link)`
+    margin: 1rem auto;
+    text-decoration: none;
 `;
 
 const ListMoim = () => {
@@ -145,26 +134,27 @@ const ListMoim = () => {
 
     return (
         <BasicBoard>
-            <StyledBox>
-                <TitleContainer>
-                    <Typography variant="h4" style={{ marginBottom: "1rem" }}>모임 목록</Typography>
-                    <SearchContainer>
-                        <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
-                        <StyledSelect value={category} onChange={(e) => setCategory(e.target.value)}>
-                            <StyledMenuItem value="all">전체</StyledMenuItem>
-                            <StyledMenuItem value="subject">주제별</StyledMenuItem>
-                            <StyledMenuItem value="region">지역별</StyledMenuItem>
-                            <StyledMenuItem value="newest">최신순</StyledMenuItem>
-                        </StyledSelect>
-                    </SearchContainer>
-                </TitleContainer>
-                <InfiniteScroll
-                    dataLength={data.length}
-                    next={fetchData}
-                    hasMore={hasMore}
-                >
-                    {data.map(moim => (
-                        <StyledCard key={moim.id}>
+            <TitleContainer>
+                <Typography variant="h4" style={{ marginBottom: "1rem" }}>모임 목록</Typography>
+                <SearchContainer>
+                    <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
+                    <StyledSelect value={category} onChange={(e) => setCategory(e.target.value)}>
+                        <StyledMenuItem value="all">전체</StyledMenuItem>
+                        <StyledMenuItem value="subject">주제별</StyledMenuItem>
+                        <StyledMenuItem value="region">지역별</StyledMenuItem>
+                        <StyledMenuItem value="newest">최신순</StyledMenuItem>
+                    </StyledSelect>
+                </SearchContainer>
+                <StyledLink to="/create-moim">새로운 모임 만들기</StyledLink>
+            </TitleContainer>
+            <InfiniteScroll
+                dataLength={data.length}
+                next={fetchData}
+                hasMore={hasMore}
+            >
+                {data.map(moim => (
+                    <StyledLink to={`/view-moim/${moim.moimId}`}>
+                        <StyledCard key={moim.moimId}>
                             <StyledCardMedia
                                 component="img"
                                 image={moim.imageURL}
@@ -182,9 +172,9 @@ const ListMoim = () => {
                                 </CardContent>
                             </CardInfo>
                         </StyledCard>
-                    ))}
-                </InfiniteScroll>
-            </StyledBox>
+                    </StyledLink>
+                ))}
+            </InfiniteScroll>
             <TopButton />
         </BasicBoard>
     );
