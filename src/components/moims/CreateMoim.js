@@ -5,10 +5,11 @@ import { TextField, Box, Button, FormControl, FormLabel, Select, MenuItem, Typog
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import { useCookies } from 'react-cookie';
-import '../../css/partials/Style.css';
+import BasicBoard from '../utils/BasicBoard';
 
 const StyledBox = styled(Box)`
-    margin-top: 2rem;
+    margin-top: 1rem;
+    width: 100%;
 `;
 
 const StyledForm = styled('form')`
@@ -16,11 +17,7 @@ const StyledForm = styled('form')`
     flex-direction: column;
     align-items: center;
     gap: 20px;
-    margin-left: 280px;
-
-    @media (max-width: 992px) {
-        margin-left: 0;
-    }
+    max-width: 100%;
 `;
 
 const StyledButton = styled(Button)`
@@ -43,7 +40,7 @@ const CounterTypography = styled(Typography)`
 `;
 
 const StyledTextField = styled(TextField)`
-    width: 700px;
+    width: 100%;;
     & .MuiOutlinedInput-root {
         &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
             border-color: #FCBE71;
@@ -53,7 +50,7 @@ const StyledTextField = styled(TextField)`
         }
     }
     @media (max-width: 992px) {
-        width:400px;
+        width: 100%;
     }
 `;
 
@@ -183,7 +180,7 @@ const CreateMoim = () => {
 
 
     return (
-        <>
+        <BasicBoard>
             <StyledForm id="createForm" onSubmit={createMoim}>
                 <StyledBox display="flex" flexDirection="column" alignItems="flex-start" width="700px">
                     <Typography variant="h4" style={{ marginBottom: "1rem" }}>새로운 모임을 만들어요.</Typography>
@@ -229,7 +226,7 @@ const CreateMoim = () => {
                 <StyledButton type="submit" variant="contained" color="primary">모임 등록</StyledButton>
             </StyledForm>
             <Link to="/">모임 목록</Link>
-        </>
+        </BasicBoard>
     );
 };
 

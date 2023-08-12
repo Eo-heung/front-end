@@ -4,18 +4,18 @@ import { Card, CardContent, Typography, CardMedia, TextField, Select, MenuItem }
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
 import { data as importedData } from './data.js';
+import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
 
 const StyledBox = styled.div`
-
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     background-color: #fff;
 `;
 
 const TitleContainer = styled.div`
-    margin-top: 10px;
+    margin-top: 1rem;
     margin-bottom: 1.5rem;
     margin-right: 101px;
     
@@ -28,7 +28,6 @@ const StyledCard = styled(Card)`
     display: flex;
     width: 700px;
     gap: 20px;
-    margin-left: 280px;
     margin-bottom: 1.5rem;
     background-color: #fff;
     color: #000;
@@ -36,7 +35,6 @@ const StyledCard = styled(Card)`
     
     @media (max-width: 992px) {
         width: 400px;
-        margin-left: 0;
     }
 `;
 
@@ -146,7 +144,7 @@ const ListMoim = () => {
     }, []);
 
     return (
-        <>
+        <BasicBoard>
             <StyledBox>
                 <TitleContainer>
                     <Typography variant="h4" style={{ marginBottom: "1rem" }}>모임 목록</Typography>
@@ -188,7 +186,7 @@ const ListMoim = () => {
                 </InfiniteScroll>
             </StyledBox>
             <TopButton />
-        </>
+        </BasicBoard>
     );
 };
 

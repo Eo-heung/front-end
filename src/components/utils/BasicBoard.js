@@ -1,26 +1,35 @@
 import * as React from 'react';
 import Container from '@mui/material/Container';
 import { styled } from '@mui/system';
+import '../../css/partials/Style.css';
 
 const StyledContainerBase = ({ children, ...props }) => {
     return (
-        <Container maxWidth="md" {...props}>
-            {children}
-        </Container>
+        <div className="sb-nav-fixed mainpage">
+            <div id="layoutSidenav">
+                <div id="layoutSidenav_content">
+                    <main>
+                        <div className="container-fluid px-4">
+                            <div className="row">
+                                <Container maxWidth="md" {...props}>
+                                    {children}
+                                </Container>
+                            </div>
+                        </div>
+                    </main>
+                </div>
+            </div>
+        </div>
     );
 };
 
 const BasicBoard = styled(StyledContainerBase)`
-    margin: 10px auto;
-    max-width: 700px;
-    height: 70%;
-    border: 1px solid #FCBE71;
-    box-sizing: border-box;
-    text-align: left;
-
-    @media (max-width: 992px) {
-        width: 90%;
-    }
-`;
+                                margin: 10px auto;
+                                padding: 10px;
+                                max-width: 730px;
+                                border: 1px solid #FCBE71;
+                                box-sizing: border-box;
+                                text-align: left;
+                                `;
 
 export default BasicBoard;
