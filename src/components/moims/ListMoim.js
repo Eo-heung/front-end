@@ -3,7 +3,6 @@ import axios from 'axios';
 import { Card, CardContent, Typography, CardMedia, TextField, Select, MenuItem } from '@mui/material';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import styled from 'styled-components';
-import '../utils/TopButton';
 import { data as importedData } from './data.js';
 import TopButton from '../utils/TopButton.js';
 
@@ -179,9 +178,9 @@ const ListMoim = () => {
                                     <Typography variant="h5">{moim.moimTitle}</Typography>
                                     <MoimInfoRow>
                                         <Typography variant="body1">{moim.moimAddr}</Typography>
-                                        <Typography variant="subtitle1">{moim.currentMoimUser}/{moim.maxMoimUser}</Typography>
+                                        <Typography variant="body1">{moim.currentMoimUser}/{moim.maxMoimUser}</Typography>
                                     </MoimInfoRow>
-                                    <EllipsisText variant="body1">{moim.MoimContent}</EllipsisText>
+                                    <EllipsisText variant="body1">{moim.moimContent}</EllipsisText>
                                 </CardContent>
                             </CardInfo>
                         </StyledCard>

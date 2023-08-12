@@ -8,6 +8,7 @@ import Password from './components/Password';
 import SuccessPage from './components/SuccessPage';
 import { CookiesProvider } from 'react-cookie';
 import ListMoim from './components/moims/ListMoim';
+import BasicBoard from './components/utils/BasicBoard';
 
 function App() {
   return (
@@ -16,6 +17,7 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout></Layout>}>
             <Route index element={<MainContent></MainContent>}></Route>
+            <Route path='/basicboard' element={<BasicBoard></BasicBoard>}></Route>
             <Route path='/create-moim' element={<CreateMoim></CreateMoim>}></Route>
             <Route path='/view-moim' element={<ViewMoim></ViewMoim>}></Route>
             <Route path='/list-moim' element={<ListMoim></ListMoim>}></Route>

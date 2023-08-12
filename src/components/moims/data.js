@@ -7,7 +7,7 @@ let data = [
         maxMoimUser: 10,
         moimCategory: "운동",
         moimTitle: "논현 러닝 클럽",
-        MoimContent: "매주 토요일 아침 함께 러닝하는 모임입니다. 힘차게 달리며 무릎 관절을 마모시켜 봅시다."
+        moimContent: "매주 토요일 아침 함께 러닝하는 모임입니다. 힘차게 달리며 무릎 관절을 마모시켜 봅시다."
     },
     {
         id: 2,
@@ -17,7 +17,7 @@ let data = [
         maxMoimUser: 20,
         moimCategory: "인문학/책",
         moimTitle: "책 읽자",
-        MoimContent: "매일 밤 10시부터 한 시간씩 책 읽자."
+        moimContent: "매일 밤 10시부터 한 시간씩 책 읽자."
     },
     {
         id: 3,
@@ -27,7 +27,7 @@ let data = [
         maxMoimUser: 10,
         moimCategory: "요리/맛집",
         moimTitle: "잘먹고잘살자",
-        MoimContent: "먹으려고 사는 사람들."
+        moimContent: "먹으려고 사는 사람들."
     },
     {
         id: 4,
@@ -37,7 +37,7 @@ let data = [
         maxMoimUser: 30,
         moimCategory: "동네친구",
         moimTitle: "비 오는 날",
-        MoimContent: "가리봉동으로 오세요."
+        moimContent: "가리봉동으로 오세요."
     },
     {
         id: 5,
@@ -47,7 +47,7 @@ let data = [
         maxMoimUser: 10,
         moimCategory: "공예/만들기",
         moimTitle: "직조",
-        MoimContent: "베 짜러 오세요."
+        moimContent: "베 짜러 오세요."
     },
     {
         id: 6,
@@ -57,7 +57,7 @@ let data = [
         maxMoimUser: 15,
         moimCategory: "원예",
         moimTitle: "주말농장이 아니라 평생 농장",
-        MoimContent: "농부 모임"
+        moimContent: "농부 모임"
     },
     {
         id: 7,
@@ -67,7 +67,7 @@ let data = [
         maxMoimUser: 20,
         moimCategory: "반려동물",
         moimTitle: "나만 고양이 없어",
-        MoimContent: "개 키우는 사람 모임"
+        moimContent: "개 키우는 사람 모임"
     },
     {
         id: 8,
@@ -77,7 +77,7 @@ let data = [
         maxMoimUser: 40,
         moimCategory: "음악/악기",
         moimTitle: "오카리나",
-        MoimContent: "삑삑"
+        moimContent: "삑삑"
     },
     {
         id: 9,
@@ -87,7 +87,7 @@ let data = [
         maxMoimUser: 50,
         moimCategory: "반려동물",
         moimTitle: "내 새끼 자랑",
-        MoimContent: "내 새끼 자랑하고 싶은 사람 다 모여"
+        moimContent: "내 새끼 자랑하고 싶은 사람 다 모여"
     },
     {
         id: 10,
@@ -97,7 +97,7 @@ let data = [
         maxMoimUser: 40,
         moimCategory: "원예",
         moimTitle: "베란다 텃밭 가꾸기",
-        MoimContent: "베란다에서 텃밭을 가꿔봅시다"
+        moimContent: "베란다에서 텃밭을 가꿔봅시다"
     },
 ]
 
