@@ -94,6 +94,8 @@ const CreateMoim = () => {
     const [inputs, setInputs] = useState({
         moimCategory: "",
         userId: sessionStorage.getItem("userId"),
+        moimLeaderNickname: "",
+        moimAddr: "",
         moimTitle: "",
         maxMoimUser: "",
         moimContent: ""
@@ -116,6 +118,14 @@ const CreateMoim = () => {
         console.log(userData);
     }, [cookies.userNickname, cookies.userAddr3]);
 
+    useEffect(() => {
+        setInputs(prev => ({
+            ...prev,
+            moimLeaderNickname: userData.userNickname,
+            moimAddr: userData.userAddr3
+        }));
+    }, [userData]);
+
     const handleTitleChange = (e) => {
         if (e.target.value.length <= 24) {
             setMoimTitleLength(e.target.value.length);
@@ -126,7 +136,7 @@ const CreateMoim = () => {
     const handleInputChange = useCallback((e) => {
         setInputs(prev => ({
             ...prev,
-            [e.target.name]: e.target.value
+            [e.target.name]: e.target.value,
         }));
     }, []);
 
