@@ -5,6 +5,7 @@ import { TextField, Box, Button, FormControl, FormLabel, Select, MenuItem, Typog
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import { useCookies } from 'react-cookie';
+import '../../css/partials/Style.css';
 
 const StyledBox = styled(Box)`
     margin-top: 2rem;
@@ -24,10 +25,10 @@ const StyledForm = styled('form')`
 
 const StyledButton = styled(Button)`
     margin-top: 10px;
-    background-color: #FFB471;
+    background-color: #FCBE71;
     box-shadow: none;
     &:hover {
-        background-color: #FFB471;
+        background-color: #FCBE71;
         box-shadow: none;
     }
 `;
@@ -45,11 +46,14 @@ const StyledTextField = styled(TextField)`
     width: 700px;
     & .MuiOutlinedInput-root {
         &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #FFB471;
+            border-color: #FCBE71;
         }
         &.Mui-focused .MuiInputLabel-root {
-            color: #FFB471;
+            color: #FCBE71;
         }
+    }
+    @media (max-width: 992px) {
+        width:400px;
     }
 `;
 
@@ -58,17 +62,17 @@ const StyledFormControl = styled(FormControl)`
 
     .MuiOutlinedInput-root {
         &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #FFB471;
+            border-color: #FCBE71;
         }
         &.Mui-focused .MuiInputLabel-root {
-            color: #FFB471;
+            color: #FCBE71;
         }
     }
 `;
 
 const StyledMenuItem = styled(MenuItem)`
     &:hover {
-        background-color: #FFB471;
+        background-color: #FCBE71;
         color: white;
     }
 `;
@@ -88,22 +92,22 @@ const CreateMoim = () => {
         moimContent: ""
     });
 
-    const [cookies] = useCookies(['userName', 'userAddr3']);
+    const [cookies] = useCookies(['userNickname', 'userAddr3']);
     const [userData, setUserData] = useState({
-        userName: '',
+        userNickname: '',
         userAddr3: ''
     });
 
     useEffect(() => {
-        if (cookies.userName && cookies.userAddr3) {
+        if (cookies.userNickname && cookies.userAddr3) {
             setUserData({
-                userName: cookies.userName,
+                userNickname: cookies.userNickname,
                 userAddr3: cookies.userAddr3
             });
         }
 
         console.log(userData);
-    }, [cookies.userName, cookies.userAddr3]);
+    }, [cookies.userNickname, cookies.userAddr3]);
 
     const handleTitleChange = (e) => {
         if (e.target.value.length <= 24) {
@@ -202,7 +206,7 @@ const CreateMoim = () => {
                     </StyledFormControl>
                     <Box border={0} my={0} display="flex" alignItems="center">
                         <Typography variant="h7" fontWeight="bold" style={{ width: '110px' }}>모임장</Typography>
-                        <Typography variant="body1" color={grey[600]}>{userData.userName}</Typography>
+                        <Typography variant="body1" color={grey[600]}>{userData.userNickname}</Typography>
                     </Box>
                     <Box border={0} my={2} display="flex" alignItems="center">
                         <Typography variant="h7" fontWeight="bold" style={{ width: '110px' }}>모임지역</Typography>
