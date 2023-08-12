@@ -209,14 +209,14 @@ ul {
   background-color: #fecdce; /* 마우스를 올렸을 때의 배경 색 */
 }
 
-#myStreamState .next-button {
+#myStreamState .start-button {
   width: 120px;
   height: 70px;
   line-height: 70px; /* 수직 중앙 정렬을 위해 버튼 높이와 동일하게 설정 */
   border-radius: 0;
   font-size: 16px;
   border: none;
-  background-color: #eb8f90;
+  background-color: #fcbe71;
   color: white;
   font-size: 24px;
   text-align: center; /* 수평 중앙 정렬 */
@@ -232,7 +232,7 @@ ul {
   border-radius: 0;
   font-size: 16px;
   border: none;
-  background-color: #eb8f90;
+  background-color: #de9392;
   color: white;
   font-size: 24px;
   text-align: center; /* 수평 중앙 정렬 */

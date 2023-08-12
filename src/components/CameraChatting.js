@@ -18,6 +18,7 @@ const CameraChatting = () => {
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
   const [textChatVisible, setTextChatVisible] = useState(false); // 텍스트 채팅 표시 여부 상태
   const [isStarted, setIsStarted] = useState(false);
+  const [isStartChatting, setIsStartChatting] = useState(false);
   const roomNameRef = useRef(null);
   const myPeerConnection = useRef(null); // useRef는 연결 객체가 변경될 때마다 컴포넌트를 리렌더링하지 않도록 하기 위해 사용됩니다.
   const myDataChannel = useRef(null);
@@ -75,6 +76,7 @@ const CameraChatting = () => {
     // 연결이 끊어졌을 때
     socket.current.on("disconnect", () => {
       setConnectionStatus("연결 끊음");
+      setIsStartChatting(false);
     });
 
     // 연결 에러 발생 시
@@ -133,6 +135,7 @@ const CameraChatting = () => {
       console.log("User disconnected:", id);
       setConnectionStatus("한명 나감");
       // 이제 여기에서 필요한 UI 변경을 처리하면 됩니다.
+      setIsStartChatting(false);
     });
 
     // 클린업 (component unmount 또는 dependencies 변경 시 실행됨)
@@ -262,6 +265,7 @@ const CameraChatting = () => {
   const handleStartRandomChat = async () => {
     socket.current.emit("request_random_chat");
     setConnectionStatus("상대 찾는 중 ...");
+    setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
       await socket.current.connect();
       await makeConnection();
@@ -272,6 +276,7 @@ const CameraChatting = () => {
 
   const handleStopRandomChat = () => {
     socket.current.emit("stop_random_chat");
+    setIsStartChatting(!isStartChatting);
     socket.current.disconnect();
   };
 
@@ -421,14 +426,36 @@ const CameraChatting = () => {
                   </div>
                   <div className="button-container">
                     <button
-                      className="next-button"
+                      className="start-button"
                       onClick={handleStartRandomChat}
+                      disabled={isStartChatting}
+                      style={{
+                        backgroundColor: isStartChatting ? "grey" : "#fcbe71",
+                        color: isStartChatting ? "#495057" : "white",
+                        boxShadow: isStartChatting
+                          ? "0 2px 4px rgba(0, 0, 0, 0.1)"
+                          : undefined,
+                        transform: isStartChatting
+                          ? "translateY(2px)"
+                          : undefined,
+                      }}
                     >
                       시작
                     </button>
                     <button
                       className="end-button"
                       onClick={handleStopRandomChat}
+                      disabled={!isStartChatting}
+                      style={{
+                        backgroundColor: !isStartChatting ? "grey" : "#de9392",
+                        color: !isStartChatting ? "#495057" : "white",
+                        boxShadow: !isStartChatting
+                          ? "0 2px 4px rgba(0, 0, 0, 0.1)"
+                          : undefined,
+                        transform: !isStartChatting
+                          ? "translateY(2px)"
+                          : undefined,
+                      }}
                     >
                       정지
                     </button>
