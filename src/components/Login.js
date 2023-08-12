@@ -102,16 +102,16 @@ const Login = () => {
                 }
             } catch (e) {
                 console.log(e);
-                // if (e.response.data.errorMessage === 'id not exist') {
-                //     alert("아이디가 존재하지 않습니다.");
-                //     return;
-                // } else if (e.response.data.errorMessage === 'wrong pw') {
-                //     alert("비밀번호가 틀렸습니다.");
-                //     return;
-                // } else {
-                //     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
-                //     return;
-                // }
+                if (e.response.data.errorMessage === 'id not exist') {
+                    alert("아이디가 존재하지 않습니다.");
+                    return;
+                } else if (e.response.data.errorMessage === 'wrong pw') {
+                    alert("비밀번호가 틀렸습니다.");
+                    return;
+                } else {
+                    alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
+                    return;
+                }
             }
         }
 

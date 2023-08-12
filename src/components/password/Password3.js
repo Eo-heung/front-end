@@ -11,6 +11,8 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled('div')(({ progress }) => ({
@@ -26,21 +28,48 @@ const Circle = styled('div')(({ progress }) => ({
   transition: "left 500ms ease-out"
 }));
 
-const Password3 = ({ handleClick, backClick, checkNum }) => {
+const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
   const [progress, setProgress] = useState(0);
   const [hasError, setHasError] = useState(false);
+  const navi = useNavigate();
+
+  const idCheck = async () => {
+    try {
+      const response = await axios.post('http://localhost:9000/idcheck', {
+        userId: userTel
+      });
+      console.log(response);
+      return response.data; // 반환된 데이터를 리턴합니다.
+    } catch (error) {
+      console.log(error);
+      return null; // 에러 발생 시 null을 리턴합니다.
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
     console.log(data.get('code'));
-    if (data.get('code') !== checkNum) {
-      alert("인증번호를 다시 확인해주세요.");
-    } else {
-      alert("인증번호이 완료되었습니다.");
-      handleClick();
-    }
 
+    // 인증번호 확인하는 if 문
+    if (data.get('code') !== checkNum) {
+      // 인증번호 틀렸을 때
+      alert("인증번호를 다시 확인해주세요.");
+
+    } else {
+      // 인증번호 맞을 때
+      const response = idCheck();
+      if (response !== "") {
+        alert("인증이 완료되었습니다.");
+        // 다음페이지 넘어가기
+        handleClick();
+      }
+      else {
+        // 유저가 없는 상황
+        alert("가입된 정보가 없습니다.");
+        navi("/login");
+      }
+    }
   };
 
   const handleCodeChange = (event) => {

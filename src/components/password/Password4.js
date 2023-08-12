@@ -12,6 +12,8 @@ import { styled } from '@mui/system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png.png';
+import axios from 'axios';
+import { useNavigate } from 'react-router-dom';
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled('div')(({ progress }) => ({
@@ -26,6 +28,7 @@ const Circle = styled('div')(({ progress }) => ({
     zIndex: 2,
     transition: "left 500ms ease-out"
 }));
+
 function LinearProgressWithLabel(props) {
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
@@ -41,12 +44,15 @@ function LinearProgressWithLabel(props) {
     );
 }
 
-const Password4 = ({ setUserPw }) => {
+
+const Password4 = ({ setUserPw, userTel }) => {
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
     const [passwordMatch, setPasswordMatch] = useState(true);
     const [progress, setProgress] = useState(66);
     const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navi = useNavigate();
+
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -112,6 +118,28 @@ const Password4 = ({ setUserPw }) => {
             setIsAuthenticated(true);
             console.log('비밀번호 일치:', password);
             setUserPw(() => password);
+
+            const changePassword = async () => {
+                try {
+                    const response = await axios.post('http://localhost:9000/resetpassword', {
+                        userId: userTel,
+                        userPw: password
+                    });
+
+                    if (response.data.statusCode === 200) {
+                        alert('비밀번호가 성공적으로 변경되었습니다.');
+                        navi('/login');
+                    } else {
+                        alert('비밀번호 변경에 실패하였습니다. 다시 시도해주세요.');
+                    }
+                } catch (error) {
+                    console.log(error);
+                    alert('서버 오류가 발생하였습니다.');
+                }
+            }
+
+            changePassword();
+
         } else {
             setIsAuthenticated(false);
             setPasswordMatch(false);
