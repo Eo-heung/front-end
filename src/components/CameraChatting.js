@@ -13,18 +13,14 @@ import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 const CameraChatting = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
-  const [myStreamState, setMyStreamState] = useState(null);
-  const [selectedCamera, setSelectedCamera] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
   const [textChatVisible, setTextChatVisible] = useState(false); // 텍스트 채팅 표시 여부 상태
-  const [isStarted, setIsStarted] = useState(false);
-  const [isStartChatting, setIsStartChatting] = useState(false);
+  const [isStartChatting, setIsStartChatting] = useState(true);
   const roomNameRef = useRef(null);
   const myPeerConnection = useRef(null); // useRef는 연결 객체가 변경될 때마다 컴포넌트를 리렌더링하지 않도록 하기 위해 사용됩니다.
   const myDataChannel = useRef(null);
   const myStreamRef = useRef(null);
   const myFaceRef = useRef(null);
-  const cameraSelectRef = useRef(null);
   const peerFaceRef = useRef(null);
   const iceCandidateQueue = useRef([]);
   const [roomName, setRoomName] = useState("");
@@ -41,8 +37,7 @@ const CameraChatting = () => {
 
   useEffect(() => {
     socket.current = io("http://localhost:5000");
-    // initCall();
-    startVideo();
+    startChatting();
 
     const handleMessage = (message) => {
       setMessages((prevMessages) => [
@@ -151,20 +146,7 @@ const CameraChatting = () => {
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
 
-  const startVideo = async () => {
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia({
-        audio: true,
-        video: true,
-      });
-      myFaceRef.current.srcObject = stream; // 여기서 myFaceRef는 useRef를 사용해 video 요소에 연결된 참조입니다.
-    } catch (err) {
-      console.error("비디오 시작 중 오류가 발생했습니다:", err);
-    }
-  };
-
   const startChatting = async () => {
-    setIsStarted(true);
     await initCall();
     handleStartRandomChat();
   };
@@ -193,36 +175,7 @@ const CameraChatting = () => {
       if (myFaceRef.current) {
         myFaceRef.current.srcObject = stream;
       }
-
-      await getCameras();
-    } catch (e) {
-      console.log(e);
-    }
-  };
-
-  const getCameras = async () => {
-    try {
-      const deviceList = await navigator.mediaDevices.enumerateDevices();
-      const cameraList = deviceList.filter(
-        (device) => device.kind === "videoinput"
-      );
-
-      if (myStreamRef.current) {
-        const currentCamera = myStreamRef.current.getVideoTracks()[0];
-        cameraList.forEach((camera) => {
-          const option = document.createElement("option");
-          option.value = camera.deviceId;
-          option.innerText = camera.label;
-          if (currentCamera && currentCamera.label === camera.label) {
-            option.selected = true;
-          }
-          if (cameraSelectRef.current) {
-            cameraSelectRef.current.appendChild(option);
-          }
-        });
-      }
-      // console.log(deviceList);
-      // console.log(cameraList);
+      console.log("Stream obtained: ", myStreamRef.current);
     } catch (e) {
       console.log(e);
     }
@@ -297,24 +250,6 @@ const CameraChatting = () => {
     setIsCameraOff((prevIsCameraOff) => !prevIsCameraOff);
   };
 
-  const handleCameraChange = async (e) => {
-    const cameraValue = e.target.value;
-    setSelectedCamera(cameraValue);
-
-    const newStream = await getMedia(cameraValue);
-    setMyStreamState(newStream);
-
-    if (myPeerConnection) {
-      console.log(myPeerConnection.getSenders());
-      const videoTrack = newStream.getVideoTracks()[0];
-      const videoSender = myPeerConnection
-        .getSenders()
-        .find((sender) => sender.track.kind === "video");
-
-      videoSender.replaceTrack(videoTrack);
-    }
-  };
-
   //메세지
   const scrollToBottom = () => {
     const chatContainer = chatContainerRef.current;
@@ -352,192 +287,136 @@ const CameraChatting = () => {
 
   return (
     <div>
-      <div class="sb-nav-fixed mainpage">
-        <div id="layoutSidenav">
-          <div id="layoutSidenav_content">
-            {/* 시작 화면 */}
-            {!isStarted ? (
-              <div className="start-video">
-                <div className="start-screen">
-                  <video
-                    ref={myFaceRef}
-                    className="video-style"
-                    muted
-                    autoPlay
-                    playsInline
-                  />
-                  <div className="button-container">
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleMuteClick}
-                    >
-                      {isMuted ? <MicOffIcon /> : <MicIcon />}
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleCameraOnOff}
-                    >
-                      {isCameraOff ? (
-                        <DesktopAccessDisabledIcon />
-                      ) : (
-                        <DesktopWindowsIcon />
-                      )}
-                    </Button>
-                    <button onClick={handleCameraOnOff}>
-                      {isCameraOff ? "너에게로" : "곧 감"}
-                    </button>
-
-                    <button className="start-button" onClick={startChatting}>
-                      채팅시작
-                    </button>
-                  </div>
-                </div>
-              </div>
+      <div id="call">
+        <div id="myStreamState">
+          <h1>Socket.io 연결 상태: {connectionStatus}</h1>
+          <div style={{ display: "flex", justifyContent: "center" }}>
+            {/* 상대방 비디오 혹은 대기 이미지 */}
+            {connectionStatus === "매칭됨" ? (
+              <video
+                ref={peerFaceRef}
+                className="video-style3"
+                autoPlay
+                playsInline
+              />
             ) : (
-              <div id="call">
-                <div id="myStreamState">
-                  <h1>Socket.io 연결 상태: {connectionStatus}</h1>
-                  <div style={{ display: "flex", justifyContent: "center" }}>
-                    {/* 상대방 비디오 혹은 대기 이미지 */}
-                    {connectionStatus === "매칭됨" ? (
-                      <video
-                        ref={peerFaceRef}
-                        className="video-style3"
-                        autoPlay
-                        playsInline
-                      />
-                    ) : (
-                      <img
-                        src={EoheungImg}
-                        alt="상대 찾는중"
-                        className="chat-image"
-                      />
-                    )}
+              <img src={EoheungImg} alt="상대 찾는중" className="chat-image" />
+            )}
 
-                    <video
-                      ref={myFaceRef}
-                      className="video-style2"
-                      muted
-                      autoPlay
-                      playsInline
+            <video
+              ref={myFaceRef}
+              className="video-style2"
+              muted
+              autoPlay
+              playsInline
+            />
+          </div>
+          <div className="button-container">
+            <button
+              className="start-button"
+              onClick={handleStartRandomChat}
+              disabled={isStartChatting}
+              style={{
+                backgroundColor: isStartChatting ? "grey" : "#fcbe71",
+                color: isStartChatting ? "#495057" : "white",
+                boxShadow: isStartChatting
+                  ? "0 2px 4px rgba(0, 0, 0, 0.1)"
+                  : undefined,
+                transform: isStartChatting ? "translateY(2px)" : undefined,
+              }}
+            >
+              시작
+            </button>
+            <button
+              className="end-button"
+              onClick={handleStopRandomChat}
+              disabled={!isStartChatting}
+              style={{
+                backgroundColor: !isStartChatting ? "grey" : "#de9392",
+                color: !isStartChatting ? "#495057" : "white",
+                boxShadow: !isStartChatting
+                  ? "0 2px 4px rgba(0, 0, 0, 0.1)"
+                  : undefined,
+                transform: !isStartChatting ? "translateY(2px)" : undefined,
+              }}
+            >
+              정지
+            </button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleMuteClick}
+            >
+              {isMuted ? <MicOffIcon /> : <MicIcon />}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCameraOnOff}
+            >
+              {isCameraOff ? (
+                <DesktopAccessDisabledIcon />
+              ) : (
+                <DesktopWindowsIcon />
+              )}
+            </Button>
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleCameraOnOff}
+            >
+              {isCameraOff ? "곧 감" : "너에게"}
+            </Button>
+
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={() => setTextChatVisible(!textChatVisible)}
+            >
+              {!textChatVisible ? (
+                <SpeakerNotesIcon />
+              ) : (
+                <SpeakerNotesOffIcon />
+              )}
+            </Button>
+
+            {textChatVisible && (
+              <div>
+                {roomHidden ? (
+                  <form onSubmit={handleRoomSubmit}>
+                    <input
+                      type="text"
+                      name="roomName"
+                      placeholder="Enter room name"
                     />
+                    <button type="submit">Join Room</button>
+                  </form>
+                ) : (
+                  <div id="room">
+                    <h3>Room {roomName}</h3>
+
+                    <div id="chat-container" ref={chatContainerRef}>
+                      <ul>
+                        {messages.map((message, index) => (
+                          <li
+                            key={index}
+                            className={`chat-message ${message.type}`}
+                          >
+                            {message.content}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <form id="msg" onSubmit={handleMessageSubmit}>
+                      <input
+                        type="text"
+                        name="message"
+                        placeholder="Type your message"
+                      />
+                      <button type="submit">Send</button>
+                    </form>
                   </div>
-                  <div className="button-container">
-                    <button
-                      className="start-button"
-                      onClick={handleStartRandomChat}
-                      disabled={isStartChatting}
-                      style={{
-                        backgroundColor: isStartChatting ? "grey" : "#fcbe71",
-                        color: isStartChatting ? "#495057" : "white",
-                        boxShadow: isStartChatting
-                          ? "0 2px 4px rgba(0, 0, 0, 0.1)"
-                          : undefined,
-                        transform: isStartChatting
-                          ? "translateY(2px)"
-                          : undefined,
-                      }}
-                    >
-                      시작
-                    </button>
-                    <button
-                      className="end-button"
-                      onClick={handleStopRandomChat}
-                      disabled={!isStartChatting}
-                      style={{
-                        backgroundColor: !isStartChatting ? "grey" : "#de9392",
-                        color: !isStartChatting ? "#495057" : "white",
-                        boxShadow: !isStartChatting
-                          ? "0 2px 4px rgba(0, 0, 0, 0.1)"
-                          : undefined,
-                        transform: !isStartChatting
-                          ? "translateY(2px)"
-                          : undefined,
-                      }}
-                    >
-                      정지
-                    </button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleMuteClick}
-                    >
-                      {isMuted ? <MicOffIcon /> : <MicIcon />}
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleCameraOnOff}
-                    >
-                      {isCameraOff ? (
-                        <DesktopAccessDisabledIcon />
-                      ) : (
-                        <DesktopWindowsIcon />
-                      )}
-                    </Button>
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={handleCameraOnOff}
-                    >
-                      {isCameraOff ? "곧 감" : "너에게"}
-                    </Button>
-
-                    <Button
-                      variant="contained"
-                      color="primary"
-                      onClick={() => setTextChatVisible(!textChatVisible)}
-                    >
-                      {!textChatVisible ? (
-                        <SpeakerNotesIcon />
-                      ) : (
-                        <SpeakerNotesOffIcon />
-                      )}
-                    </Button>
-
-                    {textChatVisible && (
-                      <div>
-                        {roomHidden ? (
-                          <form onSubmit={handleRoomSubmit}>
-                            <input
-                              type="text"
-                              name="roomName"
-                              placeholder="Enter room name"
-                            />
-                            <button type="submit">Join Room</button>
-                          </form>
-                        ) : (
-                          <div id="room">
-                            <h3>Room {roomName}</h3>
-
-                            <div id="chat-container" ref={chatContainerRef}>
-                              <ul>
-                                {messages.map((message, index) => (
-                                  <li
-                                    key={index}
-                                    className={`chat-message ${message.type}`}
-                                  >
-                                    {message.content}
-                                  </li>
-                                ))}
-                              </ul>
-                            </div>
-                            <form id="msg" onSubmit={handleMessageSubmit}>
-                              <input
-                                type="text"
-                                name="message"
-                                placeholder="Type your message"
-                              />
-                              <button type="submit">Send</button>
-                            </form>
-                          </div>
-                        )}
-                      </div>
-                    )}
-                  </div>
-                </div>
+                )}
               </div>
             )}
           </div>

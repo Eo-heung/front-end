@@ -6,7 +6,7 @@ import ViewMoim from "./components/moims/ViewMoim";
 import CreateMoim from "./components/moims/CreateMoim";
 import Password from "./components/Password";
 import SuccessPage from "./components/SuccessPage";
-import CameraChatting from "./components/CameraChatting";
+import StartCamera from "./components/StartCamera";
 import { CookiesProvider } from "react-cookie";
 
 function App() {
@@ -22,8 +22,8 @@ function App() {
             ></Route>
             <Route path="/view-moim" element={<ViewMoim></ViewMoim>}></Route>
             <Route
-              path="/1"
-              element={<CameraChatting></CameraChatting>}
+              path="/chatting"
+              element={<StartCamera></StartCamera>}
             ></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
