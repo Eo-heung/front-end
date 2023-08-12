@@ -9,13 +9,12 @@ import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
 import EoheungImg from "../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
-import TextChatting from "./CameraInTextChatting";
+// import TextChatting from "./CameraInTextChatting";
 // import "../css/partials/Style.css";
 
 const CameraChatting = () => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
-  const [isStartedHidden, setIsStartedHidden] = useState(false);
   const [myStreamState, setMyStreamState] = useState(null);
   const [selectedCamera, setSelectedCamera] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
@@ -28,14 +27,12 @@ const CameraChatting = () => {
   const myFaceRef = useRef(null);
   const cameraSelectRef = useRef(null);
   const peerFaceRef = useRef(null);
-  const iceCandidateQueue = useRef([]);
-
   const socket = useRef();
 
   useEffect(() => {
-    getMedia();
     socket.current = io("http://localhost:5000");
-    initCall();
+    // initCall();
+    startVideo();
 
     // 연결됐을 때
     socket.current.on("connect", () => {
@@ -44,7 +41,7 @@ const CameraChatting = () => {
 
     // 연결이 끊어졌을 때
     socket.current.on("disconnect", () => {
-      setConnectionStatus("연결 끊김");
+      setConnectionStatus("연결 끊음");
     });
 
     // 연결 에러 발생 시
@@ -115,51 +112,53 @@ const CameraChatting = () => {
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
 
-  const makeConnection = () => {
-    myPeerConnection.current = new RTCPeerConnection({
-      iceServers: [
-        {
-          urls: [
-            "stun:stun.l.google.com:19302",
-            "stun:stun1.l.google.com:19302",
-            "stun:stun2.l.google.com:19302",
-            "stun:stun3.l.google.com:19302",
-            "stun:stun4.l.google.com:19302",
-          ],
-        },
-      ],
-    });
-    myPeerConnection.current.addEventListener("icecandidate", handleIce);
-    myPeerConnection.current.addEventListener("track", handleTrack);
-    myStreamRef.current
-      .getTracks()
-      .forEach((track) =>
-        myPeerConnection.current.addTrack(track, myStreamRef.current)
-      );
-  };
-
-  const handleIce = (data) => {
-    console.log("sent candidate");
-    socket.current.emit("ice", data.candidate, roomNameRef.current);
-  };
   const startVideo = async () => {
     try {
-      const stream = await navigator.mediaDevices.getUserMedia({ video: true });
+      const stream = await navigator.mediaDevices.getUserMedia({
+        audio: true,
+        video: true,
+      });
       myFaceRef.current.srcObject = stream; // 여기서 myFaceRef는 useRef를 사용해 video 요소에 연결된 참조입니다.
     } catch (err) {
       console.error("비디오 시작 중 오류가 발생했습니다:", err);
     }
   };
 
-  const startChatting = () => {
+  const startChatting = async () => {
     setIsStarted(true);
-    startVideo();
+    await initCall();
+    handleStartRandomChat();
   };
 
-  const handleTrack = (event) => {
-    console.log("track");
-    const stream = event.streams[0];
-    peerFaceRef.current.srcObject = stream;
+  const initCall = async () => {
+    await getMedia();
+    makeConnection();
+  };
+
+  const getMedia = async (deviceId) => {
+    const initialConstrains = {
+      audio: true,
+      video: { facingMode: "user" },
+    };
+    const cameraConstraints = {
+      audio: { echoCancellation: true },
+      video: { deviceId: { exact: deviceId } },
+    };
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(
+        deviceId ? cameraConstraints : initialConstrains
+      );
+
+      myStreamRef.current = stream;
+
+      if (myFaceRef.current) {
+        myFaceRef.current.srcObject = stream;
+      }
+
+      await getCameras();
+    } catch (e) {
+      console.log(e);
+    }
   };
 
   const getCameras = async () => {
@@ -190,50 +189,54 @@ const CameraChatting = () => {
     }
   };
 
-  const getMedia = async (deviceId) => {
-    const initialConstrains = {
-      audio: true,
-      video: { facingMode: "user" },
-    };
-    const cameraConstraints = {
-      audio: true,
-      video: { deviceId: { exact: deviceId } },
-    };
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia(
-        deviceId ? cameraConstraints : initialConstrains
+  const makeConnection = () => {
+    myPeerConnection.current = new RTCPeerConnection({
+      iceServers: [
+        {
+          urls: [
+            "stun:stun.l.google.com:19302",
+            "stun:stun1.l.google.com:19302",
+            "stun:stun2.l.google.com:19302",
+            "stun:stun3.l.google.com:19302",
+            "stun:stun4.l.google.com:19302",
+          ],
+        },
+      ],
+    });
+    myPeerConnection.current.addEventListener("icecandidate", handleIce);
+    myPeerConnection.current.addEventListener("track", handleTrack);
+    myStreamRef.current
+      .getTracks()
+      .forEach((track) =>
+        myPeerConnection.current.addTrack(track, myStreamRef.current)
       );
-
-      myStreamRef.current = stream;
-
-      if (myFaceRef.current) {
-        myFaceRef.current.srcObject = stream;
-      }
-
-      await getCameras();
-    } catch (e) {
-      console.log(e);
-    }
   };
 
-  const initCall = async () => {
-    await getMedia();
-    makeConnection();
+  const handleIce = (data) => {
+    console.log("sent candidate");
+    socket.current.emit("ice", data.candidate, roomNameRef.current);
   };
 
-  const handleStartRandomChat = () => {
+  const handleTrack = (event) => {
+    console.log("track");
+    const stream = event.streams[0];
+    peerFaceRef.current.srcObject = stream;
+  };
+
+  const handleStartRandomChat = async () => {
     socket.current.emit("request_random_chat");
+    setConnectionStatus("상대 찾는 중 ...");
     if (socket.current.disconnected) {
-      socket.current.connect();
-      makeConnection();
+      await socket.current.connect();
+      await makeConnection();
+    } else {
+      await makeConnection();
     }
-    setIsStartedHidden(!isStartedHidden);
   };
 
   const handleStopRandomChat = () => {
     socket.current.emit("stop_random_chat");
     socket.current.disconnect();
-    setIsStartedHidden(!isStartedHidden);
   };
 
   const handleMuteClick = () => {
@@ -241,7 +244,6 @@ const CameraChatting = () => {
 
     const audioTracks = myStreamRef.current.getAudioTracks();
     audioTracks.forEach((track) => (track.enabled = !track.enabled));
-
     setIsMuted((prevIsMuted) => !prevIsMuted);
   };
 
@@ -321,10 +323,7 @@ const CameraChatting = () => {
               <div id="call">
                 <div id="myStreamState">
                   <h1>Socket.io 연결 상태: {connectionStatus}</h1>
-                  <div
-                    className="test"
-                    style={{ display: "flex", justifyContent: "center" }}
-                  >
+                  <div style={{ display: "flex", justifyContent: "center" }}>
                     {/* 상대방 비디오 혹은 대기 이미지 */}
                     {connectionStatus === "매칭됨" ? (
                       <video
@@ -351,18 +350,16 @@ const CameraChatting = () => {
                   </div>
                   <div className="button-container">
                     <button
-                      className="end-button"
+                      className="next-button"
                       onClick={handleStartRandomChat}
-                      hidden={isStartedHidden}
                     >
                       시작
                     </button>
                     <button
                       className="end-button"
                       onClick={handleStopRandomChat}
-                      hidden={!isStartedHidden}
                     >
-                      종료
+                      정지
                     </button>
                     <Button
                       variant="contained"
@@ -403,7 +400,7 @@ const CameraChatting = () => {
                     </Button>
 
                     {/* 텍스트 채팅 컴포넌트 */}
-                    {textChatVisible && <TextChatting />}
+                    {/* ?                    {textChatVisible && <TextChatting />} */}
                   </div>
                 </div>
               </div>

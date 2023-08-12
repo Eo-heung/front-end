@@ -3,7 +3,7 @@ import axios from "axios";
 import io from "socket.io-client";
 import "../css/partials/TextChatting.css";
 
-function Chatting() {
+function TextChatting() {
   const [roomName, setRoomName] = useState("");
   const [roomHidden, setRoomHidden] = useState(true);
   const [messages, setMessages] = useState([]);
@@ -12,12 +12,7 @@ function Chatting() {
   const socket = useRef();
 
   useEffect(() => {
-    scrollToBottom();
-  }, [messages]);
-
-  useEffect(() => {
-    console.log("useEffect 실행");
-    socket.current = io("http://172.30.1.6:5000");
+    socket.current = io("http://localhost:5000");
 
     const handleMessage = (message) => {
       setMessages((prevMessages) => [
@@ -49,6 +44,10 @@ function Chatting() {
       socket.current.off("bye", handleBye);
     };
   }, []);
+
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   const scrollToBottom = () => {
     const chatContainer = chatContainerRef.current;
@@ -143,4 +142,4 @@ function Chatting() {
   );
 }
 
-export default Chatting;
+export default TextChatting;

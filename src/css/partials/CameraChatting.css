@@ -130,7 +130,7 @@ ul {
 
 .video-style {
   display: inline;
-  width: 1000px;
+  width: 850px;
   height: 500px;
   border-radius: 30px;
   object-fit: fill; /*비율무시하고 설정한 길이대로 꽉 채우기*/
@@ -209,10 +209,25 @@ ul {
   background-color: #fecdce; /* 마우스를 올렸을 때의 배경 색 */
 }
 
-#myStreamState .end-button {
-  width: 150px;
+#myStreamState .next-button {
+  width: 120px;
   height: 70px;
-  margin-right: 520px;
+  line-height: 70px; /* 수직 중앙 정렬을 위해 버튼 높이와 동일하게 설정 */
+  border-radius: 0;
+  font-size: 16px;
+  border: none;
+  background-color: #eb8f90;
+  color: white;
+  font-size: 24px;
+  text-align: center; /* 수평 중앙 정렬 */
+  transition: background-color 0.3s;
+  border-radius: 10px; /* 버튼 모서리 둥글게 */
+}
+
+#myStreamState .end-button {
+  width: 120px;
+  height: 70px;
+  margin-right: 350px;
   line-height: 70px; /* 수직 중앙 정렬을 위해 버튼 높이와 동일하게 설정 */
   border-radius: 0;
   font-size: 16px;
