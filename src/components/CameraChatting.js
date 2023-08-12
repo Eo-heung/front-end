@@ -9,8 +9,6 @@ import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
 import EoheungImg from "../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
-// import TextChatting from "./CameraInTextChatting";
-// import "../css/partials/Style.css";
 
 const CameraChatting = () => {
   const [isMuted, setIsMuted] = useState(false);
@@ -27,13 +25,48 @@ const CameraChatting = () => {
   const myFaceRef = useRef(null);
   const cameraSelectRef = useRef(null);
   const peerFaceRef = useRef(null);
+  const iceCandidateQueue = useRef([]);
+  const [roomName, setRoomName] = useState("");
+  const [roomHidden, setRoomHidden] = useState(true);
+  const [messages, setMessages] = useState([]);
+  const [nickname, setNickname] = useState("");
+  const chatContainerRef = useRef(null);
+
   const socket = useRef();
+
+  // useEffect(() => {
+  //   scrollToBottom();
+  // }, [messages]);
 
   useEffect(() => {
     socket.current = io("http://localhost:5000");
     // initCall();
     startVideo();
 
+    const handleMessage = (message) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { content: message, type: "received" },
+      ]);
+    };
+    const handleWelcome = (user, newCount) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { content: `${user} 님이 들어오셨습니다.`, type: "received" },
+      ]);
+    };
+
+    const handleBye = (left, newCount) => {
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { content: `${left}님께서 채팅방을 떠나셨습니다.`, type: "received" },
+      ]);
+    };
+    socket.current.on("new_message", handleMessage);
+    socket.current.on("welcome", handleWelcome);
+    socket.current.on("bye", handleBye);
+
+    //화상채팅
     // 연결됐을 때
     socket.current.on("connect", () => {
       setConnectionStatus("연결됨");
@@ -109,6 +142,9 @@ const CameraChatting = () => {
       socket.current.off("answer");
       socket.current.off("ice");
       socket.current.disconnect();
+      socket.current.off("new_message", handleMessage);
+      socket.current.off("welcome", handleWelcome);
+      socket.current.off("bye", handleBye);
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
 
@@ -274,6 +310,41 @@ const CameraChatting = () => {
     }
   };
 
+  //메세지
+  const scrollToBottom = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer !== null)
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+  };
+
+  const handleMessageSubmit = (e) => {
+    e.preventDefault();
+    const message = e.target.message.value;
+    socket.current.emit("new_message", message, roomName, () => {
+      setMessages([
+        ...messages,
+        { content: `${nickname}: ${message}`, type: "sent" },
+      ]);
+    });
+    e.target.message.value = "";
+  };
+
+  const handleNicknameSubmit = (e) => {
+    e.preventDefault();
+    const nickname = e.target.nickname.value;
+    socket.current.emit("nickname", nickname);
+    setNickname(nickname);
+  };
+
+  const handleRoomSubmit = (e) => {
+    e.preventDefault();
+    const roomName = e.target.roomName.value;
+    socket.current.emit("enter_room", roomName, () => {
+      setRoomHidden(false);
+      setRoomName(roomName);
+    });
+  };
+
   return (
     <div>
       <div class="sb-nav-fixed mainpage">
@@ -399,8 +470,45 @@ const CameraChatting = () => {
                       )}
                     </Button>
 
-                    {/* 텍스트 채팅 컴포넌트 */}
-                    {/* ?                    {textChatVisible && <TextChatting />} */}
+                    {textChatVisible && (
+                      <div>
+                        {roomHidden ? (
+                          <form onSubmit={handleRoomSubmit}>
+                            <input
+                              type="text"
+                              name="roomName"
+                              placeholder="Enter room name"
+                            />
+                            <button type="submit">Join Room</button>
+                          </form>
+                        ) : (
+                          <div id="room">
+                            <h3>Room {roomName}</h3>
+
+                            <div id="chat-container" ref={chatContainerRef}>
+                              <ul>
+                                {messages.map((message, index) => (
+                                  <li
+                                    key={index}
+                                    className={`chat-message ${message.type}`}
+                                  >
+                                    {message.content}
+                                  </li>
+                                ))}
+                              </ul>
+                            </div>
+                            <form id="msg" onSubmit={handleMessageSubmit}>
+                              <input
+                                type="text"
+                                name="message"
+                                placeholder="Type your message"
+                              />
+                              <button type="submit">Send</button>
+                            </form>
+                          </div>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
               </div>
