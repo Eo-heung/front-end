@@ -1,23 +1,21 @@
-import React from 'react';
-import Header from '../partials/Header';
-import Footer from '../partials/Footer';
-import Nav from '../partials/Nav';
-import Main from '../partials/Main';
-import '../../css/partials/Style.css';
+import React from "react";
+import Header from "../partials/Header";
+import Footer from "../partials/Footer";
+import Nav from "../partials/Nav";
+import Main from "../partials/Main";
 
 const Layout = () => {
-    return (
-        <>
-            <Header></Header>
+  return (
+    <>
+      <Header></Header>
 
-            <Nav></Nav>
+      <Nav></Nav>
 
-            <Main></Main>
+      <Main></Main>
 
-            <Footer></Footer>
-
-        </>
-    );
+      <Footer></Footer>
+    </>
+  );
 };
 
 export default Layout;

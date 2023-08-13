@@ -34,7 +34,7 @@ const Login = () => {
     const loginSuccessHandler = (data) => {
         console.log("Received data:", data);
         if (data.userName) {
-            setCookie('userName', data.userName, { path: '/' });
+            setCookie('userNickname', data.userNickname, { path: '/' });
         }
         if (data.userAddr3) {
             setCookie('userAddr3', data.userAddr3, { path: '/' });
