@@ -3,6 +3,7 @@ import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
 import "../css/partials/CameraChatting.css";
 import CameraChatting from "../components/CameraChatting";
 import NoCamera from "../css/partials/카메라 예외.png";
+
 const StartCamera = () => {
   const myFaceRef = useRef(null);
   const myStreamRef = useRef(null);
@@ -155,10 +156,15 @@ const StartCamera = () => {
                           <select
                             ref={cameraSelectRef}
                             onChange={handleCameraChange}
+                            className="start-select"
                           >
                             {/* getCameras 함수에서 <option> 추가될 것임 */}
                           </select>
-                          <select ref={micSelectRef} onChange={handleMicChange}>
+                          <select
+                            ref={micSelectRef}
+                            onChange={handleMicChange}
+                            className="start-select"
+                          >
                             {/* getCameras 함수에서 <option> 추가될 것임 */}
                           </select>
                           <Button
