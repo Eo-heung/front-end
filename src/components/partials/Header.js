@@ -40,9 +40,8 @@ const Header = () => {
 
   return (
     <div
-      className={`sb-nav-fixed mainpage ${
-        isDesktop || isOpen ? "open" : "closed"
-      }`}
+      className={`sb-nav-fixed mainpage ${isDesktop || isOpen ? "open" : "closed"
+        }`}
     >
       <nav className="sb-topnav navbar navbar-expand navbar-light bg-light">
         <Link className="navbar-brand" to="/">

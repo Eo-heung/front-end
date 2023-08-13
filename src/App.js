@@ -9,8 +9,7 @@ import SuccessPage from "./components/SuccessPage";
 import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
-import "./IndexStyle.css";
-// import "./StyleTemp.css";
+
 
 function App() {
   return (
