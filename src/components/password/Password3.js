@@ -1,29 +1,29 @@
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Container from '@mui/material/Container';
-import CssBaseline from '@mui/material/CssBaseline';
-import Grid from '@mui/material/Grid';
-import LinearProgress from '@mui/material/LinearProgress';
-import Link from '@mui/material/Link';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import { styled } from '@mui/system';
-import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png.png';
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Container from "@mui/material/Container";
+import CssBaseline from "@mui/material/CssBaseline";
+import Grid from "@mui/material/Grid";
+import LinearProgress from "@mui/material/LinearProgress";
+import Link from "@mui/material/Link";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import { styled } from "@mui/system";
+import React, { useEffect, useState } from "react";
+import thumbImage from "../../public/image.png";
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
-const Circle = styled('div')(({ progress }) => ({
-  position: 'absolute',
+const Circle = styled("div")(({ progress }) => ({
+  position: "absolute",
   left: `calc(${progress}% - 5px)`,
-  top: '50%',
-  transform: 'translateY(-50%)',
-  width: '40px',
-  height: '40px',
+  top: "50%",
+  transform: "translateY(-50%)",
+  width: "40px",
+  height: "40px",
   backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
-  backgroundSize: 'cover', // 필요에 따라 배경 이미지 크기를 조절합니다.
+  backgroundSize: "cover", // 필요에 따라 배경 이미지 크기를 조절합니다.
   zIndex: 2,
-  transition: "left 500ms ease-out"
+  transition: "left 500ms ease-out",
 }));
 
 const Password3 = ({ handleClick, backClick, checkNum }) => {
@@ -33,14 +33,13 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log(data.get('code'));
-    if (data.get('code') !== checkNum) {
+    console.log(data.get("code"));
+    if (data.get("code") !== checkNum) {
       alert("인증번호를 다시 확인해주세요.");
     } else {
       alert("인증번호이 완료되었습니다.");
       handleClick();
     }
-
   };
 
   const handleCodeChange = (event) => {
@@ -68,13 +67,23 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
     }, []);
 
     return (
-      <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-        <Box sx={{ position: 'relative', flex: 14 }}>
+      <Box
+        sx={{
+          position: "relative",
+          display: "flex",
+          alignItems: "center",
+          width: "100%",
+          height: "20px",
+        }}
+      >
+        <Box sx={{ position: "relative", flex: 14 }}>
           <LinearProgress variant="determinate" value={progress} />
           <Circle progress={progress} />
         </Box>
         <Box sx={{ flex: 1, marginLeft: 1 }}>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(
+            progress
+          )}%`}</Typography>
         </Box>
       </Box>
     );
@@ -83,11 +92,10 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
   const theme = createTheme({
     palette: {
       primary: {
-        main: '#E55C25',
+        main: "#E55C25",
       },
     },
   });
-
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -95,23 +103,33 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
         <CssBaseline />
         <Box
           sx={{
-            height: '608.57px',
-            marginTop: 8
+            height: "608.57px",
+            marginTop: 8,
           }}
         >
-          <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
+          <Typography
+            variant="h5"
+            fontSize="10pt"
+            gutterBottom
+            textAlign={"center"}
+          >
             인증번호를 보내드렸어요!
           </Typography>
           <br></br>
           <br></br>
-          <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-            문자함에서 확인한<br />내 인증번호를 입력해주세요!
+          <Typography variant="h6" fontSize="20pt" textAlign={"center"}>
+            문자함에서 확인한
+            <br />내 인증번호를 입력해주세요!
           </Typography>
           <br></br>
           <br></br>
-          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-            <Grid container spacing={2} >
-              <Grid item xs={12} >
+          <Box
+            component="form"
+            onSubmit={handleSubmit}
+            sx={{ mt: 3, width: "100%" }}
+          >
+            <Grid container spacing={2}>
+              <Grid item xs={12}>
                 <TextField
                   required
                   fullWidth
@@ -121,17 +139,21 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
                   autoComplete="off"
                   onChange={handleCodeChange} // 코드 입력 시 handleChange 함수 호출
                   error={hasError} // hasError 상태에 따라 에러 스타일 적용
-                  helperText={hasError ? '숫자 이외의 다른 문자가 입력되었습니다.' : ''} // 에러 메시지
+                  helperText={
+                    hasError ? "숫자 이외의 다른 문자가 입력되었습니다." : ""
+                  } // 에러 메시지
                 />
-                <Link sx={{ float: 'right' }} onClick={backClick}>전화번호를 잘못입력하셨나요??</Link>
+                <Link sx={{ float: "right" }} onClick={backClick}>
+                  전화번호를 잘못입력하셨나요??
+                </Link>
               </Grid>
             </Grid>
 
             <Box
               sx={{
-                display: 'flex',
-                flexDirection: 'column',
-                alignItems: 'center',
+                display: "flex",
+                flexDirection: "column",
+                alignItems: "center",
                 mt: 3,
               }}
             >
@@ -143,9 +165,9 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
                 sx={{
                   mt: 3,
                   mb: 2,
-                  backgroundColor: '#FFB471', // 평소 색상
-                  '&:hover': {
-                    backgroundColor: '#E55C25', // 호버 시 색상
+                  backgroundColor: "#FFB471", // 평소 색상
+                  "&:hover": {
+                    backgroundColor: "#E55C25", // 호버 시 색상
                   },
                 }}
               >
@@ -156,7 +178,7 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
               </Link>
 
               <ThemeProvider theme={theme}>
-                <Box sx={{ width: '100%', marginTop: "47%" }}>
+                <Box sx={{ width: "100%", marginTop: "47%" }}>
                   <LinearProgressWithLabel value={progress} />
                 </Box>
               </ThemeProvider>

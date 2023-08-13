@@ -6,8 +6,11 @@ import ViewMoim from "./components/moims/ViewMoim";
 import CreateMoim from "./components/moims/CreateMoim";
 import Password from "./components/Password";
 import SuccessPage from "./components/SuccessPage";
-import StartCamera from "./components/StartCamera";
 import { CookiesProvider } from "react-cookie";
+import ListMoim from "./components/moims/ListMoim";
+import BasicBoard from "./components/utils/BasicBoard";
+import "./IndexStyle.css";
+// import "./StyleTemp.css";
 
 function App() {
   return (
@@ -17,14 +20,18 @@ function App() {
           <Route path="/" element={<Layout></Layout>}>
             <Route index element={<MainContent></MainContent>}></Route>
             <Route
+              path="/basicboard"
+              element={<BasicBoard></BasicBoard>}
+            ></Route>
+            <Route
               path="/create-moim"
               element={<CreateMoim></CreateMoim>}
             ></Route>
-            <Route path="/view-moim" element={<ViewMoim></ViewMoim>}></Route>
             <Route
-              path="/chatting"
-              element={<StartCamera></StartCamera>}
+              path="/view-moim/:moimId"
+              element={<ViewMoim></ViewMoim>}
             ></Route>
+            <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
