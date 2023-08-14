@@ -1,21 +1,20 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
-import "../css/partials/CameraChatting.css";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
 import DesktopAccessDisabledIcon from "@mui/icons-material/DesktopAccessDisabled";
-import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
+import Button from "@mui/material/Button";
 import EoheungImg from "../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 
-const CameraChatting = () => {
+const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
   const [textChatVisible, setTextChatVisible] = useState(false); // 텍스트 채팅 표시 여부 상태
-  const [isStartChatting, setIsStartChatting] = useState(true);
+  const [isStartChatting, setIsStartChatting] = useState(false);
   const roomNameRef = useRef(null);
   const myPeerConnection = useRef(null); // useRef는 연결 객체가 변경될 때마다 컴포넌트를 리렌더링하지 않도록 하기 위해 사용됩니다.
   const myDataChannel = useRef(null);
@@ -36,6 +35,9 @@ const CameraChatting = () => {
   // }, [messages]);
 
   useEffect(() => {
+    console.log(selectedCamera);
+    console.log(`selectedMic : ${selectedMic}`);
+
     socket.current = io("http://localhost:5000");
     startChatting();
 
@@ -65,12 +67,13 @@ const CameraChatting = () => {
     //화상채팅
     // 연결됐을 때
     socket.current.on("connect", () => {
-      setConnectionStatus("연결됨");
+      console.log("connect");
     });
 
     // 연결이 끊어졌을 때
     socket.current.on("disconnect", () => {
       setConnectionStatus("연결 끊음");
+      socket.current.disconnect();
       setIsStartChatting(false);
     });
 
@@ -126,9 +129,10 @@ const CameraChatting = () => {
       myPeerConnection.current.addIceCandidate(ice);
     });
 
-    socket.current.on("user-disconnected", (id) => {
+    socket.current.on("user_disconnected", (id) => {
       console.log("User disconnected:", id);
       setConnectionStatus("한명 나감");
+      socket.current.disconnect();
       // 이제 여기에서 필요한 UI 변경을 처리하면 됩니다.
       setIsStartChatting(false);
     });
@@ -157,12 +161,12 @@ const CameraChatting = () => {
   };
 
   const getMedia = async (deviceId) => {
+    console.log(`getMedia : ${deviceId}`);
     const initialConstrains = {
       audio: true,
       video: { facingMode: "user" },
     };
     const cameraConstraints = {
-      audio: { echoCancellation: true },
       video: { deviceId: { exact: deviceId } },
     };
     try {
@@ -229,8 +233,8 @@ const CameraChatting = () => {
 
   const handleStopRandomChat = () => {
     socket.current.emit("stop_random_chat");
+    setConnectionStatus("정지");
     setIsStartChatting(!isStartChatting);
-    socket.current.disconnect();
   };
 
   const handleMuteClick = () => {

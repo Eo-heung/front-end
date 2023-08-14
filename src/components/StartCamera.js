@@ -1,55 +1,66 @@
 import React, { useEffect, useRef, useState } from "react";
-import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
-import "../css/partials/CameraChatting.css";
+import Button from "@mui/material/Button";
 import CameraChatting from "../components/CameraChatting";
 import NoCamera from "../css/partials/카메라 예외.png";
+import "../css/partials/CameraChatting.css";
+
 const StartCamera = () => {
   const myFaceRef = useRef(null);
   const myStreamRef = useRef(null);
   const cameraSelectRef = useRef(null);
   const micSelectRef = useRef(null);
 
-  const [myStreamState, setMyStreamState] = useState(null);
-  const [selectedCamera, setSelectedCamera] = useState(null);
   const [isStartedChatting, setIsStartedChatting] = useState(false);
   const [hasCamera, setHasCamera] = useState(true);
+  const [selectedCameraId, setSelectedCameraId] = useState(null);
+  const [selectedMicId, setSelectedMicId] = useState(null);
 
   useEffect(() => {
     initCall();
   }, []);
 
+  useEffect(() => {
+    getMedia(selectedCameraId, selectedMicId);
+  }, [selectedCameraId, selectedMicId]);
+
   const initCall = async () => {
     await getMedia();
   };
 
-  const getMedia = async (deviceId) => {
+  const getMedia = async (cameraId = null, micId = null) => {
     const initialConstrains = {
       audio: true,
       video: { facingMode: "user" },
     };
-    const cameraConstraints = {
-      audio: true,
-      video: { deviceId: { exact: deviceId } },
+    let constraints = {
+      // audio: true,
+      // audio: micId ? { deviceId: { exact: micId } } : true,
+      audio: micId ? { deviceId: { exact: micId } } : true,
+      video: cameraId
+        ? { deviceId: { exact: cameraId } }
+        : { facingMode: "user" },
     };
-    try {
-      const stream = await navigator.mediaDevices.getUserMedia(
-        deviceId ? cameraConstraints : initialConstrains
-      );
 
+    console.log(micId);
+
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia(constraints);
       myStreamRef.current = stream;
+
       if (myFaceRef.current) {
         myFaceRef.current.srcObject = stream;
+        await getCameras();
       }
-
-      await getCameras();
     } catch (e) {
-      setHasCamera(false); // 에러가 발생하면 카메라가 없다고 가정
+      setHasCamera(false);
       console.log(e);
     }
   };
+
   const getCameras = async () => {
     try {
       const deviceList = await navigator.mediaDevices.enumerateDevices();
+      console.log(deviceList);
       const cameraList = deviceList.filter(
         (device) => device.kind === "videoinput"
       );
@@ -83,7 +94,7 @@ const StartCamera = () => {
           const option = document.createElement("option");
           option.value = camera.deviceId;
           option.innerText = camera.label;
-          if (currentCamera && currentCamera.label === camera.label) {
+          if (selectedCameraId === camera.deviceId) {
             option.selected = true;
           }
           if (cameraSelectRef.current) {
@@ -95,12 +106,18 @@ const StartCamera = () => {
       // 마이크 옵션 추가
       if (myStreamRef.current) {
         const currentMic = myStreamRef.current.getAudioTracks()[0];
+        // console.log(currentMic);
+        // setSelectedMicId(currentMic.label);
         micList.forEach((mic) => {
           const option = document.createElement("option");
+          console.log(mic);
           option.value = mic.deviceId;
           option.innerText = mic.label;
-          if (currentMic && currentMic.label === mic.label) {
+          if (currentMic.label === mic.label) {
             option.selected = true;
+            setSelectedMicId(mic.deviceId);
+            // console.log(`selectedMicId : ${selectedMicId}`);
+            // console.log(`mic.deviceId : ${mic.deviceId}`);
           }
           if (micSelectRef.current) {
             micSelectRef.current.appendChild(option);
@@ -109,25 +126,19 @@ const StartCamera = () => {
       }
     } catch (e) {
       console.log(e);
-      setHasCamera(false); // 에러가 발생하면 카메라가 없다고 가정
     }
   };
 
   const handleCameraChange = async (e) => {
     const cameraValue = e.target.value;
-    setSelectedCamera(cameraValue);
-
-    const newStream = await getMedia(cameraValue);
-    setMyStreamState(newStream);
+    setSelectedCameraId(cameraValue);
   };
 
   const handleMicChange = async (e) => {
+    // await getMedia()
     const micValue = e.target.value;
-    // 카메라와 마이크를 동시에 설정하려면 여기에 로직을 추가해야 합니다.
-    // 예를 들면, getMedia 함수를 수정하여 두 개의 deviceId를 받아 처리할 수 있습니다.
-    // 현재 로직은 카메라나 마이크 중 하나만 변경될 때 해당 장치만 업데이트하는 것을 기반으로 합니다.
-    const newStream = await getMedia(null, micValue);
-    setMyStreamState(newStream);
+    console.log(micValue);
+    setSelectedMicId(micValue);
   };
 
   const handleStartChatting = () => {
@@ -141,13 +152,12 @@ const StartCamera = () => {
             <div className="start-video">
               <div className="start-screen">
                 {isStartedChatting === false ? (
-                  <>
+                  <div>
                     {hasCamera ? (
                       <div>
                         <video
                           ref={myFaceRef}
                           className="video-style"
-                          muted
                           autoPlay
                           playsInline
                         />
@@ -172,9 +182,12 @@ const StartCamera = () => {
                     ) : (
                       <img src={NoCamera} alt="카메라를 준비해주세요" />
                     )}
-                  </>
+                  </div>
                 ) : (
-                  <CameraChatting />
+                  <CameraChatting
+                    selectedCamera={selectedCameraId}
+                    selectedMic={selectedMicId}
+                  />
                 )}
               </div>
             </div>
