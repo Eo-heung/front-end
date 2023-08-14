@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState } from "react";
 import Button from "@mui/material/Button";
 import CameraChatting from "../components/CameraChatting";
 import NoCamera from "../css/partials/카메라 예외.png";
-import "../css/partials/CameraChatting.css";
 
 const StartCamera = () => {
   const myFaceRef = useRef(null);
@@ -41,7 +40,7 @@ const StartCamera = () => {
         : { facingMode: "user" },
     };
 
-    console.log(micId);
+    // console.log(micId);
 
     try {
       const stream = await navigator.mediaDevices.getUserMedia(constraints);
@@ -60,7 +59,7 @@ const StartCamera = () => {
   const getCameras = async () => {
     try {
       const deviceList = await navigator.mediaDevices.enumerateDevices();
-      console.log(deviceList);
+      // console.log(deviceList);
       const cameraList = deviceList.filter(
         (device) => device.kind === "videoinput"
       );
@@ -110,7 +109,7 @@ const StartCamera = () => {
         // setSelectedMicId(currentMic.label);
         micList.forEach((mic) => {
           const option = document.createElement("option");
-          console.log(mic);
+          // console.log(mic);
           option.value = mic.deviceId;
           option.innerText = mic.label;
           if (currentMic.label === mic.label) {
@@ -137,7 +136,7 @@ const StartCamera = () => {
   const handleMicChange = async (e) => {
     // await getMedia()
     const micValue = e.target.value;
-    console.log(micValue);
+    // console.log(micValue);
     setSelectedMicId(micValue);
   };
 
@@ -165,10 +164,15 @@ const StartCamera = () => {
                           <select
                             ref={cameraSelectRef}
                             onChange={handleCameraChange}
+                            className="start-select"
                           >
                             {/* getCameras 함수에서 <option> 추가될 것임 */}
                           </select>
-                          <select ref={micSelectRef} onChange={handleMicChange}>
+                          <select
+                            ref={micSelectRef}
+                            onChange={handleMicChange}
+                            className="start-select"
+                          >
                             {/* getCameras 함수에서 <option> 추가될 것임 */}
                           </select>
                           <Button

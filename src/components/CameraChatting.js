@@ -8,6 +8,8 @@ import Button from "@mui/material/Button";
 import EoheungImg from "../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
+import "../css/partials/CameraChatting.css";
+import "../css/partials/TextChatting.css";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -22,50 +24,22 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const myFaceRef = useRef(null);
   const peerFaceRef = useRef(null);
   const iceCandidateQueue = useRef([]);
-  const [roomName, setRoomName] = useState("");
-  const [roomHidden, setRoomHidden] = useState(true);
   const [messages, setMessages] = useState([]);
   const [nickname, setNickname] = useState("");
   const chatContainerRef = useRef(null);
 
   const socket = useRef();
 
-  // useEffect(() => {
-  //   scrollToBottom();
-  // }, [messages]);
+  useEffect(() => {
+    scrollToBottom();
+  }, [messages]);
 
   useEffect(() => {
-    console.log(selectedCamera);
-    console.log(`selectedMic : ${selectedMic}`);
-
     socket.current = io("http://localhost:5000");
     startChatting();
 
-    const handleMessage = (message) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { content: message, type: "received" },
-      ]);
-    };
-    const handleWelcome = (user, newCount) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { content: `${user} 님이 들어오셨습니다.`, type: "received" },
-      ]);
-    };
-
-    const handleBye = (left, newCount) => {
-      setMessages((prevMessages) => [
-        ...prevMessages,
-        { content: `${left}님께서 채팅방을 떠나셨습니다.`, type: "received" },
-      ]);
-    };
-    socket.current.on("new_message", handleMessage);
-    socket.current.on("welcome", handleWelcome);
-    socket.current.on("bye", handleBye);
-
     //화상채팅
-    // 연결됐을 때
+    //연결됐을 때
     socket.current.on("connect", () => {
       console.log("connect");
     });
@@ -85,31 +59,43 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     socket.current.on("matched", async (roomName) => {
       console.log(`Matched with user in room ${roomName}`);
       setConnectionStatus("매칭됨");
+
       roomNameRef.current = roomName;
     });
 
     socket.current.on("welcome", async () => {
       console.log("welcome");
-      // myDataChannel.current =
-      //   myPeerConnection.current.createDataChannel("chat");
-      // myDataChannel.current.addEventListener("message", (event) => {
-      //   console.log(event.data);
-      // });
-      // console.log("made data channel");
+
+      myDataChannel.current =
+        myPeerConnection.current.createDataChannel("chat");
+      myDataChannel.current.addEventListener("message", (event) => {
+        const message = event.data;
+        console.log("message from welcome:", message);
+        setMessages((prevMessages) => [
+          ...prevMessages,
+          { content: message, type: "received" },
+        ]);
+      });
+
+      console.log("made data channel");
       const offer = await myPeerConnection.current.createOffer();
-      // console.log(`offer : ${offer}`);
       myPeerConnection.current.setLocalDescription(offer);
       console.log("sent the offer");
       socket.current.emit("offer", offer, roomNameRef.current);
     });
 
     socket.current.on("offer", async (offer) => {
-      // myPeerConnection.current.addEventListener("datachannel", (event) => {
-      //   myDataChannel.current = event.channel;
-      //   myDataChannel.current.addEventListener("message", (event) => {
-      //     console.log(event);
-      //   });
-      // });
+      myPeerConnection.current.addEventListener("datachannel", (event) => {
+        myDataChannel.current = event.channel;
+        myDataChannel.current.addEventListener("message", (event) => {
+          const message = event.data;
+          console.log("Received from offer:", message);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            { content: message, type: "received" },
+          ]);
+        });
+      });
       console.log("received the offer");
       await myPeerConnection.current.setRemoteDescription(offer);
 
@@ -140,15 +126,37 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     // 클린업 (component unmount 또는 dependencies 변경 시 실행됨)
     return () => {
       socket.current.off("welcome");
+      socket.current.off("matched");
       socket.current.off("offer");
       socket.current.off("answer");
       socket.current.off("ice");
       socket.current.disconnect();
-      socket.current.off("new_message", handleMessage);
-      socket.current.off("welcome", handleWelcome);
-      socket.current.off("bye", handleBye);
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
+
+  //메세지
+  const scrollToBottom = () => {
+    const chatContainer = chatContainerRef.current;
+    if (chatContainer !== null)
+      chatContainer.scrollTop = chatContainer.scrollHeight;
+  };
+
+  const handleMessageSubmit = (e) => {
+    e.preventDefault();
+    const message = e.target.message.value;
+    sendMessage(message);
+    e.target.message.value = "";
+  };
+
+  const sendMessage = (message) => {
+    if (myDataChannel.current && myDataChannel.current.readyState === "open") {
+      myDataChannel.current.send(message);
+      setMessages((prevMessages) => [
+        ...prevMessages,
+        { content: message, type: "sent" },
+      ]);
+    }
+  };
 
   const startChatting = async () => {
     await initCall();
@@ -161,7 +169,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   };
 
   const getMedia = async (deviceId) => {
-    console.log(`getMedia : ${deviceId}`);
     const initialConstrains = {
       audio: true,
       video: { facingMode: "user" },
@@ -179,7 +186,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       if (myFaceRef.current) {
         myFaceRef.current.srcObject = stream;
       }
-      console.log("Stream obtained: ", myStreamRef.current);
     } catch (e) {
       console.log(e);
     }
@@ -252,41 +258,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     videoTracks.forEach((track) => (track.enabled = !track.enabled));
 
     setIsCameraOff((prevIsCameraOff) => !prevIsCameraOff);
-  };
-
-  //메세지
-  const scrollToBottom = () => {
-    const chatContainer = chatContainerRef.current;
-    if (chatContainer !== null)
-      chatContainer.scrollTop = chatContainer.scrollHeight;
-  };
-
-  const handleMessageSubmit = (e) => {
-    e.preventDefault();
-    const message = e.target.message.value;
-    socket.current.emit("new_message", message, roomName, () => {
-      setMessages([
-        ...messages,
-        { content: `${nickname}: ${message}`, type: "sent" },
-      ]);
-    });
-    e.target.message.value = "";
-  };
-
-  const handleNicknameSubmit = (e) => {
-    e.preventDefault();
-    const nickname = e.target.nickname.value;
-    socket.current.emit("nickname", nickname);
-    setNickname(nickname);
-  };
-
-  const handleRoomSubmit = (e) => {
-    e.preventDefault();
-    const roomName = e.target.roomName.value;
-    socket.current.emit("enter_room", roomName, () => {
-      setRoomHidden(false);
-      setRoomName(roomName);
-    });
   };
 
   return (
@@ -386,41 +357,28 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
             {textChatVisible && (
               <div>
-                {roomHidden ? (
-                  <form onSubmit={handleRoomSubmit}>
+                <div id="room">
+                  <div id="chat-container" ref={chatContainerRef}>
+                    <ul>
+                      {messages.map((message, index) => (
+                        <li
+                          key={index}
+                          className={`chat-message ${message.type}`}
+                        >
+                          {message.content}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <form id="msg" onSubmit={handleMessageSubmit}>
                     <input
                       type="text"
-                      name="roomName"
-                      placeholder="Enter room name"
+                      name="message"
+                      placeholder="Type your message"
                     />
-                    <button type="submit">Join Room</button>
+                    <button type="submit">Send</button>
                   </form>
-                ) : (
-                  <div id="room">
-                    <h3>Room {roomName}</h3>
-
-                    <div id="chat-container" ref={chatContainerRef}>
-                      <ul>
-                        {messages.map((message, index) => (
-                          <li
-                            key={index}
-                            className={`chat-message ${message.type}`}
-                          >
-                            {message.content}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <form id="msg" onSubmit={handleMessageSubmit}>
-                      <input
-                        type="text"
-                        name="message"
-                        placeholder="Type your message"
-                      />
-                      <button type="submit">Send</button>
-                    </form>
-                  </div>
-                )}
+                </div>
               </div>
             )}
           </div>
