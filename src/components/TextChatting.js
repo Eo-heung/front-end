@@ -85,57 +85,59 @@ function TextChatting() {
 
   return (
     <div className="sb-nav-fixed mainpage">
-      <div id="layoutSidenav">
-        <div id="layoutSidenav_content">
-          <main>
-            <div className="container-fluid px-4">
-              <div>
-                {roomHidden ? (
-                  <form onSubmit={handleRoomSubmit}>
-                    <input
-                      type="text"
-                      name="roomName"
-                      placeholder="Enter room name"
-                    />
-                    <button type="submit">Join Room</button>
-                  </form>
-                ) : (
-                  <div id="room">
-                    <h3>Room {roomName}</h3>
-                    <form id="name" onSubmit={handleNicknameSubmit}>
+      <div className="text">
+        <div id="layoutSidenav">
+          <div id="layoutSidenav_content">
+            <main>
+              <div className="container-fluid px-4">
+                <div>
+                  {roomHidden ? (
+                    <form onSubmit={handleRoomSubmit}>
                       <input
                         type="text"
-                        name="nickname"
-                        placeholder="Enter your nickname"
+                        name="roomName"
+                        placeholder="Enter room name"
                       />
-                      <button type="submit">Set Nickname</button>
+                      <button type="submit">Join Room</button>
                     </form>
-                    <div id="chat-container" ref={chatContainerRef}>
-                      <ul>
-                        {messages.map((message, index) => (
-                          <li
-                            key={index}
-                            className={`chat-message ${message.type}`}
-                          >
-                            {message.content}
-                          </li>
-                        ))}
-                      </ul>
-                      {/* <div style={{ height: "70px" }} /> */}
+                  ) : (
+                    <div id="room">
+                      <h3>Room {roomName}</h3>
+                      <form id="name" onSubmit={handleNicknameSubmit}>
+                        <input
+                          type="text"
+                          name="nickname"
+                          placeholder="Enter your nickname"
+                        />
+                        <button type="submit">Set Nickname</button>
+                      </form>
+                      <div id="chat-container" ref={chatContainerRef}>
+                        <ul>
+                          {messages.map((message, index) => (
+                            <li
+                              key={index}
+                              className={`chat-message ${message.type}`}
+                            >
+                              {message.content}
+                            </li>
+                          ))}
+                        </ul>
+                        {/* <div style={{ height: "70px" }} /> */}
+                      </div>
+                      <form id="msg" onSubmit={handleMessageSubmit}>
+                        <input
+                          type="text"
+                          name="message"
+                          placeholder="Type your message"
+                        />
+                        <button type="submit">Send</button>
+                      </form>
                     </div>
-                    <form id="msg" onSubmit={handleMessageSubmit}>
-                      <input
-                        type="text"
-                        name="message"
-                        placeholder="Type your message"
-                      />
-                      <button type="submit">Send</button>
-                    </form>
-                  </div>
-                )}
+                  )}
+                </div>
               </div>
-            </div>
-          </main>
+            </main>
+          </div>
         </div>
       </div>
     </div>

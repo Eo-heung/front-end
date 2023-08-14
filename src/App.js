@@ -9,7 +9,9 @@ import SuccessPage from "./components/SuccessPage";
 import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
-import Chatting from "./components/StartCamera";
+import "./IndexStyle.css";
+import StartCamera from "./components/StartCamera";
+import TextChatting from "./components/TextChatting";
 
 function App() {
   return (
@@ -18,7 +20,10 @@ function App() {
         <Routes>
           <Route path="/" element={<Layout></Layout>}>
             <Route index element={<MainContent></MainContent>}></Route>
-            <Route path="/chatting" element={<Chatting></Chatting>}></Route>
+            <Route
+              path="/chatting"
+              element={<StartCamera></StartCamera>}
+            ></Route>
             <Route
               path="/basicboard"
               element={<BasicBoard></BasicBoard>}
@@ -31,6 +36,12 @@ function App() {
               path="/view-moim/:moimId"
               element={<ViewMoim></ViewMoim>}
             ></Route>
+            <Route path="/chatting" element={<StartCamera></StartCamera>} />
+            <Route
+              path="/textchatting"
+              element={<TextChatting></TextChatting>}
+            />
+
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>

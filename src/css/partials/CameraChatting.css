@@ -1,15 +1,16 @@
-form {
+.chatting form {
   display: flex;
   margin-bottom: 20px;
 }
 
-form input {
+.chatting form input {
   flex-grow: 1;
   padding: 10px;
   margin-right: 10px;
   border-radius: 3px;
   border: 1px solid #ddd;
 }
+
 #myStreamState {
   display: flex;
   flex-direction: column;
@@ -45,7 +46,7 @@ form input {
 #myStreamState button:hover {
   background-color: #fecdce; /* 마우스를 올렸을 때의 배경 색 */
 }
-form button {
+.chatting form button {
   padding: 10px 15px;
   border: none;
   border-radius: 3px;
@@ -54,28 +55,23 @@ form button {
   cursor: pointer;
 }
 
-form button:hover {
+.chatting form button:hover {
   background-color: #f58d33;
 }
 
-form#msg {
+.chatting form#msg {
   margin-bottom: 0;
 }
 
-ul {
+.chatting ul {
   list-style-type: none;
   padding-left: 0;
   margin-bottom: 20px;
 }
 
-ul.message-list {
+.chatting ul.message-list {
   display: flex;
   flex-direction: column;
-}
-
-ul {
-  list-style: none;
-  padding: 0;
 }
 
 .sent {

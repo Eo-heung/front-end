@@ -9,7 +9,7 @@ import EoheungImg from "../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import "../css/partials/CameraChatting.css";
-import "../css/partials/TextChatting.css";
+// import "../css/partials/TextChatting.css";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -356,7 +356,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
             </Button>
 
             {textChatVisible && (
-              <div>
+              <div className="text">
                 <div id="room">
                   <div id="chat-container" ref={chatContainerRef}>
                     <ul>

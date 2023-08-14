@@ -1,18 +1,19 @@
-body {
+.text body {
   font-family: Arial, sans-serif;
   margin: 0;
   padding: 0;
-  background-color: #f9f9f9;
+  /* background-color: #f9f9f9; */
+  background-color: red;
 }
 
-header {
+.text header {
   background-color: #ffb471;
   color: white;
   padding: 15px;
   text-align: center;
 }
 
-main {
+.text main {
   width: 600px;
   margin: 20px auto;
   border: 1px solid #ddd;
@@ -21,12 +22,12 @@ main {
   background-color: white;
 }
 
-form {
+.text form {
   display: flex;
   margin-bottom: 20px;
 }
 
-form input {
+.text form input {
   flex-grow: 1;
   padding: 10px;
   margin-right: 10px;
@@ -34,7 +35,7 @@ form input {
   border: 1px solid #ddd;
 }
 
-form button {
+.text form button {
   padding: 10px 15px;
   border: none;
   border-radius: 3px;
@@ -43,26 +44,26 @@ form button {
   cursor: pointer;
 }
 
-form button:hover {
+.text form button:hover {
   background-color: #f58d33;
 }
 
-form#msg {
+.text form#msg {
   margin-bottom: 0;
 }
 
-ul {
+.text ul {
   list-style-type: none;
   padding-left: 0;
   margin-bottom: 20px;
 }
 
-ul.message-list {
+.text ul.message-list {
   display: flex;
   flex-direction: column;
 }
 
-.chat-message {
+.text .chat-message {
   padding: 10px;
   margin: 15px 10px; /* 위아래 간격 조정 */
   max-width: 60%; /* 박스 너비 제한 */
@@ -71,22 +72,22 @@ ul.message-list {
   font-size: 16px;
 }
 
-.chat-message.sent {
+.text .chat-message.sent {
   background-color: #eb8f90;
   align-self: flex-end;
 }
 
-.chat-message.received {
+.text .chat-message.received {
   background-color: #d0e6f1;
   align-self: flex-start;
 }
 
-ul {
+.text ul {
   list-style: none;
   padding: 0;
 }
 
-.sent {
+.text .sent {
   background-color: #e6f7ff;
   color: #000;
   text-align: right;
@@ -95,7 +96,7 @@ ul {
   margin-left: 40%;
 }
 
-.received {
+.text .received {
   background-color: #d4e1f2;
   color: #000;
   text-align: left;
@@ -104,7 +105,7 @@ ul {
   margin-right: 40%;
 }
 
-#chat-container {
+.text #chat-container {
   max-height: 500px; /* 기존의 500px에서 조금 줄여 입력 창과 겹치지 않게 하기 */
   min-height: 500px;
   overflow-y: scroll;
@@ -112,6 +113,6 @@ ul {
   -ms-overflow-style: none;
 }
 
-#chat-container::-webkit-scrollbar {
+.text #chat-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari에서 스크롤바 숨김 */
 }
