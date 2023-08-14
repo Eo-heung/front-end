@@ -3,6 +3,7 @@ import Button from "@mui/material/Button"; // MUI 버튼 컴포넌트 임포트
 import "../css/partials/CameraChatting.css";
 import CameraChatting from "../components/CameraChatting";
 import NoCamera from "../css/partials/카메라 예외.png";
+import styled from "styled-components";
 
 const StartCamera = () => {
   const myFaceRef = useRef(null);
@@ -176,7 +177,11 @@ const StartCamera = () => {
                         </div>
                       </div>
                     ) : (
-                      <img src={NoCamera} alt="카메라를 준비해주세요" />
+                      <img
+                        src={NoCamera}
+                        alt="카메라를 준비해주세요"
+                        style={{ width: "70vw", height: "100vh" }}
+                      />
                     )}
                   </>
                 ) : (

@@ -143,6 +143,7 @@ const CameraChatting = () => {
       socket.current.off("new_message", handleMessage);
       socket.current.off("welcome", handleWelcome);
       socket.current.off("bye", handleBye);
+      socket.current.off("matched");
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
 
@@ -381,42 +382,31 @@ const CameraChatting = () => {
             </Button>
 
             {textChatVisible && (
-              <div>
-                {roomHidden ? (
-                  <form onSubmit={handleRoomSubmit}>
+              <div className="chatting">
+                <div id="room">
+                  <h3>Room {roomName}</h3>
+
+                  <div id="chat-container" ref={chatContainerRef}>
+                    <ul>
+                      {messages.map((message, index) => (
+                        <li
+                          key={index}
+                          className={`chat-message ${message.type}`}
+                        >
+                          {message.content}
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
+                  <form id="msg" onSubmit={handleMessageSubmit}>
                     <input
                       type="text"
-                      name="roomName"
-                      placeholder="Enter room name"
+                      name="message"
+                      placeholder="Type your message"
                     />
-                    <button type="submit">Join Room</button>
+                    <button type="submit">Send</button>
                   </form>
-                ) : (
-                  <div id="room">
-                    <h3>Room {roomName}</h3>
-
-                    <div id="chat-container" ref={chatContainerRef}>
-                      <ul>
-                        {messages.map((message, index) => (
-                          <li
-                            key={index}
-                            className={`chat-message ${message.type}`}
-                          >
-                            {message.content}
-                          </li>
-                        ))}
-                      </ul>
-                    </div>
-                    <form id="msg" onSubmit={handleMessageSubmit}>
-                      <input
-                        type="text"
-                        name="message"
-                        placeholder="Type your message"
-                      />
-                      <button type="submit">Send</button>
-                    </form>
-                  </div>
-                )}
+                </div>
               </div>
             )}
           </div>
