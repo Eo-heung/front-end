@@ -667,7 +667,7 @@ const Mypage = () => {
                                                                                     setUserHobby3(e.target.value);
                                                                                 }
                                                                             }}
-                                                                            style={{ width: '100%' }}>
+                                                                            style={{ width: '100%', fontSize: '16px' }}>
                                                                             {
                                                                                 label === "관심사" && interests.map(opt => <option key={opt.code} value={opt.code}>{opt.value}</option>)
                                                                             }
@@ -694,7 +694,7 @@ const Mypage = () => {
                                                                                         setUserStatusMessage(e.target.value);
                                                                                     }
                                                                                 }}
-                                                                                style={{ width: '100%' }} />
+                                                                                style={{ width: '100%', fontSize: '16px' }} />
                                                                             <Dialog open={open} onClose={handleClose} style={{ marginTop: '120px' }}>
                                                                                 <DialogTitle>주소 검색</DialogTitle>
                                                                                 <DialogContent>
