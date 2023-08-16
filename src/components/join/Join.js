@@ -23,7 +23,7 @@ const Join = ({ handleClick }) => {
                         alignItems: 'center',
                     }}
                 >
-                    <img src="https://i.postimg.cc/TwkbNDNV/aa.png" />
+                    <img src="https://i.postimg.cc/RFMVM5qM/logo.png" />
                     <br></br>
                     <br></br>
                     <Typography component="h1" variant="h5" textAlign={'center'}>

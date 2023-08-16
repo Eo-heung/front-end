@@ -5,32 +5,53 @@ import {
     Typography,
     createTheme, styled
 } from '@mui/material';
+import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import thumbImage from '../../public/image.png';
 
-const JoinFavorite = ({ setUserHobby1, setUserHobby2, setUserHobby3, userName, join }) => {
+const JoinFavorite = ({ userName, user }) => {
     const [hobby, setHobby] = useState('');
     const [interest, setInterest] = useState('');
     const [food, setFood] = useState('');
     const [progress, setProgress] = useState(0);
     const [onclick, setOnclick] = useState(false);
-
+    const [recommend, setRecommend] = useState('');
     const navi = useNavigate();
+
+    const join = async (user) => {
+
+        try {
+
+            const response = await axios.post('http://localhost:9000/join', user);
+
+            console.log(response)
+            navi('/login');
+
+        } catch (error) {
+        }
+    };
+
 
     const handleSubmit = async (event) => {
         event.preventDefault();
 
         if (onclick) {
-            setUserHobby1(() => hobby);
-            setUserHobby2(() => interest);
-            setUserHobby3(() => food);
+
+            user = {
+                ...user,
+                userHobby1: hobby,
+                userHobby2: interest,
+                userHobby3: food,
+                userRecommend: recommend
+            }
+
             alert(`어흥과 함께할 ${userName}님을 진심으로 환영합니다!`);
-            join();
+            join(user);
         }
         else {
             alert(`어흥과 함께할 ${userName}님을 진심으로 환영합니다!`);
-            join();
+            join(user);
         }
 
     };
@@ -167,9 +188,11 @@ const JoinFavorite = ({ setUserHobby1, setUserHobby2, setUserHobby3, userName, j
                                 </FormControl>
                                 <TextField
                                     fullWidth
-                                    id="code"
+                                    id="userRecommend"
                                     label="그 외 관심사를 입력해 주세요."
-                                    name="code"
+                                    value={recommend}
+                                    name="userRecommend"
+                                    onChange={(e) => setRecommend(e.target.value)}
                                     autoComplete="off"
                                 />
                             </Grid>

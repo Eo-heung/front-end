@@ -2,8 +2,12 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
@@ -11,9 +15,10 @@ import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/image.png';
 
-const JoinBirth = ({ handleClick, setUserBirth }) => {
+const JoinBirth = ({ handleClick, setUserBirth, setUserGender }) => {
     const [progress, setProgress] = useState(0);
     const [checkBirth, setCheckBirth] = useState(true);
+    const [gender, setGender] = useState('0');
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -54,12 +59,14 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                     } else {
                         setCheckBirth(true);
                         setUserBirth(() => data.get('birth'));
+                        setUserGender(() => data.get('gender'));
                         handleClick();
                     }//end of if (day>29 || (day===29 && !isleap))
 
                 } else {
                     setCheckBirth(true);
                     setUserBirth(() => data.get('birth'));
+                    setUserGender(() => data.get('gender'));
                     handleClick();
                 }//end of if
 
@@ -147,7 +154,7 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                         어흥
                     </Typography>
                     <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
-                        내 생일은?
+                        내 생일과 성별은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
@@ -164,6 +171,22 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                                     error={!checkBirth}
                                     helperText={!checkBirth && "생년월일 형식에 맞추어 입력해 주세요."}
                                 />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl component="fieldset" sx={{ float: 'right' }}>
+                                    <RadioGroup
+                                        row
+                                        id='gender'
+                                        aria-label="gender"
+                                        name="gender"
+                                        value={gender}
+                                        onChange={(event) => setGender(event.target.value)}
+
+                                    >
+                                        <FormControlLabel value='1' control={<Radio />} label="여성" />
+                                        <FormControlLabel value="0" control={<Radio />} label="남성" />
+                                    </RadioGroup>
+                                </FormControl>
                             </Grid>
                         </Grid>
 

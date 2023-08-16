@@ -111,8 +111,16 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
         },
     });
 
+    const theme1 = createTheme({
+        palette: {
+            primary: {
+                main: '#adb5bd',
+            },
+        },
+    });
+
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme1}>
             <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box sx={{
@@ -133,7 +141,6 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
 
                                 <TextField
                                     readOnly
-                                    disabled
                                     fullWidth
                                     value={"주소를 입력해 주세요."}
                                     onClick={handleOpen}

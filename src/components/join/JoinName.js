@@ -96,7 +96,7 @@ const JoinName = ({ handleClick, setUserName }) => {
                         어흥에서 사용할
                     </Typography>
                     <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
-                        내 이름은?
+                        내 닉네임은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
@@ -105,7 +105,7 @@ const JoinName = ({ handleClick, setUserName }) => {
                                     required
                                     fullWidth
                                     id="name"
-                                    label="실명을 입력해 주세요."
+                                    label="닉네임을 입력해 주세요."
                                     name="name"
                                     autoComplete="off"
                                 />

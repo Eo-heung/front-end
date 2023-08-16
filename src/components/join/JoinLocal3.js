@@ -80,9 +80,17 @@ const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
         },
     });
 
+    const theme1 = createTheme({
+        palette: {
+            primary: {
+                main: '#adb5bd',
+            },
+        },
+    });
+
 
     return (
-        <ThemeProvider theme={theme}>
+        <ThemeProvider theme={theme1}>
             <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
@@ -109,6 +117,7 @@ const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                                     value={userAddr1 + " " + userAddr2 + " " + userAddr3}
                                     autoComplete="off"
                                     readOnly
+                                    secondary
                                     sx={{ color: 'black' }}
                                 />
                             </Grid>
