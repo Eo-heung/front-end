@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef } from 'react';
-import '../../css/partials/Style.css';
-import '../../css/partials/Header.css';
-import { Link } from 'react-router-dom';
-import { Paper } from '@mui/material';
 import MenuIcon from '@mui/icons-material/Menu';
+import { Paper } from '@mui/material';
 import Typography from '@mui/material/Typography';
+import React, { useEffect, useRef, useState } from 'react';
+import { Link } from 'react-router-dom';
 import styled from 'styled-components';
+import '../../css/partials/Header.css';
+import '../../css/partials/Style.css';
 
 const Header = () => {
     const [isOpen, setIsOpen] = useState(false);
@@ -17,7 +17,7 @@ const Header = () => {
         { text: "채팅", link: "/" },
         { text: "모임", link: "/" },
         { text: "예시", link: "/" },
-        { text: "예시", link: "/" },
+        { text: "마이페이지", link: "/mypage" },
     ];
 
     useEffect(() => {
