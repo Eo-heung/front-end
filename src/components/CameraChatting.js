@@ -33,10 +33,10 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   useEffect(() => {
     scrollToBottom();
-  }, [messages]);
+  }, [messages, textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io("http://192.168.0.61:5000");
     startChatting();
 
     //화상채팅
@@ -57,11 +57,18 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setConnectionStatus("연결 에러");
     });
 
-    socket.current.on("matched", async (roomName) => {
-      console.log(`Matched with user in room ${roomName}`);
+    socket.current.on("matched", async (data) => {
+      const roomName = data.roomName;
+      const opponentNickname = data.opponentNickname;
+
+      console.log(
+        `You (${userNickname}) are matched with user ${opponentNickname} in room ${roomName}`
+      );
       setConnectionStatus("매칭됨");
 
       roomNameRef.current = roomName;
+      // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
+      // 예: setOpponentNickname(opponentNickname);
     });
 
     socket.current.on("welcome", async () => {
@@ -227,7 +234,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   };
 
   const handleStartRandomChat = async () => {
-    socket.current.emit("request_random_chat");
+    const nickname = getCookie("userNickname");
+    fetchNickname(); // 여기서 닉네임을 가져옴
+    socket.current.emit("request_random_chat", { nickname: userNickname });
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
@@ -236,8 +245,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     } else {
       await makeConnection();
     }
-    const nickname = getCookie("userNickname");
-    fetchNickname(); // 여기서 닉네임을 가져옴
   };
 
   const handleStopRandomChat = () => {
@@ -273,7 +280,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://localhost:5000/nickname", {
+      const response = await axios.get("http://192.168.0.61:5000/nickname", {
         params: {
           nickname: userNickname,
         },
@@ -290,7 +297,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     <div>
       <div id="call">
         <div id="myStreamState">
-          <h1>Socket.io 연결 상태: {connectionStatus}</h1>
+          {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
           <div style={{ display: "flex", justifyContent: "center" }}>
             {/* 상대방 비디오 혹은 대기 이미지 */}
             {connectionStatus === "매칭됨" ? (
@@ -313,7 +320,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
             />
           </div>
           <div className="button-container">
-            <h1>Hello, {userNickname}!</h1>
+            {/* <h1>Hello, {userNickname}!</h1> */}
             <button
               className="start-button"
               onClick={handleStartRandomChat}
@@ -347,6 +354,46 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
             <Button
               variant="contained"
               color="primary"
+              onClick={() => setTextChatVisible(!textChatVisible)}
+            >
+              {!textChatVisible ? (
+                <SpeakerNotesIcon />
+              ) : (
+                <SpeakerNotesOffIcon />
+              )}
+            </Button>
+
+            {textChatVisible && (
+              <div className="start-vedio">
+                <div className="camtext">
+                  <div id="room">
+                    <div id="chat-container" ref={chatContainerRef}>
+                      <ul>
+                        {messages.map((message, index) => (
+                          <li
+                            key={index}
+                            className={`chat-message ${message.type}`}
+                          >
+                            {message.content}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                    <form id="msg" onSubmit={handleMessageSubmit}>
+                      <input
+                        type="text"
+                        name="message"
+                        placeholder="메세지를 입력해주세요."
+                      />
+                      <button type="submit">보내기</button>
+                    </form>
+                  </div>
+                </div>
+              </div>
+            )}
+            <Button
+              variant="contained"
+              color="primary"
               onClick={handleMuteClick}
             >
               {isMuted ? <MicOffIcon /> : <MicIcon />}
@@ -369,45 +416,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
             >
               {isCameraOff ? "곧 감" : "너에게"}
             </Button>
-
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setTextChatVisible(!textChatVisible)}
-            >
-              {!textChatVisible ? (
-                <SpeakerNotesIcon />
-              ) : (
-                <SpeakerNotesOffIcon />
-              )}
-            </Button>
-
-            {textChatVisible && (
-              <div className="text">
-                <div id="room">
-                  <div id="chat-container" ref={chatContainerRef}>
-                    <ul>
-                      {messages.map((message, index) => (
-                        <li
-                          key={index}
-                          className={`chat-message ${message.type}`}
-                        >
-                          {message.content}
-                        </li>
-                      ))}
-                    </ul>
-                  </div>
-                  <form id="msg" onSubmit={handleMessageSubmit}>
-                    <input
-                      type="text"
-                      name="message"
-                      placeholder="Type your message"
-                    />
-                    <button type="submit">Send</button>
-                  </form>
-                </div>
-              </div>
-            )}
           </div>
         </div>
       </div>
