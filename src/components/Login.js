@@ -41,7 +41,7 @@ const Login = () => {
         }
     };
 
-    const [showPassword, setShowPassword] = React.useState(false);
+    const [showPassword, setShowPassword] = useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -262,12 +262,12 @@ const Login = () => {
                             </Button>
                             <Grid container sx={{ marginBottom: '35px' }}>
                                 <Grid item xs>
-                                    <Link href="#" variant="body2">
+                                    <Link href="findpassword" variant="body2">
                                         앗! 비밀번호를 까먹었을 땐?
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link href="/join" variant="body2">
+                                    <Link href="/signup" variant="body2">
                                         {"계정이 없으신가요?"}
                                     </Link>
                                 </Grid>
