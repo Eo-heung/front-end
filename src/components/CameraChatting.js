@@ -9,7 +9,7 @@ import EoheungImg from "../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import "../css/partials/CameraChatting.css";
-// import "../css/partials/TextChatting.css";
+import axios from "axios";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -27,6 +27,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [messages, setMessages] = useState([]);
   const [nickname, setNickname] = useState("");
   const chatContainerRef = useRef(null);
+  const userNickname = decodeURIComponent(getCookie("userNickname") || "");
 
   const socket = useRef();
 
@@ -235,6 +236,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     } else {
       await makeConnection();
     }
+    const nickname = getCookie("userNickname");
+    fetchNickname(); // 여기서 닉네임을 가져옴
   };
 
   const handleStopRandomChat = () => {
@@ -259,6 +262,29 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
     setIsCameraOff((prevIsCameraOff) => !prevIsCameraOff);
   };
+
+  function getCookie(userNicknamename) {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${userNicknamename}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  }
+
+  async function fetchNickname() {
+    try {
+      const response = await axios.get("http://localhost:5000/nickname", {
+        params: {
+          nickname: userNickname,
+        },
+      });
+
+      // 응답 데이터를 콘솔에 출력
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching nickname:", error);
+    }
+  }
 
   return (
     <div>
@@ -287,6 +313,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
             />
           </div>
           <div className="button-container">
+            <h1>Hello, {userNickname}!</h1>
             <button
               className="start-button"
               onClick={handleStartRandomChat}

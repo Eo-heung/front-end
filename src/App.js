@@ -45,6 +45,7 @@ function App() {
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
+
           <Route path="/findpassword" element={<Password></Password>}></Route>
           <Route path="/success" element={<SuccessPage></SuccessPage>} />
         </Routes>
