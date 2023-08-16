@@ -55,8 +55,14 @@ const Login = () => {
         const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
 
         window.location.href = kakaoURL;
-
     };
+
+    // const SocialGoogle = () => {
+    //     const redirect_uri = 'http://localhost:1234/oauth';
+    //     const client_id = '288953923003-3jl39jsis929cjl1ajjtg78vc22ke1h4.apps.googleusercontent.com';
+    //     const GoogleURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${client_id}&redirect_uri=${redirect_uri}&response_type=code&scope=email profile`;
+    //     window.location.href = GoogleURL;
+    // };
 
 
     useEffect(() => {
@@ -82,7 +88,7 @@ const Login = () => {
                 .then(response => {
                     console.log(response);
                     if (response.data.item) {
-                        navi("/success"); // 토큰이 유효하면 지정된 경로로 이동
+                        navi("/"); // 토큰이 유효하면 지정된 경로로 이동
                     }
                 })
                 .catch(e => {
@@ -118,14 +124,14 @@ const Login = () => {
                         alert(`${response.data.item.userName}님 환영합니다.`);
                         sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                         sessionStorage.setItem("userId", response.data.item.userId);
-                        navi("/success");
+                        navi("/");
                     }
                     else if (remembers === true) {
                         alert(`${response.data.item.userName}님 환영합니다.`);
                         localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
                         sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                         sessionStorage.setItem("userId", response.data.item.userId);
-                        navi("/success");
+                        navi("/");
                     }
                 }
             } catch (e) {
@@ -311,21 +317,8 @@ const Login = () => {
                                         />
                                     </Link>
                                 </Grid>
-                                <Grid item xs={3}>
-                                    <Link href="#">
-                                        <Box
-                                            sx={{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundImage: 'url(https://www.doobuying.com/assets/img/icon-facebook.png)',
-                                                backgroundSize: 'contain',
-                                                backgroundRepeat: 'no-repeat',
-                                            }}
-                                        />
-                                    </Link>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Link href="#">
+                                {/* <Grid item xs={3}>
+                                    <Link href="#" onClick={SocialGoogle}>
                                         <Box
                                             sx={{
                                                 width: '100%',
@@ -336,7 +329,7 @@ const Login = () => {
                                             }}
                                         />
                                     </Link>
-                                </Grid>
+                                </Grid> */}
                             </Grid>
                         </Box>
                     </Box>

@@ -3,6 +3,7 @@ import Login from './components/Login';
 import Password from './components/Password';
 import SuccessPage from './components/SuccessPage';
 import KakaoHandler from './components/socialLogin/KakaoHandler';
+// import GoogleHandelr from './components/socialLogin/GoogleHandler';
 
 
 function App() {
@@ -10,6 +11,7 @@ function App() {
     <Routes>
       <Route path='/login' element={<Login></Login>}></Route>
       <Route path='/auth' element={<KakaoHandler></KakaoHandler>}></Route>
+      {/* <Route path='/oauth' element={<GoogleHandelr></GoogleHandelr>}></Route> */}
       <Route path='/findpassword' element={<Password></Password>}></Route>
       <Route path='/success' element={<SuccessPage></SuccessPage>} />
     </Routes>

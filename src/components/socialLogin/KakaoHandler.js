@@ -1,8 +1,11 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
+import { useNavigate } from 'react-router-dom';
+
 
 
 const KakaoHandler = () => {
+    const navi = useNavigate();
     const grant_type = "authorization_code";
     const client_id = 'd85c142dc0c92939902ad3248688e8ad';
     const REDIRECT_URL = 'http://localhost:1234/auth';
@@ -19,11 +22,9 @@ const KakaoHandler = () => {
             {
                 headers: {
                     "Content-Type": "application/x-www-form-urlencoded;charset=utf-8",
-
                 },
 
             })
-
             .then((res) => {
                 console.log(res);
                 const { data } = res;
@@ -42,7 +43,18 @@ const KakaoHandler = () => {
                         .then((res) => {
                             console.log("데이터 성공 :")
                             console.log(res);
-
+                            axios.post('http://localhost:9000/kakaoLogin', {
+                                userId: res.data.kakao_account.email,
+                                userBirth: res.data.kakao_account.birthday,
+                                userNickname: res.data.kakao_account.nickname
+                            })
+                                .then((res) => {
+                                    alert(`${res.data.item.userName}님 환영합니다.`);
+                                    localStorage.setItem("REFRESH_TOKEN", res.data.item.token);
+                                    sessionStorage.setItem("ACCESS_TOKEN", res.data.item.token);
+                                    sessionStorage.setItem("userId", res.data.item.userId);
+                                    navi("/");
+                                })
                         });
 
                 } else {
