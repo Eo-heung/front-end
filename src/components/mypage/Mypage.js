@@ -83,6 +83,7 @@ const Mypage = () => {
     const serverCodeRef = useRef(null);
     const passwordRef = createRef();
     const checkPasswordRef = createRef();
+    const [imageFile, setImageFile] = useState(null);
 
     const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
 
@@ -260,13 +261,33 @@ const Mypage = () => {
         }
     }
 
+    function handleImageUpload(event) {
+        const file = event.target.files[0];
+        setImageFile(file);
+        const reader = new FileReader();
+      
+        reader.onloadend = () => {
+          document.getElementById('previewImage').src = reader.result;
+        };
+      
+        if (file) {
+          reader.readAsDataURL(file);
+        }
+      }
+
     const changeProfileImage = async () => {
+
+        const formData = new FormData();
+        formData.append('fileData', imageFile);
+
+
         try {
             const response = await axios.post('http://localhost:9000/mypage/changeprofileimage',
-                {},
+            formData,
                 {
                     headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                        'Content-Type': 'multipart/form-data',
                     }
                 });
             console.log(response.data);
@@ -727,6 +748,7 @@ const Mypage = () => {
                                             <Grid item xs={4} style={{ padding: '0px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', }}>
                                                 <Typography variant="h6" fontSize='14pt' sx={{ fontWeight: 'bold', marginBottom: '20px', marginTop: '15px' }}>프로필 사진</Typography>
                                                 <img
+                                                id='previewImage'
                                                     src={'https://mml.pstatic.net/www/mobile/edit/20230810_1095/upload_1691648758472EhbOX.png' || "default_image_path"}
                                                     alt="프로필 사진"
                                                     style={{ width: '200px', height: '200px', borderRadius: '50%', objectFit: 'cover', border: '0.5px solid #adb5bd' }}
@@ -745,7 +767,7 @@ const Mypage = () => {
                                                             type="file"
                                                             accept="image/*"
                                                             hidden
-                                                            onChange={(e) => console.log('eeee')}
+                                                            onChange={handleImageUpload}
                                                         />
                                                     </Button>
                                                 )}
@@ -766,6 +788,7 @@ const Mypage = () => {
                                 onClick={() => {
                                     if (isEditing) {
                                         editInfo();
+                                        changeProfileImage();
                                     }
                                     setIsEditing(!isEditing);
                                 }}
