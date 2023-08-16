@@ -7,7 +7,7 @@ import {
 } from '@mui/material';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import thumbImage from '../../public/image.png.png';
+import thumbImage from '../../public/image.png';
 
 const JoinFavorite = ({ setUserHobby1, setUserHobby2, setUserHobby3, userName, join }) => {
     const [hobby, setHobby] = useState('');

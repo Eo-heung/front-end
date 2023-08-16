@@ -19,6 +19,7 @@ import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
 import Carousel from 'react-material-ui-carousel';
 import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 
 
 const Login = () => {
@@ -28,7 +29,17 @@ const Login = () => {
     const [userId, setUserId] = useState('');
     const [userPw, setUserPw] = useState('');
     const [token, setToken] = useState();
+    const [cookies, setCookie] = useCookies(['userName', 'userAddr3']);
 
+    const loginSuccessHandler = (data) => {
+        console.log("Received data:", data);
+        if (data.userName) {
+            setCookie('userNickname', data.userNickname, { path: '/' });
+        }
+        if (data.userAddr3) {
+            setCookie('userAddr3', data.userAddr3, { path: '/' });
+        }
+    };
 
     const [showPassword, setShowPassword] = useState(false);
 
@@ -99,6 +110,21 @@ const Login = () => {
                     sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                     sessionStorage.setItem("userId", response.data.item.userId);
                     navi("/success");
+
+                    console.log(sessionStorage.getItem("ACCESS_TOKEN"));
+
+                    try {
+                        const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
+                            headers: {
+                                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                            }
+                        });
+                        if (userInfoResponse.data && userInfoResponse.data.item) {
+                            loginSuccessHandler(userInfoResponse.data.item);
+                        }
+                    } catch (e) {
+                        console.log("Error fetching user info: ", e);
+                    }
                 }
             } catch (e) {
                 console.log(e);
@@ -310,6 +336,6 @@ const Login = () => {
             </Grid>
         </ThemeProvider >
     );
-}
+};
 
-export default Login
+export default Login;
