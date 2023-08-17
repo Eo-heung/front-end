@@ -29,8 +29,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
   const [opponentNickname, setOpponentNickname] = useState("");
-
+  const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
+  const [roomName, setRoomName] = useState("");
 
   useEffect(() => {
     scrollToBottom();
@@ -68,6 +69,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setConnectionStatus("매칭됨");
 
       roomNameRef.current = roomName;
+      setRoomName(roomName);
+
       setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
 
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
@@ -133,6 +136,23 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       // 이제 여기에서 필요한 UI 변경을 처리하면 됩니다.
       setIsStartChatting(false);
     });
+    const handleTyping = (nickname) => {
+      setTypingUsers((prevTypingUsers) => {
+        if (!prevTypingUsers.includes(nickname)) {
+          return [...prevTypingUsers, nickname];
+        }
+        return prevTypingUsers;
+      });
+
+      // 일정 시간 후에 "입력 중" 상태 제거
+      setTimeout(() => {
+        setTypingUsers((prevTypingUsers) => {
+          return prevTypingUsers.filter((user) => user !== nickname);
+        });
+      }, 3000);
+    };
+
+    socket.current.on("typing", handleTyping);
 
     // 클린업 (component unmount 또는 dependencies 변경 시 실행됨)
     return () => {
@@ -142,6 +162,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       socket.current.off("answer");
       socket.current.off("ice");
       socket.current.disconnect();
+      socket.current.on("typing", handleTyping);
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
 
@@ -295,6 +316,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       console.error("Error fetching nickname:", error);
     }
   }
+  const handleMessageInput = () => {
+    socket.current.emit("typing", roomName);
+  };
 
   return (
     <div>
@@ -385,12 +409,20 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
                           </div>
                         ))}
                       </ul>
+                      <div id="typing-indicator">
+                        {typingUsers.length > 0 && (
+                          <span>
+                            {typingUsers.join(", ")}님이 입력하고 있습니다.
+                          </span>
+                        )}
+                      </div>
                     </div>
                     <form id="msg" onSubmit={handleMessageSubmit}>
                       <input
                         type="text"
                         name="message"
                         placeholder="메세지를 입력해주세요."
+                        onKeyDown={handleMessageInput}
                       />
                       <button type="submit">보내기</button>
                     </form>

@@ -8,11 +8,13 @@ function TextChatting() {
   const [roomHidden, setRoomHidden] = useState(true);
   const [messages, setMessages] = useState([]);
   const [nickname, setNickname] = useState("");
+  const [typingUsers, setTypingUsers] = useState([]);
+
   const chatContainerRef = useRef(null);
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io("http://192.168.0.61:5000");
 
     const handleMessage = (message) => {
       setMessages((prevMessages) => [
@@ -37,11 +39,28 @@ function TextChatting() {
     socket.current.on("welcome", handleWelcome);
     socket.current.on("bye", handleBye);
 
+    const handleTyping = (nickname) => {
+      setTypingUsers((prevTypingUsers) => {
+        if (!prevTypingUsers.includes(nickname)) {
+          return [...prevTypingUsers, nickname];
+        }
+        return prevTypingUsers;
+      });
+
+      // 일정 시간 후에 "입력 중" 상태 제거
+      setTimeout(() => {
+        setTypingUsers((prevTypingUsers) => {
+          return prevTypingUsers.filter((user) => user !== nickname);
+        });
+      }, 3000);
+    };
+    socket.current.on("typing", handleTyping);
     // 클린업 함수에서 리스너를 제거합니다.
     return () => {
       socket.current.off("new_message", handleMessage);
       socket.current.off("welcome", handleWelcome);
       socket.current.off("bye", handleBye);
+      socket.current.off("typing", handleTyping);
     };
   }, []);
 
@@ -83,6 +102,10 @@ function TextChatting() {
     });
   };
 
+  const handleMessageInput = () => {
+    socket.current.emit("typing", roomName);
+  };
+
   return (
     <div className="sb-nav-fixed mainpage">
       <div className="text">
@@ -122,6 +145,13 @@ function TextChatting() {
                             </li>
                           ))}
                         </ul>
+                        <div id="typing-indicator">
+                          {typingUsers.length > 0 && (
+                            <span>
+                              {typingUsers.join(", ")}님이 입력하고 있습니다.
+                            </span>
+                          )}
+                        </div>
                         {/* <div style={{ height: "70px" }} /> */}
                       </div>
                       <form id="msg" onSubmit={handleMessageSubmit}>
@@ -129,6 +159,7 @@ function TextChatting() {
                           type="text"
                           name="message"
                           placeholder="Type your message"
+                          onKeyDown={handleMessageInput}
                         />
                         <button type="submit">Send</button>
                       </form>
