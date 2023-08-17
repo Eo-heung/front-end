@@ -28,6 +28,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [nickname, setNickname] = useState("");
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
+  const [opponentNickname, setOpponentNickname] = useState("");
 
   const socket = useRef();
 
@@ -67,6 +68,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setConnectionStatus("매칭됨");
 
       roomNameRef.current = roomName;
+      setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
+
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
       // 예: setOpponentNickname(opponentNickname);
     });
@@ -301,12 +304,15 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           <div style={{ display: "flex", justifyContent: "center" }}>
             {/* 상대방 비디오 혹은 대기 이미지 */}
             {connectionStatus === "매칭됨" ? (
-              <video
-                ref={peerFaceRef}
-                className="video-style3"
-                autoPlay
-                playsInline
-              />
+              <>
+                <span className="nickname-label">{opponentNickname}</span>
+                <video
+                  ref={peerFaceRef}
+                  className="video-style3"
+                  autoPlay
+                  playsInline
+                />
+              </>
             ) : (
               <img src={EoheungImg} alt="상대 찾는중" className="chat-image" />
             )}
@@ -370,12 +376,13 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
                     <div id="chat-container" ref={chatContainerRef}>
                       <ul>
                         {messages.map((message, index) => (
-                          <li
-                            key={index}
-                            className={`chat-message ${message.type}`}
-                          >
-                            {message.content}
-                          </li>
+                          <div className="chat-row" key={index}>
+                            <li className={`chat-message ${message.type}`}>
+                              {message.type === "received"
+                                ? `${opponentNickname} : ${message.content}`
+                                : message.content}
+                            </li>
+                          </div>
                         ))}
                       </ul>
                     </div>
