@@ -92,7 +92,7 @@ const JoinFavorite = ({ handleClick, setUserHobby1, setUserHobby2, setUserHobby3
                     <br></br>
                     <br></br>
                     <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        내 이름은?
+                        내 관심사는?
                     </Typography>
                     <br></br>
                     <br></br>

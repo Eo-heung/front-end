@@ -29,6 +29,7 @@ const Circle = styled('div')(({ progress }) => ({
     transition: "left 500ms ease-out"
 }));
 
+
 function LinearProgressWithLabel(props) {
     return (
         <Box sx={{ display: 'flex', alignItems: 'center' }}>
