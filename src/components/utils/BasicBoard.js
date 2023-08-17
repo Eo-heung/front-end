@@ -1,6 +1,5 @@
-import * as React from "react";
-import Container from "@mui/material/Container";
-import { styled } from "@mui/system";
+import * as React from 'react';
+import { styled } from '@mui/system';
 
 const StyledContainerBase = ({ children, ...props }) => {
   return (
@@ -9,10 +8,8 @@ const StyledContainerBase = ({ children, ...props }) => {
         <div id="layoutSidenav_content">
           <main>
             <div className="container-fluid px-4">
-              <div className="row">
-                <Container maxWidth="md" {...props}>
-                  {children}
-                </Container>
+              <div maxWidth="md" {...props}>
+                {children}
               </div>
             </div>
           </main>
@@ -26,10 +23,8 @@ const BasicBoard = styled(StyledContainerBase)`
   display: flex;
   flex-direction: column;
   align-items: flex-start;
-  margin: 10px auto;
-  padding: 10px;
-  width: 100%;
-  border: 1px solid #fcbe71;
+  padding: 0 1.5rem;
+  max-width: 1200px;
   box-sizing: border-box;
   text-align: left;
 `;
