@@ -99,7 +99,7 @@ const Login = () => {
         console.log(user);
 
         try {
-          const response = await axios.post("http://192.168.0.61:9000/login", {
+          const response = await axios.post("http://localhost:9000/login", {
             userId: userId,
             userPw: userPw,
           });
@@ -117,7 +117,7 @@ const Login = () => {
 
             try {
               const userInfoResponse = await axios.post(
-                "http://192.168.0.61:9000/getUserInfo",
+                "http://localhost:9000/getUserInfo",
                 {},
                 {
                   headers: {

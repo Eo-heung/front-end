@@ -38,7 +38,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [messages, textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://192.168.0.61:5000");
+    socket.current = io("http://localhost:5000");
     startChatting();
 
     //화상채팅
@@ -304,7 +304,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://192.168.0.61:5000/nickname", {
+      const response = await axios.get("http://localhost:5000/nickname", {
         params: {
           nickname: userNickname,
         },
