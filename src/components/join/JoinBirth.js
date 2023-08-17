@@ -2,18 +2,23 @@ import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
+import FormControl from '@mui/material/FormControl';
+import FormControlLabel from '@mui/material/FormControlLabel';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
+import Radio from '@mui/material/Radio';
+import RadioGroup from '@mui/material/RadioGroup';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png.png';
+import thumbImage from '../../public/image.png';
 
-const JoinBirth = ({ handleClick, setUserBirth }) => {
+const JoinBirth = ({ handleClick, setUserBirth, setUserGender }) => {
     const [progress, setProgress] = useState(0);
     const [checkBirth, setCheckBirth] = useState(true);
+    const [gender, setGender] = useState('0');
 
     const handleSubmit = (event) => {
         event.preventDefault();
@@ -24,7 +29,7 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
         var month = Number(dateStr.substr(4, 2)); // 입력한 값의 4번째 자리부터 2자리 숫자 (월)
         var day = Number(dateStr.substr(6, 2)); // 입력한 값 6번째 자리부터 2자리 숫자 (일)
 
-        const message = `생년월일이 ${year}년 ${month}월 ${day}일이 맞나요??`
+        const message = `생년월일이 ${year}년 ${month}월 ${day}일이 맞나요?`
 
         if (window.confirm(message)) {
             var today = new Date(); // 날짜 변수 선언
@@ -54,12 +59,14 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                     } else {
                         setCheckBirth(true);
                         setUserBirth(() => data.get('birth'));
+                        setUserGender(() => data.get('gender'));
                         handleClick();
                     }//end of if (day>29 || (day===29 && !isleap))
 
                 } else {
                     setCheckBirth(true);
                     setUserBirth(() => data.get('birth'));
+                    setUserGender(() => data.get('gender'));
                     handleClick();
                 }//end of if
 
@@ -97,11 +104,11 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
     const defaultTheme = createTheme();
 
     function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(57.1428);
+        const [progress, setProgress] = useState(50);
 
         useEffect(() => {
             const timer = setTimeout(() => {
-                setProgress(71.4285);
+                setProgress(66.666);
             }, 500);
 
             return () => {
@@ -112,12 +119,12 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
 
         return (
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
+                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Circle progress={progress} />
                 </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                <Box sx={{ flex: 1, marginLeft: 3 }}>
+                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'4 / 6'}</Typography>
                 </Box>
             </Box>
         );
@@ -134,25 +141,21 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
                     sx={{
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
-                        marginTop: 8
+                        marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
-                        어흥과 함께할
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
+                        어흥
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        내 생일은?
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                        내 생일과 성별은?
                     </Typography>
-                    <br></br>
-                    <br></br>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
@@ -160,13 +163,30 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                                     required
                                     fullWidth
                                     id="birth"
-                                    label="생년월일(8자리)을 입력해주세요."
+                                    label="생년월일(8자리)을 입력해 주세요."
                                     placeholder='19600101'
                                     name="birth"
                                     autoComplete="off"
+                                    inputProps={{ maxLength: 8, pattern: "\\d{8}" }}
                                     error={!checkBirth}
                                     helperText={!checkBirth && "생년월일 형식에 맞추어 입력해 주세요."}
                                 />
+                            </Grid>
+                            <Grid item xs={12}>
+                                <FormControl component="fieldset" sx={{ float: 'right' }}>
+                                    <RadioGroup
+                                        row
+                                        id='gender'
+                                        aria-label="gender"
+                                        name="gender"
+                                        value={gender}
+                                        onChange={(event) => setGender(event.target.value)}
+
+                                    >
+                                        <FormControlLabel value='1' control={<Radio />} label="여성" />
+                                        <FormControlLabel value="0" control={<Radio />} label="남성" />
+                                    </RadioGroup>
+                                </FormControl>
                             </Grid>
                         </Grid>
 
@@ -184,11 +204,13 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
@@ -198,7 +220,7 @@ const JoinBirth = ({ handleClick, setUserBirth }) => {
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

@@ -1,79 +1,55 @@
-import { FormControl, InputLabel, MenuItem, Select, TextField } from '@mui/material';
+import { Button, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
+import Dialog from '@mui/material/Dialog';
+import DialogContent from '@mui/material/DialogContent';
+import DialogTitle from '@mui/material/DialogTitle';
 import Grid from '@mui/material/Grid';
 import LinearProgress from '@mui/material/LinearProgress';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png.png';
+import DaumPostcode from "react-daum-postcode";
+import thumbImage from '../../public/image.png';
+
 
 const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) => {
     const [progress, setProgress] = useState(0);
-    const [selectedProvince, setSelectedProvince] = useState('');
-    const [selectedCity, setSelectedCity] = useState('');
-    const [region, setRegion] = useState('');
+    const [open, setOpen] = useState(false);
 
-    const area =
-    {
-
-        "서울특별시": ["강남구", "강동구", "강북구", "강서구", "관악구", "광진구", "구로구", "금천구", "노원구", "도봉구", "동대문구", "동작구", "마포구", "서대문구", "서초구", "성동구", "성북구", "송파구", "양천구", "영등포구", "용산구", "은평구", "종로구", "중구", "중랑구"],
-        "경기도": ["수원시 장안구", "수원시 권선구", "수원시 팔달구", "수원시 영통구", "성남시 수정구", "성남시 중원구", "성남시 분당구", "의정부시", "안양시 만안구", "안양시 동안구", "부천시", "광명시", "평택시", "동두천시", "안산시 상록구", "안산시 단원구", "고양시 덕양구", "고양시 일산동구",
-            "고양시 일산서구", "과천시", "구리시", "남양주시", "오산시", "시흥시", "군포시", "의왕시", "하남시", "용인시 처인구", "용인시 기흥구", "용인시 수지구", "파주시", "이천시", "안성시", "김포시", "화성시", "광주시", "양주시", "포천시", "여주시", "연천군", "가평군",
-            "양평군"],
-        "인천광역시": ["계양구", "미추홀구", "남동구", "동구", "부평구", "서구", "연수구", "중구", "강화군", "옹진군"],
-
-
-        "강원도": ["춘천시", "원주시", "강릉시", "동해시", "태백시", "속초시", "삼척시", "홍천군", "횡성군", "영월군", "평창군", "정선군", "철원군", "화천군", "양구군", "인제군", "고성군", "양양군"]
-        ,
-
-        "충청북도": ["청주시 상당구", "청주시 서원구", "청주시 흥덕구", "청주시 청원구", "충주시", "제천시", "보은군", "옥천군", "영동군", "증평군", "진천군", "괴산군", "음성군", "단양군"],
-        "충청남도": ["천안시 동남구", "천안시 서북구", "공주시", "보령시", "아산시", "서산시", "논산시", "계룡시", "당진시", "금산군", "부여군", "서천군", "청양군", "홍성군", "예산군", "태안군"],
-        "대전광역시": ["대덕구", "동구", "서구", "유성구", "중구"],
-        "세종특별자치시": ["세종특별자치시"]
-        ,
-
-        "전라북도": ["전주시 완산구", "전주시 덕진구", "군산시", "익산시", "정읍시", "남원시", "김제시", "완주군", "진안군", "무주군", "장수군", "임실군", "순창군", "고창군", "부안군"],
-        "전라남도": ["목포시", "여수시", "순천시", "나주시", "광양시", "담양군", "곡성군", "구례군", "고흥군", "보성군", "화순군", "장흥군", "강진군", "해남군", "영암군", "무안군", "함평군", "영광군", "장성군", "완도군", "진도군", "신안군"],
-        "광주광역시": ["광산구", "남구", "동구", "북구", "서구"]
-        ,
-
-        "경상북도": ["포항시 남구", "포항시 북구", "경주시", "김천시", "안동시", "구미시", "영주시", "영천시", "상주시", "문경시", "경산시", "군위군", "의성군", "청송군", "영양군", "영덕군", "청도군", "고령군", "성주군", "칠곡군", "예천군", "봉화군", "울진군", "울릉군"],
-        "경상남도": ["창원시 의창구", "창원시 성산구", "창원시 마산합포구", "창원시 마산회원구", "창원시 진해구", "진주시", "통영시", "사천시", "김해시", "밀양시", "거제시", "양산시", "의령군", "함안군", "창녕군", "고성군", "남해군", "하동군", "산청군", "함양군", "거창군", "합천군"],
-        "부산광역시": ["강서구", "금정구", "남구", "동구", "동래구", "부산진구", "북구", "사상구", "사하구", "서구", "수영구", "연제구", "영도구", "중구", "해운대구", "기장군"],
-        "대구광역시": ["남구", "달서구", "동구", "북구", "서구", "수성구", "중구", "달성군"],
-        "울산광역시": ["남구", "동구", "북구", "중구", "울주군"]
-        ,
-
-        "제주특별자치도": ["서귀포시", "제주시"]
-
+    const handleOpen = () => {
+        setOpen(true);
     };
 
-
-
-    const handleProvinceChange = (event) => {
-        setSelectedProvince(event.target.value);
-        setSelectedCity(''); // 시/도를 변경하면 선택한 구/군/시를 초기화
+    const handleClose = () => {
+        setOpen(false);
     };
 
-    const handleCityChange = (event) => {
-        setSelectedCity(event.target.value);
-    };
+    const complete = (data) => {
+        let fullAddress = data.address;
+        let extraAddress = '';
 
-    const handleRegionChange = (event) => {
-        setRegion(event.target.value);
-    };
+        if (data.addressType === 'R') {
+            if (data.bname !== '') {
+                extraAddress += data.bname;
+            }
+            if (data.buildingName !== '') {
+                extraAddress += (extraAddress !== '' ? `, ${data.buildingName}` : data.buildingName);
+            }
+            fullAddress += (extraAddress !== '' ? ` (${extraAddress})` : '');
+        }
+        console.log(data)
+        console.log(fullAddress)
+        console.log(data.zonecode)
 
-    const handleSubmit = (event) => {
-        event.preventDefault();
-        setUserAddr1(() => selectedProvince);
-        setUserAddr2(() => selectedCity);
-        setUserAddr3(() => region);
+        setUserAddr1(() => data.sido);
+        setUserAddr2(() => data.sigungu);
+        setUserAddr3(() => data.bname);
         handleClick();
-    };
+
+    }
 
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
     const Circle = styled('div')(({ progress }) => ({
@@ -89,14 +65,12 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
         transition: "left 500ms ease-out"
     }));
 
-    const defaultTheme = createTheme();
-
     function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(76.1904);
+        const [progress, setProgress] = useState(83.333);
 
         useEffect(() => {
             const timer = setTimeout(() => {
-                setProgress(80.9523);
+                setProgress(83.333);
             }, 500);
 
             return () => {
@@ -107,12 +81,12 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
 
         return (
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
+                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Circle progress={progress} />
                 </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                <Box sx={{ flex: 1, marginLeft: 3 }}>
+                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'5 / 6'}</Typography>
                 </Box>
             </Box>
         );
@@ -123,67 +97,59 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
             primary: {
                 main: '#E55C25',
             },
+            secondary: {
+                main: '#4a4a4a',
+            },
+            background: {
+                paper: '#f3f3f3',
+            }
+        },
+        typography: {
+            h6: {
+                fontWeight: 700,
+            },
         },
     });
 
+    const theme1 = createTheme({
+        palette: {
+            primary: {
+                main: '#adb5bd',
+            },
+        },
+    });
 
     return (
-        <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+        <ThemeProvider theme={theme1}>
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
-                <Box
-                    sx={{
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
-                        marginTop: 8
-                    }}
-                >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
-                        어흥을 시작할
+                <Box sx={{
+                    minHeight: '608.57px',
+                    maxHeight: '608.57px',
+                    marginTop: 12.5,
+                }}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
+                        어흥을 이용할
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        내 지역은
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                        내 지역는?
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
-                            <Grid item xs={12} >
-                                <FormControl fullWidth
-                                    sx={{ marginBottom: '10px' }}>
-                                    <InputLabel>시/도</InputLabel>
-                                    <Select label="시/도" required value={selectedProvince} onChange={handleProvinceChange}>
-                                        {Object.keys(area).map((province) => (
-                                            <MenuItem key={province} value={province}>
-                                                {province}
-                                            </MenuItem>
-                                        ))}
-                                    </Select>
-                                </FormControl>
+                    <Box component="form" sx={{ mt: 3, width: '100%', textAlign: 'center' }}>
+                        <Grid container spacing={2}>
+                            <Grid item xs={12} sx={{
+                            }}>
 
-                                <FormControl fullWidth
-                                >
-                                    <InputLabel>구/군/시</InputLabel>
-                                    <Select label="구/군/시" required value={selectedCity} onChange={handleCityChange}>
-                                        {selectedProvince &&
-                                            area[selectedProvince].map((city) => (
-                                                <MenuItem key={city} value={city}>
-                                                    {city}
-                                                </MenuItem>
-                                            ))}
-                                    </Select>
-                                </FormControl>
-                                <TextField fullWidth
-                                    label="읍/면/동"
-                                    required
-                                    value={region}
-                                    onChange={handleRegionChange}
-                                    variant="outlined"
-                                    style={{ margin: '10px 0' }}
-                                />
+                                <TextField
+                                    readOnly
+                                    fullWidth
+                                    value={"주소를 입력해 주세요."}
+                                    onClick={handleOpen}
+                                    sx={{
+                                        backgroundColor: '#e9ecef',
+                                    }}
+                                >주소 검색</TextField>
                             </Grid>
+
                         </Grid>
 
                         <Box
@@ -193,30 +159,43 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
                                 alignItems: 'center',
                                 mt: 3,
                             }}
+                        ></Box>
+
+                        <Button
+                            fullWidth
+                            variant="contained"
+                            onClick={handleOpen}
+                            color="primary"
+                            sx={{
+                                color: 'black',
+                                height: '44px',
+                                mt: 3,
+                                mb: 2,
+                                backgroundColor: '#FEA53D', // 평소 색상
+                                '&:hover': {
+                                    backgroundColor: '#FEB158', // 호버 시 색상
+                                },
+                            }}
                         >
-
-                            <Button
-                                type="submit"
-                                fullWidth
-                                variant="contained"
-                                color="primary"
-                                sx={{
-                                    mt: 3,
-                                    mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
-                                    '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
-                                    },
-
-                                }}
-                            >
-                                다음
-                            </Button>
-                        </Box>
+                            주소 검색하기
+                        </Button>
+                        <Dialog open={open} onClose={handleClose} style={{ marginTop: '120px' }}>
+                            <DialogTitle>주소 검색</DialogTitle>
+                            <DialogContent>
+                                <DaumPostcode
+                                    autoClose
+                                    style={{ width: '400px', height: '480px' }} // 높이와 너비는 원하는 대로 조절
+                                    onComplete={data => {
+                                        complete(data);
+                                        handleClose(); // 검색 완료 후 팝업 닫기
+                                    }}
+                                />
+                            </DialogContent>
+                        </Dialog>
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

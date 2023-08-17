@@ -11,7 +11,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png.png';
+import thumbImage from '../../public/image.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -29,31 +29,8 @@ const Circle = styled('div')(({ progress }) => ({
     transition: "left 500ms ease-out"
 }));
 
-
-function LinearProgressWithLabel(props) {
-    return (
-        <Box sx={{ display: 'flex', alignItems: 'center' }}>
-            <Box sx={{ width: '100%', mr: 1 }}>
-                <LinearProgress variant="determinate" {...props} />
-            </Box>
-            <Box sx={{ minWidth: 50 }}>
-                <Typography variant="body2" color="text.secondary">{`${Math.round(
-                    props.value,
-                )}%`}</Typography>
-            </Box>
-        </Box>
-    );
-}
-
-
-const Password4 = ({ setUserPw, userTel }) => {
-    const [password, setPassword] = useState('');
-    const [confirmPassword, setConfirmPassword] = useState('');
-    const [passwordMatch, setPasswordMatch] = useState(true);
+function LinearProgressWithLabel() {
     const [progress, setProgress] = useState(66);
-    const [isAuthenticated, setIsAuthenticated] = useState(false);
-    const navi = useNavigate();
-
 
     useEffect(() => {
         const timer = setTimeout(() => {
@@ -65,43 +42,35 @@ const Password4 = ({ setUserPw, userTel }) => {
         };
     }, []);
 
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#E55C25', // 원하는 색상으로 변경
-            },
-        },
-    });
-
-    function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(66);
-
-        React.useEffect(() => {
-            const timer = setTimeout(() => {
-                setProgress(100);
-            }, 500);
-
-            return () => {
-                clearTimeout(timer);
-            };
-        }, []);
-
-        return (
-            <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
-                    <LinearProgress variant="determinate" value={progress} />
-                    <Circle progress={progress} />
-                </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
-                </Box>
+    return (
+        <Box
+            sx={{
+                position: "relative",
+                display: "flex",
+                alignItems: "center",
+                width: "100%",
+                height: "20px",
+            }}
+        >
+            <Box sx={{ position: "relative", flex: 14 }}>
+                <LinearProgress variant="determinate" value={progress} />
+                <Circle progress={progress} />
             </Box>
-        );
-    }
+            <Box sx={{ flex: 1, marginLeft: 1 }}>
+                <Typography variant="body2" color="text.secondary"
+                    sx={{ width: '30px' }}>{'3 / 3'}</Typography>
+            </Box>
+        </Box>
+    );
+}
 
-    LinearProgressWithLabel.propTypes = {
-        value: PropTypes.number.isRequired,
-    };
+const Password4 = ({ setUserPw, userTel }) => {
+    const [password, setPassword] = useState('');
+    const [confirmPassword, setConfirmPassword] = useState('');
+    const [passwordMatch, setPasswordMatch] = useState(true);
+    const [progress, setProgress] = useState(66);
+    const [isAuthenticated, setIsAuthenticated] = useState(false);
+    const navi = useNavigate();
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
@@ -148,7 +117,21 @@ const Password4 = ({ setUserPw, userTel }) => {
         }
     };
 
+    LinearProgressWithLabel.propTypes = {
+        value: PropTypes.number.isRequired,
+    };
+
     const defaultTheme = createTheme();
+
+
+
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#E55C25', // 원하는 색상으로 변경
+            },
+        },
+    });
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -156,8 +139,9 @@ const Password4 = ({ setUserPw, userTel }) => {
                 <CssBaseline />
                 <Box
                     sx={{
-                        height: '608.57px',
-                        marginTop: 8
+                        minHeight: '608.57px',
+                        maxHeight: '608.57px',
+                        marginTop: 12.5
                     }}
                 >
                     <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
@@ -234,14 +218,14 @@ const Password4 = ({ setUserPw, userTel }) => {
                             <Link href="/login" variant="body2">
                                 로그인하러가기
                             </Link>
-                            <ThemeProvider theme={theme}>
-                                <Box sx={{ width: '100%', marginTop: "40%" }}>
-                                    <LinearProgressWithLabel value={progress} />
-                                </Box>
-                            </ThemeProvider>
                         </Box>
                     </Box>
                 </Box>
+                <ThemeProvider theme={theme}>
+                    <Box sx={{ width: '100%', marginTop: "47%" }}>
+                        <LinearProgressWithLabel value={progress} />
+                    </Box>
+                </ThemeProvider>
             </Container>
         </ThemeProvider>
     );

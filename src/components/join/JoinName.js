@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png.png';
+import thumbImage from '../../public/image.png';
 
 const JoinName = ({ handleClick, setUserName }) => {
     const [progress, setProgress] = useState(0);
@@ -18,7 +18,7 @@ const JoinName = ({ handleClick, setUserName }) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
 
-        const message = `이름을 ${data.get('name')} 이 맞나요??`
+        const message = `'${data.get('name')}' 님이 맞나요?`
 
         if (window.confirm(message)) {
             setUserName(() => data.get('name'));
@@ -46,11 +46,11 @@ const JoinName = ({ handleClick, setUserName }) => {
     const defaultTheme = createTheme();
 
     function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(42.8571);
+        const [progress, setProgress] = useState(33.33);
 
         useEffect(() => {
             const timer = setTimeout(() => {
-                setProgress(57.1428);
+                setProgress(50);
             }, 500);
 
             return () => {
@@ -61,12 +61,12 @@ const JoinName = ({ handleClick, setUserName }) => {
 
         return (
             <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14 }}>
+                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
                     <LinearProgress variant="determinate" value={progress} />
                     <Circle progress={progress} />
                 </Box>
-                <Box sx={{ flex: 1, marginLeft: 1 }}>
-                    <Typography variant="body2" color="text.secondary">{`${Math.round(progress)}%`}</Typography>
+                <Box sx={{ flex: 1, marginLeft: 3 }}>
+                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'3 / 6'}</Typography>
                 </Box>
             </Box>
         );
@@ -83,25 +83,21 @@ const JoinName = ({ handleClick, setUserName }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs">
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
                     sx={{
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
-                        marginTop: 8
+                        marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
-                        어흥과 함께할
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
+                        어흥에서 사용할
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
-                        내 이름은?
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                        내 닉네임은?
                     </Typography>
-                    <br></br>
-                    <br></br>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
                         <Grid container spacing={2} >
                             <Grid item xs={12} >
@@ -109,7 +105,7 @@ const JoinName = ({ handleClick, setUserName }) => {
                                     required
                                     fullWidth
                                     id="name"
-                                    label="실명을 입력해주세요"
+                                    label="닉네임을 입력해 주세요."
                                     name="name"
                                     autoComplete="off"
                                 />
@@ -130,11 +126,13 @@ const JoinName = ({ handleClick, setUserName }) => {
                                 variant="contained"
                                 color="primary"
                                 sx={{
+                                    color: 'black',
+                                    height: '44px',
                                     mt: 3,
                                     mb: 2,
-                                    backgroundColor: '#FFB471', // 평소 색상
+                                    backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
-                                        backgroundColor: '#E55C25', // 호버 시 색상
+                                        backgroundColor: '#FEB158', // 호버 시 색상
                                     },
                                 }}
                             >
@@ -144,7 +142,7 @@ const JoinName = ({ handleClick, setUserName }) => {
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "10%" }}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>
