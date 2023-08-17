@@ -255,7 +255,8 @@ const Mypage = () => {
                     }
                 });
             console.log(response.data);
-            return response.data.item;
+            setImageFile(`data:image/jpeg;base64,${response.data.item}`);
+
         } catch (error) {
             console.error('An error occurred:', error);
         }
@@ -265,15 +266,15 @@ const Mypage = () => {
         const file = event.target.files[0];
         setImageFile(file);
         const reader = new FileReader();
-      
+
         reader.onloadend = () => {
-          document.getElementById('previewImage').src = reader.result;
+            document.getElementById('previewImage').src = reader.result;
         };
-      
+
         if (file) {
-          reader.readAsDataURL(file);
+            reader.readAsDataURL(file);
         }
-      }
+    }
 
     const changeProfileImage = async () => {
 
@@ -283,7 +284,7 @@ const Mypage = () => {
 
         try {
             const response = await axios.post('http://localhost:9000/mypage/changeprofileimage',
-            formData,
+                formData,
                 {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
@@ -553,6 +554,7 @@ const Mypage = () => {
 
     useEffect(() => {
         fetchUserInfo();  // useEffect 내에서 함수 호출
+        getProfileImage(); // getProfileImage
     }, []);
 
     useEffect(() => {
@@ -748,8 +750,8 @@ const Mypage = () => {
                                             <Grid item xs={4} style={{ padding: '0px 24px', display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'flex-start', }}>
                                                 <Typography variant="h6" fontSize='14pt' sx={{ fontWeight: 'bold', marginBottom: '20px', marginTop: '15px' }}>프로필 사진</Typography>
                                                 <img
-                                                id='previewImage'
-                                                    src={'https://mml.pstatic.net/www/mobile/edit/20230810_1095/upload_1691648758472EhbOX.png' || "default_image_path"}
+                                                    id='previewImage'
+                                                    src={imageFile || "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
                                                     alt="프로필 사진"
                                                     style={{ width: '200px', height: '200px', borderRadius: '50%', objectFit: 'cover', border: '0.5px solid #adb5bd' }}
                                                 />
@@ -806,7 +808,7 @@ const Mypage = () => {
                                     }
 
                                 }}
-                                onClick={() => { setIsEditing(!isEditing); fetchUserInfo(); }}>
+                                onClick={() => { setIsEditing(!isEditing); fetchUserInfo(); getProfileImage(); }}>
                                 취소하기</Button> : <></>
                             }
                         </StyledContainer>}
