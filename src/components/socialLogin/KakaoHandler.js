@@ -55,6 +55,7 @@ const KakaoHandler = () => {
                                     sessionStorage.setItem("userId", res.data.item.userId);
                                     navi("/");
                                 })
+
                         });
 
                 } else {
