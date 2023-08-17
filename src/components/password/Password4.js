@@ -43,22 +43,14 @@ function LinearProgressWithLabel() {
     }, []);
 
     return (
-        <Box
-            sx={{
-                position: "relative",
-                display: "flex",
-                alignItems: "center",
-                width: "100%",
-                height: "20px",
-            }}
-        >
-            <Box sx={{ position: "relative", flex: 14 }}>
+        <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
+            <Box sx={{ position: 'relative', flex: 14 }}>
                 <LinearProgress variant="determinate" value={progress} />
                 <Circle progress={progress} />
             </Box>
             <Box sx={{ flex: 1, marginLeft: 1 }}>
                 <Typography variant="body2" color="text.secondary"
-                    sx={{ width: '30px' }}>{'3 / 3'}</Typography>
+                    sx={{ width: '30px' }}>{'1 / 6'}</Typography>
             </Box>
         </Box>
     );
@@ -72,6 +64,46 @@ const Password4 = ({ setUserPw, userTel }) => {
     const [isAuthenticated, setIsAuthenticated] = useState(false);
     const navi = useNavigate();
 
+    function ProgressWithLabel(props) {
+        return (
+            <Box sx={{ display: 'flex', alignItems: 'center' }}>
+                <Box sx={{ width: '100%', mr: 1 }}>
+                    <LinearProgress variant="determinate" {...props} />
+                </Box>
+                <Box sx={{ minWidth: 50 }}>
+                    <Typography variant="body2" color="text.secondary">{`${Math.round(
+                        props.value,
+                    )}%`}</Typography>
+                </Box>
+            </Box>
+        );
+    }
+
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setProgress(100);
+        }, 500);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
+
+    const theme = createTheme({
+        palette: {
+            primary: {
+                main: '#E55C25', // 원하는 색상으로 변경
+            },
+        },
+    });
+
+
+
+    LinearProgressWithLabel.propTypes = {
+        value: PropTypes.number.isRequired,
+    };
+
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
         setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
@@ -84,6 +116,13 @@ const Password4 = ({ setUserPw, userTel }) => {
 
     const handleSubmit = (event) => {
         event.preventDefault();
+
+        // 비밀번호의 길이 확인
+        if (password.length < 8 || password.length > 20) {
+            alert("8-20자 사이의 비밀번호를 설정해주세요.");
+            return; // 함수 실행을 여기서 종료
+        }
+
         if (password === confirmPassword) {
             setIsAuthenticated(true);
             console.log('비밀번호 일치:', password);
@@ -117,21 +156,7 @@ const Password4 = ({ setUserPw, userTel }) => {
         }
     };
 
-    LinearProgressWithLabel.propTypes = {
-        value: PropTypes.number.isRequired,
-    };
-
     const defaultTheme = createTheme();
-
-
-
-    const theme = createTheme({
-        palette: {
-            primary: {
-                main: '#E55C25', // 원하는 색상으로 변경
-            },
-        },
-    });
 
     return (
         <ThemeProvider theme={defaultTheme}>
@@ -165,6 +190,7 @@ const Password4 = ({ setUserPw, userTel }) => {
                                     name="password"
                                     type="password"
                                     autoComplete="new-password"
+                                    inputProps={{ minLength: 8, maxLength: 20 }}
                                     value={password}
                                     onChange={handlePasswordChange}
                                 />
@@ -178,6 +204,7 @@ const Password4 = ({ setUserPw, userTel }) => {
                                     name="confirmPassword"
                                     type="password"
                                     autoComplete="new-password"
+                                    inputProps={{ minLength: 8, maxLength: 20 }}
                                     value={confirmPassword}
                                     onChange={handleConfirmPasswordChange}
                                     error={!passwordMatch}
@@ -222,7 +249,7 @@ const Password4 = ({ setUserPw, userTel }) => {
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "47%" }}>
+                    <Box sx={{ width: '100%', marginTop: "40%" }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

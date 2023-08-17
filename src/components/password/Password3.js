@@ -168,6 +168,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
                   name="code"
                   autoComplete="off"
                   onChange={handleCodeChange} // 코드 입력 시 handleChange 함수 호출
+                  inputProps={{ maxLength: 6 }}
                   error={hasError} // hasError 상태에 따라 에러 스타일 적용
                   helperText={
                     hasError ? "숫자 이외의 다른 문자가 입력되었습니다." : ""

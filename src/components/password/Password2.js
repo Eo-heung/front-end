@@ -32,7 +32,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if (!/^[0-9]{3}[0-9]{3,4}[0-9]{4}$/.test(data.get("userTel"))) {
+    if (!/^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/.test(data.get('userTel'))) {
       setIsTelValid(false);
     } else {
       setIsTelValid(true);
@@ -143,7 +143,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
                   name="userTel"
                   autoComplete="off"
                   placeholder="01012345678"
-                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                  inputProps={{ maxLength: 11 }}
                   error={!isTelValid}
                   helperText={
                     !isTelValid && "전화번호 형식에 맞추어 입력해 주세요."
