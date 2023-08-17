@@ -67,12 +67,13 @@ const Login = () => {
 
         window.location.href = kakaoURL;
     };
-
-    const SocialGoogle = () => {
+    const SocialNaver = () => {
+        const Rest_api_key = 'fK9M_7tC_kI7hRd4QXQG'; // 환경 변수에서 API 키 가져오기
         const redirect_uri = 'http://localhost:1234/oauth';
-        const client_id = '288953923003-3jl39jsis929cjl1ajjtg78vc22ke1h4.apps.googleusercontent.com';
-        const GoogleURL = `https://accounts.google.com/o/oauth2/v2/auth?client_id=${redirect_uri}&redirect_uri=${client_id}&response_type=code&scope=email`;
-        window.location.href = GoogleURL;
+        const state = '1234';
+        const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${Rest_api_key}&state=${state}&redirect_uri=${redirect_uri}`;
+
+        window.location.href = naverURL;
     };
 
 
@@ -327,7 +328,7 @@ const Login = () => {
                             </Typography>
                             <Grid container sx={{ width: '70%', height: '75px', margin: '0 auto', }} spacing={2.5}>
                                 <Grid item xs={3}>
-                                    <Link href="#">
+                                    <Link href="#" onClick={SocialNaver}>
                                         <Box
                                             sx={{
                                                 width: '100%',
@@ -346,32 +347,6 @@ const Login = () => {
                                                 width: '100%',
                                                 height: '100%',
                                                 backgroundImage: 'url(https://i0.wp.com/forhappywomen.com/wp-content/uploads/2018/11/%EC%82%B0%EB%B6%80%EC%9D%B8%EA%B3%BC-%ED%8F%AC%ED%95%B4%ED%94%BC%EC%9A%B0%EB%A8%BC-%EB%AC%B8%EC%9D%98-%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%94%8C%EB%9F%AC%EC%8A%A4%EC%B9%9C%EA%B5%AC-%EB%B2%84%ED%8A%BC.png?resize=586%2C586&ssl=1)',
-                                                backgroundSize: 'contain',
-                                                backgroundRepeat: 'no-repeat',
-                                            }}
-                                        />
-                                    </Link>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Link href="#">
-                                        <Box
-                                            sx={{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundImage: 'url(https://www.doobuying.com/assets/img/icon-facebook.png)',
-                                                backgroundSize: 'contain',
-                                                backgroundRepeat: 'no-repeat',
-                                            }}
-                                        />
-                                    </Link>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Link href="#" onClick={SocialGoogle}>
-                                        <Box
-                                            sx={{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundImage: 'url(https://chuu.co.kr/images/login/join_google.png)',
                                                 backgroundSize: 'contain',
                                                 backgroundRepeat: 'no-repeat',
                                             }}
