@@ -24,10 +24,8 @@ const StyledBox = styled(Box)`
 const StyledButton = styled(Button)`
     margin-top: 10px;
     background-color: #FCBE71;
-    box-shadow: none;
     &:hover {
         background-color: #FCBE71;
-        box-shadow: none;
     }
 `;
 
@@ -163,21 +161,6 @@ const CreateMoim = () => {
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
         setMoimPic(file);
-
-        const reader = new FileReader();
-
-        reader.onloadend = () => {
-            const previewImageElem = document.getElementById('previewImage');
-            if (previewImageElem) {
-                previewImageElem.src = reader.result;
-            } else {
-                console.error("Image preview element not found");
-            }
-        };
-
-        if (file) {
-            reader.readAsDataURL(file);
-        }
     };
 
     const isValidNumber = (input) => {
@@ -219,7 +202,6 @@ const CreateMoim = () => {
         }
 
         const createMoimAxios = async () => {
-
             const userData = {
                 moimCategory: inputs.moimCategory,
                 userId: sessionStorage.getItem("userId"),
@@ -228,7 +210,7 @@ const CreateMoim = () => {
                 moimTitle: inputs.moimTitle,
                 maxMoimUser: inputs.maxMoimUser,
                 moimContent: inputs.moimContent,
-            }
+            };
 
             try {
                 const response = await axios.post('http://localhost:9000/moim/create-moim', userData, {
@@ -240,8 +222,24 @@ const CreateMoim = () => {
                 console.log(response.data);
 
                 const formData = new FormData();
-                formData.append("moimPic", moimPic);
-                formData.append("moimId", response.data.item.moimId);
+
+                if (!moimPic) {
+                    try {
+                        const defaultImageRes = await axios.get('https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png', {
+                            responseType: 'blob'
+                        });
+
+                        const defaultImageFile = new File([defaultImageRes.data], 'default-image.png', { type: 'image/png' });
+                        formData.append("moimPic", defaultImageFile);
+                        formData.append("moimId", response.data.item.moimId);
+                    } catch (err) {
+                        console.error("Failed to download default image:", err);
+                    }
+                } else {
+                    formData.append("moimPic", moimPic);
+                    formData.append("moimId", response.data.item.moimId);
+                }
+
                 console.log(formData);
 
                 const result = await axios.post('http://localhost:9000/moim/create-moim-pic', formData, {
@@ -322,7 +320,7 @@ const CreateMoim = () => {
                             <div>
                                 <img
                                     id="previewImage"
-                                    src={URL.createObjectURL(moimPic) || ""}
+                                    src={URL.createObjectURL(moimPic)}
                                     alt="대표 사진"
                                     style={{ maxWidth: "300px", maxHeight: "300px", objectFit: "cover", display: "block", cursor: "pointer" }}
                                     onClick={triggerFileInput}
