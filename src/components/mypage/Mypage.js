@@ -1,5 +1,5 @@
 import styled from '@emotion/styled';
-import { Box, Button, Container, Divider, Grid, Link, MenuItem, Paper, Select, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Typography } from '@mui/material';
+import { Box, Button, Container, Divider, FormControl, FormControlLabel, Grid, Link, MenuItem, Paper, Radio, RadioGroup, Select, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Typography } from '@mui/material';
 import Dialog from '@mui/material/Dialog';
 import DialogContent from '@mui/material/DialogContent';
 import DialogTitle from '@mui/material/DialogTitle';
@@ -193,6 +193,7 @@ const Mypage = () => {
             const userinfo = {
                 userTel: userTel,
                 userEmail: userEmail,
+                userGender: userGender,
             }
 
             console.log(userinfo);
@@ -205,7 +206,7 @@ const Mypage = () => {
                 });
             console.log(response.data);
             setIsEditing(false);
-
+            fetchUserInfo();
         } catch (error) {
             console.error('An error occurred:', error);
         }
@@ -292,6 +293,7 @@ const Mypage = () => {
                     }
                 });
             console.log(response.data);
+            getProfileImage();
         } catch (error) {
             console.error('An error occurred:', error);
         }
@@ -826,12 +828,13 @@ const Mypage = () => {
                                         {/* 내용 박스들 */}
                                         <Grid item xs={6} style={{ padding: '24px 500px 24px 50px' }}>
                                             {[
-                                                ['휴대폰 번호', userTel, (v) => setUserTel(v.replace(/-/g, ''))],
+                                                ['휴대폰 번호', userTel],
                                                 ['비밀번호', ''],
-                                                ['이메일', userEmail, setUserEmail],
-                                                ['생년월일', userBirth, setUserBirth],
-                                                ['가입일', userRegdate, setUserRegdate]
-                                            ].map(([label, value, setter]) => (
+                                                ['생년월일', userBirth || ""],
+                                                ['성별', userGender || ""],
+                                                ['이메일', userEmail || ""],
+                                                ['가입일', userRegdate || ""]
+                                            ].map(([label, value]) => (
                                                 <>
                                                     <Grid container spacing={2} alignItems="center">
                                                         <Grid item xs={3}>
@@ -850,12 +853,26 @@ const Mypage = () => {
                                                                         label === '비밀번호' ?
                                                                             <button type="button" style={{ backgroundColor: '#dee2e6', height: '22px', border: 'none', borderRadius: '5px', fontSize: '14px' }} onClick={openPasswordModal}>비밀번호 변경하기</button>
                                                                             :
-                                                                            <input
-                                                                                type="text"
-                                                                                value={value}
-                                                                                onChange={(e) => setUserEmail(() => e.target.value)}
-                                                                                style={{ width: '100%', fontSize: '16px' }}
-                                                                            />
+                                                                            label === '성별' ?
+                                                                                <div>
+                                                                                    <FormControl component="fieldset">
+                                                                                        <RadioGroup
+                                                                                            aria-label="gender"
+                                                                                            value={userGender}
+                                                                                            onChange={(e) => setUserGender(e.target.value)}
+                                                                                            sx={{ display: 'inline' }}>
+                                                                                            <FormControlLabel value={1} control={<Radio />} label="남자" />
+                                                                                            <FormControlLabel value={0} control={<Radio />} label="여자" />
+                                                                                        </RadioGroup>
+                                                                                    </FormControl>
+                                                                                </div>
+                                                                                :
+                                                                                <input
+                                                                                    type="text"
+                                                                                    value={value}
+                                                                                    onChange={(e) => setUserEmail(() => e.target.value)}
+                                                                                    style={{ width: '100%', fontSize: '16px' }}
+                                                                                />
                                                                     : <Typography variant="body2" fontSize='12pt' sx={{ width: '650px' }}>
                                                                         {
                                                                             label === '휴대폰 번호'
@@ -864,7 +881,9 @@ const Mypage = () => {
                                                                                     ? `${value.slice(0, 4)}년 ${value.slice(4, 6)}월 ${value.slice(6, 8)}일`
                                                                                     : label === '가입일'
                                                                                         ? value.slice(0, 10).replace(/-/g, '년 ').replace(/-/g, '월 ') + '일'
-                                                                                        : value
+                                                                                        : label === '성별'
+                                                                                            ? (userGender === 1 ? '남자' : userGender === 0 ? '여자' : "")
+                                                                                            : value
                                                                         }
                                                                     </Typography>
                                                             }

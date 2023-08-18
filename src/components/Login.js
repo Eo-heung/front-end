@@ -17,9 +17,9 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import axios from 'axios';
 import React, { useCallback, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
 import Carousel from 'react-material-ui-carousel';
 import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
 
 
 const Login = () => {
@@ -77,7 +77,7 @@ const Login = () => {
                 .then(response => {
                     console.log(response);
                     if (response.data.item) {
-                        navi("/success"); // 토큰이 유효하면 지정된 경로로 이동
+                        navi("/"); // 토큰이 유효하면 지정된 경로로 이동
                     }
                 })
                 .catch(e => {
@@ -109,7 +109,7 @@ const Login = () => {
                     localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
                     sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                     sessionStorage.setItem("userId", response.data.item.userId);
-                    navi("/success");
+                    navi("/");
 
                     console.log(sessionStorage.getItem("ACCESS_TOKEN"));
 
