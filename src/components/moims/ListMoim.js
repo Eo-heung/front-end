@@ -4,7 +4,6 @@ import { Link } from 'react-router-dom';
 import axios from 'axios';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import { styled } from '@mui/system';
-import { data as importedData } from './data.js';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
 
@@ -135,7 +134,6 @@ const EllipsisText = styled(Typography)`
 `;
 
 const ListMoim = () => {
-    // const [data, setData] = useState([]);
     const [data, setData] = useState(null);
     const [hasMore, setHasMore] = useState(true);
     const [result, setResult] = useState(null);
@@ -164,7 +162,9 @@ const ListMoim = () => {
         try {
             const response = await axios.get(`http://localhost:9000/moim/list-moim`);
             console.log(response.data);
-            const moims = Object.values(response.data.item);
+
+            const moims = Object.values(response.data.item).sort((a, b) => a.moimId - b.moimId);
+
             setData(moims);
             setResult(moims);
             console.log(result);
