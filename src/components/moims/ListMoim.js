@@ -82,6 +82,11 @@ const StyledButton = styled(Button)`
     top: 200px;
     right: 20%;
     z-index: 1001;
+    background-color: #FCBE71;
+    &:hover {
+        background-color: #FCBE71;
+        color: #fff;
+    }
 `;
 
 const StyledCard = styled(Card)`
@@ -131,8 +136,9 @@ const EllipsisText = styled(Typography)`
 
 const ListMoim = () => {
     // const [data, setData] = useState([]);
-    const [data, setData] = useState(importedData);
+    const [data, setData] = useState(null);
     const [hasMore, setHasMore] = useState(true);
+    const [result, setResult] = useState(null);
     const [page, setPage] = useState(1);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [category, setCategory] = useState('all');
@@ -147,6 +153,7 @@ const ListMoim = () => {
     };
 
     useEffect(() => {
+        fetchData();
         window.addEventListener('scroll', scrollHandler);
         return () => {
             window.removeEventListener('scroll', scrollHandler);
@@ -155,8 +162,12 @@ const ListMoim = () => {
 
     const fetchData = async () => {
         try {
-            const response = await axios.get(`http://localhost:1234/list-moim?page=${page}`);
-            setData(prev => [...prev, ...response.data]);
+            const response = await axios.get(`http://localhost:9000/moim/list-moim`);
+            console.log(response.data);
+            const moims = Object.values(response.data.item);
+            setData(moims);
+            setResult(moims);
+            console.log(result);
             if (response.data.length === 0) {
                 setHasMore(false);
             } else {
@@ -167,9 +178,7 @@ const ListMoim = () => {
         }
     };
 
-    useEffect(() => {
-        fetchData();
-    }, []);
+
 
     return (
         <BasicBoard>
@@ -190,17 +199,17 @@ const ListMoim = () => {
             </StyledContainer>
             <div style={{ marginTop: "180px" }}>
                 <InfiniteScroll
-                    dataLength={data.length}
+                    dataLength={data ? data.length : 0}
                     next={fetchData}
                     hasMore={hasMore}
                     scrollableTarget={document}
                 >
-                    {data.map(moim => (
-                        <StyledLink to={`/view-moim/${moim.moimId}`}>
-                            <StyledCard key={moim.moimId}>
+                    {data && data.map(moim => (
+                        <StyledLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
+                            <StyledCard>
                                 <StyledCardMedia
                                     component="img"
-                                    image={moim.imageURL}
+                                    image={moim.moimPic && `data:image/jpeg;base64,${moim.moimPic}` || 'https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'}
                                     alt="moim image"
                                 />
                                 <CardInfo>
@@ -218,6 +227,7 @@ const ListMoim = () => {
                         </StyledLink>
                     ))}
                 </InfiniteScroll>
+
             </div>
             <TopButton />
         </BasicBoard>
