@@ -106,10 +106,10 @@ const CreateMoim = () => {
         moimAddr: "",
         moimTitle: "",
         maxMoimUser: "",
-        moimContent: "",
-        moimPic: ""
+        moimContent: ""
     });
 
+    const [moimPic, setMoimPic] = useState(null);
     const [cookies] = useCookies(['userNickname', 'userAddr3']);
     const [userData, setUserData] = useState({
         userNickname: '',
@@ -125,12 +125,12 @@ const CreateMoim = () => {
         }
 
         console.log(userData);
-    }, [cookies.userNickname, cookies.userAddr3]);
+    }, [cookies]);
 
     useEffect(() => {
         setInputs(prev => ({
             ...prev,
-            moimLeaderNickname: userData.userNickname,
+            moimrNickname: userData.userNickname,
             moimAddr: userData.userAddr3
         }));
     }, [userData]);
@@ -162,15 +162,17 @@ const CreateMoim = () => {
 
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
-        setInputs(prev => ({
-            ...prev,
-            moimPic: file
-        }));
+        setMoimPic(file);
 
         const reader = new FileReader();
 
         reader.onloadend = () => {
-            document.getElementById('previewImage').src = reader.result;
+            const previewImageElem = document.getElementById('previewImage');
+            if (previewImageElem) {
+                previewImageElem.src = reader.result;
+            } else {
+                console.error("Image preview element not found");
+            }
         };
 
         if (file) {
@@ -216,22 +218,43 @@ const CreateMoim = () => {
             return;
         }
 
-        const formData = new FormData();
-        for (const moimPic in inputs) {
-            formData.append(moimPic, inputs[moimPic]);
-        }
-
         const createMoimAxios = async () => {
+
+            const userData = {
+                moimCategory: inputs.moimCategory,
+                userId: sessionStorage.getItem("userId"),
+                moimNickname: cookies.userNickname,
+                moimAddr: cookies.userAddr3,
+                moimTitle: inputs.moimTitle,
+                maxMoimUser: inputs.maxMoimUser,
+                moimContent: inputs.moimContent,
+            }
+
             try {
-                const response = await axios.post('http://localhost:9000/moim/create-moim', formData, {
+                const response = await axios.post('http://localhost:9000/moim/create-moim', userData, {
                     headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
-                        'Content-Type': 'multipart/form-data'
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
                 });
+
                 console.log(response.data);
-                if (response.data && response.data.item.msg) {
-                    alert(response.data.item.msg);
+
+                const formData = new FormData();
+                formData.append("moimPic", moimPic);
+                formData.append("moimId", response.data.item.moimId);
+                console.log(formData);
+
+                const result = await axios.post('http://localhost:9000/moim/create-moim-pic', formData, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                        'Content-Type': 'multipart/form-data',
+                    }
+                });
+
+                console.log(result.data);
+
+                if (result.data.item) {
+                    alert("등록이 완료되었습니다.");
                     navi('/list-moim');
                 }
             } catch (e) {
@@ -240,7 +263,7 @@ const CreateMoim = () => {
         }
 
         createMoimAxios();
-    }, [inputs]);
+    }, [inputs, moimPic]);
 
 
     return (
@@ -294,12 +317,12 @@ const CreateMoim = () => {
                         모임 대표사진
                     </h5>
                     {
-                        inputs.moimPic
+                        moimPic
                             ?
                             <div>
                                 <img
                                     id="previewImage"
-                                    src={URL.createObjectURL(inputs.moimPic)}
+                                    src={URL.createObjectURL(moimPic) || ""}
                                     alt="대표 사진"
                                     style={{ maxWidth: "300px", maxHeight: "300px", objectFit: "cover", display: "block", cursor: "pointer" }}
                                     onClick={triggerFileInput}
