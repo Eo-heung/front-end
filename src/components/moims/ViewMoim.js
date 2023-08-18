@@ -6,6 +6,7 @@ import { styled } from '@mui/system';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import { useCookies } from 'react-cookie';
+import { async } from 'q';
 
 const StyledTypography = styled(Typography)`
     margin-bottom: 10px;
@@ -23,8 +24,15 @@ const StyledLink = styled(Link)`
     text-decoration: none;
 `;
 
-const StyledButton = styled(Button)`
+const ButtonRow = styled('div')`
+    display: flex;
+    justify-content: center;
     margin: 10px auto;
+    gap: 30px;
+`;
+
+const StyledButton = styled(Button)`
+    margin: 20px 10px 0 10px;
     background-color: #FCBE71;
     &:hover {
         background-color: #FCBE71;
@@ -42,7 +50,7 @@ const ApplyLink = styled(Link)`
 const StyledMoimContent = styled('div')`
     display: flex;
     flex-direction: column;
-    align-items: center;
+    align-items: flex-start;
     margin-bottom: 1.5rem;
     padding: 1rem;
     width: 100%;
@@ -82,6 +90,28 @@ const ViewMoim = () => {
         getMoimDetail();
     }, [id]);
 
+    const deleteMoim = async () => {
+        try {
+            const response = await axios.delete(`http://localhost:9000/moim/delete-moim/${moimId}`);
+
+            if (response.status === 200) {
+                alert("모집글이 삭제되었습니다.");
+                window.location.href = '/list-moim';
+            }
+        } catch (error) {
+            console.error("Failed to delete moim:", error);
+            alert("모집글 삭제에 실패하였습니다.");
+        }
+    };
+
+    const handleDeleteClick = () => {
+        const isConfirmed = window.confirm(`${moimDetail.moimTitle} 모집글을 정말로 삭제하시겠습니까?`);
+
+        if (isConfirmed) {
+            deleteMoim();
+        }
+    };
+
     return (
         <BasicBoard>
             <h5 style={{ marginTop: "1.5rem" }}>{moimDetail.moimCategory}</h5>
@@ -92,18 +122,18 @@ const ViewMoim = () => {
             </MoimInfoRow>
             <MoimInfoRow style={{ marginBottom: "1rem" }}>
                 <StyledTypography variant="body1">{moimDetail.moimAddr}</StyledTypography>
-                <StyledTypography variant="body1">{moimDetail.currentMoimUser}/{moimDetail.maxMoimUser}</StyledTypography>
+                <StyledTypography variant="body1">{moimDetail.currentMoimUser || "1"}/{moimDetail.maxMoimUser}</StyledTypography>
             </MoimInfoRow>
             <StyledMoimContent>
                 <StyledTypography variant="body1">{moimDetail.moimContent}</StyledTypography>
             </StyledMoimContent>
-            <img src={moimPic || 'https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'}
+            <img src={moimPic}
                 style={{ maxWidth: '700px', maxHeight: '400px' }}></img>
             {moimDetail.moimNickname === cookie.userNickname ? (
-                <>
+                <ButtonRow>
                     <StyledButton variant="contained" size="large"><ApplyLink to={`/modify-moim/${moimId}`}>수정</ApplyLink></StyledButton>
-                    <StyledButton variant="contained" size="large"><ApplyLink to={`/delete-moim/${moimId}`}>삭제</ApplyLink></StyledButton>
-                </>
+                    <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                </ButtonRow>
             ) : (
                 <StyledButton variant="contained" size="large"><ApplyLink to="/">신청</ApplyLink></StyledButton>
             )}
