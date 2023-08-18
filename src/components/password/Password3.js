@@ -11,6 +11,8 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import React, { useEffect, useState } from "react";
 import thumbImage from "../../public/image.png";
+import { useNavigate } from 'react-router-dom';
+import axios from 'axios';
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled("div")(({ progress }) => ({
@@ -26,19 +28,47 @@ const Circle = styled("div")(({ progress }) => ({
   transition: "left 500ms ease-out",
 }));
 
-const Password3 = ({ handleClick, backClick, checkNum }) => {
+const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
   const [progress, setProgress] = useState(0);
   const [hasError, setHasError] = useState(false);
+  const navi = useNavigate();
+
+  const idCheck = async () => {
+    try {
+      const response = await axios.post('http://localhost:9000/idcheck', {
+        userId: userTel
+      });
+      console.log(response);
+      return response.data; // 반환된 데이터를 리턴합니다.
+    } catch (error) {
+      console.log(error);
+      return null; // 에러 발생 시 null을 리턴합니다.
+    }
+  };
 
   const handleSubmit = (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget);
-    console.log(data.get("code"));
-    if (data.get("code") !== checkNum) {
+    console.log(data.get('code'));
+
+    // 인증번호 확인하는 if 문
+    if (data.get('code') !== checkNum) {
+      // 인증번호 틀렸을 때
       alert("인증번호를 다시 확인해주세요.");
+
     } else {
-      alert("인증번호이 완료되었습니다.");
-      handleClick();
+      // 인증번호 맞을 때
+      const response = idCheck();
+      if (response !== "") {
+        alert("인증이 완료되었습니다.");
+        // 다음페이지 넘어가기
+        handleClick();
+      }
+      else {
+        // 유저가 없는 상황
+        alert("가입된 정보가 없습니다.");
+        navi("/login");
+      }
     }
   };
 
@@ -81,9 +111,8 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
           <Circle progress={progress} />
         </Box>
         <Box sx={{ flex: 1, marginLeft: 1 }}>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(
-            progress
-          )}%`}</Typography>
+          <Typography variant="body2" color="text.secondary"
+            sx={{ width: '30px' }}>{'2 / 3'}</Typography>
         </Box>
       </Box>
     );
@@ -103,8 +132,9 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
         <CssBaseline />
         <Box
           sx={{
-            height: "608.57px",
-            marginTop: 8,
+            minHeight: '608.57px',
+            maxHeight: '608.57px',
+            marginTop: 12.5
           }}
         >
           <Typography
@@ -138,6 +168,7 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
                   name="code"
                   autoComplete="off"
                   onChange={handleCodeChange} // 코드 입력 시 handleChange 함수 호출
+                  inputProps={{ maxLength: 6 }}
                   error={hasError} // hasError 상태에 따라 에러 스타일 적용
                   helperText={
                     hasError ? "숫자 이외의 다른 문자가 입력되었습니다." : ""
@@ -176,15 +207,14 @@ const Password3 = ({ handleClick, backClick, checkNum }) => {
               <Link href="/login" variant="body2">
                 로그인하러가기
               </Link>
-
-              <ThemeProvider theme={theme}>
-                <Box sx={{ width: "100%", marginTop: "47%" }}>
-                  <LinearProgressWithLabel value={progress} />
-                </Box>
-              </ThemeProvider>
             </Box>
           </Box>
         </Box>
+        <ThemeProvider theme={theme}>
+          <Box sx={{ width: "100%", marginTop: "47%" }}>
+            <LinearProgressWithLabel value={progress} />
+          </Box>
+        </ThemeProvider>
       </Container>
     </ThemeProvider>
   );

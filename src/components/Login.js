@@ -77,7 +77,7 @@ const Login = () => {
                 .then(response => {
                     console.log(response);
                     if (response.data.item) {
-                        navi("/success"); // 토큰이 유효하면 지정된 경로로 이동
+                        navi("/"); // 토큰이 유효하면 지정된 경로로 이동
                     }
                 })
                 .catch(e => {
@@ -109,7 +109,7 @@ const Login = () => {
                     localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
                     sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                     sessionStorage.setItem("userId", response.data.item.userId);
-                    navi("/success");
+                    navi("/");
 
                     console.log(sessionStorage.getItem("ACCESS_TOKEN"));
 
@@ -128,16 +128,16 @@ const Login = () => {
                 }
             } catch (e) {
                 console.log(e);
-                // if (e.response.data.errorMessage === 'id not exist') {
-                //     alert("아이디가 존재하지 않습니다.");
-                //     return;
-                // } else if (e.response.data.errorMessage === 'wrong pw') {
-                //     alert("비밀번호가 틀렸습니다.");
-                //     return;
-                // } else {
-                //     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
-                //     return;
-                // }
+                if (e.response.data.errorMessage === 'id not exist') {
+                    alert("아이디가 존재하지 않습니다.");
+                    return;
+                } else if (e.response.data.errorMessage === 'wrong pw') {
+                    alert("비밀번호가 틀렸습니다.");
+                    return;
+                } else {
+                    alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
+                    return;
+                }
             }
         }
 
