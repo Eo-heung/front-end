@@ -77,7 +77,7 @@ const Login = () => {
                 .then(response => {
                     console.log(response);
                     if (response.data.item) {
-                        navi("/success"); // 토큰이 유효하면 지정된 경로로 이동
+                        navi("/"); // 토큰이 유효하면 지정된 경로로 이동
                     }
                 })
                 .catch(e => {
@@ -109,7 +109,7 @@ const Login = () => {
                     localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
                     sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                     sessionStorage.setItem("userId", response.data.item.userId);
-                    navi("/success");
+                    navi("/");
 
                     console.log(sessionStorage.getItem("ACCESS_TOKEN"));
 
