@@ -139,3 +139,9 @@
   font-size: 0.8rem;
   color: #ffffff;
 }
+
+.text .message-time {
+  font-size: 0.8em;
+  color: #aaa;
+  margin-left: 10px;
+}

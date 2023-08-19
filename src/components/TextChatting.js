@@ -14,12 +14,12 @@ function TextChatting() {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://192.168.0.61:5000");
+    socket.current = io("http://localhost:5000");
 
     const handleMessage = (message) => {
       setMessages((prevMessages) => [
         ...prevMessages,
-        { content: message, type: "received" },
+        { content: message, type: "received", timestamp: new Date() },
       ]);
     };
     const handleWelcome = (user, newCount) => {
@@ -80,7 +80,11 @@ function TextChatting() {
     socket.current.emit("new_message", message, roomName, () => {
       setMessages([
         ...messages,
-        { content: `${nickname}: ${message}`, type: "sent" },
+        {
+          content: `${message}`,
+          type: "sent",
+          timestamp: new Date(),
+        },
       ]);
     });
     e.target.message.value = "";
@@ -104,6 +108,13 @@ function TextChatting() {
 
   const handleMessageInput = () => {
     socket.current.emit("typing", roomName);
+  };
+
+  const handleMessageDate = (message) => {
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { content: message, type: "received", timestamp: new Date() },
+    ]);
   };
 
   return (
@@ -141,7 +152,15 @@ function TextChatting() {
                               key={index}
                               className={`chat-message ${message.type}`}
                             >
-                              {message.content}
+                              {message.content}{" "}
+                              <span className="message-time">
+                                {message.timestamp &&
+                                !isNaN(new Date(message.timestamp))
+                                  ? new Date(
+                                      message.timestamp
+                                    ).toLocaleTimeString()
+                                  : ""}
+                              </span>
                             </li>
                           ))}
                         </ul>
