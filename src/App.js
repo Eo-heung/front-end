@@ -1,24 +1,45 @@
-import logo from './logo.svg';
-import './App.css';
+import { Route, Routes } from "react-router-dom";
+import Login from "./components/Login";
+import Layout from "./components/partials/Layout";
+import MainContent from "./components/partials/MainContent";
+import ViewMoim from "./components/moims/ViewMoim";
+import CreateMoim from "./components/moims/CreateMoim";
+import Password from "./components/Password";
+import SignUp from './components/SignUp';
+import SuccessPage from "./components/SuccessPage";
+import { CookiesProvider } from "react-cookie";
+import ListMoim from "./components/moims/ListMoim";
+import BasicBoard from "./components/utils/BasicBoard";
+
 
 function App() {
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <>
+      <CookiesProvider>
+        <Routes>
+          <Route path="/" element={<Layout></Layout>}>
+            <Route index element={<MainContent></MainContent>}></Route>
+            <Route
+              path="/basicboard"
+              element={<BasicBoard></BasicBoard>}
+            ></Route>
+            <Route
+              path="/create-moim"
+              element={<CreateMoim></CreateMoim>}
+            ></Route>
+            <Route
+              path="/view-moim/:moimId"
+              element={<ViewMoim></ViewMoim>}
+            ></Route>
+            <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
+          </Route>
+          <Route path="/login" element={<Login></Login>}></Route>
+          <Route path='/signup' element={<SignUp></SignUp>}></Route>
+          <Route path="/findpassword" element={<Password></Password>}></Route>
+          <Route path="/success" element={<SuccessPage></SuccessPage>} />
+        </Routes>
+      </CookiesProvider>
+    </>
   );
 }
 
