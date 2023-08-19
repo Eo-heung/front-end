@@ -10,6 +10,7 @@ import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import "../css/partials/CameraChatting.css";
 import axios from "axios";
+import { Block } from "@mui/icons-material";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -321,144 +322,133 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   };
 
   return (
-    <div>
-      <div id="call">
-        <div id="myStreamState">
-          {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
-          <div style={{ display: "flex", justifyContent: "center" }}>
-            {/* 상대방 비디오 혹은 대기 이미지 */}
-            {connectionStatus === "매칭됨" ? (
-              <>
-                <span className="nickname-label">{opponentNickname}</span>
-                <video
-                  ref={peerFaceRef}
-                  className="video-style3"
-                  autoPlay
-                  playsInline
-                />
-              </>
-            ) : (
-              <img src={EoheungImg} alt="상대 찾는중" className="chat-image" />
-            )}
+    <>
+      <div id="myStreamState">
+        {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
+        <div
+          style={{
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
+          {/* 상대방 비디오 혹은 대기 이미지 */}
+          {connectionStatus === "매칭됨" ? (
+            <div className="opponent-nickname">
+              <span className="nickname-label">{opponentNickname}</span>
+              <video
+                ref={peerFaceRef}
+                className="video-style3"
+                autoPlay
+                playsInline
+              />
+            </div>
+          ) : (
+            <img src={EoheungImg} alt="상대 찾는중" className="chat-image" />
+          )}
 
-            <video
-              ref={myFaceRef}
-              className="video-style2"
-              muted
-              autoPlay
-              playsInline
-            />
-          </div>
-          <div className="button-container">
-            {/* <h1>Hello, {userNickname}!</h1> */}
-            <button
-              className="start-button"
-              onClick={handleStartRandomChat}
-              disabled={isStartChatting}
-              style={{
-                backgroundColor: isStartChatting ? "grey" : "#fcbe71",
-                color: isStartChatting ? "#495057" : "white",
-                boxShadow: isStartChatting
-                  ? "0 2px 4px rgba(0, 0, 0, 0.1)"
-                  : undefined,
-                transform: isStartChatting ? "translateY(2px)" : undefined,
-              }}
-            >
-              시작
-            </button>
-            <button
-              className="end-button"
-              onClick={handleStopRandomChat}
-              disabled={!isStartChatting}
-              style={{
-                backgroundColor: !isStartChatting ? "grey" : "#de9392",
-                color: !isStartChatting ? "#495057" : "white",
-                boxShadow: !isStartChatting
-                  ? "0 2px 4px rgba(0, 0, 0, 0.1)"
-                  : undefined,
-                transform: !isStartChatting ? "translateY(2px)" : undefined,
-              }}
-            >
-              정지
-            </button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={() => setTextChatVisible(!textChatVisible)}
-            >
-              {!textChatVisible ? (
-                <SpeakerNotesIcon />
-              ) : (
-                <SpeakerNotesOffIcon />
-              )}
-            </Button>
-
-            {textChatVisible && (
-              <div className="start-vedio">
-                <div className="camtext">
-                  <div id="room">
-                    <div id="chat-container" ref={chatContainerRef}>
-                      <ul>
-                        {messages.map((message, index) => (
-                          <div className="chat-row" key={index}>
-                            <li className={`chat-message ${message.type}`}>
-                              {message.type === "received"
-                                ? `${opponentNickname} : ${message.content}`
-                                : message.content}
-                            </li>
-                          </div>
-                        ))}
-                      </ul>
-                      <div id="typing-indicator">
-                        {typingUsers.length > 0 && (
-                          <span>
-                            {typingUsers.join(", ")}님이 입력하고 있습니다.
-                          </span>
-                        )}
-                      </div>
-                    </div>
-                    <form id="msg" onSubmit={handleMessageSubmit}>
-                      <input
-                        type="text"
-                        name="message"
-                        placeholder="메세지를 입력해주세요."
-                        onKeyDown={handleMessageInput}
-                      />
-                      <button type="submit">보내기</button>
-                    </form>
-                  </div>
-                </div>
-              </div>
-            )}
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleMuteClick}
-            >
-              {isMuted ? <MicOffIcon /> : <MicIcon />}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleCameraOnOff}
-            >
-              {isCameraOff ? (
-                <DesktopAccessDisabledIcon />
-              ) : (
-                <DesktopWindowsIcon />
-              )}
-            </Button>
-            <Button
-              variant="contained"
-              color="primary"
-              onClick={handleCameraOnOff}
-            >
-              {isCameraOff ? "곧 감" : "너에게"}
-            </Button>
-          </div>
+          <video
+            ref={myFaceRef}
+            className="video-style2"
+            muted
+            autoPlay
+            playsInline
+          />
         </div>
+        <div className="button-container">
+          <button
+            className="start-button"
+            onClick={handleStartRandomChat}
+            disabled={isStartChatting}
+            style={{
+              backgroundColor: isStartChatting ? "grey" : "#fcbe71",
+              color: isStartChatting ? "#495057" : "white",
+              boxShadow: isStartChatting
+                ? "0 2px 4px rgba(0, 0, 0, 0.1)"
+                : undefined,
+              transform: isStartChatting ? "translateY(2px)" : undefined,
+            }}
+          >
+            시작
+          </button>
+          <button
+            className="end-button"
+            onClick={handleStopRandomChat}
+            disabled={!isStartChatting}
+            style={{
+              backgroundColor: !isStartChatting ? "grey" : "#de9392",
+              color: !isStartChatting ? "#495057" : "white",
+              boxShadow: !isStartChatting
+                ? "0 2px 4px rgba(0, 0, 0, 0.1)"
+                : undefined,
+              transform: !isStartChatting ? "translateY(2px)" : undefined,
+            }}
+          >
+            정지
+          </button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={() => setTextChatVisible(!textChatVisible)}
+          >
+            {!textChatVisible ? <SpeakerNotesIcon /> : <SpeakerNotesOffIcon />}
+          </Button>
+          <Button variant="contained" color="primary" onClick={handleMuteClick}>
+            {isMuted ? <MicOffIcon /> : <MicIcon />}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCameraOnOff}
+          >
+            {isCameraOff ? (
+              <DesktopAccessDisabledIcon />
+            ) : (
+              <DesktopWindowsIcon />
+            )}
+          </Button>
+          <Button
+            variant="contained"
+            color="primary"
+            onClick={handleCameraOnOff}
+          >
+            {isCameraOff ? "곧 감" : "너에게"}
+          </Button>
+        </div>
+        {textChatVisible && (
+          <div className="camtext">
+            <div id="chat-container" ref={chatContainerRef}>
+              <ul>
+                {messages.map((message, index) => (
+                  <div className="chat-row" key={index}>
+                    <li className={`chat-message ${message.type}`}>
+                      {message.type === "received"
+                        ? `${opponentNickname} : ${message.content}`
+                        : message.content}
+                    </li>
+                  </div>
+                ))}
+              </ul>
+              <div id="typing-indicator">
+                {typingUsers.length > 0 && (
+                  <span>{typingUsers.join(", ")}님이 입력하고 있습니다.</span>
+                )}
+              </div>
+            </div>
+            <form id="msg" onSubmit={handleMessageSubmit}>
+              <input
+                type="text"
+                name="message"
+                placeholder="메세지를 입력해주세요."
+                onKeyDown={handleMessageInput}
+              />
+              <Button variant="contained" color="primary" type="submit">
+                보내기
+              </Button>
+            </form>
+          </div>
+        )}
       </div>
-    </div>
+    </>
   );
 };
 
