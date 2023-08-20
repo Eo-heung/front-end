@@ -24,9 +24,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const myStreamRef = useRef(null);
   const myFaceRef = useRef(null);
   const peerFaceRef = useRef(null);
-  const iceCandidateQueue = useRef([]);
   const [messages, setMessages] = useState([]);
-  const [nickname, setNickname] = useState("");
+  const [myNickname, setMyNickname] = useState("");
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
   const [opponentNickname, setOpponentNickname] = useState("");
@@ -39,7 +38,10 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [messages, textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io("https://eoheung.store:7443");
+    setMyNickname(getCookie("userNickname"));
+    // fetchNickname(); // 여기서 닉네임을 가져옴
+
     startChatting();
 
     //화상채팅
@@ -164,6 +166,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       socket.current.off("ice");
       socket.current.disconnect();
       socket.current.on("typing", handleTyping);
+      if (myStreamRef.current) {
+        myStreamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+      myStreamRef.current = null;
     };
   }, []); // 빈 배열은 이 효과가 컴포넌트 마운트 시 한 번만 실행되게 함
 
@@ -203,7 +211,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const getMedia = async (deviceId) => {
     const initialConstrains = {
-      audio: true,
+      // audio: true,
       video: { facingMode: "user" },
     };
     const cameraConstraints = {
@@ -305,7 +313,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://localhost:5000/nickname", {
+      const response = await axios.get("https://eoheung.store:7443/nickname", {
         params: {
           nickname: userNickname,
         },

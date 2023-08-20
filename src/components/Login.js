@@ -57,7 +57,7 @@ const Login = () => {
 
   const SocialKakao = () => {
     const Rest_api_key = "d85c142dc0c92939902ad3248688e8ad"; //REST API KEY
-    const redirect_uri = "http://localhost:1234/auth"; //Redirect URI
+    const redirect_uri = "http://eoheung.store:1234/auth"; //Redirect URI
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
     window.location.href = kakaoURL;
   };
@@ -72,7 +72,7 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       axios
-        .post("http://localhost:9000/verify", token)
+        .post("https://eoheung.store:443/verify", token)
         .then((response) => {
           console.log(response);
           if (response.data.item) {
@@ -99,12 +99,12 @@ const Login = () => {
         console.log(user);
 
         try {
-          const response = await axios.post("http://localhost:9000/login", {
+          const response = await axios.post("http://eoheung.store:9000/login", {
             userId: userId,
             userPw: userPw,
           });
 
-          console.log(response);
+          console.log(response.data);
 
           if (response.data && response.data.item.token) {
             alert(`${response.data.item.userName}님 환영합니다.`);
@@ -117,7 +117,7 @@ const Login = () => {
 
             try {
               const userInfoResponse = await axios.post(
-                "http://localhost:9000/getUserInfo",
+                "http://eoheung.store:9000/getUserInfo",
                 {},
                 {
                   headers: {

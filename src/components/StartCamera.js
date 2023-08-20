@@ -17,10 +17,29 @@ const StartCamera = () => {
 
   useEffect(() => {
     initCall();
+
+    // 클린업 함수
+    return () => {
+      // 스트림의 각 트랙(track)을 멈춰서 브라우저의 카메라 및 마이크 접근을 종료합니다.
+      if (myStreamRef.current) {
+        myStreamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+      myStreamRef.current = null;
+    };
   }, []);
 
   useEffect(() => {
     getMedia(selectedCameraId, selectedMicId);
+    // 클린업 함수
+    return () => {
+      if (myStreamRef.current) {
+        myStreamRef.current.getTracks().forEach((track) => {
+          track.stop();
+        });
+      }
+    };
   }, [selectedCameraId, selectedMicId]);
 
   const initCall = async () => {
@@ -28,13 +47,18 @@ const StartCamera = () => {
   };
 
   const getMedia = async (cameraId = null, micId = null) => {
+    // 이전 스트림 종료
+    if (myStreamRef.current) {
+      myStreamRef.current.getTracks().forEach((track) => {
+        track.stop();
+      });
+    }
     const initialConstrains = {
       audio: true,
       video: { facingMode: "user" },
     };
     let constraints = {
       // audio: true,
-      // audio: micId ? { deviceId: { exact: micId } } : true,
       audio: micId ? { deviceId: { exact: micId } } : true,
       video: cameraId
         ? { deviceId: { exact: cameraId } }
@@ -158,6 +182,7 @@ const StartCamera = () => {
                         <video
                           ref={myFaceRef}
                           className="video-style"
+                          muted
                           autoPlay
                           playsInline
                         />
