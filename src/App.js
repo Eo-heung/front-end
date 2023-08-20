@@ -5,14 +5,15 @@ import MainContent from "./components/partials/MainContent";
 import ViewMoim from "./components/moims/ViewMoim";
 import CreateMoim from "./components/moims/CreateMoim";
 import Password from "./components/Password";
-import SignUp from './components/SignUp';
+import SignUp from "./components/SignUp";
 import SuccessPage from "./components/SuccessPage";
 import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
 import "./IndexStyle.css";
-import StartCamera from "./components/StartCamera";
-import TextChatting from "./components/TextChatting";
+import StartCamera from "./components/chatting/StartCamera";
+import TextChatting from "./components/chatting/TextChatting";
+import MultiChatting from "./components/chatting/MultiChatting";
 
 function App() {
   return (
@@ -42,11 +43,14 @@ function App() {
               path="/textchatting"
               element={<TextChatting></TextChatting>}
             />
-
+            <Route
+              path="/multichatting"
+              element={<MultiChatting></MultiChatting>}
+            ></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
-          <Route path='/signup' element={<SignUp></SignUp>}></Route>
+          <Route path="/signup" element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
           <Route path="/success" element={<SuccessPage></SuccessPage>} />
         </Routes>

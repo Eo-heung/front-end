@@ -8,24 +8,23 @@ import styled from "styled-components";
 import axios from "axios";
 
 const StyledTypography = styled(Typography)`
-    color: #000;
-    cursor: pointer;
+  color: #000;
+  cursor: pointer;
 
-    &:hover {
-      color: #ffb471;
-    }
-  `;
+  &:hover {
+    color: #ffb471;
+  }
+`;
 
 const StyledRightContainer = styled.div`
-    margin-left: auto;
-  `;
+  margin-left: auto;
+`;
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 992);
   const menuRef = useRef();
   const [isLogout, setIsLogout] = useState(false);
-
 
   const navi = useNavigate();
 
@@ -34,7 +33,7 @@ const Header = () => {
     { text: "채팅", link: "/chatting" },
     { text: "모임", link: "/list-moim" },
     { text: "예시", link: "/textchatting" },
-    { text: "예시", link: "/" },
+    { text: "예시", link: "/multichatting" },
   ];
 
   useEffect(() => {
@@ -49,7 +48,7 @@ const Header = () => {
     localStorage.removeItem("REFRESH_TOKEN");
     sessionStorage.removeItem("userId");
     setIsLogout(true);
-    alert('로그아웃 성공');
+    alert("로그아웃 성공");
 
     // try {
     //   await axios.post('http://localhost:9000/logout', {}, {

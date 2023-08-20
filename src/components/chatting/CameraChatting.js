@@ -5,10 +5,10 @@ import MicOffIcon from "@mui/icons-material/MicOff";
 import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
 import DesktopAccessDisabledIcon from "@mui/icons-material/DesktopAccessDisabled";
 import Button from "@mui/material/Button";
-import EoheungImg from "../css/partials/랜덤.png";
+import EoheungImg from "../../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
-import "../css/partials/CameraChatting.css";
+import "../../css/partials/CameraChatting.css";
 import axios from "axios";
 import { Block } from "@mui/icons-material";
 
