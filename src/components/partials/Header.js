@@ -1,15 +1,33 @@
 import React, { useState, useEffect, useRef } from "react";
 import "../../css/partials/Header.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { Paper } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import styled from "styled-components";
+import axios from "axios";
+
+const StyledTypography = styled(Typography)`
+    color: #000;
+    cursor: pointer;
+
+    &:hover {
+      color: #ffb471;
+    }
+  `;
+
+const StyledRightContainer = styled.div`
+    margin-left: auto;
+  `;
 
 const Header = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 992);
   const menuRef = useRef();
+  const [isLogout, setIsLogout] = useState(false);
+
+
+  const navi = useNavigate();
 
   const icons = [
     { text: "홈", link: "/" },
@@ -25,18 +43,32 @@ const Header = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const StyledTypography = styled(Typography)`
-    color: #000;
-    cursor: pointer;
+  // 로그아웃 함수
+  const logout = () => {
+    sessionStorage.removeItem("ACCESS_TOKEN");
+    localStorage.removeItem("REFRESH_TOKEN");
+    sessionStorage.removeItem("userId");
+    setIsLogout(true);
+    alert('로그아웃 성공');
 
-    &:hover {
-      color: #ffb471;
+    // try {
+    //   await axios.post('http://localhost:9000/logout', {}, {
+    //     headers: {
+    //       Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+    //     }
+    //   });
+
+    // } catch (e) {
+    //   console.error("Server logout error:", e);
+    //   alert('로그아웃 실패. 다시 시도해주세요.');
+    // }
+  };
+
+  useEffect(() => {
+    if (isLogout) {
+      navi("/login");
     }
-  `;
-
-  const StyledRightContainer = styled.div`
-    margin-left: auto;
-  `;
+  }, [isLogout]);
 
   return (
     <div
@@ -95,7 +127,7 @@ const Header = () => {
             </Link>
           ))}
         <StyledRightContainer>
-          <Link className="navbar-logout" to="/">
+          <Link className="navbar-logout" to="/" onClick={logout}>
             <StyledTypography variant="body2">로그아웃</StyledTypography>
           </Link>
           <Link className="navbar-credit" to="/">

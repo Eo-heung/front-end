@@ -62,13 +62,24 @@ const Login = () => {
     window.location.href = kakaoURL;
   };
 
-  useEffect(() => {
-    if (sessionStorage.getItem("ACCESS_TOKEN")) {
-      setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
-      console.log(token);
-    }
-  }, []);
 
+    useEffect(() => {
+        if (token) {
+            axios.post('http://localhost:9000/verify', token)
+                .then(response => {
+                    console.log(response);
+                    if (response.data.item) {
+                        navi("/"); // 토큰이 유효하면 지정된 경로로 이동
+                    }
+                })
+                .catch(e => {
+                    console.log(e);
+                    localStorage.removeItem("REFRESH_TOKEN");
+                    sessionStorage.removeItem("ACCESS_TOKEN");
+                });
+        }
+    }, [token]);
+  
   useEffect(() => {
     if (token) {
       axios
@@ -106,13 +117,13 @@ const Login = () => {
 
           console.log(response.data);
 
-          if (response.data && response.data.item.token) {
-            alert(`${response.data.item.userName}님 환영합니다.`);
-            localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
-            sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
-            sessionStorage.setItem("userId", response.data.item.userId);
-            navi("/success");
-
+                if (response.data && response.data.item.token) {
+                    alert(`${response.data.item.userName}님 환영합니다.`);
+                    localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
+                    sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
+                    sessionStorage.setItem("userId", response.data.item.userId);
+                    navi("/");
+            
             console.log(sessionStorage.getItem("ACCESS_TOKEN"));
 
             try {
@@ -131,7 +142,18 @@ const Login = () => {
                 loginSuccessHandler(userInfoResponse.data.item);
               }
             } catch (e) {
-              console.log("Error fetching user info: ", e);
+
+                console.log(e);
+                if (e.response.data.errorMessage === 'id not exist') {
+                    alert("아이디가 존재하지 않습니다.");
+                    return;
+                } else if (e.response.data.errorMessage === 'wrong pw') {
+                    alert("비밀번호가 틀렸습니다.");
+                    return;
+                } else {
+                    alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
+                    return;
+                }
             }
           }
         } catch (e) {
