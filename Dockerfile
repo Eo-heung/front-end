@@ -1,18 +1,14 @@
-# 빌드 단계
-FROM node:18.16.0 AS build
+# 1. node 이미지 사용
+FROM    node:18.16.0-alpine
 
-WORKDIR /app
+# 2. 패키지 우선 복사
+COPY    ./package* /usr/src/app/
+WORKDIR /usr/src/app
+RUN     npm install
 
-COPY package.json package-lock.json ./
-RUN npm install
+# 3. 소스 복사
+COPY . /usr/src/app
 
-COPY . .
-RUN npm run build
-
-# 서빙 단계
-FROM nginx:alpine
-
-COPY --from=build /app/build /usr/share/nginx/html
-EXPOSE 80
-
-CMD ["nginx", "-g", "daemon off;"]
+# 4. WEB 서버 실행 (Listen 포트 정의)
+EXPOSE 3000
+CMD    npm start
