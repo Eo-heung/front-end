@@ -1,14 +1,15 @@
+import { CookiesProvider } from "react-cookie";
 import { Route, Routes } from "react-router-dom";
 import Login from "./components/Login";
+import Password from "./components/Password";
+import SignUp from './components/SignUp';
+import CreateMoim from "./components/moims/CreateMoim";
+import ListMoim from "./components/moims/ListMoim";
+import ViewMoim from "./components/moims/ViewMoim";
+import Mypage from './components/mypage/Mypage';
 import Layout from "./components/partials/Layout";
 import MainContent from "./components/partials/MainContent";
-import ViewMoim from "./components/moims/ViewMoim";
-import CreateMoim from "./components/moims/CreateMoim";
-import Password from "./components/Password";
-import { CookiesProvider } from "react-cookie";
-import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
-import Mypage from './components/mypage/Mypage';
 
 
 function App() {
@@ -35,6 +36,7 @@ function App() {
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/oauth" element={<Login></Login>}></Route>
+          <Route path='/signup' element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
         </Routes>
       </CookiesProvider>

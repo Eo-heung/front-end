@@ -73,6 +73,7 @@ const Mypage = () => {
     const [data, setData] = useState([]);
     const [isEditing, setIsEditing] = useState(false);
     const [value, setValue] = useState(0);
+    const [value1, setValue1] = useState(0);
     const [interests, setInterests] = useState([]);
     const [musicGenres, setMusicGenres] = useState([]);
     const [foodTypes, setFoodTypes] = useState([]);
@@ -135,6 +136,10 @@ const Mypage = () => {
 
     const handleChange = (event, newValue) => {
         setValue(newValue);
+    };
+
+    const handleChange1 = (event, newValue1) => {
+        setValue1(newValue1);
     };
 
     const [filter, setFilter] = useState({ status: '전체', category: '전체' });
@@ -524,6 +529,24 @@ const Mypage = () => {
         );
     }
 
+    function TabPanel1(props) {
+        const { children, value, index, ...other } = props;
+
+        return (
+            <div
+                role="tabpanel"
+                hidden={value !== index}
+                {...other}
+            >
+                {value === index && (
+                    <Box>
+                        <Typography>{children}</Typography>
+                    </Box>
+                )}
+            </div>
+        );
+    }
+
     const fetchUserInfo = async () => {
         try {
             const response = await axios.post('http://localhost:9000/mypage/myinfo',
@@ -557,6 +580,8 @@ const Mypage = () => {
     useEffect(() => {
         fetchUserInfo();  // useEffect 내에서 함수 호출
         getProfileImage(); // getProfileImage
+        getFriendList();
+        getRequestFriendList();
     }, []);
 
     useEffect(() => {
@@ -602,6 +627,32 @@ const Mypage = () => {
                 fetchUserInfo();
             })
     };
+
+    // 친구 관리하기
+
+    const getFriendList = async () => {
+        axios.post('http://localhost:9000/friend/friendList', {}, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+            }
+        }).then(res => {
+            console.log("-----------friendListfriendListfriendList-----------------")
+            console.log(res.data);
+        }).catch(error => { console.error(error) });
+    };
+
+
+    const getRequestFriendList = async () => {
+        axios.post('http://localhost:9000/friend/requestFriendList', {}, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+            }
+        }).then(res => {
+            console.log("-----------requestFriendListrequestFriendListrequestFriendList---------------")
+            console.log(res.data);
+        }).catch(error => { console.error(error) });
+    };
+
 
     return (
         <>
@@ -1025,27 +1076,38 @@ const Mypage = () => {
                         <StyledContainer sx={{ marginLeft: '400px', width: '67%' }}>
                             <Paper elevation={3}>
                                 <UserInfoSection>
-                                    <Typography variant="h1" fontSize="18pt" sx={{ textAlign: 'center', fontWeight: 'bold', marginBottom: '5px' }}>
-                                        친구 관리
-                                    </Typography>
-                                    <Grid container spacing={3}>
-                                        <Grid item xs={12}>
-                                            <BoxContent>
-                                                <Typography variant="body1">주문 번호: #12345</Typography>
-                                                <Typography variant="body2">상품: 멋진 상품</Typography>
-                                                <Typography variant="body2">가격: 100,000원</Typography>
-                                                <Typography variant="body2">주문일: 2023-08-10</Typography>
-                                            </BoxContent>
-                                        </Grid>
-                                        <Grid item xs={12}>
-                                            <BoxContent>
-                                                <Typography variant="body1">주문 번호: #12346</Typography>
-                                                <Typography variant="body2">상품: 아름다운 상품</Typography>
-                                                <Typography variant="body2">가격: 200,000원</Typography>
-                                                <Typography variant="body2">주문일: 2023-08-09</Typography>
-                                            </BoxContent>
-                                        </Grid>
+                                    <Grid item xs={12}>
+                                        <Typography variant="h1" fontSize="18pt" sx={{ fontWeight: 'bold', marginBottom: '5px', marginLeft: '20px', marginTop: '8px' }}>
+                                            친구 관리
+                                        </Typography>
                                     </Grid>
+                                    <Tabs value={value1} onChange={handleChange1} sx={{ marginLeft: '20px' }}>
+                                        <Tab label="내 친구" />
+                                        <Tab label="친구 요청" />
+                                    </Tabs>
+                                    <TabPanel1 value={value1} index={0}>
+                                        <Grid container spacing={3} sx={{ marginTop: '5px' }}>
+                                            <Grid item xs={12}>
+                                                <BoxContent>
+                                                    <Typography variant="body1">주문 번호: #12345</Typography>
+                                                    <Typography variant="body2">상품: 멋진 상품</Typography>
+                                                    <Typography variant="body2">가격: 100,000원</Typography>
+                                                    <Typography variant="body2">주문일: 2023-08-10</Typography>
+                                                </BoxContent>
+                                            </Grid>
+                                            <Grid item xs={12}>
+                                                <BoxContent>
+                                                    <Typography variant="body1">주문 번호: #12346</Typography>
+                                                    <Typography variant="body2">상품: 아름다운 상품</Typography>
+                                                    <Typography variant="body2">가격: 200,000원</Typography>
+                                                    <Typography variant="body2">주문일: 2023-08-09</Typography>
+                                                </BoxContent>
+                                            </Grid>
+                                        </Grid>
+                                    </TabPanel1>
+                                    <TabPanel1 value={value1} index={1}>
+
+                                    </TabPanel1>
                                 </UserInfoSection>
                             </Paper>
                         </StyledContainer>
