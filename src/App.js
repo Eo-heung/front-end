@@ -7,6 +7,7 @@ import CreateMoim from "./components/moims/CreateMoim";
 import ListMoim from "./components/moims/ListMoim";
 import ViewMoim from "./components/moims/ViewMoim";
 import Mypage from './components/mypage/Mypage';
+import WebSocket from "./components/mypage/WebSocket";
 import Layout from "./components/partials/Layout";
 import MainContent from "./components/partials/MainContent";
 import BasicBoard from "./components/utils/BasicBoard";
@@ -38,6 +39,7 @@ function App() {
           <Route path="/oauth" element={<Login></Login>}></Route>
           <Route path='/signup' element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
+          <Route path="/socket" element={<WebSocket></WebSocket>}></Route>
         </Routes>
       </CookiesProvider>
     </>
