@@ -31,9 +31,9 @@ const Header = () => {
 
   const icons = [
     { text: "홈", link: "/" },
-    { text: "채팅", link: "/" },
+    { text: "채팅", link: "/chatting" },
     { text: "모임", link: "/list-moim" },
-    { text: "예시", link: "/" },
+    { text: "예시", link: "/textchatting" },
     { text: "예시", link: "/" },
   ];
 
@@ -72,8 +72,9 @@ const Header = () => {
 
   return (
     <div
-      className={`sb-nav-fixed mainpage ${isDesktop || isOpen ? "open" : "closed"
-        }`}
+      className={`sb-nav-fixed mainpage ${
+        isDesktop || isOpen ? "open" : "closed"
+      }`}
     >
       <nav className="sb-topnav navbar navbar-expand navbar-light bg-light">
         <Link className="navbar-brand" to="/">
