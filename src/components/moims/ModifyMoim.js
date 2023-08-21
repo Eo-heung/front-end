@@ -1,4 +1,4 @@
-import React, { useCallback, useState, useEffect, useRef, createRef } from 'react';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { TextField, Box, Button, FormControl, FormLabel, Select, MenuItem, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
@@ -16,8 +16,14 @@ const StyledForm = styled('form')`
 `;
 
 const StyledBox = styled(Box)`
+    display: flex;
+    flex-direction: column; alignItems="flex-start"
     margin-top: 1rem;
     width: 100%;
+`;
+
+const PageTitle = styled('h3')`
+    margin-bottom: 1.5rem;
 `;
 
 const StyledButton = styled(Button)`
@@ -310,8 +316,8 @@ const ModifyMoim = () => {
         <BasicBoard>
             {console.log("render")}
             <StyledForm id="createForm" onSubmit={handleOnClick}>
-                <StyledBox display="flex" flexDirection="column" alignItems="flex-start">
-                    <h4 style={{ marginBottom: "1rem" }}>모임 모집글을 수정해요.</h4>
+                <StyledBox>
+                    <PageTitle>모임 모집글을 수정해요.</PageTitle>
                     <StyledFormControl variant="outlined">
                         <FormLabel component="legend"></FormLabel>
                         <Select

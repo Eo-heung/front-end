@@ -21,6 +21,10 @@ const StyledBox = styled(Box)`
     width: 100%;
 `;
 
+const PageTitle = styled('h3')`
+    margin-bottom: 1.5rem;
+`;
+
 const StyledButton = styled(Button)`
     margin-top: 10px;
     background-color: #FCBE71;
@@ -267,8 +271,8 @@ const CreateMoim = () => {
     return (
         <BasicBoard>
             <StyledForm id="createForm" onSubmit={createMoim}>
-                <StyledBox display="flex" flexDirection="column" alignItems="flex-start">
-                    <h4 style={{ marginBottom: "1rem" }}>새로운 모임을 만들어요.</h4>
+                <StyledBox>
+                    <PageTitle>새로운 모임을 만들어요.</PageTitle>
                     <StyledFormControl variant="outlined">
                         <FormLabel component="legend"></FormLabel>
                         <Select

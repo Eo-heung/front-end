@@ -71,6 +71,10 @@ const StyledMenuItem = styled(MenuItem)`
     }
 `;
 
+const PageTitle = styled('h3')`
+    margin-bottom: 1.5rem;
+`;
+
 const StyledLink = styled(Link)`
     margin: 1rem auto;
     text-decoration: none;
@@ -183,7 +187,7 @@ const ListMoim = () => {
     return (
         <BasicBoard>
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
-                <h3 style={{ marginBottom: "1rem" }}>모임 목록</h3>
+                <PageTitle>모임 목록</PageTitle>
                 <SearchContainer>
                     <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
                     <StyledSelect value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -218,7 +222,7 @@ const ListMoim = () => {
                                         <Typography variant="h5">{moim.moimTitle}</Typography>
                                         <MoimInfoRow>
                                             <Typography variant="body1">{moim.moimAddr}</Typography>
-                                            <Typography variant="body1">{moim.currentMoimUser}/{moim.maxMoimUser}</Typography>
+                                            <Typography variant="body1">{moim.currentMoimUser || "1"}/{moim.maxMoimUser}</Typography>
                                         </MoimInfoRow>
                                         <EllipsisText variant="body1">{moim.moimContent}</EllipsisText>
                                     </CardContent>

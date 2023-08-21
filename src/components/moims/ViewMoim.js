@@ -6,7 +6,6 @@ import { styled } from '@mui/system';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import { useCookies } from 'react-cookie';
-import { async } from 'q';
 
 const StyledTypography = styled(Typography)`
     margin-bottom: 10px;
@@ -134,8 +133,11 @@ const ViewMoim = () => {
                     <StyledButton variant="contained" size="large"><ApplyLink to={`/modify-moim/${moimId}`}>수정</ApplyLink></StyledButton>
                     <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
                 </ButtonRow>
-            ) : (
-                <StyledButton variant="contained" size="large"><ApplyLink to="/">신청</ApplyLink></StyledButton>
+            ) : null}
+            {moimDetail.moimNickname !== cookie.userNickname && (
+                <ButtonRow>
+                    <StyledButton variant="contained" size="large"><ApplyLink to={`/apply-moim/${moimId}`}>신청</ApplyLink></StyledButton>
+                </ButtonRow>
             )}
             <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
