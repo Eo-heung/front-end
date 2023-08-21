@@ -32,7 +32,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if (!/^[0-9]{3}[0-9]{3,4}[0-9]{4}$/.test(data.get("userTel"))) {
+    if (!/^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/.test(data.get('userTel'))) {
       setIsTelValid(false);
     } else {
       setIsTelValid(true);
@@ -87,9 +87,8 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
           <Circle progress={progress} />
         </Box>
         <Box sx={{ flex: 1, marginLeft: 1 }}>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(
-            progress
-          )}%`}</Typography>
+          <Typography variant="body2" color="text.secondary"
+            sx={{ width: '30px' }}>{'1 / 3'}</Typography>
         </Box>
       </Box>
     );
@@ -109,8 +108,9 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
         <CssBaseline />
         <Box
           sx={{
-            height: "608.57px",
-            marginTop: 8,
+            minHeight: '608.57px',
+            maxHeight: '608.57px',
+            marginTop: 12.5
           }}
         >
           <Typography
@@ -143,7 +143,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
                   name="userTel"
                   autoComplete="off"
                   placeholder="01012345678"
-                  inputProps={{ inputMode: "numeric", pattern: "[0-9]*" }}
+                  inputProps={{ maxLength: 11 }}
                   error={!isTelValid}
                   helperText={
                     !isTelValid && "전화번호 형식에 맞추어 입력해 주세요."
@@ -179,15 +179,14 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
               <Link href="/login" variant="body2">
                 로그인하러가기
               </Link>
-
-              <ThemeProvider theme={theme}>
-                <Box sx={{ width: "100%", marginTop: "47%" }}>
-                  <LinearProgressWithLabel value={progress} />
-                </Box>
-              </ThemeProvider>
             </Box>
           </Box>
         </Box>
+        <ThemeProvider theme={theme}>
+          <Box sx={{ width: "100%", marginTop: "47%" }}>
+            <LinearProgressWithLabel value={progress} />
+          </Box>
+        </ThemeProvider>
       </Container>
     </ThemeProvider>
   );
