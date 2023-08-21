@@ -1,25 +1,26 @@
-import "@fontsource/roboto/300.css";
-import "@fontsource/roboto/400.css";
-import "@fontsource/roboto/500.css";
-import "@fontsource/roboto/700.css";
-import { Visibility, VisibilityOff } from "@mui/icons-material";
-import { Divider, IconButton, InputAdornment } from "@mui/material";
-import Box from "@mui/material/Box";
-import Button from "@mui/material/Button";
-import Checkbox from "@mui/material/Checkbox";
-import CssBaseline from "@mui/material/CssBaseline";
-import FormControlLabel from "@mui/material/FormControlLabel";
-import Grid from "@mui/material/Grid";
-import Link from "@mui/material/Link";
-import Paper from "@mui/material/Paper";
-import TextField from "@mui/material/TextField";
-import Typography from "@mui/material/Typography";
-import { ThemeProvider, createTheme } from "@mui/material/styles";
-import axios from "axios";
-import React, { useCallback, useEffect, useState } from "react";
-import Carousel from "react-material-ui-carousel";
-import { useNavigate } from "react-router-dom";
-import { useCookies } from "react-cookie";
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Divider, IconButton, InputAdornment } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import CssBaseline from '@mui/material/CssBaseline';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react';
+import Carousel from 'react-material-ui-carousel';
+import { useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
+
 
 const Login = () => {
     const navi = useNavigate();
@@ -91,7 +92,6 @@ const Login = () => {
         }
     }, []);
 
-
     useEffect(() => {
         if (token) {
             axios.post('http://localhost:9000/verify', token)
@@ -135,18 +135,18 @@ const Login = () => {
                         sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
                         sessionStorage.setItem("userId", response.data.item.userId);
                         navi("/");
-                        try {
-                            const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
-                                headers: {
-                                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-                                }
-                            });
-                            if (userInfoResponse.data && userInfoResponse.data.item) {
-                                loginSuccessHandler(userInfoResponse.data.item);
-                            }
-                        } catch (e) {
-                            console.log("Error fetching user info: ", e);
-                        }
+                        // try {
+                        //     const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
+                        //         headers: {
+                        //             Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                        //         }
+                        //     });
+                        //     if (userInfoResponse.data && userInfoResponse.data.item) {
+                        //         loginSuccessHandler(userInfoResponse.data.item);
+                        //     }
+                        // } catch (e) {
+                        //     console.log("Error fetching user info: ", e);
+                        // }
                     }
                     else if (remembers === true) {
                         alert(`${response.data.item.userName}님 환영합니다.`);
@@ -167,14 +167,8 @@ const Login = () => {
                             console.log("Error fetching user info: ", e);
                         }
                     }
-
                 }
-              );
-              if (userInfoResponse.data && userInfoResponse.data.item) {
-                loginSuccessHandler(userInfoResponse.data.item);
-              }
             } catch (e) {
-
                 console.log(e);
                 if (e.response.data.errorMessage === 'id not exist') {
                     alert("아이디가 존재하지 않습니다.");
@@ -187,21 +181,7 @@ const Login = () => {
                     return;
                 }
             }
-          }
-        } catch (e) {
-          console.log(e);
-          // if (e.response.data.errorMessage === 'id not exist') {
-          //     alert("아이디가 존재하지 않습니다.");
-          //     return;
-          // } else if (e.response.data.errorMessage === 'wrong pw') {
-          //     alert("비밀번호가 틀렸습니다.");
-          //     return;
-          // } else {
-          //     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
-          //     return;
-          // }
         }
-
 
         loginAxios();
     });
@@ -254,22 +234,7 @@ const Login = () => {
                     </Carousel>
 
                 </Grid>
-              </Grid>
-              <Divider sx={{ marginBottom: "20px" }} />
-              <Typography
-                component="h2"
-                variant="h6"
-                sx={{ textAlign: "center", fontWeight: "bold" }}
-              >
-                소셜 로그인
-              </Typography>
-              <Grid
-                container
-                sx={{ width: "70%", height: "75px", margin: "0 auto" }}
-                spacing={2.5}
-              >
-                <Grid item xs={3}>
-                  <Link href="#">
+                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square sx={{ height: '70%', }}>
                     <Box
                         sx={{
                             my: 8,
@@ -396,4 +361,3 @@ const Login = () => {
 }
 
 export default Login
-
