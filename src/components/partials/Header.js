@@ -49,7 +49,7 @@ const Header = () => {
     localStorage.removeItem("REFRESH_TOKEN");
     sessionStorage.removeItem("userId");
     setIsLogout(true);
-    alert('로그아웃 성공');
+    alert('로그아웃 되었습니다.');
 
     // try {
     //   await axios.post('http://localhost:9000/logout', {}, {
@@ -129,7 +129,7 @@ const Header = () => {
           <Link className="navbar-logout" to="/" onClick={logout}>
             <StyledTypography variant="body2">로그아웃</StyledTypography>
           </Link>
-          <Link className="navbar-credit" to="/">
+          <Link className="navbar-credit" to="/charge">
             <StyledTypography variant="body2">곶감 충전</StyledTypography>
           </Link>
         </StyledRightContainer>

@@ -10,7 +10,7 @@ import SuccessPage from "./components/SuccessPage";
 import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
-
+import Charge from "./components/charge/Charge";
 
 function App() {
   return (
@@ -37,6 +37,9 @@ function App() {
           <Route path='/signup' element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
           <Route path="/success" element={<SuccessPage></SuccessPage>} />
+
+          <Route path="/charge" element={<Charge></Charge>}></Route>
+
         </Routes>
       </CookiesProvider>
     </>
