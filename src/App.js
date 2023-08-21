@@ -6,7 +6,8 @@ import ViewMoim from "./components/moims/ViewMoim";
 import CreateMoim from "./components/moims/CreateMoim";
 import Password from "./components/Password";
 import SignUp from './components/SignUp';
-import SuccessPage from "./components/SuccessPage";
+import KakaoHandler from './components/socialLogin/KakaoHandler';
+import NaverHandelr from './components/socialLogin/NaverHandler';
 import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
@@ -45,11 +46,14 @@ function App() {
 
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
           </Route>
-          <Route path="/login" element={<Login></Login>}></Route>
+          <Route path='/auth' element={<KakaoHandler></KakaoHandler>}></Route>
+          <Route path='/login' element={<Login></Login>}></Route>
+          <Route path='/oauth' element={<NaverHandelr></NaverHandelr>}></Route>
+          <Route path='/findpassword' element={<Password></Password>}></Route>
           <Route path='/signup' element={<SignUp></SignUp>}></Route>
-          <Route path="/findpassword" element={<Password></Password>}></Route>
-          <Route path="/success" element={<SuccessPage></SuccessPage>} />
+          {/* <Route path='/oauth' element={<GoogleHandelr></GoogleHandelr>}></Route> */}
         </Routes>
+
       </CookiesProvider>
     </>
   );
