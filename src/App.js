@@ -12,8 +12,9 @@ import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
 import "./IndexStyle.css";
-import StartCamera from "./components/StartCamera";
-import TextChatting from "./components/TextChatting";
+import StartCamera from "./components/chatting/StartCamera";
+import TextChatting from "./components/chatting/TextChatting";
+import MultiChatting from "./components/chatting/MultiChatting";
 
 function App() {
   return (
@@ -43,7 +44,10 @@ function App() {
               path="/textchatting"
               element={<TextChatting></TextChatting>}
             />
-
+            <Route
+              path="/multichatting"
+              element={<MultiChatting></MultiChatting>}
+            ></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
           </Route>
           <Route path='/auth' element={<KakaoHandler></KakaoHandler>}></Route>

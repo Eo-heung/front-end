@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import Button from "@mui/material/Button";
-import CameraChatting from "../components/CameraChatting";
-import NoCamera from "../css/partials/카메라 예외.png";
+import CameraChatting from "../chatting/CameraChatting";
+import NoCamera from "../../css/partials/카메라 예외.png";
 import styled from "styled-components";
 
 const StartCamera = () => {
