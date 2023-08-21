@@ -1,31 +1,28 @@
-import '@fontsource/roboto/300.css';
-import '@fontsource/roboto/400.css';
-import '@fontsource/roboto/500.css';
-import '@fontsource/roboto/700.css';
-import { Visibility, VisibilityOff } from '@mui/icons-material';
-import { Divider, IconButton, InputAdornment } from '@mui/material';
-import Box from '@mui/material/Box';
-import Button from '@mui/material/Button';
-import Checkbox from '@mui/material/Checkbox';
-import CssBaseline from '@mui/material/CssBaseline';
-import FormControlLabel from '@mui/material/FormControlLabel';
-import Grid from '@mui/material/Grid';
-import Link from '@mui/material/Link';
-import Paper from '@mui/material/Paper';
-import TextField from '@mui/material/TextField';
-import Typography from '@mui/material/Typography';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
-import axios from 'axios';
-import React, { useCallback, useEffect, useState } from 'react';
-import Carousel from 'react-material-ui-carousel';
-import { useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
-
+import "@fontsource/roboto/300.css";
+import "@fontsource/roboto/400.css";
+import "@fontsource/roboto/500.css";
+import "@fontsource/roboto/700.css";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
+import { Divider, IconButton, InputAdornment } from "@mui/material";
+import Box from "@mui/material/Box";
+import Button from "@mui/material/Button";
+import Checkbox from "@mui/material/Checkbox";
+import CssBaseline from "@mui/material/CssBaseline";
+import FormControlLabel from "@mui/material/FormControlLabel";
+import Grid from "@mui/material/Grid";
+import Link from "@mui/material/Link";
+import Paper from "@mui/material/Paper";
+import TextField from "@mui/material/TextField";
+import Typography from "@mui/material/Typography";
+import { ThemeProvider, createTheme } from "@mui/material/styles";
+import axios from "axios";
+import React, { useCallback, useEffect, useState } from "react";
+import Carousel from "react-material-ui-carousel";
+import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 
 const Login = () => {
-
     const navi = useNavigate();
-
     const [userId, setUserId] = useState('');
     const [userPw, setUserPw] = useState('');
     const [token, setToken] = useState();
@@ -93,6 +90,7 @@ const Login = () => {
             setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
         }
     }, []);
+
 
     useEffect(() => {
         if (token) {
@@ -169,21 +167,41 @@ const Login = () => {
                             console.log("Error fetching user info: ", e);
                         }
                     }
+
                 }
+              );
+              if (userInfoResponse.data && userInfoResponse.data.item) {
+                loginSuccessHandler(userInfoResponse.data.item);
+              }
             } catch (e) {
+
                 console.log(e);
-                // if (e.response.data.errorMessage === 'id not exist') {
-                //     alert("아이디가 존재하지 않습니다.");
-                //     return;
-                // } else if (e.response.data.errorMessage === 'wrong pw') {
-                //     alert("비밀번호가 틀렸습니다.");
-                //     return;
-                // } else {
-                //     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
-                //     return;
-                // }
+                if (e.response.data.errorMessage === 'id not exist') {
+                    alert("아이디가 존재하지 않습니다.");
+                    return;
+                } else if (e.response.data.errorMessage === 'wrong pw') {
+                    alert("비밀번호가 틀렸습니다.");
+                    return;
+                } else {
+                    alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
+                    return;
+                }
             }
+          }
+        } catch (e) {
+          console.log(e);
+          // if (e.response.data.errorMessage === 'id not exist') {
+          //     alert("아이디가 존재하지 않습니다.");
+          //     return;
+          // } else if (e.response.data.errorMessage === 'wrong pw') {
+          //     alert("비밀번호가 틀렸습니다.");
+          //     return;
+          // } else {
+          //     alert("알 수 없는 오류가 발생했습니다. 관리자에게 문의하세요.");
+          //     return;
+          // }
         }
+
 
         loginAxios();
     });
@@ -236,7 +254,22 @@ const Login = () => {
                     </Carousel>
 
                 </Grid>
-                <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square sx={{ height: '70%', }}>
+              </Grid>
+              <Divider sx={{ marginBottom: "20px" }} />
+              <Typography
+                component="h2"
+                variant="h6"
+                sx={{ textAlign: "center", fontWeight: "bold" }}
+              >
+                소셜 로그인
+              </Typography>
+              <Grid
+                container
+                sx={{ width: "70%", height: "75px", margin: "0 auto" }}
+                spacing={2.5}
+              >
+                <Grid item xs={3}>
+                  <Link href="#">
                     <Box
                         sx={{
                             my: 8,
@@ -363,3 +396,4 @@ const Login = () => {
 }
 
 export default Login
+

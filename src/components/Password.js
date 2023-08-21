@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import Password1 from './password/Password1';
 import Password2 from './password/Password2';
@@ -10,6 +11,11 @@ const Password = () => {
     const [userPw, setUserPw] = useState('');
     const [checkNum, setCheckNum] = useState('');
 
+    const updatePW = {
+        userId: userTel,
+        userPw: userPw
+    };
+
     const handleClick = () => {
         if (pageIndex < 10) {
             setPageIndex(pageIndex + 1);
@@ -18,7 +24,18 @@ const Password = () => {
 
     const backClick = () => {
         setPageIndex(pageIndex + -1);
-    }
+    };
+
+    const setPassword = async () => {
+        try {
+            const response = await axios.post('http://localhost:9000/findpassword', updatePW);
+
+            console.log(response)
+            navigator('/login');
+        } catch (error) {
+        }
+    };
+
 
     const renderPage = () => {
         switch (pageIndex) {
@@ -27,9 +44,9 @@ const Password = () => {
             case 1:
                 return <Password2 handleClick={handleClick} setUserTel={setUserTel} setCheckNum={setCheckNum} />;
             case 2:
-                return <Password3 handleClick={handleClick} backClick={backClick} checkNum={checkNum} />;
+                return <Password3 handleClick={handleClick} backClick={backClick} checkNum={checkNum} userTel={userTel} />;
             case 3:
-                return <Password4 handleClick={handleClick} setUserPw={setUserPw} />;
+                return <Password4 handleClick={handleClick} setUserPw={setUserPw} userTel={userTel} />;
             default:
                 return <Password1 />;
         }
