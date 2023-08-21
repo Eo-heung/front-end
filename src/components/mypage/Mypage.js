@@ -654,6 +654,16 @@ const Mypage = () => {
         }).catch(error => { console.error(error) });
     };
 
+    const acceptRequestFriend = async (id, requestValue) => {
+        axios.post(`http://localhost:9000/friend/requestFriend/${id}`, { id: requestValue },
+        ).then(res => {
+            console.log(res.data);
+            getRequestFriendList();
+            getFriendList();
+        }).catch(error => { console.error(error) });
+    };
+
+
 
     return (
         <>
@@ -1114,13 +1124,19 @@ const Mypage = () => {
                                                 {requestFriends.map((friend, index) => (
                                                     <Grid item xs={12} key={index}>
                                                         <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
-                                                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                                                                <img
-                                                                    src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
-                                                                    alt="프로필 사진"
-                                                                    style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
-                                                                />
-                                                                <Typography variant="h6">{friend.user_name || "이름 없음"}</Typography>
+                                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    <img
+                                                                        src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
+                                                                        alt="프로필 사진"
+                                                                        style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
+                                                                    />
+                                                                    <Typography variant="h6">{friend.user_name || "이름 없음"}</Typography>
+                                                                </div>
+                                                                <div>
+                                                                    <Button variant="contained" color="primary" sx={{ marginRight: '5px' }} onClick={() => acceptRequestFriend(friend.id, 1)}>수락하기</Button>
+                                                                    <Button variant="contained" color="secondary" onClick={() => acceptRequestFriend(friend.id, 0)}>거절하기</Button>
+                                                                </div>
                                                             </div>
                                                             <Typography variant="body2" sx={{ marginBottom: '6px' }}>지역 : {friend.user_addr3 || "지역 없음"}</Typography>
                                                             <Typography variant="body2">상태메세지: {friend.user_status_message || "상태 메세지 없음"}</Typography>
@@ -1129,6 +1145,7 @@ const Mypage = () => {
                                                 ))}
                                             </Grid>
                                         </Grid>
+
                                     </TabPanel1>
                                 </UserInfoSection>
                             </Paper>
