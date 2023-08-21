@@ -663,6 +663,22 @@ const Mypage = () => {
         }).catch(error => { console.error(error) });
     };
 
+    const deleteFriend = async (id) => {
+        const userConfirmed = window.confirm("정말로 이 친구를 삭제하시겠습니까?");
+
+        if (!userConfirmed) {
+            return; // 사용자가 취소를 누르면 여기에서 함수를 종료합니다.
+        }
+
+        axios.post(`http://localhost:9000/friend/deleteFriend/${id}`, {})
+            .then(res => {
+                console.log(res.data);
+                getRequestFriendList();
+                getFriendList();
+            }).catch(error => {
+                console.error(error);
+            });
+    };
 
 
     return (
@@ -1100,15 +1116,20 @@ const Mypage = () => {
                                         <Grid container spacing={3} sx={{ marginTop: '5px' }}>
                                             <Grid item xs={12} >
                                                 {friends.map((friend, index) => (
-                                                    <Grid item xs={12} key={index}>
+                                                    <Grid item xs={12} key={index} sx={{ marginBottom: '12px' }}>
                                                         <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
-                                                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
-                                                                <img
-                                                                    src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
-                                                                    alt="프로필 사진"
-                                                                    style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
-                                                                />
-                                                                <Typography variant="h6">{friend.user_name || "이름 없음"}</Typography>
+                                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    <img
+                                                                        src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
+                                                                        alt="프로필 사진"
+                                                                        style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
+                                                                    />
+                                                                    <Typography variant="h6">{friend.user_name || "이름 없음"}</Typography>
+                                                                </div>
+                                                                <div>
+                                                                    <Button sx={{ color: 'red' }} onClick={() => deleteFriend(friend.id)}>삭제하기</Button>
+                                                                </div>
                                                             </div>
                                                             <Typography variant="body2" sx={{ marginBottom: '6px' }}>지역 : {friend.user_addr3 || "지역 없음"}</Typography>
                                                             <Typography variant="body2">상태메세지: {friend.user_status_message || "상태 메세지 없음"}</Typography>
@@ -1122,7 +1143,7 @@ const Mypage = () => {
                                         <Grid container spacing={3} sx={{ marginTop: '5px' }}>
                                             <Grid item xs={12} >
                                                 {requestFriends.map((friend, index) => (
-                                                    <Grid item xs={12} key={index}>
+                                                    <Grid item xs={12} key={index} sx={{ marginBottom: '12px' }}>
                                                         <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
