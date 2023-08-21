@@ -64,6 +64,7 @@ const ViewMoim = () => {
     const [id, setId] = useState(null);
     const [moimPic, setMoimPic] = useState(null);
     const [cookie] = useCookies('userNickname');
+    const [userMoimStatus, setUserMoimStatus] = useState(null);
 
     useEffect(() => {
         setId(moimId);
@@ -111,6 +112,36 @@ const ViewMoim = () => {
         }
     };
 
+    useEffect(() => {
+        const getUserMoimStatus = async () => {
+            try {
+                const response = await axios.get(`http://localhost:9000/moimReg/userStatus/${moimId}`);
+                setUserMoimStatus(response.data.status);
+            } catch (e) {
+                console.error("Error fetching user moim status", e);
+            }
+        };
+
+        getUserMoimStatus();
+    }, [moimId]);
+
+    const cancelMoimApplication = async () => {
+        try {
+            const payload = {
+                regStatus: "CANCELED"
+            };
+
+            const response = await axios.post(`http://localhost:9000/cancel-moim/${moimId}`, payload);
+
+            if (response.data.statusCode === 200) {
+                setUserMoimStatus(null);
+            }
+        } catch (e) {
+            console.error("Error Canceling moim application", e);
+            alert("신청을 취소하지 못했어요.");
+        }
+    };
+
     return (
         <BasicBoard>
             <h5 style={{ marginTop: "1.5rem" }}>{moimDetail.moimCategory}</h5>
@@ -136,7 +167,20 @@ const ViewMoim = () => {
             ) : null}
             {moimDetail.moimNickname !== cookie.userNickname && (
                 <ButtonRow>
-                    <StyledButton variant="contained" size="large"><ApplyLink to={`/apply-moim/${moimId}`}>신청</ApplyLink></StyledButton>
+                    <StyledButton
+                        variant="contained"
+                        size="large"
+                        hidden={moimDetail.moimNickname === cookie.userNickname || userMoimStatus !== "Waiting"}
+                        onClick={cancelMoimApplication}>
+                        신청 취소
+                    </StyledButton>
+                    <StyledButton
+                        variant="contained"
+                        size="large"
+                        hidden={moimDetail.moimNickname === cookie.userNickname || userMoimStatus === "Waiting"}
+                    >
+                        <ApplyLink to={`/apply-moim/${moimId}`}>신청</ApplyLink>
+                    </StyledButton>
                 </ButtonRow>
             )}
             <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
