@@ -1,9 +1,8 @@
-import React, { useRef } from 'react';
-import { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { useCookies } from 'react-cookie';
 import { styled } from '@mui/system';
-import { Box, Typography, Button, Radio, RadioGroup, FormControlLabel, FormControl } from '@mui/material';
+import { Box, Typography, Button } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard';
@@ -74,14 +73,17 @@ const ApplyMoim = () => {
     const navi = useNavigate();
 
     const { moimId } = useParams();
-    const [moimData, setMoimData] = useState("");
     const [cookies] = useCookies(['userNickname', 'userAddr3']);
+
+    const [moimData, setMoimData] = useState({
+        moimTitle: ""
+    });
     const [userData, setUserData] = useState({
         applicantUserNickname: "",
-        applicantuserAddr: "",
-        applicantuserId: ""
+        applicantUserAddr: ""
     });
-    const radioRef = useRef(null);
+    const [profilePic, setProfilePic] = useState(null);
+    const [filePic, setFilePic] = useState(null);
 
     useEffect(() => {
         const fetchMoimData = async () => {
@@ -96,7 +98,7 @@ const ApplyMoim = () => {
                 return response.data.item;
 
             } catch (e) {
-                console.error("모임 데이터를 불러오는 중 오류가 발생했습니다.", e);
+                console.error("Error fetching moim data", e);
             }
         };
 
@@ -107,30 +109,109 @@ const ApplyMoim = () => {
         if (cookies.userNickname && cookies.userAddr3) {
             setUserData({
                 applicantUserNickname: cookies.userNickname,
-                applicantuserAddr: cookies.userAddr3,
-                applicantuserId: cookies.userId
+                applicantUserAddr: cookies.userAddr3
             });
         }
-
-        console.log(userData);
     }, [cookies]);
+
+    useEffect(() => {
+        const fetchProfileImage = async () => {
+            try {
+                const response = await axios.post('http://localhost:9000/mypage/getprofileimage', {}, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    }
+                });
+
+                setProfilePic(`data:image/jpg;base64,${response.data.item}`);
+
+                console.log(profilePic);
+
+                return profilePic;
+            } catch (e) {
+                console.error("Error fetching profile image", e);
+            }
+        };
+
+        fetchProfileImage();
+    }, []);
+
+    const profileFileInputRef = useRef(null);
+
+    const triggerFileInput = () => {
+        if (profileFileInputRef.current) {
+            profileFileInputRef.current.click();
+        } else {
+            console.error("File input not found");
+            console.log(profileFileInputRef.current);
+        }
+    };
+
+    function base64ToBlob(base64) {
+        const byteString = atob(base64.split(',')[1]);
+        const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ab], { type: mimeString });
+    }
+
+    function blobToFile(blob, filename) {
+        return new File([blob], filename, { type: blob.type });
+    }
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        setProfilePic(file);
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            const previewImageElem = document.getElementById('previewImage');
+            if (previewImageElem) {
+                previewImageElem.src = reader.result;
+            } else {
+                console.error("Image preview element not found");
+            }
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
+    };
+
+    useEffect(() => {
+        console.log(profilePic)
+        if (profilePic instanceof File) {
+            setFilePic(profilePic);
+        } else if (profilePic) {
+            const base64String = profilePic;
+            const blob = base64ToBlob(base64String);
+            const file = blobToFile(blob, "defaultProfile.jpg");
+            setFilePic(file);
+            console.log(file);
+        }
+
+    }, [profilePic])
 
     const handleSubmit = async (e) => {
         e.preventDefault();
 
-        const radioValue = radioRef.current.querySelector("input:checked").value;
+        const formData = new FormData();
 
-        const payload = {
-            applicantUserNickname: userData.userNickname,
-            applicantuserAddr: userData.userAddr3,
-            applicantuserId: userData.userId,
-            radioAnswer: radioValue
-        };
+        formData.append("applicantUserNickname", userData.userNickname);
+        formData.append("applicantUserAddr", userData.userAddr3);
+        formData.append("moimProfile", filePic);
 
         try {
-            const response = await axios.post(`http://localhost:9000/moim/apply-moim/${moimId}`, payload, {
+            const response = await axios.post(`http://localhost:9000/moimReg/apply-moim/${moimId}`, formData, {
                 headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                    'Content-Type': 'multipart/form-data'
                 }
             });
 
@@ -141,7 +222,7 @@ const ApplyMoim = () => {
                 navi("/list-moim");
             }
         } catch (e) {
-            console.error("데이터 전송 중 오류가 발생했습니다.", e);
+            console.error("Error sending data", e);
         }
     };
 
@@ -150,24 +231,24 @@ const ApplyMoim = () => {
             <StyledForm id="applyForm" onSubmit={handleSubmit}>
                 <StyledBox>
                     <PageTitle>{`${moimData.moimTitle} 모임에 가입해요.`}</PageTitle>
+                    <div>
+                        <img
+                            id="previewImage"
+                            src={profilePic}
+                            alt="프로필 사진"
+                            style={{ width: '200px', height: '200px', borderRadius: '50%', objectFit: 'cover', border: '0.5px solid #adb5bd', cursor: 'pointer', marginBottom: '1rem' }}
+                            onClick={triggerFileInput}
+                        ></img>
+                        <input ref={profileFileInputRef} id="MoimImageUpload" type="file" accept="image/*" hidden onChange={handleImageUpload}></input>
+                    </div>
                     <ApplicantInfoBox border={0} my={0}>
                         <ApplicantTitle>신청자</ApplicantTitle>
-                        <ApplicantInfo variant="body1">{userData.userNickname}</ApplicantInfo>
+                        <ApplicantInfo variant="body1">{userData.applicantUserNickname}</ApplicantInfo>
                     </ApplicantInfoBox>
                     <ApplicantInfoBox border={0} my={2}>
                         <ApplicantTitle>지역</ApplicantTitle>
-                        <ApplicantInfo variant="body1">{userData.userAddr3}</ApplicantInfo>
+                        <ApplicantInfo variant="body1">{userData.applicantUserAddr}</ApplicantInfo>
                     </ApplicantInfoBox>
-                    <ApplicantInfoBox border={0} my={2}>
-                        <ApplicantTitle>가입 질문</ApplicantTitle>
-                        <ApplicantInfo variant="body1">공지 확인 잘 하실 거죠?</ApplicantInfo>
-                    </ApplicantInfoBox>
-                    <FormControl style={{ marginLeft: "0.5rem" }}>
-                        <RadioGroup row ref={radioRef}>
-                            <FormControlLabel value="Yes" control={<Radio color="default" />} label="네" />
-                            <FormControlLabel value="No" control={<Radio color="default" />} label="아니오" />
-                        </RadioGroup>
-                    </FormControl>
                     <ButtonRow>
                         <StyledButton type="submit" variant="contained" size="large">가입</StyledButton>
                         <StyledButton variant="contained" size="large"><CancelLink to={`/view-moim/${moimId}`}>취소</CancelLink></StyledButton>

@@ -208,7 +208,7 @@ const ModifyMoim = () => {
                     maxMoimUser: data.maxMoimUser.toString(),
                     moimContent: data.moimContent
                 });
-                // setMoimPic(response.data.item.moimPic);
+
                 setMoimPic(`data:image/jpeg;base64,${response.data.item.moimPic}`);
 
                 return response.data.item;
@@ -276,9 +276,7 @@ const ModifyMoim = () => {
         }
 
         const modifyMoimAxios = async () => {
-
             try {
-
                 const resultTemp = await axios.post(`http://localhost:9000/moim/modify-moim/${moimId}`, inputs);
                 console.log(resultTemp);
 
@@ -303,7 +301,6 @@ const ModifyMoim = () => {
                     navi('/list-moim');
                 }
             } catch (e) {
-                console.log("여기서 빠지는거잖아요");
                 console.log(e);
             }
         }
