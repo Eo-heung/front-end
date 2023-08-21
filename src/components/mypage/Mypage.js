@@ -85,7 +85,7 @@ const Mypage = () => {
     const passwordRef = createRef();
     const checkPasswordRef = createRef();
     const [imageFile, setImageFile] = useState(null);
-
+    const [requestFriends, setRequestFriends] = useState([]);
     const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
 
     const openModal = () => {
@@ -648,8 +648,7 @@ const Mypage = () => {
                 Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
             }
         }).then(res => {
-            console.log("-----------requestFriendListrequestFriendListrequestFriendList---------------")
-            console.log(res.data);
+            setRequestFriends(res.data.items);
         }).catch(error => { console.error(error) });
     };
 
@@ -1088,29 +1087,64 @@ const Mypage = () => {
                                     <TabPanel1 value={value1} index={0}>
                                         <Grid container spacing={3} sx={{ marginTop: '5px' }}>
                                             <Grid item xs={12}>
-                                                <BoxContent>
-                                                    <Typography variant="body1">주문 번호: #12345</Typography>
-                                                    <Typography variant="body2">상품: 멋진 상품</Typography>
-                                                    <Typography variant="body2">가격: 100,000원</Typography>
-                                                    <Typography variant="body2">주문일: 2023-08-10</Typography>
+                                                <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                                                        <img
+                                                            src="https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                                                            alt="프로필 사진"
+                                                            style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
+                                                        />
+                                                        <Typography variant="h6">친구닉네임</Typography>
+                                                    </div>
+                                                    <Typography variant="body2" sx={{ marginBottom: '6px' }}>지역 : 역삼1동</Typography>
+                                                    <Typography variant="body2" sx={{ marginBottom: '6px' }}>관심사: hobby1</Typography>
+                                                    <Typography variant="body2">상태메세지: 상태메세지내용</Typography>
                                                 </BoxContent>
                                             </Grid>
                                             <Grid item xs={12}>
-                                                <BoxContent>
-                                                    <Typography variant="body1">주문 번호: #12346</Typography>
-                                                    <Typography variant="body2">상품: 아름다운 상품</Typography>
-                                                    <Typography variant="body2">가격: 200,000원</Typography>
-                                                    <Typography variant="body2">주문일: 2023-08-09</Typography>
+                                                <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
+                                                    <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                                                        <img
+                                                            src="https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                                                            alt="프로필 사진"
+                                                            style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
+                                                        />
+                                                        <Typography variant="h6">친구닉네임</Typography>
+                                                    </div>
+                                                    <Typography variant="body2" sx={{ marginBottom: '6px' }}>지역 : 역삼1동</Typography>
+                                                    <Typography variant="body2" sx={{ marginBottom: '6px' }}>관심사: hobby1</Typography>
+                                                    <Typography variant="body2">상태메세지: 상태메세지내용</Typography>
                                                 </BoxContent>
                                             </Grid>
                                         </Grid>
                                     </TabPanel1>
                                     <TabPanel1 value={value1} index={1}>
-
+                                        <Grid container spacing={3} sx={{ marginTop: '5px' }}>
+                                            <Grid item xs={12} >
+                                                {requestFriends.map((friend, index) => (
+                                                    <Grid item xs={12} key={index}>
+                                                        <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', marginBottom: '8px' }}>
+                                                                <img
+                                                                    src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
+                                                                    alt="프로필 사진"
+                                                                    style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
+                                                                />
+                                                                <Typography variant="h6">{friend.user_name || "이름 없음"}</Typography>
+                                                            </div>
+                                                            <Typography variant="body2" sx={{ marginBottom: '6px' }}>지역 : {friend.user_addr3 || "지역 없음"}</Typography>
+                                                            <Typography variant="body2">상태메세지: {friend.user_status_message || "상태 메세지 없음"}</Typography>
+                                                        </BoxContent>
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        </Grid>
                                     </TabPanel1>
                                 </UserInfoSection>
                             </Paper>
                         </StyledContainer>
+
+
                     }
                 </div>
             </div>
