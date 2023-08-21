@@ -39,6 +39,9 @@ const Login = () => {
         if (data.userAddr3) {
             setCookie('userAddr3', data.userAddr3, { path: '/' });
         }
+        if (data.userId) {
+            setCookie('userId', data.userId, { path: '/' });
+        }
     };
 
     const [showPassword, setShowPassword] = React.useState(false);

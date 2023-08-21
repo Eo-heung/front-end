@@ -11,6 +11,9 @@ import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
 import Mypage from './components/mypage/Mypage';
 import ModifyMoim from "./components/moims/ModifyMoim";
+import ApplyMoim from "./components/moims/ApplyMoim";
+import AcceptMoim from "./components/moims/AcceptMoim";
+import ListAcceptMoim from "./components/moims/ListAcceptMoim";
 
 
 function App() {
@@ -26,6 +29,9 @@ function App() {
             <Route path="/view-moim/:moimId" element={<ViewMoim></ViewMoim>}></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
             <Route path="/modify-moim/:moimId" element={<ModifyMoim></ModifyMoim>}></Route>
+            <Route path="/apply-moim/:moimId" element={<ApplyMoim></ApplyMoim>}></Route>
+            <Route path="/accept-moim/:moimRegId" element={<AcceptMoim></AcceptMoim>}></Route>
+            <Route path="/list-accept-moim/:moimId" element={<ListAcceptMoim></ListAcceptMoim>}></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
