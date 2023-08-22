@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
-import { Button, Typography, Box, Card, CardContent } from '@mui/material';
+import { Button, Typography, Box, Card, CardContent, CardMedia } from '@mui/material';
 import { grey } from '@mui/material/colors';
+import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
+import TopButton from '../utils/TopButton.js';
 
 const StyledContainer = styled('div')`
     position: fixed;
@@ -24,6 +26,15 @@ const StyledContainer = styled('div')`
     }
     @media (max-width: 992px) {
         left: 0;
+    }
+`;
+
+const StyledCardMedia = styled(CardMedia)`
+    height: 160px;
+    width: 160px;
+    
+    @media (max-width: 992px) {
+        display: none;
     }
 `;
 
@@ -68,46 +79,77 @@ const ApplicantInfo = styled(Typography)`
 `;
 
 const ListAcceptMoim = () => {
+    const [data, setData] = useState(null);
+    const [hasMore, setHasMore] = useState(true);
+    const [result, setResult] = useState(null);
+    const [page, setPage] = useState(1);
+
     const { moimId } = useParams();
     const { moimRegId } = useParams();
 
     const [moimData, setMoimData] = useState("");
     const [applicantList, setApplicantList] = useState([]);
 
-    useEffect(() => {
-        const fetchMoimData = async () => {
-            try {
-                const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
-                const data = response.data.item.moimDTO;
+    const [scrollActive, setScrollActive] = useState(false);
 
+    const scrollHandler = () => {
+        if (window.scrollY > 100) {
+            setScrollActive(true);
+        } else {
+            setScrollActive(false);
+        }
+    };
+
+    const isMounted = useRef(true);
+
+    useEffect(() => {
+        return () => {
+            isMounted.current = false;
+        }
+    }, []);
+
+    const fetchMoimData = async () => {
+        try {
+            const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+            const data = response.data.item.moimDTO;
+
+            if (isMounted.current) {
                 setMoimData({
                     moimTitle: data.moimTitle
                 });
-
-                return response.data.item;
-
-            } catch (e) {
-                console.error("Error fetching moim data", e);
             }
-        };
 
-        fetchMoimData();
-    }, [moimId]);
+        } catch (e) {
+            console.error("Error fetching moim data", e);
+        }
+    };
+
+    const fetchApplicantList = async () => {
+        try {
+            const response = await axios.post(`http://localhost:9000/moimReg/get-applicant-list/${moimId}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                }
+            });
+
+            console.log(response);
+            if (response.data && response.data.item && isMounted.current) {
+                setApplicantList(response.data.item);
+            }
+        } catch (error) {
+            console.error("Error fetching applicant list data: ", error);
+        }
+    };
 
     useEffect(() => {
-        const fetchApplicantList = async () => {
-            try {
-                const response = await axios.get(`http://localhost:9000/moim/get-applicant-list/${moimId}`);
-                if (response.data && response.data.item) {
-                    setApplicantList(response.data.item);
-                }
-            } catch (error) {
-                console.error("Error fetching applicant list data: ", error);
-            }
-        };
-
+        fetchMoimData();
         fetchApplicantList();
-    }, [moimRegId]);
+        window.addEventListener("scroll", scrollHandler);
+
+        return () => {
+            window.removeEventListener("scroll", scrollHandler);
+        }
+    }, [moimId, moimRegId]);
 
     const handleAcceptance = async (userId, decision) => {
         const endpoint = decision === "accepted" ? "approve-moim" : "reject-moim";
@@ -138,27 +180,40 @@ const ListAcceptMoim = () => {
                 <PageTitle>{`${moimData.moimTitle} 모임의 신청자 목록`}</PageTitle>
             </StyledContainer>
             <div style={{ marginTop: "180px" }}>
-                {applicantList && applicantList.map(applicant => (
-                    <StyledCard key={applicant.userId}>
-                        <CardContent>
-                            <ApplicantInfoBox border={0} my={0}>
-                                <ApplicantTitle>신청자</ApplicantTitle>
-                                <ApplicantInfo variant="body1">{applicant.applicantUserNickname}</ApplicantInfo>
-                            </ApplicantInfoBox>
-                            <ApplicantInfoBox border={0} my={2}>
-                                <ApplicantTitle>신청일</ApplicantTitle>
-                                <ApplicantInfo variant="body1">{applicant.applicationDate}</ApplicantInfo>
-                            </ApplicantInfoBox>
-                            <ApplicantInfoBox border={0} my={2}>
-                                <ApplicantTitle>신청 상태</ApplicantTitle>
-                                <ApplicantInfo variant="body1">{applicant.regStatus}</ApplicantInfo>
-                            </ApplicantInfoBox>
-                            <StyledButton onClick={() => handleAcceptance(applicant.applicantuserId, "accepted")} variant="contained">수락</StyledButton>
-                            <StyledButton onClick={() => handleAcceptance(applicant.applicantuserId, "declined")} variant="contained">거절</StyledButton>
-                        </CardContent>
-                    </StyledCard>
-                ))}
+                <InfiniteScroll
+                    dataLength={applicantList ? applicantList.length : 0}
+                    next={fetchApplicantList}
+                    hasMore={hasMore}
+                    scrollableTarget={document}
+                >
+                    {applicantList && applicantList.map(applicant => (
+                        <StyledCard key={applicant.userId}>
+                            <StyledCardMedia
+                                component="img"
+                                image={applicant.moimProfile && `data:image/jpeg;base64,${applicant.moimProfile}`}
+                                alt="moim image"
+                            />
+                            <CardContent>
+                                <ApplicantInfoBox border={0} my={0}>
+                                    <ApplicantTitle>신청자</ApplicantTitle>
+                                    <ApplicantInfo variant="body1">{applicant.applicantUserNickname}</ApplicantInfo>
+                                </ApplicantInfoBox>
+                                <ApplicantInfoBox border={0} my={2}>
+                                    <ApplicantTitle>신청일</ApplicantTitle>
+                                    <ApplicantInfo variant="body1">{applicant.applicationDate}</ApplicantInfo>
+                                </ApplicantInfoBox>
+                                <ApplicantInfoBox border={0} my={2}>
+                                    <ApplicantTitle>신청 상태</ApplicantTitle>
+                                    <ApplicantInfo variant="body1">{applicant.regStatus}</ApplicantInfo>
+                                </ApplicantInfoBox>
+                                <StyledButton onClick={() => handleAcceptance(applicant.applicantuserId, "accepted")} variant="contained">수락</StyledButton>
+                                <StyledButton onClick={() => handleAcceptance(applicant.applicantuserId, "declined")} variant="contained">거절</StyledButton>
+                            </CardContent>
+                        </StyledCard>
+                    ))}
+                </InfiniteScroll>
             </div>
+            <TopButton />
         </BasicBoard>
     );
 };
