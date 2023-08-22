@@ -32,13 +32,14 @@ function App() {
               element={<ViewMoim></ViewMoim>}
             ></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
+            <Route path="/charge" element={<Charge></Charge>}></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path='/signup' element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
           <Route path="/success" element={<SuccessPage></SuccessPage>} />
 
-          <Route path="/charge" element={<Charge></Charge>}></Route>
+
 
         </Routes>
       </CookiesProvider>

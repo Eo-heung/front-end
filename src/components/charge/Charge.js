@@ -1,7 +1,7 @@
 import React, { useEffect, useRef, useState } from 'react'
 import "../../css/partials/Header.css";
 import { Link, useNavigate } from "react-router-dom";
-import { Paper } from "@mui/material";
+import { Paper, Table } from "@mui/material";
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import styled from "styled-components";
@@ -87,13 +87,6 @@ const Charge = () => {
         //   alert('로그아웃 실패. 다시 시도해주세요.');
         // }
     };
-    const handleLinkClick = (e) => {
-        const userResponse = window.confirm("결제를 진행하시겠습니까?");
-        if (!userResponse) {
-            // Prevent the navigation if user cancels the action
-            e.preventDefault();
-        }
-    }
 
     useEffect(() => {
         if (isLogout) {
@@ -164,17 +157,15 @@ const Charge = () => {
                         <StyledTypography variant="body2">곶감 충전</StyledTypography>
                     </Link>
                 </StyledRightContainer>
+
             </nav>
 
             <div className="data-table-container">
                 <DataTable />
             </div>
 
-            <CenteredFooter>
 
-                <StyledButton onClick={handleLinkClick}>결제하기</StyledButton>
-                {/* alert("결제를 진행합니다."); */}
-            </CenteredFooter>
+
 
         </div>
     );
