@@ -12,7 +12,7 @@ import Layout from "./components/partials/Layout";
 import MainContent from "./components/partials/MainContent";
 import BasicBoard from "./components/utils/BasicBoard";
 import Payment from "./components/Payment";
-
+import Charge from "./components/charge/Charge";
 
 function App() {
   return (
@@ -20,6 +20,7 @@ function App() {
       <CookiesProvider>
         <Routes>
           <Route path="/" element={<Layout></Layout>}>
+            <Route path="/charge" element={<Charge></Charge>}></Route>
             <Route index element={<MainContent></MainContent>}></Route>
             <Route path='/mypage' element={<Mypage></Mypage>}></Route>
             <Route
