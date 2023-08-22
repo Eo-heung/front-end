@@ -17,6 +17,9 @@ const Payment = () => {
         }
     }, []);
 
+    //로그인 한 사람이 결제를 하러 올테니깐 그 로그인 한 사람의 정보를 끌어와서 대입시키기.
+    // 테스트로 결제할 때, 카카오페이, 네이버페이, 토스페이, L페이 금지. -> 얘는 환불 기능 구현해야 가능함. 카드로만 결제하기.
+
     const onClickPayment = () => {
 
         const { IMP } = window;
@@ -26,45 +29,51 @@ const Payment = () => {
             pg: 'kcp.T0000',
             pay_method: 'card',
             merchant_uid: `mid_${new Date().getTime()}`,
-            name: '결제 테스트',
-            amount: 1000,
+            name: '결제 테스트',                        // "곶감 10개" 사는지 이름
+            amount: 1000,                              // 현금? 얼마인지 금액을 넣어야함.
             custom_data: {
                 name: '부가정보',
                 desc: '세부 부가정보'
             },
-            buyer_name: '홍길동',
-            buyer_tel: '01012345678',
-            buyer_email: '14279625@gmail.com',
-            buyer_addr: '구천면로 000-00',
-            buyer_postalcode: '01234'
+            buyer_name: '홍길동',                      // 구매하는 사람 이름
+            buyer_tel: '01012345678',                   // 구매하는 사람 전화번호
+            buyer_email: '14279625@gmail.com',          // 구매하는 사람 이메일
+            buyer_addr: '구천면로 000-00',              // 구매하는 사람 주소. addr1 + addr2 + addr3
         };
 
         IMP.request_pay(data, callback);
     }
 
-    const callback = (response) => {
+    const callback = async (response) => {
         const { success, error_msg, imp_uid, merchant_uid, pay_method, paid_amount, status } = response;
 
-        // 유저아이디, imp_uid, merchant_uid, paid_amount
-        const result = axios.post('http://localhost:9000/addPayment', {
-            imp_uid: imp_uid,
-            merchant_uid: merchant_uid,
-            value: paid_amount
-        },
-            {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
-                }
-            })
-
         console.log(response);
-        console.log(result);
 
         if (success) {
-            alert('결제 성공');
+            const data = await axios.post(`http://localhost:9000/verifyIamport/${imp_uid}`, {})
+            console.log(data.data.response.amount);
+            if (data.data.response.amount === paid_amount) {
+                // 유저아이디, imp_uid, merchant_uid, paid_amount
+                const result = axios.post('http://localhost:9000/addPayment', {
+                    imp_uid: imp_uid,
+                    merchant_uid: merchant_uid,
+                    value: paid_amount
+                },
+                    {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                        }
+                    })
+                console.log(result);
+                alert('결제 성공');
+            }
+            else {
+                alert('결제 실패');
+            }
         } else {
             alert(`결제 실패: ${error_msg}`);
         }
+
     }
 
     return (
