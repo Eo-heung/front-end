@@ -14,7 +14,7 @@ const StyledContainer = styled('div')`
     right: 0;
     left: 400px;
     padding: 1.5rem 3rem;
-    height: 180px;
+    height: 100px;
     width: 90%;
     z-index: 1001;
     background-color: #fff;
@@ -42,26 +42,18 @@ const PageTitle = styled('h3')`
     margin-bottom: 1.5rem;
 `;
 
-const StyledButton = styled(Button)`
-    position: fixed;
-    top: 200px;
-    right: 20%;
-    z-index: 1001;
-    background-color: #FCBE71;
-    &:hover {
-        background-color: #FCBE71;
-        color: #fff;
-    }
-`;
-
 const StyledCard = styled(Card)`
     display: flex;
-    gap: 1.5rem;
-    padding: 1.5rem;
+    gap: 0.5rem;
+    padding: 0.5rem;
     width: 100%;
     background-color: #fff;
     color: #000;
     cursor: pointer;
+`;
+
+const StyledCardContent = styled(CardContent)`
+    width: 400px;
 `;
 
 const ApplicantInfoBox = styled(Box)`
@@ -78,14 +70,27 @@ const ApplicantInfo = styled(Typography)`
     color: ${grey[600]};
 `;
 
+const ButtonRow = styled('div')`
+    display: flex;
+    justify-content: center;
+    margin: auto;
+    gap: 30px;
+`;
+
+const StyledButton = styled(Button)`
+    background-color: #FCBE71;
+    height: 26%;
+    &:hover {
+        background-color: #FCBE71;
+        color: #fff;
+    }
+`;
+
 const ListAcceptMoim = () => {
-    const [data, setData] = useState(null);
     const [hasMore, setHasMore] = useState(true);
-    const [result, setResult] = useState(null);
     const [page, setPage] = useState(1);
 
     const { moimId } = useParams();
-    const { moimRegId } = useParams();
 
     const [moimData, setMoimData] = useState("");
     const [applicantList, setApplicantList] = useState([]);
@@ -113,9 +118,12 @@ const ListAcceptMoim = () => {
             const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
             const data = response.data.item.moimDTO;
 
+            console.log(data);
+
             if (isMounted.current) {
                 setMoimData({
-                    moimTitle: data.moimTitle
+                    moimTitle: data.moimTitle,
+                    userId: data.userId
                 });
             }
 
@@ -133,8 +141,8 @@ const ListAcceptMoim = () => {
             });
 
             console.log(response);
-            if (response.data && response.data.item && isMounted.current) {
-                setApplicantList(response.data.item);
+            if (response.data && isMounted.current) {
+                setApplicantList(response.data);
             }
         } catch (error) {
             console.error("Error fetching applicant list data: ", error);
@@ -149,37 +157,51 @@ const ListAcceptMoim = () => {
         return () => {
             window.removeEventListener("scroll", scrollHandler);
         }
-    }, [moimId, moimRegId]);
+    }, [moimId]);
 
-    const handleAcceptance = async (userId, decision) => {
-        const endpoint = decision === "accepted" ? "approve-moim" : "reject-moim";
-        const payload = {
-            applicantUserId: userId
-        };
+    console.log(applicantList);
+
+    const handleAcceptance = async (moimRegId, decision) => {
+        const nowStatus = decision === "accepted" ? "APPROVED" : "REJECTED";
+        const alertMessage = decision === "accepted" ? "가입 신청을 수락했어요." : "가입 신청을 거절했어요.";
 
         try {
-            const response = await axios.post(`http://localhost:9000/moim/${endpoint}/${userId}`, payload, {
+            const applicant = applicantList.find(app => app.moimRegId === moimRegId);
+
+            if (!applicant) {
+                console.error("해당 moimRegId와 일치하는 신청서를 찾지 못했습니다.");
+                return;
+            }
+
+            const payload = {
+                applicantUserId: applicant.applicantUserId,
+                organizerUserId: moimData.userId
+            };
+            console.log(payload);
+
+            const response = await axios.post(`http://localhost:9000/moimReg/${moimRegId}/applicant-state?nowStatus=${nowStatus}`, payload, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }
             });
 
-            if (response.status === 200) {
-                alert(`가입 신청을 ${decision === "accepted" ? "수락" : "거절"}했습니다.`);
-                const updatedApplicants = applicantList.filter(applicant => applicant.userId !== userId);
+            if (response.data.statusCode === 200) {
+                alert(alertMessage);
+                const updatedApplicants = applicantList.filter(applicant => applicant.moimRegId !== moimRegId);
                 setApplicantList(updatedApplicants);
             }
-        } catch (error) {
-            console.error("Error handling acceptance: ", error);
+        } catch (err) {
+            console.error("Error occurred handling acceptance: ", err);
+            alert("신청 처리에 실패했어요.");
         }
     };
 
     return (
         <BasicBoard>
-            <StyledContainer>
+            <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>{`${moimData.moimTitle} 모임의 신청자 목록`}</PageTitle>
             </StyledContainer>
-            <div style={{ marginTop: "180px" }}>
+            <div style={{ marginTop: "100px" }}>
                 <InfiniteScroll
                     dataLength={applicantList ? applicantList.length : 0}
                     next={fetchApplicantList}
@@ -187,28 +209,34 @@ const ListAcceptMoim = () => {
                     scrollableTarget={document}
                 >
                     {applicantList && applicantList.map(applicant => (
-                        <StyledCard key={applicant.userId}>
+                        <StyledCard key={applicant.applicantUserId} variant="outlined">
                             <StyledCardMedia
                                 component="img"
                                 image={applicant.moimProfile && `data:image/jpeg;base64,${applicant.moimProfile}`}
                                 alt="moim image"
                             />
-                            <CardContent>
+                            <StyledCardContent>
                                 <ApplicantInfoBox border={0} my={0}>
                                     <ApplicantTitle>신청자</ApplicantTitle>
                                     <ApplicantInfo variant="body1">{applicant.applicantUserNickname}</ApplicantInfo>
                                 </ApplicantInfoBox>
                                 <ApplicantInfoBox border={0} my={2}>
                                     <ApplicantTitle>신청일</ApplicantTitle>
-                                    <ApplicantInfo variant="body1">{applicant.applicationDate}</ApplicantInfo>
+                                    <ApplicantInfo variant="body1">
+                                        {applicant.applicationDate.slice(0, 10)}
+                                    </ApplicantInfo>
                                 </ApplicantInfoBox>
                                 <ApplicantInfoBox border={0} my={2}>
                                     <ApplicantTitle>신청 상태</ApplicantTitle>
-                                    <ApplicantInfo variant="body1">{applicant.regStatus}</ApplicantInfo>
+                                    <ApplicantInfo variant="body1">
+                                        {applicant.regStatus === "WAITING" ? "가입 대기" : applicant.regStatus}
+                                    </ApplicantInfo>
                                 </ApplicantInfoBox>
-                                <StyledButton onClick={() => handleAcceptance(applicant.applicantuserId, "accepted")} variant="contained">수락</StyledButton>
-                                <StyledButton onClick={() => handleAcceptance(applicant.applicantuserId, "declined")} variant="contained">거절</StyledButton>
-                            </CardContent>
+                            </StyledCardContent>
+                            <ButtonRow>
+                                <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "accepted")} variant="contained">수락</StyledButton>
+                                <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "declined")} variant="contained">거절</StyledButton>
+                            </ButtonRow>
                         </StyledCard>
                     ))}
                 </InfiniteScroll>
