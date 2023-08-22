@@ -64,7 +64,10 @@ const ViewMoim = () => {
     const [id, setId] = useState(null);
     const [moimPic, setMoimPic] = useState(null);
     const [cookie] = useCookies('userNickname');
-    const [userMoimStatus, setUserMoimStatus] = useState(null);
+    const [status, setStatus] = useState(null);
+
+    const isCurrentUserTheHost = moimDetail.moimNickname === cookie.userNickname;
+    const isWaiting = status === "WAITING";
 
     useEffect(() => {
         setId(moimId);
@@ -115,8 +118,13 @@ const ViewMoim = () => {
     useEffect(() => {
         const getUserMoimStatus = async () => {
             try {
-                const response = await axios.get(`http://localhost:9000/moimReg/userStatus/${moimId}`);
-                setUserMoimStatus(response.data.status);
+                const response = await axios.get(`http://localhost:9000/moimReg/check-registration-state/${moimId}`, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    }
+                });
+                setStatus(response.data);
+                console.log(response.data);
             } catch (e) {
                 console.error("Error fetching user moim status", e);
             }
@@ -131,16 +139,18 @@ const ViewMoim = () => {
                 regStatus: "CANCELED"
             };
 
-            const response = await axios.post(`http://localhost:9000/cancel-moim/${moimId}`, payload);
+            const response = await axios.post(`http://localhost:9000/moimReg/${moimRegId}/applicant-state`, payload);
 
             if (response.data.statusCode === 200) {
-                setUserMoimStatus(null);
+                setStatus(null);
             }
         } catch (e) {
             console.error("Error Canceling moim application", e);
             alert("신청을 취소하지 못했어요.");
         }
     };
+
+    console.log(isCurrentUserTheHost, isWaiting);
 
     return (
         <BasicBoard>
@@ -159,30 +169,17 @@ const ViewMoim = () => {
             </StyledMoimContent>
             <img src={moimPic}
                 style={{ maxWidth: '700px', maxHeight: '400px' }}></img>
-            {moimDetail.moimNickname === cookie.userNickname ? (
+            {isCurrentUserTheHost ? (
                 <ButtonRow>
                     <StyledButton variant="contained" size="large"><ApplyLink to={`/modify-moim/${moimId}`}>수정</ApplyLink></StyledButton>
                     <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
                 </ButtonRow>
             ) : null}
-            {moimDetail.moimNickname !== cookie.userNickname && (
-                <ButtonRow>
-                    <StyledButton
-                        variant="contained"
-                        size="large"
-                        hidden={moimDetail.moimNickname === cookie.userNickname || userMoimStatus !== "Waiting"}
-                        onClick={cancelMoimApplication}>
-                        신청 취소
-                    </StyledButton>
-                    <StyledButton
-                        variant="contained"
-                        size="large"
-                        hidden={moimDetail.moimNickname === cookie.userNickname || userMoimStatus === "Waiting"}
-                    >
-                        <ApplyLink to={`/apply-moim/${moimId}`}>신청</ApplyLink>
-                    </StyledButton>
-                </ButtonRow>
-            )}
+            <ButtonRow>
+                {!isCurrentUserTheHost && isWaiting ? (
+                    <StyledButton variant="contained" size="large" onClick={cancelMoimApplication}>신청 취소</StyledButton>
+                ) : <StyledButton variant="contained" size="large"><ApplyLink to={`/apply-moim/${moimId}`}>수정</ApplyLink></StyledButton>}
+            </ButtonRow>
             <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
