@@ -11,6 +11,7 @@ import WebSocket from "./components/mypage/WebSocket";
 import Layout from "./components/partials/Layout";
 import MainContent from "./components/partials/MainContent";
 import BasicBoard from "./components/utils/BasicBoard";
+import Payment from "./components/Payment";
 
 
 function App() {
@@ -34,6 +35,7 @@ function App() {
               element={<ViewMoim></ViewMoim>}
             ></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
+            <Route path="/payment" element={<Payment></Payment>} ></Route>
           </Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/oauth" element={<Login></Login>}></Route>
