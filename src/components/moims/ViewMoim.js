@@ -147,7 +147,7 @@ const ViewMoim = () => {
             });
 
             if (response.data.statusCode === 200) {
-                alert("신청을 취소했습니다.");
+                alert("가입 신청을 취소했어요.");
                 navi("/list-moim");
             }
         } catch (e) {
