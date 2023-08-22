@@ -19,5 +19,5 @@ RUN npm run build
 # 서버 실행을 위해 serve 패키지 전역 설치
 RUN npm install -g serve
 
-# 5000 포트에서 실행
+# 3000 포트에서 실행
 CMD ["serve", "-s", "build", "-l", "3000"]
