@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { Typography, Button } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
@@ -59,15 +59,20 @@ const StyledMoimContent = styled('div')`
 `;
 
 const ViewMoim = () => {
+    const navi = useNavigate();
+
     const [moimDetail, setMoimDetail] = useState("");
     const { moimId } = useParams();
     const [id, setId] = useState(null);
     const [moimPic, setMoimPic] = useState(null);
     const [cookie] = useCookies('userNickname');
-    const [status, setStatus] = useState(null);
+    const [status, setStatus] = useState({
+        status: "",
+        moimRegId: ""
+    });
 
     const isCurrentUserTheHost = moimDetail.moimNickname === cookie.userNickname;
-    const isWaiting = status === "WAITING";
+    const isWaiting = status.status === "WAITING";
 
     useEffect(() => {
         setId(moimId);
@@ -135,14 +140,15 @@ const ViewMoim = () => {
 
     const cancelMoimApplication = async () => {
         try {
-            const payload = {
-                regStatus: "CANCELED"
-            };
-
-            const response = await axios.post(`http://localhost:9000/moimReg/${moimRegId}/applicant-state`, payload);
+            const response = await axios.post(`http://localhost:9000/moimReg/${status.moimRegId}/applicant-state?nowStatus=CANCELED`, {}, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                }
+            });
 
             if (response.data.statusCode === 200) {
-                setStatus(null);
+                alert("신청을 취소했습니다.");
+                navi("/list-moim");
             }
         } catch (e) {
             console.error("Error Canceling moim application", e);
@@ -169,17 +175,20 @@ const ViewMoim = () => {
             </StyledMoimContent>
             <img src={moimPic}
                 style={{ maxWidth: '700px', maxHeight: '400px' }}></img>
-            {isCurrentUserTheHost ? (
+            {!isCurrentUserTheHost ?
+                isWaiting ?
+                    (<ButtonRow>
+                        <StyledButton variant="contained" size="large" onClick={cancelMoimApplication}>신청 취소</StyledButton>
+                    </ButtonRow>)
+                    :
+                    (<ButtonRow>
+                        <StyledButton variant="contained" size="large"><ApplyLink to={`/apply-moim/${moimId}`}>신청</ApplyLink></StyledButton>
+                    </ButtonRow>)
+                :
                 <ButtonRow>
                     <StyledButton variant="contained" size="large"><ApplyLink to={`/modify-moim/${moimId}`}>수정</ApplyLink></StyledButton>
                     <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
-                </ButtonRow>
-            ) : null}
-            <ButtonRow>
-                {!isCurrentUserTheHost && isWaiting ? (
-                    <StyledButton variant="contained" size="large" onClick={cancelMoimApplication}>신청 취소</StyledButton>
-                ) : <StyledButton variant="contained" size="large"><ApplyLink to={`/apply-moim/${moimId}`}>수정</ApplyLink></StyledButton>}
-            </ButtonRow>
+                </ButtonRow>}
             <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
