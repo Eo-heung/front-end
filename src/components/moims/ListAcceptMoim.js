@@ -7,6 +7,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
+import { fetchApplicantList } from '../utils/apiServices.js';
 
 const StyledContainer = styled('div')`
     position: fixed;
@@ -40,6 +41,11 @@ const StyledCardMedia = styled(CardMedia)`
 
 const PageTitle = styled('h3')`
     margin-bottom: 1.5rem;
+`;
+
+const CardLink = styled(Link)`
+    margin: 1rem auto;
+    text-decoration: none;
 `;
 
 const StyledCard = styled(Card)`
@@ -90,7 +96,7 @@ const ListAcceptMoim = () => {
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
 
-    const { moimId } = useParams();
+    const { moimId, state } = useParams();
 
     const [moimData, setMoimData] = useState("");
     const [applicantList, setApplicantList] = useState([]);
@@ -118,12 +124,11 @@ const ListAcceptMoim = () => {
             const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
             const data = response.data.item.moimDTO;
 
-            console.log(data);
-
             if (isMounted.current) {
                 setMoimData({
                     moimTitle: data.moimTitle,
-                    userId: data.userId
+                    userId: data.userId,
+                    moimId: data.moimId
                 });
             }
 
@@ -132,26 +137,16 @@ const ListAcceptMoim = () => {
         }
     };
 
-    const fetchApplicantList = async () => {
-        try {
-            const response = await axios.post(`http://localhost:9000/moimReg/get-applicant-list/${moimId}`, {}, {
-                headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-                }
-            });
-
-            console.log(response);
-            if (response.data && isMounted.current) {
-                setApplicantList(response.data);
-            }
-        } catch (error) {
-            console.error("Error fetching applicant list data: ", error);
-        }
-    };
-
     useEffect(() => {
-        fetchMoimData();
-        fetchApplicantList();
+        const fetchData = async () => {
+            await fetchMoimData();
+            const applicantsFromServer = await fetchApplicantList(moimId);
+            const waitingApplicants = applicantsFromServer.filter(applicant => applicant.regStatus === 'WAITING');
+            setApplicantList(waitingApplicants);
+        };
+
+        fetchData();
+
         window.addEventListener("scroll", scrollHandler);
 
         return () => {
@@ -206,38 +201,39 @@ const ListAcceptMoim = () => {
                     dataLength={applicantList ? applicantList.length : 0}
                     next={fetchApplicantList}
                     hasMore={hasMore}
-                    scrollableTarget={document}
                 >
                     {applicantList && applicantList.map(applicant => (
-                        <StyledCard key={applicant.applicantUserId} variant="outlined">
-                            <StyledCardMedia
-                                component="img"
-                                image={applicant.moimProfile && `data:image/jpeg;base64,${applicant.moimProfile}`}
-                                alt="moim image"
-                            />
-                            <StyledCardContent>
-                                <ApplicantInfoBox border={0} my={0}>
-                                    <ApplicantTitle>신청자</ApplicantTitle>
-                                    <ApplicantInfo variant="body1">{applicant.applicantUserNickname}</ApplicantInfo>
-                                </ApplicantInfoBox>
-                                <ApplicantInfoBox border={0} my={2}>
-                                    <ApplicantTitle>신청일</ApplicantTitle>
-                                    <ApplicantInfo variant="body1">
-                                        {applicant.applicationDate.slice(0, 10)}
-                                    </ApplicantInfo>
-                                </ApplicantInfoBox>
-                                <ApplicantInfoBox border={0} my={2}>
-                                    <ApplicantTitle>신청 상태</ApplicantTitle>
-                                    <ApplicantInfo variant="body1">
-                                        {applicant.regStatus === "WAITING" ? "가입 대기" : applicant.regStatus}
-                                    </ApplicantInfo>
-                                </ApplicantInfoBox>
-                            </StyledCardContent>
-                            <ButtonRow>
-                                <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "accepted")} variant="contained">수락</StyledButton>
-                                <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "declined")} variant="contained">거절</StyledButton>
-                            </ButtonRow>
-                        </StyledCard>
+                        <CardLink to={`/accept-moim/${moimData.moimId}/${applicant.moimRegId}`} key={applicant.applicantUserId}>
+                            <StyledCard variant="outlined">
+                                <StyledCardMedia
+                                    component="img"
+                                    image={applicant.moimProfile && `data:image/jpeg;base64,${applicant.moimProfile}`}
+                                    alt="모임 프로필 사진"
+                                />
+                                <StyledCardContent>
+                                    <ApplicantInfoBox border={0} my={0}>
+                                        <ApplicantTitle>신청자</ApplicantTitle>
+                                        <ApplicantInfo variant="body1">{applicant.applicantUserNickname}</ApplicantInfo>
+                                    </ApplicantInfoBox>
+                                    <ApplicantInfoBox border={0} my={2}>
+                                        <ApplicantTitle>신청일</ApplicantTitle>
+                                        <ApplicantInfo variant="body1">
+                                            {applicant.applicationDate.slice(0, 10)}
+                                        </ApplicantInfo>
+                                    </ApplicantInfoBox>
+                                    <ApplicantInfoBox border={0} my={2}>
+                                        <ApplicantTitle>신청 상태</ApplicantTitle>
+                                        <ApplicantInfo variant="body1">
+                                            {applicant.regStatus === "WAITING" ? "가입 대기" : applicant.regStatus}
+                                        </ApplicantInfo>
+                                    </ApplicantInfoBox>
+                                </StyledCardContent>
+                                <ButtonRow>
+                                    <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "accepted")} variant="contained">수락</StyledButton>
+                                    <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "declined")} variant="contained">거절</StyledButton>
+                                </ButtonRow>
+                            </StyledCard>
+                        </CardLink>
                     ))}
                 </InfiniteScroll>
             </div>
