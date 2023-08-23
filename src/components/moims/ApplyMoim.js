@@ -205,7 +205,21 @@ const ApplyMoim = () => {
 
         formData.append("applicantUserNickname", userData.userNickname);
         formData.append("applicantUserAddr", userData.userAddr3);
-        formData.append("moimProfile", filePic);
+
+        if (!filePic) {
+            try {
+                const defaultImageRes = await axios.get('https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png', {
+                    responseType: 'blob'
+                });
+
+                const defaultImageFile = new File([defaultImageRes.data], 'default-image.png', { type: 'image/png' });
+                formData.append("moimProfile", defaultImageFile);
+            } catch (err) {
+                console.error("Failed to download default image", err);
+            }
+        } else {
+            formData.append("moimProfile", filePic);
+        }
 
         try {
             const response = await axios.post(`http://localhost:9000/moimReg/apply-moim/${moimId}`, formData, {
