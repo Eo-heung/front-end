@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState } from "react";
 import io from "socket.io-client";
+import axios from "axios";
 import MicIcon from "@mui/icons-material/Mic";
 import MicOffIcon from "@mui/icons-material/MicOff";
 import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
@@ -9,8 +10,6 @@ import EoheungImg from "../../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import "../../css/partials/CameraChatting.css";
-import axios from "axios";
-import { Block } from "@mui/icons-material";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);

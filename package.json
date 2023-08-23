@@ -18,7 +18,7 @@
     "http-proxy-middleware": "^2.0.6",
     "mediasoup": "^3.12.10",
     "openvidu-browser": "^2.28.0",
-    "openvidu-react": "2.21.0",
+    "openvidu-react": "2.26.0",
     "react": "^18.2.0",
     "react-cookie": "^5.0.0",
     "react-daum-postcode": "^3.1.3",
