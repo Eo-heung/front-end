@@ -210,7 +210,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const getMedia = async (deviceId) => {
     const initialConstrains = {
-      // audio: true,
+      audio: true,
       video: { facingMode: "user" },
     };
     const cameraConstraints = {

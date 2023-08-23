@@ -9,7 +9,7 @@ const OpenViduVideoComponent = ({ streamManager }) => {
     }
   }, [streamManager]);
 
-  return <video autoPlay={true} ref={videoRef} />;
+  return <video autoPlay={true} muted ref={videoRef} />;
 };
 
 export default OpenViduVideoComponent;

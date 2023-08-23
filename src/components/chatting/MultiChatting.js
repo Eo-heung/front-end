@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useCallback } from "react";
+import React, { useState, useEffect, useCallback, useRef } from "react";
 import axios from "axios";
 import { OpenVidu } from "openvidu-browser";
 import UserVideoComponent from "./UserVideoComponent";
@@ -11,6 +11,7 @@ const MultiChatting = () => {
   const [myUserName, setMyUserName] = useState(
     "Participant" + Math.floor(Math.random() * 100)
   );
+  // const session = useRef(undefined);
   const [session, setSession] = useState(undefined);
   const [mainStreamManager, setMainStreamManager] = useState(undefined);
   const [publisher, setPublisher] = useState(undefined);
@@ -21,7 +22,8 @@ const MultiChatting = () => {
   useEffect(() => {
     window.addEventListener("beforeunload", leaveSession);
     return () => {
-      window.removeEventListener("beforeunload", leaveSession);
+      leaveSession();
+      // window.removeEventListener("beforeunload", leaveSession);
     };
   }, []);
 
@@ -47,7 +49,6 @@ const MultiChatting = () => {
 
   const joinSession = () => {
     const OV = new OpenVidu();
-
     const mySession = OV.initSession();
     setSession(mySession);
 
@@ -105,8 +106,10 @@ const MultiChatting = () => {
 
   const leaveSession = () => {
     // --- 7) Leave the session by calling 'disconnect' method over the Session object ---
+    // alert("갑니당1");
 
     if (session) {
+      // alert("갑니당2");
       session.disconnect();
     }
 
@@ -118,6 +121,7 @@ const MultiChatting = () => {
     setMyUserName("Participant" + Math.floor(Math.random() * 100));
     setMainStreamManager(undefined);
     setPublisher(undefined);
+    // alert("갑니당3");
   };
 
   const switchCamera = async () => {
@@ -230,17 +234,11 @@ const MultiChatting = () => {
         <div className="container">
           {session === undefined ? (
             <div id="join">
-              <div id="img-div">
-                <img
-                  src="resources/images/openvidu_grey_bg_transp_cropped.png"
-                  alt="OpenVidu logo"
-                />
-              </div>
               <div id="join-dialog" className="jumbotron vertical-center">
-                <h1> Join a video session </h1>
+                <h1> 방 참가하기 </h1>
                 <form className="form-group" onSubmit={joinSession}>
                   <p>
-                    <label>Participant: </label>
+                    <label>사용자 이름: </label>
                     <input
                       className="form-control"
                       type="text"
@@ -251,7 +249,7 @@ const MultiChatting = () => {
                     />
                   </p>
                   <p>
-                    <label> Session: </label>
+                    <label> 방 이름 : </label>
                     <input
                       className="form-control"
                       type="text"
