@@ -1,13 +1,12 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
-import { Button, Typography, Box, Card, CardContent, CardMedia } from '@mui/material';
+import { Button, Typography, Box, Card, CardContent, CardMedia, TextField, Select, MenuItem } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
-import { fetchApplicantList } from '../utils/apiServices.js';
 
 const StyledContainer = styled('div')`
     position: fixed;
@@ -15,7 +14,7 @@ const StyledContainer = styled('div')`
     right: 0;
     left: 400px;
     padding: 1.5rem 3rem;
-    height: 100px;
+    height: 180px;
     width: 90%;
     z-index: 1001;
     background-color: #fff;
@@ -30,10 +29,36 @@ const StyledContainer = styled('div')`
     }
 `;
 
+const SearchContainer = styled('div')`
+    display: flex;
+    align-items: center;
+    gap: 10px;
+`;
+
+const StyledTextField = styled(TextField)`
+    width: 280px;
+    & .MuiOutlinedInput-root {
+        &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
+            border-color: #FCBE71;
+        }
+        &.Mui-focused .MuiInputLabel-root {
+            color: #FCBE71;
+        }
+    }
+`;
+
+const SearchButton = styled(Button)`
+    background-color: #FCBE71;
+    color: #fff;
+    &:hover {
+        background-color: #FCBE71;
+        color: #fff;
+    }
+`;
+
 const StyledCardMedia = styled(CardMedia)`
     height: 160px;
     width: 160px;
-    
     @media (max-width: 992px) {
         display: none;
     }
@@ -51,7 +76,7 @@ const CardLink = styled(Link)`
 const StyledCard = styled(Card)`
     display: flex;
     gap: 0.5rem;
-    padding: 0.5rem;
+    padding: 1.5rem;
     width: 100%;
     background-color: #fff;
     color: #000;
@@ -85,7 +110,6 @@ const ButtonRow = styled('div')`
 
 const StyledButton = styled(Button)`
     background-color: #FCBE71;
-    height: 26%;
     &:hover {
         background-color: #FCBE71;
         color: #fff;
@@ -95,13 +119,15 @@ const StyledButton = styled(Button)`
 const ListAcceptMoim = () => {
     const [hasMore, setHasMore] = useState(true);
     const [page, setPage] = useState(1);
+    const ITEMS_PER_PAGE = 3;
 
-    const { moimId, state } = useParams();
+    const { moimId } = useParams();
 
     const [moimData, setMoimData] = useState("");
     const [applicantList, setApplicantList] = useState([]);
-
     const [scrollActive, setScrollActive] = useState(false);
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [sortOrder, setSortOrder] = useState("ascending");
 
     const scrollHandler = () => {
         if (window.scrollY > 100) {
@@ -109,6 +135,18 @@ const ListAcceptMoim = () => {
         } else {
             setScrollActive(false);
         }
+    };
+
+    const sortedApplicants = useMemo(() => {
+        if (sortOrder === 'ascending') {
+            return [...applicantList].sort((a, b) => a.moimRegId - b.moimRegId);
+        } else {
+            return [...applicantList].sort((a, b) => b.moimRegId - a.moimRegId);
+        }
+    }, [applicantList, sortOrder]);
+
+    const toggleSortOrder = () => {
+        setSortOrder(prevOrder => (prevOrder === 'ascending' ? 'descending' : 'ascending'));
     };
 
     const isMounted = useRef(true);
@@ -137,6 +175,24 @@ const ListAcceptMoim = () => {
         }
     };
 
+    const fetchApplicantList = async (moimId) => {
+        try {
+            const response = await axios.post(`http://localhost:9000/moimReg/get-applicant-list/${moimId}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                }
+            });
+
+            if (response.data) {
+                return response.data;
+            }
+            return [];
+        } catch (e) {
+            console.error("Error fetching applicant list data", e);
+            return [];
+        }
+    };
+
     useEffect(() => {
         const fetchData = async () => {
             await fetchMoimData();
@@ -156,7 +212,9 @@ const ListAcceptMoim = () => {
 
     console.log(applicantList);
 
-    const handleAcceptance = async (moimRegId, decision) => {
+    const handleAcceptance = async (e, moimRegId, decision) => {
+        e.preventDefault();
+
         const nowStatus = decision === "accepted" ? "APPROVED" : "REJECTED";
         const alertMessage = decision === "accepted" ? "가입 신청을 수락했어요." : "가입 신청을 거절했어요.";
 
@@ -195,8 +253,15 @@ const ListAcceptMoim = () => {
         <BasicBoard>
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>{`${moimData.moimTitle} 모임의 신청자 목록`}</PageTitle>
+                <SearchContainer>
+                    <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
+                    <SearchButton variant="contained" size="large">검색</SearchButton>
+                    <SearchButton variant="contained" size="large" onClick={toggleSortOrder}>
+                        {sortOrder === 'ascending' ? '최신순' : '신청순'}
+                    </SearchButton>
+                </SearchContainer>
             </StyledContainer>
-            <div style={{ marginTop: "100px" }}>
+            <div style={{ marginTop: "180px", width: "90%" }}>
                 <InfiniteScroll
                     dataLength={applicantList ? applicantList.length : 0}
                     next={fetchApplicantList}
@@ -229,8 +294,8 @@ const ListAcceptMoim = () => {
                                     </ApplicantInfoBox>
                                 </StyledCardContent>
                                 <ButtonRow>
-                                    <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "accepted")} variant="contained">수락</StyledButton>
-                                    <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "declined")} variant="contained">거절</StyledButton>
+                                    <StyledButton onClick={(e) => handleAcceptance(e, applicant.moimRegId, "accepted")} variant="contained" size="large">수락</StyledButton>
+                                    <StyledButton onClick={(e) => handleAcceptance(e, applicant.moimRegId, "declined")} variant="contained" size="large">거절</StyledButton>
                                 </ButtonRow>
                             </StyledCard>
                         </CardLink>

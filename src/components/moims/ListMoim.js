@@ -13,7 +13,7 @@ const StyledContainer = styled('div')`
     right: 0;
     left: 400px;
     padding: 1.5rem 3rem;
-    height: 180px;
+    height: 250px;
     width: 90%;
     z-index: 1001;
     background-color: #fff;
@@ -32,6 +32,22 @@ const SearchContainer = styled('div')`
     display: flex;
     align-items: center;
     gap: 10px;
+`;
+
+const CategoryContainer = styled('div')`
+    display: flex;
+    align-items: center;
+    margin-bottom: 1.5rem;
+    gap: 10px;
+`;
+
+const CategoryButton = styled(Button)`
+    background-color: #608796;
+    color: #fff;
+    &:hover {
+        background-color: #FCBE71;
+        color: #fff;
+    }
 `;
 
 const StyledTextField = styled(TextField)`
@@ -71,6 +87,15 @@ const StyledMenuItem = styled(MenuItem)`
     }
 `;
 
+const SearchButton = styled(Button)`
+    background-color: #FCBE71;
+    color: #fff;
+    &:hover {
+        background-color: #FCBE71;
+        color: #fff;
+    }
+`;
+
 const PageTitle = styled('h3')`
     margin-bottom: 1.5rem;
 `;
@@ -81,11 +106,9 @@ const StyledLink = styled(Link)`
 `;
 
 const StyledButton = styled(Button)`
-    position: fixed;
-    top: 200px;
-    right: 20%;
-    z-index: 1001;
+    margin-left: 12rem;
     background-color: #FCBE71;
+    color: #fff;
     &:hover {
         background-color: #FCBE71;
         color: #fff;
@@ -95,6 +118,7 @@ const StyledButton = styled(Button)`
 const StyledCard = styled(Card)`
     display: flex;
     gap: 1.5rem;
+    margin-bottom: 1.5rem;
     padding: 1.5rem;
     width: 100%;
     background-color: #fff;
@@ -145,6 +169,7 @@ const ListMoim = () => {
     const [searchKeyword, setSearchKeyword] = useState('');
     const [category, setCategory] = useState('all');
     const [scrollActive, setScrollActive] = useState(false);
+    const [orderBy, setOrderBy] = useState("ascending");
 
     const scrollHandler = () => {
         if (window.scrollY > 100) {
@@ -160,14 +185,20 @@ const ListMoim = () => {
         return () => {
             window.removeEventListener('scroll', scrollHandler);
         };
-    }, []);
+    }, [orderBy]);
 
     const fetchData = async () => {
         try {
             const response = await axios.get(`http://localhost:9000/moim/list-moim`);
             console.log(response.data);
 
-            const moims = Object.values(response.data.item).sort((a, b) => a.moimId - b.moimId);
+            const moims = Object.values(response.data.item).sort((a, b) => {
+                if (orderBy === 'ascending') {
+                    return a.moimId - b.moimId;
+                } else {
+                    return b.moimId - a.moimId;
+                }
+            });
 
             setData(moims);
             setResult(moims);
@@ -182,12 +213,25 @@ const ListMoim = () => {
         }
     };
 
-
+    const handleOrderBy = () => {
+        setOrderBy(orderBy === "ascending" ? "descending" : "ascending");
+    };
 
     return (
         <BasicBoard>
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>모임 목록</PageTitle>
+                <CategoryContainer>
+                    <CategoryButton variant="contained" size="large">인문학/책</CategoryButton>
+                    <CategoryButton variant="contained" size="large">운동</CategoryButton>
+                    <CategoryButton variant="contained" size="large">요리/맛집</CategoryButton>
+                    <CategoryButton variant="contained" size="large">공예/만들기</CategoryButton>
+                    <CategoryButton variant="contained" size="large">원예</CategoryButton>
+                    <CategoryButton variant="contained" size="large">동네친구</CategoryButton>
+                    <CategoryButton variant="contained" size="large">음악/악기</CategoryButton>
+                    <CategoryButton variant="contained" size="large">반려동물</CategoryButton>
+                    <CategoryButton variant="contained" size="large">여행</CategoryButton>
+                </CategoryContainer>
                 <SearchContainer>
                     <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
                     <StyledSelect value={category} onChange={(e) => setCategory(e.target.value)}>
@@ -196,12 +240,16 @@ const ListMoim = () => {
                         <StyledMenuItem value="region">지역별</StyledMenuItem>
                         <StyledMenuItem value="newest">최신순</StyledMenuItem>
                     </StyledSelect>
+                    <SearchButton variant="contained" size="large">검색</SearchButton>
+                    <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
+                        {orderBy === 'ascending' ? '최신순' : '등록순'}
+                    </SearchButton>
+                    <StyledButton component={StyledLink} to="/create-moim" variant="contained" size="large">
+                        새로운 모임 만들기
+                    </StyledButton>
                 </SearchContainer>
-                <StyledButton component={StyledLink} to="/create-moim" variant="contained" color="primary">
-                    새로운 모임 만들기
-                </StyledButton>
             </StyledContainer>
-            <div style={{ marginTop: "180px" }}>
+            <div style={{ marginTop: "250px", width: "90%" }}>
                 <InfiniteScroll
                     dataLength={data ? data.length : 0}
                     next={fetchData}
@@ -210,7 +258,7 @@ const ListMoim = () => {
                 >
                     {data && data.map(moim => (
                         <StyledLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
-                            <StyledCard>
+                            <StyledCard variant="outlined">
                                 <StyledCardMedia
                                     component="img"
                                     image={moim.moimPic && `data:image/jpeg;base64,${moim.moimPic}` || 'https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'}

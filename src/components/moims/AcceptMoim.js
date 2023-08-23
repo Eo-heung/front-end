@@ -123,7 +123,9 @@ const AcceptMoim = () => {
         };
     }, [moimId, moimRegId]);
 
-    const handleAcceptance = async (moimRegId, decision) => {
+    const handleAcceptance = async (e, moimRegId, decision) => {
+        e.preventDefault();
+
         const nowStatus = decision === "accepted" ? "APPROVED" : "REJECTED";
         const alertMessage = decision === "accepted" ? "가입 신청을 수락했어요." : "가입 신청을 거절했어요.";
 
@@ -180,8 +182,8 @@ const AcceptMoim = () => {
                         </ApplicantInfoBox>
                     </StyledDiv>
                     <ButtonRow>
-                        <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "accepted")} variant="contained" size="large">수락</StyledButton>
-                        <StyledButton onClick={() => handleAcceptance(applicant.moimRegId, "declined")} variant="contained" size="large">거절</StyledButton>
+                        <StyledButton type="button" onClick={(e) => handleAcceptance(e, applicant.moimRegId, "accepted")} variant="contained" size="large">수락</StyledButton>
+                        <StyledButton type="button" onClick={(e) => handleAcceptance(e, applicant.moimRegId, "declined")} variant="contained" size="large">거절</StyledButton>
                     </ButtonRow>
                 </StyledBox>
             </StyledForm>
