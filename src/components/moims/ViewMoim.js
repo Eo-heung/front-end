@@ -73,6 +73,7 @@ const ViewMoim = () => {
 
     const isCurrentUserTheHost = moimDetail.moimNickname === cookie.userNickname;
     const isWaiting = status.status === "WAITING";
+    const isApproved = status.status === "APPROVED";
 
     useEffect(() => {
         setId(moimId);
@@ -175,20 +176,25 @@ const ViewMoim = () => {
             </StyledMoimContent>
             <img src={moimPic}
                 style={{ maxWidth: '700px', maxHeight: '400px' }}></img>
-            {!isCurrentUserTheHost ?
-                isWaiting ?
-                    (<ButtonRow>
-                        <StyledButton variant="contained" size="large" onClick={cancelMoimApplication}>신청 취소</StyledButton>
-                    </ButtonRow>)
+            {
+                !isCurrentUserTheHost && isApproved ?
+                    null
                     :
-                    (<ButtonRow>
-                        <StyledButton variant="contained" size="large"><ApplyLink to={`/apply-moim/${moimId}`}>신청</ApplyLink></StyledButton>
-                    </ButtonRow>)
-                :
-                <ButtonRow>
-                    <StyledButton variant="contained" size="large"><ApplyLink to={`/modify-moim/${moimId}`}>수정</ApplyLink></StyledButton>
-                    <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
-                </ButtonRow>}
+                    !isCurrentUserTheHost ?
+                        isWaiting ?
+                            (<ButtonRow>
+                                <StyledButton variant="contained" size="large" onClick={cancelMoimApplication}>신청 취소</StyledButton>
+                            </ButtonRow>)
+                            :
+                            (<ButtonRow>
+                                <StyledButton variant="contained" size="large"><ApplyLink to={`/apply-moim/${moimId}`}>신청</ApplyLink></StyledButton>
+                            </ButtonRow>)
+                        :
+                        <ButtonRow>
+                            <StyledButton variant="contained" size="large"><ApplyLink to={`/modify-moim/${moimId}`}>수정</ApplyLink></StyledButton>
+                            <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                        </ButtonRow>
+            }
             <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
