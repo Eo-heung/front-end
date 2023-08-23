@@ -8,7 +8,7 @@ WORKDIR /usr/src/app
 COPY package*.json ./
 
 # 패키지 설치
-RUN npm install
+RUN npm install --legacy-peer-deps
 
 # 모든 소스 코드를 이미지에 복사
 COPY . .
