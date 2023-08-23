@@ -17,11 +17,12 @@ const StartCamera = () => {
 
   useEffect(() => {
     initCall();
-
     // 클린업 함수
     return () => {
       // 스트림의 각 트랙(track)을 멈춰서 브라우저의 카메라 및 마이크 접근을 종료합니다.
       if (myStreamRef.current) {
+        alert("클린업");
+
         myStreamRef.current.getTracks().forEach((track) => {
           track.stop();
         });
