@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, Typography, CardMedia, TextField, Select, MenuItem, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
@@ -6,6 +6,7 @@ import InfiniteScroll from 'react-infinite-scroll-component';
 import { styled } from '@mui/system';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
+import { throttle } from 'lodash';
 
 const StyledContainer = styled('div')`
     position: fixed;
@@ -162,22 +163,33 @@ const EllipsisText = styled(Typography)`
 `;
 
 const ListMoim = () => {
-    const [data, setData] = useState(null);
+    const [data, setData] = useState([]);
     const [hasMore, setHasMore] = useState(true);
-    const [result, setResult] = useState(null);
     const [page, setPage] = useState(1);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [category, setCategory] = useState('all');
     const [scrollActive, setScrollActive] = useState(false);
     const [orderBy, setOrderBy] = useState("ascending");
 
-    const scrollHandler = () => {
-        if (window.scrollY > 100) {
-            setScrollActive(true);
-        } else {
-            setScrollActive(false);
-        }
-    };
+    const scrollHandler = useMemo(() =>
+        throttle(() => {
+
+            if (window.scrollY > 100) {
+                setScrollActive(true);
+            } else {
+                setScrollActive(false);
+            }
+
+            const scrollHeight = document.documentElement.scrollHeight;
+            const scrollTop = document.documentElement.scrollTop;
+            const clientHeight = document.documentElement.clientHeight;
+
+            if (scrollTop + clientHeight >= scrollHeight) {
+                setPage(prevPage => prevPage + 1);
+                window.scrollTo({ scrollTop });
+                return;
+            }
+        }, 500), [page]);
 
     useEffect(() => {
         fetchData();
@@ -185,36 +197,41 @@ const ListMoim = () => {
         return () => {
             window.removeEventListener('scroll', scrollHandler);
         };
-    }, [orderBy]);
+    }, [page, orderBy]);
 
-    const fetchData = async () => {
-        try {
-            const response = await axios.get(`http://localhost:9000/moim/list-moim`);
-            console.log(response.data);
+    const fetchData = () => {
+        const apiEndPoint = orderBy === 'ascending'
+            ? "http://localhost:9000/moim/list-moim/asc"
+            : "http://localhost:9000/moim/list-moim/desc";
 
-            const moims = Object.values(response.data.item).sort((a, b) => {
-                if (orderBy === 'ascending') {
-                    return a.moimId - b.moimId;
-                } else {
-                    return b.moimId - a.moimId;
-                }
-            });
-
-            setData(moims);
-            setResult(moims);
-            console.log(result);
-            if (response.data.length === 0) {
-                setHasMore(false);
-            } else {
-                setPage(prev => prev + 1);
+        axios.post(apiEndPoint, {}, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+            },
+            params: {
+                page: page - 1,
+                category: category,
+                searchKeyword: searchKeyword,
+                searchType: category,
+                orderBy: orderBy
             }
-        } catch (error) {
-            console.log("Error fetching data: ", error);
-        }
+        })
+            .then(response => {
+                console.log(response.data);
+                const moims = Object.values(response.data.items);
+
+                setData(moims);
+            })
+            .catch(error => {
+                console.log("Error fetching data: ", error);
+            });
     };
 
     const handleOrderBy = () => {
+        setPage(1);
+        setData([]);
         setOrderBy(orderBy === "ascending" ? "descending" : "ascending");
+        fetchData();
     };
 
     return (
@@ -222,6 +239,7 @@ const ListMoim = () => {
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>모임 목록</PageTitle>
                 <CategoryContainer>
+                    <CategoryButton variant="contained" size="large">전체</CategoryButton>
                     <CategoryButton variant="contained" size="large">인문학/책</CategoryButton>
                     <CategoryButton variant="contained" size="large">운동</CategoryButton>
                     <CategoryButton variant="contained" size="large">요리/맛집</CategoryButton>
@@ -236,9 +254,9 @@ const ListMoim = () => {
                     <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
                     <StyledSelect value={category} onChange={(e) => setCategory(e.target.value)}>
                         <StyledMenuItem value="all">전체</StyledMenuItem>
-                        <StyledMenuItem value="subject">주제별</StyledMenuItem>
-                        <StyledMenuItem value="region">지역별</StyledMenuItem>
-                        <StyledMenuItem value="newest">최신순</StyledMenuItem>
+                        <StyledMenuItem value="title">제목</StyledMenuItem>
+                        <StyledMenuItem value="content">내용</StyledMenuItem>
+                        <StyledMenuItem value="nickname">작성자</StyledMenuItem>
                     </StyledSelect>
                     <SearchButton variant="contained" size="large">검색</SearchButton>
                     <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
@@ -279,7 +297,6 @@ const ListMoim = () => {
                         </StyledLink>
                     ))}
                 </InfiniteScroll>
-
             </div>
             <TopButton />
         </BasicBoard>
