@@ -275,39 +275,38 @@ const ModifyMoim = () => {
             return;
         }
 
-        const modifyMoimAxios = async () => {
-            try {
-                const resultTemp = await axios.post(`http://localhost:9000/moim/modify-moim/${moimId}`, inputs);
-                console.log(resultTemp);
+        const modifyMoimAxios = () => {
+            axios.post(`http://localhost:9000/moim/modify-moim/${moimId}`, inputs)
+                .then(resultTemp => {
+                    console.log(resultTemp);
 
-                const formData = new FormData();
-                console.log(moimPic);
+                    const formData = new FormData();
+                    console.log(moimPic);
+                    formData.append("moimPic", filePic);
+                    console.log(formData);
 
-                formData.append("moimPic", filePic);
+                    return axios.post(`http://localhost:9000/moim/modify-moim-pic/${moimId}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                })
+                .then(result => {
+                    console.log(result.data);
 
-                console.log(formData);
-
-
-                const result = await axios.post(`http://localhost:9000/moim/modify-moim-pic/${moimId}`, formData, {
-                    headers: {
-                        'Content-Type': 'multipart/form-data'
+                    if (result.data.item) {
+                        alert("수정이 완료되었습니다.");
+                        navi('/list-moim');
                     }
+                })
+                .catch(e => {
+                    console.log(e);
                 });
-
-                console.log(result.data);
-
-                if (result.data.item) {
-                    alert("수정이 완료되었습니다.");
-                    navi('/list-moim');
-                }
-            } catch (e) {
-                console.log(e);
-            }
         }
 
         modifyMoimAxios();
-    });
 
+    });
 
     return (
         <BasicBoard>
