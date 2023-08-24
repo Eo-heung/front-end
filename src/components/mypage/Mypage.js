@@ -89,6 +89,7 @@ const Mypage = () => {
     const [requestFriends, setRequestFriends] = useState([]);
     const [friends, setFriends] = useState([]);
     const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
+    const [paymentList, setPaymentList] = useState([]);
 
     const openModal = () => {
         setModalOpen(true);
@@ -584,6 +585,7 @@ const Mypage = () => {
         getProfileImage(); // getProfileImage
         getFriendList();
         getRequestFriendList();
+        getPaymentList();
     }, []);
 
     useEffect(() => {
@@ -655,6 +657,17 @@ const Mypage = () => {
         }).catch(error => { console.error(error) });
     };
 
+    const getPaymentList = async () => {
+        axios.post('http://localhost:9000/paymentList', {}, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+            }
+        }).then(res => {
+            setPaymentList(res.data.items);
+            console.log(paymentList);
+        }).catch(error => { console.error(error) });
+    };
+
     const acceptRequestFriend = async (id, requestValue) => {
         axios.post(`http://localhost:9000/friend/requestFriend/${id}`, { id: requestValue },
         ).then(res => {
@@ -681,6 +694,22 @@ const Mypage = () => {
             });
     };
 
+    const cancelPayment = async (id) => {
+        const userConfirmed = window.confirm("정말로 이 결제를 취소하시겠습니까?");
+        if (!userConfirmed) {
+            return; // 사용자가 취소를 누르면 여기에서 함수를 종료합니다
+        }
+        else {
+            axios.post(`http://localhost:9000/cancelPayment/${id}`, {})
+                .then(res => {
+                    console.log(res.data);
+                    alert(res.data.item.msg);
+                }).catch(error => {
+                    console.error(error);
+                    alert(`${error.response.data.item.msg} \n\n[취소사유] : ${error.response.data.errorMessage}`);
+                });
+        }
+    }
 
     return (
         <>
@@ -1094,7 +1123,36 @@ const Mypage = () => {
                                         {/* 내용2 */}
                                     </TabPanel>
                                     <TabPanel value={value} index={2}>
-                                        {/* 내용3 */}
+                                        <Grid container spacing={3} sx={{ marginTop: '5px' }}>
+                                            <Grid item xs={12} >
+                                                {paymentList && paymentList.map((payment, index) => (
+                                                    <Grid item xs={12} key={index} sx={{ marginBottom: '12px' }}>
+                                                        <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
+                                                            <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
+                                                                <div style={{ display: 'flex', alignItems: 'center' }}>
+                                                                    <Typography variant="h6">
+                                                                        {payment.payDate && `${new Date(payment.payDate).getFullYear()}년 ${(new Date(payment.payDate).getMonth() + 1).toString().padStart(2, '0')}월 ${new Date(payment.payDate).getDate().toString().padStart(2, '0')}일(${new Date(payment.payDate).getHours().toString().padStart(2, '0')}:${new Date(payment.payDate).getMinutes().toString().padStart(2, '0')}:${new Date(payment.payDate).getSeconds().toString().padStart(2, '0')})` || "날짜 확인 불가"}
+                                                                    </Typography>
+                                                                </div>
+                                                                <Button
+                                                                    variant="text"
+                                                                    onClick={() => cancelPayment(payment.imp_uid)}
+                                                                    sx={{ color: "red" }}
+                                                                >
+                                                                    결제 취소
+                                                                </Button>
+                                                            </div>
+                                                            <Typography variant="body2" sx={{ marginBottom: '6px' }}>
+                                                                금액 : {payment.value + " 원" || "금액 없음"}
+                                                            </Typography>
+                                                            <Typography variant="body2">
+                                                                곶감 : {payment.gotGam || "0"} 개
+                                                            </Typography>
+                                                        </BoxContent>
+                                                    </Grid>
+                                                ))}
+                                            </Grid>
+                                        </Grid>
                                     </TabPanel>
                                 </UserInfoSection>
                             </Paper>
