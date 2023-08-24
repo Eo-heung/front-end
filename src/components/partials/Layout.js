@@ -1,8 +1,9 @@
-import React, { useState } from "react";
-import Header from "../partials/Header";
+import React from "react";
 import Footer from "../partials/Footer";
-import Nav from "../partials/Nav";
+import Header from "../partials/Header";
 import Main from "../partials/Main";
+import Nav from "../partials/Nav";
+import OnlineStatus from "./OnlineStatus";
 
 const Layout = () => {
 
@@ -15,6 +16,8 @@ const Layout = () => {
       <Main></Main>
 
       <Footer></Footer>
+
+      <OnlineStatus />
     </>
   );
 };

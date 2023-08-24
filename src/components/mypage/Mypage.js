@@ -89,6 +89,7 @@ const Mypage = () => {
     const [friends, setFriends] = useState([]);
     const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
     const [paymentList, setPaymentList] = useState([]);
+    const [userStatus, setUserStatus] = useState(false);
 
     const openModal = () => {
         setModalOpen(true);
@@ -574,6 +575,7 @@ const Mypage = () => {
             setUserRegdate(response.data.item.userRegdate);
             setUserRecommend(response.data.item.userRecommend);
             setUserStatusMessage(response.data.item.userStatusMessage);
+            setUserStatus(response.data.item.online);
         } catch (error) {
             console.error("유저 정보를 가져오는 데 실패했습니다:", error);
         }
@@ -642,6 +644,7 @@ const Mypage = () => {
                 Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
             }
         }).then(res => {
+            console.log(res.data);
             setFriends(res.data.items);
         }).catch(error => { console.error(error) });
     };
@@ -1178,11 +1181,13 @@ const Mypage = () => {
                                                         <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                    <img
-                                                                        src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
-                                                                        alt="프로필 사진"
-                                                                        style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px' }}
-                                                                    />
+                                                                    <div style={{ position: 'relative' }}> {/* 이미지와 초록색 div의 컨테이너 */}
+                                                                        <img
+                                                                            src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
+                                                                            alt="프로필 사진"
+                                                                            style={{ width: '50px', height: '50px', borderRadius: '25px', marginRight: '8px', border: '2px solid white', boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"}` }}
+                                                                        />
+                                                                    </div>
                                                                     <Typography variant="h6">{friend.user_name || "이름 없음"}</Typography>
                                                                 </div>
                                                                 <div>
