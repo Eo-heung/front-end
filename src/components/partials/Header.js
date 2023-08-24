@@ -29,32 +29,45 @@ const Header = () => {
   const navi = useNavigate();
 
   // online, offline 기능 구현
-  let stompClient;
+  const stompClient = useRef(null);
 
   useEffect(() => {
     const userId = sessionStorage.getItem('userId');
 
-    const socket = new SockJS('http://localhost:9000/websocket-endpoint');
-    stompClient = Stomp.over(socket);
+    if (!userId) {
+      navi("/login");
+      return; // 이후 로직 실행을 중단
+    }
+    else {
 
-    stompClient.connect({}, (frame) => {
-      // 온라인 상태임을 알릴 로직 (예: 서버에 메시지 전송)
-      stompClient.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'online' }));
+      const socketFactory = () => new SockJS('http://localhost:9000/websocket-endpoint');
+      stompClient.current = Stomp.over(socketFactory);
 
-      stompClient.subscribe('/topic/online-status', (message) => {
-        // 필요한 경우 메시지 수신 로직
+      stompClient.current.connect({}, (frame) => {
+        // 온라인 상태임을 알릴 로직 (예: 서버에 메시지 전송)
+        stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'online' }));
+
+        stompClient.current.subscribe('/topic/online-status', (message) => {
+          // 필요한 경우 메시지 수신 로직
+        });
       });
-    });
 
-    window.addEventListener('beforeunload', () => {
-      // 페이지나 브라우저 창을 닫을 때 실행될 로직
-      stompClient.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
-    });
+      window.addEventListener('beforeunload', () => {
+        // 페이지나 브라우저 창을 닫을 때 실행될 로직
+        stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
+      });
 
-    return () => {
-      // 오프라인 상태임을 알릴 로직 (예: 서버에 메시지 전송 전 연결 해제)
-      stompClient.disconnect();
-    };
+      return () => {
+        // 오프라인 상태임을 알릴 로직 (예: 서버에 메시지 전송 전 연결 해제)
+        stompClient.current.disconnect();
+      };
+    }
+  }, []);
+
+  useEffect(() => {
+    const handleResize = () => setIsDesktop(window.innerWidth > 992);
+    window.addEventListener("resize", handleResize);
+    return () => window.removeEventListener("resize", handleResize);
   }, []);
 
   const icons = [
@@ -65,34 +78,17 @@ const Header = () => {
     { text: "마이페이지", link: "/mypage" },
   ];
 
-  useEffect(() => {
-    const handleResize = () => setIsDesktop(window.innerWidth > 992);
-    window.addEventListener("resize", handleResize);
-    return () => window.removeEventListener("resize", handleResize);
-  }, []);
 
   // 로그아웃 함수
   const logout = () => {
     const userId = sessionStorage.getItem('userId');
-    stompClient.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
+    stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
 
     sessionStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
     sessionStorage.removeItem("userId");
     setIsLogout(true);
     alert('로그아웃 성공');
-
-    // try {
-    //   await axios.post('http://localhost:9000/logout', {}, {
-    //     headers: {
-    //       Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-    //     }
-    //   });
-
-    // } catch (e) {
-    //   console.error("Server logout error:", e);
-    //   alert('로그아웃 실패. 다시 시도해주세요.');
-    // }
   };
 
   useEffect(() => {

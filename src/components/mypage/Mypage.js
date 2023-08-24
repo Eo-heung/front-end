@@ -1181,7 +1181,7 @@ const Mypage = () => {
                                                         <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
                                                             <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '8px' }}>
                                                                 <div style={{ display: 'flex', alignItems: 'center' }}>
-                                                                    <div style={{ position: 'relative' }}> {/* 이미지와 초록색 div의 컨테이너 */}
+                                                                    <div style={{ position: 'relative' }}>
                                                                         <img
                                                                             src={friend.profile ? `data:image/jpeg;base64,${friend.profile}` : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"}
                                                                             alt="프로필 사진"
