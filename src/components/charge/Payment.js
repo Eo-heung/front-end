@@ -1,8 +1,7 @@
-/* global IMP */
-import React, { useEffect, useState } from 'react';
-import { Paper, FormControl, InputLabel, Select, MenuItem, TextField, Button } from '@mui/material';
-import styled from 'styled-components';
+import { FormControl, InputLabel, MenuItem, Paper, Select, TextField } from '@mui/material';
 import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import styled from 'styled-components';
 
 const StyledButton = styled.button`
   background-color: #f7f7f7;
@@ -20,7 +19,7 @@ const StyledButton = styled.button`
   }
 `;
 
-const DataTable = () => {
+const Payment = () => {
     const [coin, setCoin] = useState('');
     const [selectedItem, setSelectedItem] = useState({ count: '', price: '' }); // 선택된 항목의 곶감수와 가격을 저장하기 위한 상태
     const [customCount, setCustomCount] = useState('');
@@ -58,7 +57,6 @@ const DataTable = () => {
                     }
                 });
 
-            console.log(response.data);
             setUserName(response.data.item.userName);
             setUserEmail(response.data.item.userEmail);
             setUserTel(response.data.item.userTel);
@@ -93,7 +91,6 @@ const DataTable = () => {
 
         if (value !== "11") {
             setSelectedItem(options[value] || { count: '', price: '' });
-            console.log('Selected Item:', options[value]);  // 선택된 값을 콘솔에 출력
         }
 
     };
@@ -116,7 +113,6 @@ const DataTable = () => {
             price: String(Number(updatedPrice))
         };
         setSelectedItem(updatedSelectedItem);
-        console.log('Selected Item:', updatedSelectedItem);
     };
 
     const onClickPayment = () => {
@@ -140,15 +136,10 @@ const DataTable = () => {
             buyer_addr: userAddr1 + ' ' + userAddr2 + ' ' + userAddr3, // 구매하는 사람 주소
         };
         IMP.request_pay(data, callback);
-        console.log("Payment Data:", data); // 이 부분이 추가된 코드입니다.
-
-
     }
 
     const callback = async (response) => {
         const { success, error_msg, imp_uid, merchant_uid, pay_method, paid_amount, status } = response;
-
-        console.log(response);
 
         if (success) {
             const data = await axios.post(`http://localhost:9000/verifyIamport/${imp_uid}`, {})
@@ -165,7 +156,6 @@ const DataTable = () => {
                             Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
                         }
                     })
-                console.log(result);
                 alert('결제 성공');
             }
             else {
@@ -221,4 +211,4 @@ const DataTable = () => {
 
 };
 
-export default DataTable; 
+export default Payment; 
