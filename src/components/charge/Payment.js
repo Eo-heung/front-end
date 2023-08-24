@@ -4,18 +4,25 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 
 const StyledButton = styled.button`
-  background-color: #f7f7f7;
-  color: black;
-  border: none;
-  width: 300px;
-  height: 50px;
-  cursor: pointer;
-  transition: 0.3s;
-  border-radius: 5px;
+width: 300px;
+height: 50px;
+border: none;
+border-radius: 5px;
+background-color: #FFFFFF;
+cursor: pointer;
+border: 1px solid rgba(252, 190, 113, 0.85);
+transition: background-color 0.3s ease;
+color: #707070;
+
+&.active {
+    background-color: rgba(252, 190, 113, 0.85);
+    color: black;
+    font-weight: bold;
+  }
 
   &:hover {
-    background-color: #ff9238;
-    color: white;
+    background-color: rgba(252, 190, 113, 0.85);
+    color: black;
   }
 `;
 
@@ -168,9 +175,9 @@ const Payment = () => {
     }
 
     return (
-        <Paper style={{ overflowX: 'auto', width: '1000px', marginLeft: '500px', height: '700px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', marginBottom: '10px' }}>
-                <FormControl fullWidth>
+        <Paper style={{ width: '50%', marginLeft: '400px', height: '500px' }}>
+            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', marginTop: '5px' }}>
+                <FormControl style={{ marginTop: '50px', width: '70%' }}>
                     <InputLabel>곶감 선택하기</InputLabel>
                     <Select
                         value={coin}
@@ -189,7 +196,7 @@ const Payment = () => {
                         <MenuItem value="9">40(40000원)</MenuItem>
                         <MenuItem value="10">50(50000원)</MenuItem>
                     </Select>
-                </FormControl>
+                </FormControl >
 
                 <TextField
                     value={customCount}
@@ -197,16 +204,15 @@ const Payment = () => {
                     onBlur={handleCustomCountBlur}
                     placeholder="직접입력하기 (원하는 곶감 수 입력)"
                     onClick={(e) => e.stopPropagation()}
-                    sx={{ marginTop: '50px', marginBottom: '16px', width: '950px' }} // 50px 간격을 줍니다.
-                />
-            </div>
-            <div style={{ marginTop: '20px', textAlign: 'center', marginTop: '50px', marginBottom: '50px' }}>
-                <StyledButton onClick={onClickPayment} style={{ marginTop: '300px' }}>
+                    sx={{ flexDirection: 'column', textAlign: 'center', marginBottom: '16px', width: '70%' }} />
+            </div >
+            <div style={{ marginTop: '0px', textAlign: 'center' }}>
+                <StyledButton onClick={onClickPayment} style={{ marginTop: '120px' }}>
                     결제하기
                 </StyledButton>
             </div>
 
-        </Paper>
+        </Paper >
     );
 
 };
