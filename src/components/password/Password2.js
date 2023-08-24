@@ -11,7 +11,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import thumbImage from "../../public/image.png";
+import thumbImage from '../../public/04.png';
 
 const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
   const [progress, setProgress] = useState(0);

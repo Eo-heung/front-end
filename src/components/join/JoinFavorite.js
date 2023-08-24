@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/01.png';
 
 const JoinFavorite = ({ userName, user }) => {
     const [hobby, setHobby] = useState('');
