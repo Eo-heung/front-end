@@ -1,12 +1,12 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Link, useParams } from 'react-router-dom';
+import { Link, useParams, useNavigate } from 'react-router-dom';
 import { styled } from '@mui/system';
-import { Button, Typography, Box, Card, CardContent, CardMedia, TextField, Select, MenuItem } from '@mui/material';
+import { Button, Typography, Box, Card, CardContent, CardMedia, TextField } from '@mui/material';
 import { grey } from '@mui/material/colors';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
+import { throttle } from 'lodash';
 
 const StyledContainer = styled('div')`
     position: fixed;
@@ -73,6 +73,26 @@ const CardLink = styled(Link)`
     text-decoration: none;
 `;
 
+const StyledScrollDiv = styled('div')`
+    margin-top: 180px;
+    margin-left: 1rem;
+    width: 90%;
+`;
+
+const LoadingText = styled('div')`
+    text-align: center;
+    padding: 20px 0;
+    font-size: 2.5rem;
+    color: grey;
+`;
+
+const NoApplicantText = styled('div')`
+    text-align: center;
+    padding: 20px 0;
+    font-size: 2.5rem;
+    color: grey;
+`;
+
 const StyledCard = styled(Card)`
     display: flex;
     gap: 0.5rem;
@@ -117,9 +137,10 @@ const StyledButton = styled(Button)`
 `;
 
 const ListAcceptMoim = () => {
-    const [hasMore, setHasMore] = useState(true);
+    const navi = useNavigate();
+
+    const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const ITEMS_PER_PAGE = 3;
 
     const { moimId } = useParams();
 
@@ -127,26 +148,32 @@ const ListAcceptMoim = () => {
     const [applicantList, setApplicantList] = useState([]);
     const [scrollActive, setScrollActive] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState("");
-    const [sortOrder, setSortOrder] = useState("ascending");
+    const [orderBy, setOrderBy] = useState("ascending");
 
-    const scrollHandler = () => {
-        if (window.scrollY > 100) {
-            setScrollActive(true);
-        } else {
-            setScrollActive(false);
-        }
-    };
+    const scrollHandler = useMemo(() =>
+        throttle(() => {
+            if (window.scrollY > 100) {
+                setScrollActive(true);
+            } else {
+                setScrollActive(false);
+            }
 
-    const sortedApplicants = useMemo(() => {
-        if (sortOrder === 'ascending') {
-            return [...applicantList].sort((a, b) => a.moimRegId - b.moimRegId);
-        } else {
-            return [...applicantList].sort((a, b) => b.moimRegId - a.moimRegId);
-        }
-    }, [applicantList, sortOrder]);
+            const scrollHeight = document.documentElement.scrollHeight;
+            const scrollTop = document.documentElement.scrollTop;
+            const clientHeight = document.documentElement.clientHeight;
+
+            if (scrollTop + clientHeight >= scrollHeight) {
+                setPage(prevPage => prevPage + 1);
+                window.scrollTo({ scrollTop });
+                return;
+            }
+        }, 500), [page]);
 
     const toggleSortOrder = () => {
-        setSortOrder(prevOrder => (prevOrder === 'ascending' ? 'descending' : 'ascending'));
+        setPage(1);
+        setApplicantList([]);
+        setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
+        fetchData();
     };
 
     const isMounted = useRef(true);
@@ -177,38 +204,49 @@ const ListAcceptMoim = () => {
 
     const fetchApplicantList = async (moimId) => {
         try {
-            const response = await axios.post(`http://localhost:9000/moimReg/get-applicant-list/${moimId}`, {}, {
+            setIsLoading(true);
+
+            const apiEndPoint = orderBy === 'ascending'
+                ? `http://localhost:9000/moimReg/get-applicant-list/asc/${moimId}`
+                : `http://localhost:9000/moimReg/get-applicant-list/desc/${moimId}`;
+
+            const response = await axios.post(apiEndPoint, {}, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                },
+                params: {
+                    page: page - 1,
+                    searchKeyword: searchKeyword,
+                    orderBy: orderBy
                 }
             });
 
             if (response.data) {
-                return response.data;
+                return response.data.items;
             }
             return [];
         } catch (e) {
             console.error("Error fetching applicant list data", e);
             return [];
+        } finally {
+            setIsLoading(false);
         }
     };
 
     useEffect(() => {
-        const fetchData = async () => {
-            await fetchMoimData();
-            const applicantsFromServer = await fetchApplicantList(moimId);
-            const waitingApplicants = applicantsFromServer.filter(applicant => applicant.regStatus === 'WAITING');
-            setApplicantList(waitingApplicants);
-        };
-
         fetchData();
-
         window.addEventListener("scroll", scrollHandler);
 
         return () => {
             window.removeEventListener("scroll", scrollHandler);
         }
-    }, [moimId]);
+    }, [moimId, page, orderBy]);
+
+    const fetchData = async () => {
+        await fetchMoimData();
+        const applicantsFromServer = await fetchApplicantList(moimId);
+        setApplicantList(applicantsFromServer);
+    };
 
     console.log(applicantList);
 
@@ -240,8 +278,7 @@ const ListAcceptMoim = () => {
 
             if (response.data.statusCode === 200) {
                 alert(alertMessage);
-                const updatedApplicants = applicantList.filter(applicant => applicant.moimRegId !== moimRegId);
-                setApplicantList(updatedApplicants);
+                window.location.replace(`/list-accept-moim/${moimRegId}`);
             }
         } catch (err) {
             console.error("Error occurred handling acceptance: ", err);
@@ -257,17 +294,13 @@ const ListAcceptMoim = () => {
                     <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
                     <SearchButton variant="contained" size="large">검색</SearchButton>
                     <SearchButton variant="contained" size="large" onClick={toggleSortOrder}>
-                        {sortOrder === 'ascending' ? '최신순' : '신청순'}
+                        {orderBy === 'ascending' ? '최신순' : '등록순'}
                     </SearchButton>
                 </SearchContainer>
             </StyledContainer>
-            <div style={{ marginTop: "180px", width: "90%" }}>
-                <InfiniteScroll
-                    dataLength={applicantList ? applicantList.length : 0}
-                    next={fetchApplicantList}
-                    hasMore={hasMore}
-                >
-                    {applicantList && applicantList.map(applicant => (
+            <StyledScrollDiv>
+                {applicantList && applicantList.length > 0 ? (
+                    applicantList.map(applicant => (
                         <CardLink to={`/accept-moim/${moimData.moimId}/${applicant.moimRegId}`} key={applicant.applicantUserId}>
                             <StyledCard variant="outlined">
                                 <StyledCardMedia
@@ -299,9 +332,12 @@ const ListAcceptMoim = () => {
                                 </ButtonRow>
                             </StyledCard>
                         </CardLink>
-                    ))}
-                </InfiniteScroll>
-            </div>
+                    ))
+                ) : (
+                    !isLoading && <NoApplicantText>아직은 신청자가 없어요.</NoApplicantText>
+                )}
+                {isLoading && <LoadingText>새로운 목록을 불러오고 있어요.</LoadingText>}
+            </StyledScrollDiv>
             <TopButton />
         </BasicBoard>
     );

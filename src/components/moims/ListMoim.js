@@ -176,11 +176,10 @@ const EllipsisText = styled(Typography)`
 
 const ListMoim = () => {
     const [data, setData] = useState([]);
-    const [hasMore, setHasMore] = useState(true);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [searchKeyword, setSearchKeyword] = useState('');
-    const [category, setCategory] = useState('all');
+    const [category, setCategory] = useState(999);
     const [scrollActive, setScrollActive] = useState(false);
     const [orderBy, setOrderBy] = useState("ascending");
 
