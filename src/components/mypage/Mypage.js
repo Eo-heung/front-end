@@ -6,6 +6,7 @@ import DialogTitle from '@mui/material/DialogTitle';
 import axios from 'axios';
 import React, { createRef, useEffect, useRef, useState } from 'react';
 import DaumPostcode from "react-daum-postcode";
+import DataTable from '../charge/DataTable';
 
 const TabButton = styled.button`
     width: 17%;
@@ -1175,6 +1176,18 @@ const Mypage = () => {
 
                     }
                 </div>
+                <DataTable
+                    userTel={userTel}
+                    userName={userName}
+                    userEmail={userEmail}
+                    userBirth={userBirth}
+                    userAddr1={userAddr1}
+                    userAddr2={userAddr2}
+                    userAddr3={userAddr3}
+                    userGender={userGender}
+                // ... 필요한 props를 추가 ...
+                />
+
             </div>
         </>
     );

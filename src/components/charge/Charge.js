@@ -150,7 +150,7 @@ const Charge = () => {
                         </Link>
                     ))}
                 <StyledRightContainer>
-                    <Link className="navbar-logout" to="/" onClick={logout}>
+                    <Link className="navbar-logout" to="/login" onClick={logout}>
                         <StyledTypography variant="body2">로그아웃</StyledTypography>
                     </Link>
                     <Link className="navbar-credit" to="/charge">
