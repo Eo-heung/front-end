@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { Card, CardContent, Typography, CardMedia, TextField, Select, MenuItem, Button } from '@mui/material';
 import { Link } from 'react-router-dom';
 import axios from 'axios';
-import InfiniteScroll from 'react-infinite-scroll-component';
 import { styled } from '@mui/system';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
@@ -116,6 +115,19 @@ const StyledButton = styled(Button)`
     }
 `;
 
+const StyledScrollDiv = styled('div')`
+    margin-top: 250px;
+    margin-left: 1rem;
+    width: 90%;
+`;
+
+const LoadingText = styled('div')`
+    font-size: 2.5rem;
+    text-align: center;
+    padding: 20px 0;
+    color: grey;
+`;
+
 const StyledCard = styled(Card)`
     display: flex;
     gap: 1.5rem;
@@ -165,6 +177,7 @@ const EllipsisText = styled(Typography)`
 const ListMoim = () => {
     const [data, setData] = useState([]);
     const [hasMore, setHasMore] = useState(true);
+    const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [searchKeyword, setSearchKeyword] = useState('');
     const [category, setCategory] = useState('all');
@@ -200,6 +213,8 @@ const ListMoim = () => {
     }, [page, orderBy]);
 
     const fetchData = () => {
+        setIsLoading(true);
+
         const apiEndPoint = orderBy === 'ascending'
             ? "http://localhost:9000/moim/list-moim/asc"
             : "http://localhost:9000/moim/list-moim/desc";
@@ -222,8 +237,12 @@ const ListMoim = () => {
 
                 setData(moims);
             })
+            .then(() => {
+                setIsLoading(false);
+            })
             .catch(error => {
                 console.log("Error fetching data: ", error);
+                setIsLoading(false);
             });
     };
 
@@ -267,37 +286,31 @@ const ListMoim = () => {
                     </StyledButton>
                 </SearchContainer>
             </StyledContainer>
-            <div style={{ marginTop: "250px", width: "90%" }}>
-                <InfiniteScroll
-                    dataLength={data ? data.length : 0}
-                    next={fetchData}
-                    hasMore={hasMore}
-                    scrollableTarget={document}
-                >
-                    {data && data.map(moim => (
-                        <StyledLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
-                            <StyledCard variant="outlined">
-                                <StyledCardMedia
-                                    component="img"
-                                    image={moim.moimPic && `data:image/jpeg;base64,${moim.moimPic}` || 'https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'}
-                                    alt="moim image"
-                                />
-                                <CardInfo>
-                                    <CardContent>
-                                        <Typography variant="h6">{moim.moimCategory}</Typography>
-                                        <Typography variant="h5">{moim.moimTitle}</Typography>
-                                        <MoimInfoRow>
-                                            <Typography variant="body1">{moim.moimAddr}</Typography>
-                                            <Typography variant="body1">{moim.currentMoimUser || "1"}/{moim.maxMoimUser}</Typography>
-                                        </MoimInfoRow>
-                                        <EllipsisText variant="body1">{moim.moimContent}</EllipsisText>
-                                    </CardContent>
-                                </CardInfo>
-                            </StyledCard>
-                        </StyledLink>
-                    ))}
-                </InfiniteScroll>
-            </div>
+            <StyledScrollDiv>
+                {data && data.map(moim => (
+                    <StyledLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
+                        <StyledCard variant="outlined">
+                            <StyledCardMedia
+                                component="img"
+                                image={moim.moimPic && `data:image/jpeg;base64,${moim.moimPic}` || 'https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'}
+                                alt="moim image"
+                            />
+                            <CardInfo>
+                                <CardContent>
+                                    <Typography variant="h6">{moim.moimCategory}</Typography>
+                                    <Typography variant="h5">{moim.moimTitle}</Typography>
+                                    <MoimInfoRow>
+                                        <Typography variant="body1">{moim.moimAddr}</Typography>
+                                        <Typography variant="body1">{moim.currentMoimUser || "1"}/{moim.maxMoimUser}</Typography>
+                                    </MoimInfoRow>
+                                    <EllipsisText variant="body1">{moim.moimContent}</EllipsisText>
+                                </CardContent>
+                            </CardInfo>
+                        </StyledCard>
+                    </StyledLink>
+                ))}
+                {isLoading && <LoadingText>새로운 목록을 불러오고 있어요.</LoadingText>}
+            </StyledScrollDiv>
             <TopButton />
         </BasicBoard>
     );
