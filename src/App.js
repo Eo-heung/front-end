@@ -5,8 +5,9 @@ import MainContent from "./components/partials/MainContent";
 import ViewMoim from "./components/moims/ViewMoim";
 import CreateMoim from "./components/moims/CreateMoim";
 import Password from "./components/Password";
-import SignUp from './components/SignUp';
-import SuccessPage from "./components/SuccessPage";
+import SignUp from "./components/SignUp";
+import KakaoHandler from "./components/socialLogin/KakaoHandler";
+import NaverHandelr from "./components/socialLogin/NaverHandler";
 import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
@@ -18,7 +19,8 @@ import ModifyMoim from "./components/moims/ModifyMoim";
 import ApplyMoim from "./components/moims/ApplyMoim";
 import AcceptMoim from "./components/moims/AcceptMoim";
 import ListAcceptMoim from "./components/moims/ListAcceptMoim";
-
+import MultiChatting from "./components/chatTest/components/VideoRoomComponent";
+// import MultiChatting from "./components/chatting/MultiChatting";
 
 function App() {
   return (
@@ -40,16 +42,22 @@ function App() {
               path="/textchatting"
               element={<TextChatting></TextChatting>}
             />
+            <Route
+              path="/multichatting"
+              element={<MultiChatting></MultiChatting>}
+            ></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
             <Route path="/modify-moim/:moimId" element={<ModifyMoim></ModifyMoim>}></Route>
             <Route path="/apply-moim/:moimId" element={<ApplyMoim></ApplyMoim>}></Route>
             <Route path="/accept-moim/:moimId/:moimRegId" element={<AcceptMoim></AcceptMoim>}></Route>
             <Route path="/list-accept-moim/:moimId" element={<ListAcceptMoim></ListAcceptMoim>}></Route>
           </Route>
+          <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
           <Route path="/login" element={<Login></Login>}></Route>
-          <Route path='/signup' element={<SignUp></SignUp>}></Route>
+          <Route path="/oauth" element={<NaverHandelr></NaverHandelr>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
-          <Route path="/success" element={<SuccessPage></SuccessPage>} />
+          <Route path="/signup" element={<SignUp></SignUp>}></Route>
+          {/* <Route path='/oauth' element={<GoogleHandelr></GoogleHandelr>}></Route> */}
         </Routes>
       </CookiesProvider>
     </>

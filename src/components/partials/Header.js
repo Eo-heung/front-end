@@ -7,14 +7,14 @@ import Typography from "@mui/material/Typography";
 import styled from "styled-components";
 import axios from "axios";
 
-  const StyledTypography = styled(Typography)`
-    color: #000;
-    cursor: pointer;
+const StyledTypography = styled(Typography)`
+  color: #000;
+  cursor: pointer;
 
-    &:hover {
-      color: #ffb471;
-    }
-  `;
+  &:hover {
+    color: #ffb471;
+  }
+`;
 
   const StyledRightContainer = styled.div`
     margin-left: auto;
@@ -26,16 +26,15 @@ import axios from "axios";
     const menuRef = useRef();
     const [isLogout, setIsLogout] = useState(false);
 
+  const navi = useNavigate();
 
-    const navi = useNavigate();
-
-    const icons = [
-      { text: "홈", link: "/" },
-      { text: "채팅", link: "/chatting" },
-      { text: "모임", link: "/list-moim" },
-      { text: "예시", link: "/textchatting" },
-      { text: "예시", link: "/" },
-    ];
+  const icons = [
+    { text: "홈", link: "/" },
+    { text: "채팅", link: "/chatting" },
+    { text: "모임", link: "/list-moim" },
+    { text: "예시", link: "/textchatting" },
+    { text: "예시", link: "/multichatting" },
+  ];
 
     useEffect(() => {
       const handleResize = () => setIsDesktop(window.innerWidth > 992);
@@ -43,13 +42,13 @@ import axios from "axios";
       return () => window.removeEventListener("resize", handleResize);
     }, []);
 
-    // 로그아웃 함수
-    const logout = () => {
-      sessionStorage.removeItem("ACCESS_TOKEN");
-      localStorage.removeItem("REFRESH_TOKEN");
-      sessionStorage.removeItem("userId");
-      setIsLogout(true);
-      alert('로그아웃 성공');
+  // 로그아웃 함수
+  const logout = () => {
+    sessionStorage.removeItem("ACCESS_TOKEN");
+    localStorage.removeItem("REFRESH_TOKEN");
+    sessionStorage.removeItem("userId");
+    setIsLogout(true);
+    alert("로그아웃 성공");
 
       // try {
       //   await axios.post('http://localhost:9000/logout', {}, {
@@ -121,4 +120,4 @@ import axios from "axios";
     );
   };
 
-  export default Header;
+export default Header;
