@@ -11,7 +11,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/04.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 

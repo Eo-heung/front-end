@@ -81,6 +81,7 @@ const SignUp = () => {
     return (
         <div> {renderPage()}</div>
     )
+
 }
 
 export default SignUp
