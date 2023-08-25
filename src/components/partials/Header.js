@@ -3,6 +3,7 @@ import { Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Stomp } from "@stomp/stompjs";
 import React, { useEffect, useRef, useState } from "react";
+import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styled from "styled-components";
@@ -27,12 +28,13 @@ const Header = ({ getFriendList }) => {
   const menuRef = useRef();
   const [isLogout, setIsLogout] = useState(false);
   const navi = useNavigate();
+  const [cookies] = useCookies(['userId']);
 
   // online, offline 기능 구현
   const stompClient = useRef(null);
 
   useEffect(() => {
-    const userId = sessionStorage.getItem('userId');
+    const userId = cookies.userId;
 
     if (!userId) {
       navi("/login");
@@ -92,12 +94,11 @@ const Header = ({ getFriendList }) => {
 
   // 로그아웃 함수
   const logout = () => {
-    const userId = sessionStorage.getItem('userId');
+    const userId = cookies.userId;
     stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
 
     sessionStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
-    sessionStorage.removeItem("userId");
     setIsLogout(true);
     alert('로그아웃 성공');
   };

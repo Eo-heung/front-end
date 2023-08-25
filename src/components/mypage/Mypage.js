@@ -782,7 +782,7 @@ const Mypage = () => {
                                                     <>
                                                         <Grid container spacing={2} alignItems="center">
                                                             <Grid item xs={4}>
-                                                                <Typography variant="h6" fontSize='12pt' sx={{ fontWeight: 'bold', width: '150px' }}>{label}</Typography>
+                                                                <div variant="h6" fontSize='12pt' sx={{ fontWeight: 'bold', width: '150px' }}>{label}</div>
                                                             </Grid>
                                                             <Grid item xs={8}>
 
@@ -844,13 +844,13 @@ const Mypage = () => {
                                                                                 </DialogContent>
                                                                             </Dialog>
                                                                         </>)
-                                                                    : <Typography variant="body2" fontSize='12pt' sx={{ width: '650px' }}>
+                                                                    : <div sx={{ width: '650px' }}>
                                                                         {
                                                                             ["관심사", "좋아하는 음악 장르", "좋아하는 음식 종류"].includes(label)
                                                                                 ? getHobbyNameByCode(value, interests, musicGenres, foodTypes)
                                                                                 : value
                                                                         }
-                                                                    </Typography>
+                                                                    </div>
                                                                 }
                                                             </Grid>
                                                         </Grid>
@@ -948,7 +948,7 @@ const Mypage = () => {
                                                 <>
                                                     <Grid container spacing={2} alignItems="center">
                                                         <Grid item xs={3}>
-                                                            <Typography variant="h6" fontSize='12pt' sx={{ fontWeight: 'bold', width: '150px' }}>{label}</Typography>
+                                                            <div variant="h6" fontSize='12pt' sx={{ fontWeight: 'bold', width: '150px' }}>{label}</div>
                                                         </Grid>
                                                         <Grid item xs={8}>
                                                             {
@@ -983,7 +983,7 @@ const Mypage = () => {
                                                                                     onChange={(e) => setUserEmail(() => e.target.value)}
                                                                                     style={{ width: '100%', fontSize: '16px' }}
                                                                                 />
-                                                                    : <Typography variant="body2" fontSize='12pt' sx={{ width: '650px' }}>
+                                                                    : <div sx={{ width: '650px' }}>
                                                                         {
                                                                             label === '휴대폰 번호'
                                                                                 ? value.replace(/^(\d{3})(\d{4})(\d{4})$/, "$1 - $2 - $3")
@@ -995,7 +995,7 @@ const Mypage = () => {
                                                                                             ? (userGender === 1 ? '남자' : userGender === 0 ? '여자' : "")
                                                                                             : value
                                                                         }
-                                                                    </Typography>
+                                                                    </div>
                                                             }
                                                             {/* Example Modal component */}
 
