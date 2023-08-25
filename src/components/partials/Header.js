@@ -9,13 +9,13 @@ import styled from "styled-components";
 import "../../css/partials/Header.css";
 
 const StyledTypography = styled(Typography)`
-    color: #000;
-    cursor: pointer;
+  color: #000;
+  cursor: pointer;
 
-    &:hover {
-      color: #ffb471;
-    }
-  `;
+  &:hover {
+    color: #ffb471;
+  }
+`;
 
 const StyledRightContainer = styled.div`
     margin-left: auto;
@@ -82,9 +82,10 @@ const Header = ({ getFriendList }) => {
 
   const icons = [
     { text: "홈", link: "/" },
-    { text: "채팅", link: "/" },
+    { text: "채팅", link: "/chatting" },
     { text: "모임", link: "/list-moim" },
-    { text: "예시", link: "/" },
+    { text: "예시", link: "/textchatting" },
+    { text: "예시", link: "/multichatting" },
     { text: "마이페이지", link: "/mypage" },
   ];
 

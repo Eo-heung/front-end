@@ -23,25 +23,27 @@ import { useNavigate } from 'react-router-dom';
 
 
 const Login = () => {
-
     const navi = useNavigate();
-
     const [userId, setUserId] = useState('');
     const [userPw, setUserPw] = useState('');
     const [token, setToken] = useState();
-    const [cookies, setCookie] = useCookies(['userName', 'userAddr3']);
+    const [remember, setRemember] = useState(false);
+    const [cookies, setCookie] = useCookies(['userNickname', 'userAddr3']);
 
     const loginSuccessHandler = (data) => {
-        console.log("Received data:", data);
-        if (data.userName) {
-            setCookie('userNickname', data.userNickname, { path: '/' });
-        }
-        if (data.userAddr3) {
-            setCookie('userAddr3', data.userAddr3, { path: '/' });
-        }
-    };
+      console.log("Received data:", data);
+      if (data.userName) {
+         setCookie('userNickname', data.userName, { path: '/' });
+      }
+      if (data.userAddr3) {
+        setCookie('userAddr3', data.userAddr3, { path: '/' });
+      }
+      if (data.userId) {
+        setCookie('userId', data.userId, { path: '/' });
+      }
+  };
 
-    const [showPassword, setShowPassword] = useState(false);
+    const [showPassword, setShowPassword] = React.useState(false);
 
     const handleClickShowPassword = () => setShowPassword((show) => !show);
 
@@ -57,17 +59,62 @@ const Login = () => {
         setUserPw(() => e.target.value);
     }, []);
 
+
+
     const SocialKakao = () => {
-        const Rest_api_key = 'd85c142dc0c92939902ad3248688e8ad'; //REST API KEY
-        const redirect_uri = 'http://localhost:1234/auth'; //Redirect URI
+        const Rest_api_key = 'd85c142dc0c92939902ad3248688e8ad'; // 환경 변수에서 API 키 가져오기
+        const redirect_uri = 'http://localhost:1234/auth';
         const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
+
         window.location.href = kakaoURL;
     };
+    const SocialNaver = () => {
+        const Rest_api_key = 'fK9M_7tC_kI7hRd4QXQG'; // 환경 변수에서 API 키 가져오기
+        const redirect_uri = 'http://localhost:1234/oauth';
+        const state = '1234';
+        const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${Rest_api_key}&state=${state}&redirect_uri=${redirect_uri}`;
+
+        window.location.href = naverURL;
+    };
+
+  useEffect(() => {
+    if (sessionStorage.getItem("ACCESS_TOKEN")) {
+      setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+      console.log(token);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      axios.post('http://localhost:9000/verify', token)
+        .then(response => {
+          console.log(response);
+          if (response.data.item) {
+            navi("/"); // 토큰이 유효하면 지정된 경로로 이동
+          }
+        })
+        .catch(e => {
+          console.log(e);
+          localStorage.removeItem("REFRESH_TOKEN");
+          sessionStorage.removeItem("ACCESS_TOKEN");
+        });
+    }
+  }, [token]);
 
     useEffect(() => {
-        if (sessionStorage.getItem("ACCESS_TOKEN")) {
+        if (localStorage.getItem("REFRESH_TOKEN") != null) {
+
+            if (sessionStorage.getItem("ACCESS_TOKEN") != null) {
+                setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+                console.log(token);
+            }
+            else {
+                sessionStorage.setItem("ACCESS_TOKEN", localStorage.getItem("REFRESH_TOKEN"));
+                setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+            }
+        }
+        else {
             setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
-            console.log(token);
         }
     }, []);
 
@@ -90,12 +137,15 @@ const Login = () => {
 
     const login = useCallback((e) => {
         e.preventDefault();
+        console.log(`remember1: ${remember}`);
         const loginAxios = async () => {
 
             const user = {
                 userId: userId,
                 userPw: userPw
             };
+
+            const remembers = remember;
 
             console.log(user);
 
@@ -105,28 +155,47 @@ const Login = () => {
                 console.log(response);
 
                 if (response.data && response.data.item.token) {
-                    alert(`${response.data.item.userName}님 환영합니다.`);
-                    localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
-                    sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
-                    sessionStorage.setItem("userId", response.data.item.userId);
-                    navi("/");
-
-                    console.log(sessionStorage.getItem("ACCESS_TOKEN"));
-
-                    try {
-                        const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
-                            headers: {
-                                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    console.log(`remember login : ${remembers}`);
+                    if (remembers === false) {
+                        alert(`${response.data.item.userName}님 환영합니다.`);
+                        sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
+                        sessionStorage.setItem("userId", response.data.item.userId);
+                        navi("/");
+                        // try {
+                        //     const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
+                        //         headers: {
+                        //             Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                        //         }
+                        //     });
+                        //     if (userInfoResponse.data && userInfoResponse.data.item) {
+                        //         loginSuccessHandler(userInfoResponse.data.item);
+                        //     }
+                        // } catch (e) {
+                        //     console.log("Error fetching user info: ", e);
+                        // }
+                    }
+                    else if (remembers === true) {
+                        alert(`${response.data.item.userName}님 환영합니다.`);
+                        localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
+                        sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
+                        sessionStorage.setItem("userId", response.data.item.userId);
+                        navi("/");
+                        try {
+                            const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
+                                headers: {
+                                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                                }
+                            });
+                            if (userInfoResponse.data && userInfoResponse.data.item) {
+                                loginSuccessHandler(userInfoResponse.data.item);
                             }
-                        });
-                        if (userInfoResponse.data && userInfoResponse.data.item) {
-                            loginSuccessHandler(userInfoResponse.data.item);
+                        } catch (e) {
+                            console.log("Error fetching user info: ", e);
                         }
-                    } catch (e) {
-                        console.log("Error fetching user info: ", e);
                     }
                 }
             } catch (e) {
+
                 console.log(e);
                 if (e.response.data.errorMessage === 'id not exist') {
                     alert("아이디가 존재하지 않습니다.");
@@ -142,13 +211,12 @@ const Login = () => {
         }
 
         loginAxios();
-    }, [userId, userPw]);
-
-
+    });
     const defaultTheme = createTheme();
 
     return (
         <ThemeProvider theme={defaultTheme}>
+            {console.log(`remember : ${remember}`)}
             <Grid container component="main" sx={{ minWidth: '512px', width: '60%', height: '100vh', alignItems: 'center', margin: 'auto' }}>
                 <CssBaseline />
                 <Grid
@@ -249,7 +317,14 @@ const Login = () => {
                                 }}
                             />
                             <FormControlLabel
-                                control={<Checkbox value="remember" color="primary" />}
+                                control={
+                                    <Checkbox
+                                        checked={remember}
+                                        onChange={(e) => setRemember(e.target.checked)}
+                                        value="remember"
+                                        color="primary"
+                                    />
+                                }
                                 label="날 기억해줘!"
                             />
                             <Button
@@ -262,12 +337,12 @@ const Login = () => {
                             </Button>
                             <Grid container sx={{ marginBottom: '35px' }}>
                                 <Grid item xs>
-                                    <Link href="findpassword" variant="body2">
+                                    <Link href="#" variant="body2">
                                         앗! 비밀번호를 까먹었을 땐?
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link href="/signup" variant="body2">
+                                    <Link href="/join" variant="body2">
                                         {"계정이 없으신가요?"}
                                     </Link>
                                 </Grid>
@@ -278,7 +353,7 @@ const Login = () => {
                             </Typography>
                             <Grid container sx={{ width: '70%', height: '75px', margin: '0 auto', }} spacing={2.5}>
                                 <Grid item xs={3}>
-                                    <Link href="#">
+                                    <Link href="#" onClick={SocialNaver}>
                                         <Box
                                             sx={{
                                                 width: '100%',
@@ -303,32 +378,6 @@ const Login = () => {
                                         />
                                     </Link>
                                 </Grid>
-                                <Grid item xs={3}>
-                                    <Link href="#">
-                                        <Box
-                                            sx={{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundImage: 'url(https://www.doobuying.com/assets/img/icon-facebook.png)',
-                                                backgroundSize: 'contain',
-                                                backgroundRepeat: 'no-repeat',
-                                            }}
-                                        />
-                                    </Link>
-                                </Grid>
-                                <Grid item xs={3}>
-                                    <Link href="#">
-                                        <Box
-                                            sx={{
-                                                width: '100%',
-                                                height: '100%',
-                                                backgroundImage: 'url(https://chuu.co.kr/images/login/join_google.png)',
-                                                backgroundSize: 'contain',
-                                                backgroundRepeat: 'no-repeat',
-                                            }}
-                                        />
-                                    </Link>
-                                </Grid>
                             </Grid>
                         </Box>
                     </Box>
@@ -336,6 +385,6 @@ const Login = () => {
             </Grid>
         </ThemeProvider >
     );
-};
+}
 
-export default Login;
+export default Login
