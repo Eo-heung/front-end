@@ -16,7 +16,7 @@ import StartCamera from "./components/chatting/StartCamera";
 import TextChatting from "./components/chatting/TextChatting";
 import MultiChatting from "./components/chatTest/components/VideoRoomComponent";
 // import MultiChatting from "./components/chatting/MultiChatting";
-
+import ButtonWithNewWindow from "./components/chatTest/components/ButtonWithNewWindow";
 function App() {
   return (
     <>
@@ -46,11 +46,15 @@ function App() {
               element={<TextChatting></TextChatting>}
             />
             <Route
-              path="/multichatting"
-              element={<MultiChatting></MultiChatting>}
-            ></Route>
+              path="/multichattingstart"
+              element={<ButtonWithNewWindow></ButtonWithNewWindow>}
+            />
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
           </Route>
+          <Route
+            path="/multichatting"
+            element={<MultiChatting></MultiChatting>}
+          ></Route>
           <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/oauth" element={<NaverHandelr></NaverHandelr>}></Route>
