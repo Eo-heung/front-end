@@ -13,7 +13,7 @@ const StyledContainer = styled('div')`
     right: 0;
     left: 400px;
     padding: 1.5rem 3rem;
-    height: 250px;
+    height: 310px;
     width: 90%;
     z-index: 1001;
     background-color: #fff;
@@ -116,7 +116,7 @@ const StyledButton = styled(Button)`
 `;
 
 const StyledScrollDiv = styled('div')`
-    margin-top: 250px;
+    margin-top: 310px;
     margin-left: 1rem;
     width: 90%;
 `;
@@ -178,8 +178,9 @@ const ListMoim = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
-    const [searchKeyword, setSearchKeyword] = useState('');
-    const [category, setCategory] = useState(999);
+    const [searchKeyword, setSearchKeyword] = useState("");
+    const [searchType, setSearchType] = useState("all");
+    const [category, setCategory] = useState("전체");
     const [scrollActive, setScrollActive] = useState(false);
     const [orderBy, setOrderBy] = useState("ascending");
 
@@ -211,8 +212,23 @@ const ListMoim = () => {
         };
     }, [page, orderBy]);
 
+    useEffect(() => {
+        fetchData();
+    }, [category]);
+
     const fetchData = () => {
         setIsLoading(true);
+
+        let actualCategory = category;
+        let actualSearchType = searchType;
+
+        if (category === "전체") {
+            actualCategory = null;
+        }
+
+        if (searchType === "all") {
+            actualSearchType = null;
+        }
 
         const apiEndPoint = orderBy === 'ascending'
             ? "http://localhost:9000/moim/list-moim/asc"
@@ -224,9 +240,9 @@ const ListMoim = () => {
             },
             params: {
                 page: page - 1,
-                category: category,
+                category: actualCategory,
                 searchKeyword: searchKeyword,
-                searchType: category,
+                searchType: actualSearchType,
                 orderBy: orderBy
             }
         })
@@ -257,20 +273,23 @@ const ListMoim = () => {
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>모임 목록</PageTitle>
                 <CategoryContainer>
-                    <CategoryButton variant="contained" size="large">전체</CategoryButton>
-                    <CategoryButton variant="contained" size="large">인문학/책</CategoryButton>
-                    <CategoryButton variant="contained" size="large">운동</CategoryButton>
-                    <CategoryButton variant="contained" size="large">요리/맛집</CategoryButton>
-                    <CategoryButton variant="contained" size="large">공예/만들기</CategoryButton>
-                    <CategoryButton variant="contained" size="large">원예</CategoryButton>
-                    <CategoryButton variant="contained" size="large">동네친구</CategoryButton>
-                    <CategoryButton variant="contained" size="large">음악/악기</CategoryButton>
-                    <CategoryButton variant="contained" size="large">반려동물</CategoryButton>
-                    <CategoryButton variant="contained" size="large">여행</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("전체")}>전체</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("인문학/책")}>인문학/책</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("운동")}>운동</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("요리/맛집")}>요리/맛집</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("공예/만들기")}>공예/만들기</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("원예")}>원예</CategoryButton>
+                </CategoryContainer>
+                <CategoryContainer>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("동네친구")}>동네친구</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("음악/악기")}>음악/악기</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("반려동물")}>반려동물</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("여행")}>여행</CategoryButton>
+                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("문화/여가")}>문화/여가</CategoryButton>
                 </CategoryContainer>
                 <SearchContainer>
                     <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
-                    <StyledSelect value={category} onChange={(e) => setCategory(e.target.value)}>
+                    <StyledSelect value={category} onChange={(e) => setSearchKeyword(e.target.value)}>
                         <StyledMenuItem value="all">전체</StyledMenuItem>
                         <StyledMenuItem value="title">제목</StyledMenuItem>
                         <StyledMenuItem value="content">내용</StyledMenuItem>
