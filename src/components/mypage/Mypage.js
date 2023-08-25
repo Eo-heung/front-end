@@ -582,6 +582,7 @@ const Mypage = () => {
     };
 
     useEffect(() => {
+        setcashBlock();
         fetchUserInfo();  // useEffect 내에서 함수 호출
         getProfileImage(); // getProfileImage
         getFriendList();
@@ -657,6 +658,13 @@ const Mypage = () => {
         }).then(res => {
             setRequestFriends(res.data.items);
         }).catch(error => { console.error(error) });
+    };
+    const setcashBlock = async () => {
+        axios.post('http://localhost:9000/refundBlock', {}, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+            }
+        });
     };
 
     const getPaymentList = async () => {
@@ -1126,7 +1134,7 @@ const Mypage = () => {
                                     </TabPanel>
                                     <TabPanel value={value} index={2}>
                                         <Grid container spacing={3} sx={{ marginTop: '5px' }}>
-                                            <Grid item xs={12} >
+                                            <Grid item xs={12}>
                                                 {paymentList && paymentList.map((payment, index) => (
                                                     <Grid item xs={12} key={index} sx={{ marginBottom: '12px' }}>
                                                         <BoxContent sx={{ padding: '16px', boxShadow: '0px 1px 3px rgba(0, 0, 0, 0.2)' }}>
@@ -1136,13 +1144,23 @@ const Mypage = () => {
                                                                         {payment.payDate && `${new Date(payment.payDate).getFullYear()}년 ${(new Date(payment.payDate).getMonth() + 1).toString().padStart(2, '0')}월 ${new Date(payment.payDate).getDate().toString().padStart(2, '0')}일(${new Date(payment.payDate).getHours().toString().padStart(2, '0')}:${new Date(payment.payDate).getMinutes().toString().padStart(2, '0')}:${new Date(payment.payDate).getSeconds().toString().padStart(2, '0')})` || "날짜 확인 불가"}
                                                                     </Typography>
                                                                 </div>
-                                                                <Button
-                                                                    variant="text"
-                                                                    onClick={() => cancelPayment(payment.imp_uid)}
-                                                                    sx={{ color: "red" }}
-                                                                >
-                                                                    결제 취소
-                                                                </Button>
+                                                                {payment.refund ? (
+                                                                    <Button
+                                                                        variant="text"
+                                                                        onClick={() => cancelPayment(payment.imp_uid)}
+                                                                        sx={{ color: "red" }}
+                                                                    >
+                                                                        결제 취소
+                                                                    </Button>
+                                                                ) : (
+                                                                    <Button
+                                                                        variant="text"
+                                                                        onClick={() => alert("환불이 불가한 상품입니다")}
+                                                                        sx={{ color: "grey" }}
+                                                                    >
+                                                                        환불 불가
+                                                                    </Button>
+                                                                )}
                                                             </div>
                                                             <Typography variant="body2" sx={{ marginBottom: '6px' }}>
                                                                 금액 : {payment.value + " 원" || "금액 없음"}
