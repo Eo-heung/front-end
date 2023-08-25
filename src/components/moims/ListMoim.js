@@ -63,6 +63,7 @@ const StyledTextField = styled(TextField)`
 `;
 
 const StyledSelect = styled(Select)`
+    width: 120px;
     &&.MuiOutlinedInput-root {
         &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
             border-color: #FCBE71;
@@ -223,17 +224,6 @@ const ListMoim = () => {
     const fetchData = () => {
         setIsLoading(true);
 
-        let actualCategory = category;
-        let actualSearchType = searchType;
-
-        if (category === "전체") {
-            actualCategory = null;
-        }
-
-        if (searchType === "all") {
-            actualSearchType = null;
-        }
-
         const apiEndPoint = orderBy === 'ascending'
             ? "http://localhost:9000/moim/list-moim/asc"
             : "http://localhost:9000/moim/list-moim/desc";
@@ -244,9 +234,9 @@ const ListMoim = () => {
             },
             params: {
                 page: page - 1,
-                category: actualCategory,
+                category: category,
                 searchKeyword: searchKeyword,
-                searchType: actualSearchType,
+                searchType: searchType,
                 orderBy: orderBy
             }
         })
@@ -273,6 +263,13 @@ const ListMoim = () => {
         fetchData();
     };
 
+    const handleSearch = () => {
+        setPage(1);
+        setData([]);
+        setOrderBy(orderBy === "ascending" ? "descending" : "ascending");
+        fetchData();
+    }
+
     return (
         <BasicBoard>
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
@@ -294,13 +291,13 @@ const ListMoim = () => {
                 </CategoryContainer>
                 <SearchContainer>
                     <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
-                    <StyledSelect value={category} onChange={(e) => setSearchKeyword(e.target.value)}>
+                    <StyledSelect value={searchType} displayEmpty size="large" onChange={(e) => setSearchType(e.target.value)}>
                         <StyledMenuItem value="all">전체</StyledMenuItem>
                         <StyledMenuItem value="title">제목</StyledMenuItem>
                         <StyledMenuItem value="content">내용</StyledMenuItem>
                         <StyledMenuItem value="nickname">작성자</StyledMenuItem>
                     </StyledSelect>
-                    <SearchButton variant="contained" size="large">검색</SearchButton>
+                    <SearchButton variant="contained" size="large" onClick={handleSearch}>검색</SearchButton>
                     <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
                         {orderBy === 'ascending' ? '최신순' : '등록순'}
                     </SearchButton>

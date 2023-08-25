@@ -1,7 +1,7 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
-import { Button, Typography, Box, Card, CardContent, CardMedia, TextField } from '@mui/material';
+import { Button, Typography, Box, Card, CardContent, CardMedia, TextField, Select, MenuItem } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
@@ -44,6 +44,32 @@ const StyledTextField = styled(TextField)`
         &.Mui-focused .MuiInputLabel-root {
             color: #FCBE71;
         }
+    }
+`;
+
+const StyledSelect = styled(Select)`
+    width: 120px;
+    &&.MuiOutlinedInput-root {
+        &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
+            border-color: #FCBE71;
+        }
+        &.Mui-focused .MuiInputLabel-root {
+            color: #FCBE71;
+        }
+    }
+
+    && .MuiMenu-paper {
+        .MuiListItem-root:hover {
+            background-color: #FCBE71;
+            color: white;
+        }
+    }
+`;
+
+const StyledMenuItem = styled(MenuItem)`
+    &&:hover {
+        background-color: #FCBE71;
+        color: white;
     }
 `;
 
@@ -137,18 +163,17 @@ const StyledButton = styled(Button)`
 `;
 
 const ListAcceptMoim = () => {
-    const navi = useNavigate();
-
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [isLastPage, setIsLastPage] = useState(false);
 
     const { moimId } = useParams();
-
     const [moimData, setMoimData] = useState("");
+
     const [applicantList, setApplicantList] = useState([]);
     const [scrollActive, setScrollActive] = useState(false);
     const [searchKeyword, setSearchKeyword] = useState("");
+    const [searchType, setSearchType] = useState("all");
     const [orderBy, setOrderBy] = useState("ascending");
 
     const scrollHandler = useMemo(() =>
@@ -172,12 +197,19 @@ const ListAcceptMoim = () => {
             }
         }, 500), [page]);
 
-    const toggleSortOrder = () => {
+    const handleOrderBy = () => {
         setPage(1);
         setApplicantList([]);
         setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
         fetchData();
     };
+
+    const handleSearch = () => {
+        setPage(1);
+        setApplicantList([]);
+        setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
+        fetchData();
+    }
 
     const isMounted = useRef(true);
 
@@ -223,11 +255,13 @@ const ListAcceptMoim = () => {
                 params: {
                     page: page - 1,
                     searchKeyword: searchKeyword,
+                    searchType: searchType,
                     orderBy: orderBy
                 }
             });
 
             if (response.data) {
+                setIsLastPage(response.data.lastPage);
                 return response.data.items;
             }
             return [];
@@ -298,8 +332,12 @@ const ListAcceptMoim = () => {
                 <PageTitle>{`${moimData.moimTitle} 모임의 신청자 목록`}</PageTitle>
                 <SearchContainer>
                     <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
-                    <SearchButton variant="contained" size="large">검색</SearchButton>
-                    <SearchButton variant="contained" size="large" onClick={toggleSortOrder}>
+                    <StyledSelect value={searchType} displayEmpty onChange={(e) => setSearchType(e.target.value)}>
+                        <StyledMenuItem value="all">전체</StyledMenuItem>
+                        <StyledMenuItem value="nickname">신청자</StyledMenuItem>
+                    </StyledSelect>
+                    <SearchButton variant="contained" size="large" onClick={handleSearch}>검색</SearchButton>
+                    <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
                         {orderBy === 'ascending' ? '최신순' : '등록순'}
                     </SearchButton>
                 </SearchContainer>
