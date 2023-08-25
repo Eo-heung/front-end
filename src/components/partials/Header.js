@@ -21,7 +21,7 @@ const StyledRightContainer = styled.div`
     margin-left: auto;
   `;
 
-const Header = () => {
+const Header = ({ getFriendList }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 992);
   const menuRef = useRef();
@@ -47,8 +47,9 @@ const Header = () => {
         // 온라인 상태임을 알릴 로직 (예: 서버에 메시지 전송)
         stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'online' }));
 
-        stompClient.current.subscribe('/topic/online-status', (message) => {
-          // 필요한 경우 메시지 수신 로직
+        stompClient.current.subscribe(`/topic/user-status-updates/${userId}`, function (message) {
+          // 여기서 알림을 수신
+          getFriendList();  // 상태 변경 알림을 수신하면 getFriendList 함수를 호출
         });
       });
 
@@ -57,7 +58,16 @@ const Header = () => {
         stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
       });
 
+      // Heartbeat 설정
+      const heartbeatInterval = setInterval(() => {
+        console.log('heartbeatheartbeatheartbeatheartbeatheartbeatheartbeatheartbeatheartbeatheartbeat');
+        if (stompClient.current && stompClient.current.connected) {
+          stompClient.current.send(`/app/heartbeat/${userId}`, {}, {});
+        }
+      }, 3 * 60 * 1000); // 3분마다
+
       return () => {
+        clearInterval(heartbeatInterval);
         // 오프라인 상태임을 알릴 로직 (예: 서버에 메시지 전송 전 연결 해제)
         stompClient.current.disconnect();
       };

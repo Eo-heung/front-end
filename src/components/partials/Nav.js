@@ -1,28 +1,14 @@
 import React, { useEffect, useState } from "react";
 // import '../../css/partials/Style.css';
-import axios from "axios";
 
-const Nav = () => {
+const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
-  const [friends, setFriends] = useState([]);
-
   const [appoint, setAppoint] = useState(null);
   const exAppo = [
     { startTime: new Date("2023-08-06T10:00:00"), content: "아침 회의" },
     { startTime: new Date("2023-08-07T12:30:00"), content: "점심 약속" },
     { startTime: new Date("2023-08-07T23:00:00"), content: "오후 회의" },
   ];
-
-  const getFriendList = async () => {
-    axios.post('http://localhost:9000/friend/friendList', {}, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-      }
-    }).then(res => {
-      console.log(res.data);
-      setFriends(res.data.items);
-    }).catch(error => { console.error(error) });
-  };
 
   useEffect(() => {
     // 현재 시간 이후의 약속을 필터링
@@ -41,12 +27,24 @@ const Nav = () => {
   }, []);
   // style={{ width: '45%' }}
   function List(props) {
+    const friend = props.friend;
     return (
-      <tr>
-        <td style={{ width: "90px", paddingLeft: "5px" }}><img style={{ border: '2px solid white', boxShadow: `0 0 5px 2px ${props.friend.online ? "#05FF00" : "#B6B6B6"}` }} src={`data:image/jpeg;base64,${props.friend.profile}`} alt="프로필 사진" /></td>
-        <td style={{ width: "100px" }}>{props.friend.user_name}</td>
-        <td style={{ width: "70px" }}>{props.friend.online ? "온라인" : "오프라인"}</td>
-      </tr>
+      <>
+        <tr key={friend.user_name}>
+          <td style={{ width: "90px", paddingLeft: "5px" }}>
+            <img
+              style={{
+                border: '2px solid white',
+                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"}`
+              }}
+              src={`data:image/jpeg;base64,${friend.profile}`}
+              alt="프로필 사진"
+            />
+          </td>
+          <td style={{ width: "100px" }}>{friend.user_name}</td>
+          <td style={{ width: "70px" }}>{friend.online ? "온라인" : "오프라인"}</td>
+        </tr>
+      </>
     );
   }
 
@@ -103,9 +101,13 @@ const Nav = () => {
               </div>
               <div className="sb-sidenav-fri-container">
                 <table className="sb-sidenav-fri">
-                  {friends.map((a, i) => {
-                    return <List friend={friends[i]} i={i}></List>;
-                  })}
+                  {friends.length > 0 ?
+                    friends.map((a, i) => <List friend={a} key={i} />)
+                    :
+                    <tr>
+                      <td style={{ width: "260px", textAlign: "center" }}>활동중인 친구가 없습니다.</td>
+                    </tr>
+                  }
                 </table>
               </div>
             </div>
