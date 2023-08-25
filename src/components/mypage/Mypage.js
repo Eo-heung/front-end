@@ -107,6 +107,7 @@ const Mypage = () => {
         setPasswordModalOpen(false);
     };
 
+
     useEffect(() => {
         // 예를 들면 아래와 같이 DB에서 데이터를 가져온다고 가정합니다.
         axios.post('http://localhost:9000/hobby/gethobby')
@@ -586,8 +587,10 @@ const Mypage = () => {
         fetchUserInfo();  // useEffect 내에서 함수 호출
         getProfileImage(); // getProfileImage
         getFriendList();
+        setTotalGam();
         getRequestFriendList();
         getPaymentList();
+
     }, []);
 
     useEffect(() => {
@@ -666,6 +669,13 @@ const Mypage = () => {
             }
         });
     };
+    const setTotalGam = () => {
+        axios.post('http://localhost:9000/totalGam', {}, {
+            headers: {
+                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+            }
+        });
+    };
 
     const getPaymentList = async () => {
         axios.post('http://localhost:9000/paymentList', {}, {
@@ -674,7 +684,7 @@ const Mypage = () => {
             }
         }).then(res => {
             setPaymentList(res.data.items);
-            console.log(paymentList);
+            console.log(res.data.items);
         }).catch(error => { console.error(error) });
     };
 
@@ -705,6 +715,7 @@ const Mypage = () => {
     };
 
     const cancelPayment = async (id) => {
+        console.log(id);
         const userConfirmed = window.confirm("정말로 이 결제를 취소하시겠습니까?");
         if (!userConfirmed) {
             return; // 사용자가 취소를 누르면 여기에서 함수를 종료합니다
@@ -713,7 +724,10 @@ const Mypage = () => {
             axios.post(`http://localhost:9000/cancelPayment/${id}`, {})
                 .then(res => {
                     console.log(res.data);
+                    getPaymentList();
+                    setTotalGam();
                     alert(res.data.item.msg);
+
                 }).catch(error => {
                     console.error(error);
                     alert(`${error.response.data.item.msg} \n\n[취소사유] : ${error.response.data.errorMessage}`);
@@ -1147,7 +1161,7 @@ const Mypage = () => {
                                                                 {payment.refund ? (
                                                                     <Button
                                                                         variant="text"
-                                                                        onClick={() => cancelPayment(payment.imp_uid)}
+                                                                        onClick={() => cancelPayment(payment.impUid)}
                                                                         sx={{ color: "red" }}
                                                                     >
                                                                         결제 취소
