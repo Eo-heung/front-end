@@ -174,6 +174,8 @@ const Payment = () => {
 
     }
 
+    const [hovered, setHovered] = useState(false);
+
     return (
         <Paper style={{ width: '50%', marginLeft: '400px', height: '500px' }}>
             <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', marginTop: '5px' }}>
