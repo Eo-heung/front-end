@@ -27,19 +27,18 @@ const Login = () => {
   const [userPw, setUserPw] = useState("");
   const [token, setToken] = useState();
   const [remember, setRemember] = useState(false);
-  const [cookies, setCookie] = useCookies(["userName", "userAddr3"]);
+  const [cookies, setCookie] = useCookies(["userNickname", "userAddr3"]);
 
   const loginSuccessHandler = (data) => {
-    alert("식사는없어");
     console.log("Received data:", data);
     if (data.userName) {
-      setCookie("userName", data.userName, { path: "/" });
-    }
-    if (data.userNickname) {
-      setCookie("userNickname", data.userNickname, { path: "/" });
+      setCookie("userNickname", data.userName, { path: "/" });
     }
     if (data.userAddr3) {
       setCookie("userAddr3", data.userAddr3, { path: "/" });
+    }
+    if (data.userId) {
+      setCookie("userId", data.userId, { path: "/" });
     }
   };
 
@@ -74,6 +73,31 @@ const Login = () => {
 
     window.location.href = naverURL;
   };
+
+  useEffect(() => {
+    if (sessionStorage.getItem("ACCESS_TOKEN")) {
+      setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+      console.log(token);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      axios
+        .post("http://localhost:9000/verify", token)
+        .then((response) => {
+          console.log(response);
+          if (response.data.item) {
+            navi("/"); // 토큰이 유효하면 지정된 경로로 이동
+          }
+        })
+        .catch((e) => {
+          console.log(e);
+          localStorage.removeItem("REFRESH_TOKEN");
+          sessionStorage.removeItem("ACCESS_TOKEN");
+        });
+    }
+  }, [token]);
 
   useEffect(() => {
     if (localStorage.getItem("REFRESH_TOKEN") != null) {
@@ -138,24 +162,18 @@ const Login = () => {
             sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
             sessionStorage.setItem("userId", response.data.item.userId);
             navi("/");
-            try {
-              const userInfoResponse = await axios.post(
-                "http://localhost:9000/getUserInfo",
-                {},
-                {
-                  headers: {
-                    Authorization: `Bearer ${sessionStorage.getItem(
-                      "ACCESS_TOKEN"
-                    )}`,
-                  },
-                }
-              );
-              if (userInfoResponse.data && userInfoResponse.data.item) {
-                loginSuccessHandler(userInfoResponse.data.item);
-              }
-            } catch (e) {
-              console.log("Error fetching user info: ", e);
-            }
+            // try {
+            //     const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
+            //         headers: {
+            //             Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+            //         }
+            //     });
+            //     if (userInfoResponse.data && userInfoResponse.data.item) {
+            //         loginSuccessHandler(userInfoResponse.data.item);
+            //     }
+            // } catch (e) {
+            //     console.log("Error fetching user info: ", e);
+            // }
           } else if (remembers === true) {
             alert(`${response.data.item.userName}님 환영합니다.`);
             localStorage.setItem("REFRESH_TOKEN", response.data.item.token);

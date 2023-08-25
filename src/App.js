@@ -12,8 +12,13 @@ import { CookiesProvider } from "react-cookie";
 import ListMoim from "./components/moims/ListMoim";
 import BasicBoard from "./components/utils/BasicBoard";
 import "./IndexStyle.css";
-import StartCamera from "./components/chatting/StartCamera";
-import TextChatting from "./components/chatting/TextChatting";
+import StartCamera from "./components/StartCamera";
+import TextChatting from "./components/TextChatting";
+import Mypage from './components/mypage/Mypage';
+import ModifyMoim from "./components/moims/ModifyMoim";
+import ApplyMoim from "./components/moims/ApplyMoim";
+import AcceptMoim from "./components/moims/AcceptMoim";
+import ListAcceptMoim from "./components/moims/ListAcceptMoim";
 import MultiChatting from "./components/chatTest/components/VideoRoomComponent";
 // import MultiChatting from "./components/chatting/MultiChatting";
 import ButtonWithNewWindow from "./components/chatTest/components/ButtonWithNewWindow";
@@ -28,18 +33,10 @@ function App() {
               path="/chatting"
               element={<StartCamera></StartCamera>}
             ></Route>
-            <Route
-              path="/basicboard"
-              element={<BasicBoard></BasicBoard>}
-            ></Route>
-            <Route
-              path="/create-moim"
-              element={<CreateMoim></CreateMoim>}
-            ></Route>
-            <Route
-              path="/view-moim/:moimId"
-              element={<ViewMoim></ViewMoim>}
-            ></Route>
+            <Route path='/mypage' element={<Mypage></Mypage>}></Route>
+            <Route path="/basicboard" element={<BasicBoard></BasicBoard>}></Route>
+            <Route path="/create-moim" element={<CreateMoim></CreateMoim>}></Route>
+            <Route path="/view-moim/:moimId" element={<ViewMoim></ViewMoim>}></Route>
             <Route path="/chatting" element={<StartCamera></StartCamera>} />
             <Route
               path="/textchatting"
@@ -50,6 +47,10 @@ function App() {
               element={<ButtonWithNewWindow></ButtonWithNewWindow>}
             />
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
+            <Route path="/modify-moim/:moimId" element={<ModifyMoim></ModifyMoim>}></Route>
+            <Route path="/apply-moim/:moimId" element={<ApplyMoim></ApplyMoim>}></Route>
+            <Route path="/accept-moim/:moimId/:moimRegId" element={<AcceptMoim></AcceptMoim>}></Route>
+            <Route path="/list-accept-moim/:moimId" element={<ListAcceptMoim></ListAcceptMoim>}></Route>
           </Route>
           <Route
             path="/multichatting"
