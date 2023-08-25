@@ -178,6 +178,8 @@ const ListMoim = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
+    const [isLastPage, setIsLastPage] = useState(false);
+
     const [searchKeyword, setSearchKeyword] = useState("");
     const [searchType, setSearchType] = useState("all");
     const [category, setCategory] = useState("전체");
@@ -198,7 +200,9 @@ const ListMoim = () => {
             const clientHeight = document.documentElement.clientHeight;
 
             if (scrollTop + clientHeight >= scrollHeight) {
-                setPage(prevPage => prevPage + 1);
+                if (!isLastPage) {
+                    setPage(prevPage => prevPage + 1);
+                }
                 window.scrollTo({ scrollTop });
                 return;
             }
@@ -250,6 +254,7 @@ const ListMoim = () => {
                 console.log(response.data);
                 const moims = Object.values(response.data.items);
 
+                setIsLastPage(response.data.lastPage);
                 setData(moims);
             })
             .then(() => {
@@ -328,6 +333,7 @@ const ListMoim = () => {
                     </StyledLink>
                 ))}
                 {isLoading && <LoadingText>새로운 목록을 불러오고 있어요.</LoadingText>}
+                {isLastPage && !isLoading && <LoadingText>모임 목록의 마지막 페이지예요.</LoadingText>}
             </StyledScrollDiv>
             <TopButton />
         </BasicBoard>

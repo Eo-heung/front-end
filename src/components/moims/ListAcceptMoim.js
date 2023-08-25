@@ -141,6 +141,7 @@ const ListAcceptMoim = () => {
 
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
+    const [isLastPage, setIsLastPage] = useState(false);
 
     const { moimId } = useParams();
 
@@ -163,7 +164,9 @@ const ListAcceptMoim = () => {
             const clientHeight = document.documentElement.clientHeight;
 
             if (scrollTop + clientHeight >= scrollHeight) {
-                setPage(prevPage => prevPage + 1);
+                if (!isLastPage) {
+                    setPage(prevPage => prevPage + 1);
+                }
                 window.scrollTo({ scrollTop });
                 return;
             }
@@ -190,6 +193,7 @@ const ListAcceptMoim = () => {
             const data = response.data.item.moimDTO;
 
             if (isMounted.current) {
+                setIsLastPage(data.lastPage);
                 setMoimData({
                     moimTitle: data.moimTitle,
                     userId: data.userId,
@@ -201,6 +205,8 @@ const ListAcceptMoim = () => {
             console.error("Error fetching moim data", e);
         }
     };
+
+    console.log(sessionStorage.getItem("ACCESS_TOKEN"));
 
     const fetchApplicantList = async (moimId) => {
         try {
@@ -337,6 +343,7 @@ const ListAcceptMoim = () => {
                     !isLoading && <NoApplicantText>아직은 신청자가 없어요.</NoApplicantText>
                 )}
                 {isLoading && <LoadingText>새로운 목록을 불러오고 있어요.</LoadingText>}
+                {isLastPage && !isLoading && <LoadingText>신청자 목록의 마지막 페이지예요.</LoadingText>}
             </StyledScrollDiv>
             <TopButton />
         </BasicBoard>
