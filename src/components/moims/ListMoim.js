@@ -41,15 +41,6 @@ const CategoryContainer = styled('div')`
     gap: 10px;
 `;
 
-const CategoryButton = styled(Button)`
-    background-color: #608796;
-    color: #fff;
-    &:hover {
-        background-color: #FCBE71;
-        color: #fff;
-    }
-`;
-
 const StyledTextField = styled(TextField)`
     width: 250px;
     & .MuiOutlinedInput-root {
@@ -187,6 +178,8 @@ const ListMoim = () => {
     const [scrollActive, setScrollActive] = useState(false);
     const [orderBy, setOrderBy] = useState("ascending");
 
+    const [hoveredButton, setHoveredButton] = useState(null);
+
     const scrollHandler = useMemo(() =>
         throttle(() => {
 
@@ -208,6 +201,24 @@ const ListMoim = () => {
                 return;
             }
         }, 500), [page]);
+
+    const renderCategoryButton = (label) => (
+        <Button
+            size="large"
+            variant={category === label || hoveredButton === label ? 'contained' : 'outlined'}
+            style={{
+                backgroundColor: (category === label || hoveredButton === label) ? '#FCBE71' : '#fff',
+                borderColor: '#FCBE71',
+                color: (category === label || hoveredButton === label) ? '#fff' : '#000',
+                fontWeight: category === label ? 'bold' : 'normal',
+            }}
+            onClick={() => setCategory(label)}
+            onMouseEnter={() => setHoveredButton(label)}
+            onMouseLeave={() => setHoveredButton(null)}
+        >
+            {label}
+        </Button>
+    );
 
     useEffect(() => {
         fetchData();
@@ -266,7 +277,6 @@ const ListMoim = () => {
     const handleSearch = () => {
         setPage(1);
         setData([]);
-        setOrderBy(orderBy === "ascending" ? "descending" : "ascending");
         fetchData();
     }
 
@@ -275,19 +285,17 @@ const ListMoim = () => {
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>모임 목록</PageTitle>
                 <CategoryContainer>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("전체")}>전체</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("인문학/책")}>인문학/책</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("운동")}>운동</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("요리/맛집")}>요리/맛집</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("공예/만들기")}>공예/만들기</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("원예")}>원예</CategoryButton>
-                </CategoryContainer>
-                <CategoryContainer>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("동네친구")}>동네친구</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("음악/악기")}>음악/악기</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("반려동물")}>반려동물</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("여행")}>여행</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("문화/여가")}>문화/여가</CategoryButton>
+                    {renderCategoryButton("전체")}
+                    {renderCategoryButton("인문학/책")}
+                    {renderCategoryButton("운동")}
+                    {renderCategoryButton("요리/맛집")}
+                    {renderCategoryButton("공예/만들기")}
+                    {renderCategoryButton("원예")}
+                    {renderCategoryButton("동네친구")}
+                    {renderCategoryButton("음악/악기")}
+                    {renderCategoryButton("반려동물")}
+                    {renderCategoryButton("여행")}
+                    {renderCategoryButton("문화/여가")}
                 </CategoryContainer>
                 <SearchContainer>
                     <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
