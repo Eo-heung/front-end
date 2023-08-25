@@ -177,44 +177,81 @@ const Payment = () => {
     const [hovered, setHovered] = useState(false);
 
     return (
-        <Paper style={{ width: '50%', marginLeft: '400px', height: '500px' }}>
-            <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', marginTop: '5px' }}>
-                <FormControl style={{ marginTop: '50px', width: '70%' }}>
-                    <InputLabel>곶감 선택하기</InputLabel>
-                    <Select
-                        value={coin}
-                        label='곶감'
-                        onChange={handleCoinChange}
-                        sx={{ marginBottom: '16px' }}
-                    >
-                        <MenuItem value="1">1(1000원)</MenuItem>
-                        <MenuItem value="2">2(2000원)</MenuItem>
-                        <MenuItem value="3">3(3000원)</MenuItem>
-                        <MenuItem value="4">4(4000원)</MenuItem>
-                        <MenuItem value="5">5(5000원)</MenuItem>
-                        <MenuItem value="6">10(10000원)</MenuItem>
-                        <MenuItem value="7">20(20000원)</MenuItem>
-                        <MenuItem value="8">30(30000원)</MenuItem>
-                        <MenuItem value="9">40(40000원)</MenuItem>
-                        <MenuItem value="10">50(50000원)</MenuItem>
-                    </Select>
-                </FormControl >
+        <div style={{ display: 'flex', justifyContent: 'center' }}> {/* 이 부분을 추가하여 두 개의 박스가 옆에 나열되도록 함 */}
+            <Paper style={{
+                width: '45%',
+                marginLeft: '430px',
+                height: '500px',
+                marginRight: '80px',  // Paper의 오른쪽 마진 추가
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)'  // 그림자 효과 수정
+            }}>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', marginTop: '5px' }}>
+                    <FormControl style={{ marginTop: '50px', width: '70%' }}>
+                        <InputLabel>곶감 선택하기</InputLabel>
+                        <Select
+                            value={coin}
+                            label='곶감'
+                            onChange={handleCoinChange}
+                            sx={{ marginBottom: '16px' }}
+                        >
+                            <MenuItem value="1">1(1000원)</MenuItem>
+                            <MenuItem value="2">2(2000원)</MenuItem>
+                            <MenuItem value="3">3(3000원)</MenuItem>
+                            <MenuItem value="4">4(4000원)</MenuItem>
+                            <MenuItem value="5">5(5000원)</MenuItem>
+                            <MenuItem value="6">10(10000원)</MenuItem>
+                            <MenuItem value="7">20(20000원)</MenuItem>
+                            <MenuItem value="8">30(30000원)</MenuItem>
+                            <MenuItem value="9">40(40000원)</MenuItem>
+                            <MenuItem value="10">50(50000원)</MenuItem>
+                        </Select>
+                    </FormControl >
 
-                <TextField
-                    value={customCount}
-                    onChange={handleCustomCountChange}
-                    onBlur={handleCustomCountBlur}
-                    placeholder="직접입력하기 (원하는 곶감 수 입력)"
-                    onClick={(e) => e.stopPropagation()}
-                    sx={{ flexDirection: 'column', textAlign: 'center', marginBottom: '16px', width: '70%' }} />
-            </div >
-            <div style={{ marginTop: '0px', textAlign: 'center' }}>
-                <StyledButton onClick={onClickPayment} style={{ marginTop: '120px' }}>
-                    결제하기
-                </StyledButton>
+                    <TextField
+                        value={customCount}
+                        onChange={handleCustomCountChange}
+                        onBlur={handleCustomCountBlur}
+                        placeholder="직접입력하기 (원하는 곶감 수 입력)"
+                        onClick={(e) => e.stopPropagation()}
+                        sx={{ flexDirection: 'column', textAlign: 'center', marginBottom: '16px', width: '70%' }} />
+                </div >
+                <div style={{ marginTop: '0px', textAlign: 'center' }}>
+                    <StyledButton onClick={onClickPayment} style={{ marginTop: '120px' }}>
+                        결제하기
+                    </StyledButton>
+                </div>
+            </Paper >
+            {/* 새로운 박스를 추가하는 부분 */}
+            <div style={{
+                width: '25%',
+                height: '500px',
+                border: '5px solid #ffe35a', // 테두리 설정
+                borderRadius: '10px',
+                display: 'flex',
+                flexDirection: 'column',
+                marginRight: '90px',
+                justifyContent: 'center',
+                alignItems: 'center', // 텍스트를 박스 중앙에 위치시키기 위해 추가
+                padding: '20px',
+                marginBottom: '20px'
+            }}>
+                <div style={{ fontWeight: 'bold', fontSize: '30px', marginTop: '0px', marginBottom: '0.5rem', lineHeight: '2' }}>곶감 충전 약관</div>
+                <br></br>
+                <ol>
+                    <li>구매 후 7일 경과 시 환불이 불가능합니다.</li>
+                    <br></br>
+                    <li>구매 후 곶감 사용 시 환불이 불가능합니다.</li>
+                    <br></br>
+                    <li>잔여 곶감을 환불받고싶으시면
+                        <br></br>
+                        <a href="mailto:junghyuna04@gmail.com?subject=환불 문의&body=안녕하세요, 곶감 환불 관련하여 문의드립니다.">junghyuna04@gmail.com</a>
+                        <br></br>
+                        로 문의해주세요</li>
+                    <br></br>
+                    <li>잔여 곶감을 환불받을 시 수수료 10%가 요구되며 10000원 이하의 금액을 환불받을 시에는 수수료1000원이 고정 요구됩니다</li>
+                </ol>
             </div>
-
-        </Paper >
+        </div>
     );
 
 };
