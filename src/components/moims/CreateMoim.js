@@ -98,7 +98,7 @@ const ImageAttaZone = styled('div')`
 const CreateMoim = () => {
     const navi = useNavigate();
 
-    const categories = ['인문학/책', '운동', '요리/맛집', '공예/만들기', '원예', '동네친구', '음악/악기', '반려동물', '여행'];
+    const categories = ['인문학/책', '운동', '요리/맛집', '공예/만들기', '원예', '동네친구', '음악/악기', '반려동물', '여행', '문화/여가'];
 
     const [moimTitleLength, setMoimTitleLength] = useState(0);
     const [inputs, setInputs] = useState({
