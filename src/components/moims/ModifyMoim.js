@@ -1,6 +1,5 @@
 import React, { useCallback, useState, useEffect, useRef } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
-import { useCookies } from 'react-cookie';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { TextField, Box, Button, FormControl, FormLabel, Select, MenuItem, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
@@ -17,6 +16,8 @@ const StyledForm = styled('form')`
 `;
 
 const StyledBox = styled(Box)`
+    display: flex;
+    flex-direction: column; alignItems="flex-start"
     margin-top: 1rem;
     width: 100%;
 `;
@@ -95,47 +96,24 @@ const ImageAttaZone = styled('div')`
     border: 1px solid grey;
 `;
 
-const CreateMoim = () => {
+const ModifyMoim = () => {
     const navi = useNavigate();
 
-    const categories = ['인문학/책', '운동', '요리/맛집', '공예/만들기', '원예', '동네친구', '음악/악기', '반려동물', '여행', '문화/여가'];
-
+    const categories = ['인문학/책', '운동', '요리/맛집', '공예/만들기', '원예', '동네친구', '음악/악기', '반려동물', '여행'];
     const [moimTitleLength, setMoimTitleLength] = useState(0);
     const [inputs, setInputs] = useState({
         moimCategory: "",
         userId: sessionStorage.getItem("userId"),
-        moimLeaderNickname: "",
+        moimNickname: "",
         moimAddr: "",
         moimTitle: "",
         maxMoimUser: "",
         moimContent: ""
     });
 
+    const { moimId } = useParams();
     const [moimPic, setMoimPic] = useState(null);
-    const [cookies] = useCookies(['userNickname', 'userAddr3']);
-    const [userData, setUserData] = useState({
-        userNickname: '',
-        userAddr3: ''
-    });
-
-    useEffect(() => {
-        if (cookies.userNickname && cookies.userAddr3) {
-            setUserData({
-                userNickname: cookies.userNickname,
-                userAddr3: cookies.userAddr3
-            });
-        }
-
-        console.log(userData);
-    }, [cookies]);
-
-    useEffect(() => {
-        setInputs(prev => ({
-            ...prev,
-            moimrNickname: userData.userNickname,
-            moimAddr: userData.userAddr3
-        }));
-    }, [userData]);
+    const [filePic, setFilePic] = useState(null);
 
     const handleTitleChange = (e) => {
         if (e.target.value.length <= 24) {
@@ -162,9 +140,42 @@ const CreateMoim = () => {
         }
     };
 
+    function base64ToBlob(base64) {
+        const byteString = atob(base64.split(',')[1]);
+        const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ab], { type: mimeString });
+    }
+
+    function blobToFile(blob, filename) {
+        return new File([blob], filename, { type: blob.type });
+    }
+
     const handleImageUpload = (e) => {
         const file = e.target.files[0];
+        console.log(file);
         setMoimPic(file);
+
+        const reader = new FileReader();
+
+        reader.onloadend = () => {
+            const previewImageElem = document.getElementById('previewImage');
+            if (previewImageElem) {
+                previewImageElem.src = reader.result;
+            } else {
+                console.error("Image preview element not found");
+            }
+        };
+
+        if (file) {
+            reader.readAsDataURL(file);
+        }
     };
 
     const isValidNumber = (input) => {
@@ -172,8 +183,67 @@ const CreateMoim = () => {
         return regex.test(input);
     }
 
-    const createMoim = useCallback((e) => {
+    // let imageUrl;
+
+    // if (typeof moimPic === 'string') {
+    //     imageUrl = moimPic;
+    // } else if (moimPic instanceof Blob) {
+    //     imageUrl = URL.createObjectURL(moimPic);
+    // } else {
+    //     imageUrl = "";
+    // }
+
+    useEffect(() => {
+        const fetchMoimData = async () => {
+            try {
+                const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+                const data = response.data.item.moimDTO;
+
+                setInputs({
+                    moimCategory: data.moimCategory,
+                    userId: sessionStorage.getItem("userId"),
+                    moimNickname: data.moimNickname,
+                    moimAddr: data.moimAddr,
+                    moimTitle: data.moimTitle,
+                    maxMoimUser: data.maxMoimUser.toString(),
+                    moimContent: data.moimContent
+                });
+
+                setMoimPic(`data:image/jpeg;base64,${response.data.item.moimPic}`);
+
+                return response.data.item;
+
+            } catch (error) {
+                console.error("모임 데이터를 불러오는 중 오류가 발생했습니다.", error);
+            }
+        };
+
+        fetchMoimData();
+    }, [moimId]);
+
+    useEffect(() => {
+        console.log(moimPic)
+        if (moimPic instanceof File) {
+            setFilePic(moimPic);
+        }
+        else if (moimPic !== null) {
+            const base64String = moimPic;
+            const blob = base64ToBlob(base64String);
+            const file = blobToFile(blob, "testFile.jpg");
+            setFilePic(file);
+            console.log(file);
+        }
+
+    }, [moimPic])
+
+    const handleOnClick = ((e) => {
         e.preventDefault();
+
+        if (!inputs.moimAddr) {
+            alert("모임 지역을 입력해주세요.");
+            document.getElementsByName("moimAddr")[0].focus();
+            return;
+        }
 
         if (!inputs.moimTitle) {
             alert("모임명을 입력해주세요.");
@@ -205,74 +275,45 @@ const CreateMoim = () => {
             return;
         }
 
-        const createMoimAxios = async () => {
-            const userData = {
-                moimCategory: inputs.moimCategory,
-                userId: sessionStorage.getItem("userId"),
-                moimNickname: cookies.userNickname,
-                moimAddr: cookies.userAddr3,
-                moimTitle: inputs.moimTitle,
-                maxMoimUser: inputs.maxMoimUser,
-                moimContent: inputs.moimContent,
-            };
+        const modifyMoimAxios = () => {
+            axios.post(`http://localhost:9000/moim/modify-moim/${moimId}`, inputs)
+                .then(resultTemp => {
+                    console.log(resultTemp);
 
-            try {
-                const response = await axios.post('http://localhost:9000/moim/create-moim', userData, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    const formData = new FormData();
+                    console.log(moimPic);
+                    formData.append("moimPic", filePic);
+                    console.log(formData);
+
+                    return axios.post(`http://localhost:9000/moim/modify-moim-pic/${moimId}`, formData, {
+                        headers: {
+                            'Content-Type': 'multipart/form-data'
+                        }
+                    });
+                })
+                .then(result => {
+                    console.log(result.data);
+
+                    if (result.data.item) {
+                        alert("수정이 완료되었습니다.");
+                        navi('/list-moim');
                     }
+                })
+                .catch(e => {
+                    console.log(e);
                 });
-
-                console.log(response.data);
-
-                const formData = new FormData();
-
-                if (!moimPic) {
-                    try {
-                        const defaultImageRes = await axios.get('https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png', {
-                            responseType: 'blob'
-                        });
-
-                        const defaultImageFile = new File([defaultImageRes.data], 'default-image.png', { type: 'image/png' });
-                        formData.append("moimPic", defaultImageFile);
-                        formData.append("moimId", response.data.item.moimId);
-                    } catch (err) {
-                        console.error("Failed to download default image:", err);
-                    }
-                } else {
-                    formData.append("moimPic", moimPic);
-                    formData.append("moimId", response.data.item.moimId);
-                }
-
-                console.log(formData);
-
-                const result = await axios.post('http://localhost:9000/moim/create-moim-pic', formData, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
-                        'Content-Type': 'multipart/form-data',
-                    }
-                });
-
-                console.log(result.data);
-
-                if (result.data.item) {
-                    alert("등록이 완료되었습니다.");
-                    navi('/list-moim');
-                }
-            } catch (e) {
-                console.log(e);
-            }
         }
 
-        createMoimAxios();
-    }, [inputs, moimPic]);
+        modifyMoimAxios();
 
+    });
 
     return (
         <BasicBoard>
-            <StyledForm id="createForm" onSubmit={createMoim}>
+            {console.log("render")}
+            <StyledForm id="createForm" onSubmit={handleOnClick}>
                 <StyledBox>
-                    <PageTitle>새로운 모임을 만들어요.</PageTitle>
+                    <PageTitle>모임 모집글을 수정해요.</PageTitle>
                     <StyledFormControl variant="outlined">
                         <FormLabel component="legend"></FormLabel>
                         <Select
@@ -292,27 +333,24 @@ const CreateMoim = () => {
                     </StyledFormControl>
                     <Box border={0} my={0} display="flex" alignItems="center">
                         <h5 fontWeight="bold" style={{ width: '110px' }}>모임장</h5>
-                        <Typography variant="body1" color={grey[600]}>{userData.userNickname}</Typography>
+                        <Typography variant="body1" color={grey[600]}>{inputs.moimNickname}</Typography>
                     </Box>
-                    <Box border={0} my={2} display="flex" alignItems="center">
-                        <h5 fontWeight="bold" style={{ width: '110px' }}>모임 지역</h5>
-                        <Typography variant="body1" color={grey[600]}>{userData.userAddr3}</Typography>
-                    </Box>
-                    <h5 fontWeight="bold">모임명</h5>
+                    <h5 fontWeight="bold" style={{ width: '110px', marginTop: "1.2rem" }}>모임 지역</h5>
+                    <StyledTextField name="moimAddr" onChange={handleInputChange} variant="outlined" value={inputs.moimAddr} />
+                    <h5 fontWeight="bold" style={{ marginTop: "1.2rem" }}>모임명</h5>
                     <CounterBox>
                         <StyledTextField
                             name="moimTitle"
                             onChange={handleTitleChange}
                             variant="outlined"
-                            placeholder="모임명은 짧을수록 기억하기 쉬워요."
                             value={inputs.moimTitle}
                         />
                         <CounterTypography align="right">{moimTitleLength}/24자</CounterTypography>
                     </CounterBox>
                     <h5 fontWeight="bold">모집 인원</h5>
-                    <StyledTextField name="maxMoimUser" placeholder="최대 50명까지 모집할 수 있어요." onChange={handleInputChange} variant="outlined" />
+                    <StyledTextField name="maxMoimUser" onChange={handleInputChange} variant="outlined" value={inputs.maxMoimUser} />
                     <h5 fontWeight="bold" style={{ marginTop: "1.2rem" }}>모임 소개</h5>
-                    <StyledTextField name="moimContent" placeholder="주제 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요." onChange={handleInputChange} variant="outlined" multiline rows={4} />
+                    <StyledTextField name="moimContent" onChange={handleInputChange} variant="outlined" multiline rows={4} value={inputs.moimContent} />
                     <h5 fontWeight="bold"
                         style={{ marginTop: "1.2rem" }}
                     >
@@ -324,7 +362,7 @@ const CreateMoim = () => {
                             <div>
                                 <img
                                     id="previewImage"
-                                    src={URL.createObjectURL(moimPic)}
+                                    src={moimPic}
                                     alt="대표 사진"
                                     style={{ maxWidth: "300px", maxHeight: "300px", objectFit: "cover", display: "block", cursor: "pointer" }}
                                     onClick={triggerFileInput}
@@ -349,11 +387,11 @@ const CreateMoim = () => {
                             </ImageAttaZone>
                     }
                 </StyledBox>
-                <StyledButton type="submit" variant="contained" size="large">모임 등록</StyledButton>
+                <StyledButton type="submit" variant="contained" size="large">수정 완료</StyledButton>
             </StyledForm>
             <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };
 
-export default CreateMoim;
+export default ModifyMoim;

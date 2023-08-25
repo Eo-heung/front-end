@@ -241,6 +241,10 @@ label {
   }
 }
 
+* {
+  font-family: "font-medium";
+}
+
 .main-top-space {
   padding-top: 115px;
 }

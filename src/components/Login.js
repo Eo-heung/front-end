@@ -28,17 +28,20 @@ const Login = () => {
     const [userPw, setUserPw] = useState('');
     const [token, setToken] = useState();
     const [remember, setRemember] = useState(false);
-    const [cookies, setCookie] = useCookies(['userName', 'userAddr3']);
+    const [cookies, setCookie] = useCookies(['userNickname', 'userAddr3']);
 
     const loginSuccessHandler = (data) => {
-        console.log("Received data:", data);
-        if (data.userName) {
-            setCookie('userName', data.userName, { path: '/' });
-        }
-        if (data.userAddr3) {
-            setCookie('userAddr3', data.userAddr3, { path: '/' });
-        }
-    };
+      console.log("Received data:", data);
+      if (data.userName) {
+         setCookie('userNickname', data.userName, { path: '/' });
+      }
+      if (data.userAddr3) {
+        setCookie('userAddr3', data.userAddr3, { path: '/' });
+      }
+      if (data.userId) {
+        setCookie('userId', data.userId, { path: '/' });
+      }
+  };
 
     const [showPassword, setShowPassword] = React.useState(false);
 
@@ -74,6 +77,29 @@ const Login = () => {
         window.location.href = naverURL;
     };
 
+  useEffect(() => {
+    if (sessionStorage.getItem("ACCESS_TOKEN")) {
+      setToken(() => sessionStorage.getItem("ACCESS_TOKEN"));
+      console.log(token);
+    }
+  }, []);
+
+  useEffect(() => {
+    if (token) {
+      axios.post('http://localhost:9000/verify', token)
+        .then(response => {
+          console.log(response);
+          if (response.data.item) {
+            navi("/"); // 토큰이 유효하면 지정된 경로로 이동
+          }
+        })
+        .catch(e => {
+          console.log(e);
+          localStorage.removeItem("REFRESH_TOKEN");
+          sessionStorage.removeItem("ACCESS_TOKEN");
+        });
+    }
+  }, [token]);
 
     useEffect(() => {
         if (localStorage.getItem("REFRESH_TOKEN") != null) {
@@ -169,6 +195,7 @@ const Login = () => {
                     }
                 }
             } catch (e) {
+
                 console.log(e);
                 if (e.response.data.errorMessage === 'id not exist') {
                     alert("아이디가 존재하지 않습니다.");
