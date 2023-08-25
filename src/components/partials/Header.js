@@ -3,7 +3,6 @@ import { Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Stomp } from "@stomp/stompjs";
 import React, { useEffect, useRef, useState } from "react";
-import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styled from "styled-components";
@@ -22,59 +21,59 @@ const StyledRightContainer = styled.div`
     margin-left: auto;
   `;
 
-const Header = ({ getFriendList }) => {
+const Header = ({ getFriendList, userId }) => {
   const [isOpen, setIsOpen] = useState(false);
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 992);
   const menuRef = useRef();
   const [isLogout, setIsLogout] = useState(false);
   const navi = useNavigate();
-  const [cookies] = useCookies(['userId']);
 
   // online, offline 기능 구현
   const stompClient = useRef(null);
 
   useEffect(() => {
-    const userId = cookies.userId;
+    console.log(userId);
 
-    if (!userId) {
+    console.log("--------------------------------")
+
+    if (!sessionStorage.getItem("ACCESS_TOKEN")) {
       navi("/login");
       return; // 이후 로직 실행을 중단
     }
     else {
+      if (userId) {
+        const socketFactory = () => new SockJS('http://localhost:9000/websocket-endpoint');
+        stompClient.current = Stomp.over(socketFactory);
 
-      const socketFactory = () => new SockJS('http://localhost:9000/websocket-endpoint');
-      stompClient.current = Stomp.over(socketFactory);
+        stompClient.current.connect({}, (frame) => {
+          stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'online' }));
 
-      stompClient.current.connect({}, (frame) => {
-        // 온라인 상태임을 알릴 로직 (예: 서버에 메시지 전송)
-        stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'online' }));
-
-        stompClient.current.subscribe(`/topic/user-status-updates/${userId}`, function (message) {
-          // 여기서 알림을 수신
-          getFriendList();  // 상태 변경 알림을 수신하면 getFriendList 함수를 호출
+          stompClient.current.subscribe(`/topic/user-status-updates/${userId}`, function (message) {
+            getFriendList();
+          });
         });
-      });
 
-      window.addEventListener('beforeunload', () => {
-        // 페이지나 브라우저 창을 닫을 때 실행될 로직
-        stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
-      });
+        const beforeUnloadHandler = () => {
+          stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
+        };
 
-      // Heartbeat 설정
-      const heartbeatInterval = setInterval(() => {
-        console.log('heartbeatheartbeatheartbeatheartbeatheartbeatheartbeatheartbeatheartbeatheartbeat');
-        if (stompClient.current && stompClient.current.connected) {
-          stompClient.current.send(`/app/heartbeat/${userId}`, {}, {});
-        }
-      }, 3 * 60 * 1000); // 3분마다
+        window.addEventListener('beforeunload', beforeUnloadHandler);
 
-      return () => {
-        clearInterval(heartbeatInterval);
-        // 오프라인 상태임을 알릴 로직 (예: 서버에 메시지 전송 전 연결 해제)
-        stompClient.current.disconnect();
-      };
+        const heartbeatInterval = setInterval(() => {
+          console.log('Sending heartbeat...');
+          if (stompClient.current && stompClient.current.connected) {
+            stompClient.current.send(`/app/heartbeat/${userId}`, {}, {});
+          }
+        }, 3 * 60 * 1000);
+
+        return () => {
+          clearInterval(heartbeatInterval);
+          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          stompClient.current.disconnect();
+        };
+      }
     }
-  }, []);
+  }, [getFriendList, navi, userId, stompClient]);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth > 992);
@@ -94,7 +93,6 @@ const Header = ({ getFriendList }) => {
 
   // 로그아웃 함수
   const logout = () => {
-    const userId = cookies.userId;
     stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
 
     sessionStorage.removeItem("ACCESS_TOKEN");
