@@ -21,6 +21,12 @@ export default class ChatComponent extends Component {
     this.close = this.close.bind(this);
     this.sendMessage = this.sendMessage.bind(this);
   }
+  componentDidUpdate(prevProps, prevState) {
+    // messageList 상태가 변경될 때마다 scrollToBottom 메서드를 호출
+    if (prevState.messageList !== this.state.messageList) {
+      this.scrollToBottom();
+    }
+  }
 
   componentDidMount() {
     this.props.user
@@ -33,16 +39,7 @@ export default class ChatComponent extends Component {
           nickname: data.nickname,
           message: data.message,
         });
-        const document = window.document;
-        setTimeout(() => {
-          const userImg = document.getElementById(
-            "userImg-" + (this.state.messageList.length - 1)
-          );
-          const video = document.getElementById("video-" + data.streamId);
-          const avatar = userImg.getContext("2d");
-          avatar.drawImage(video, 200, 120, 285, 285, 0, 0, 60, 60);
-          this.props.messageReceived();
-        }, 50);
+
         this.setState({ messageList: messageList });
         this.scrollToBottom();
       });
@@ -92,17 +89,12 @@ export default class ChatComponent extends Component {
 
   render() {
     const styleChat = { display: this.props.chatDisplay };
+
     return (
       <div id="chatContainer">
         <div id="chatComponent" style={styleChat}>
           <div id="chatToolbar">
-            <span>
-              {this.props.user.getStreamManager().stream.session.sessionId} -
-              CHAT
-            </span>
-            <IconButton id="closeButton" onClick={this.close}>
-              <HighlightOff color="secondary" />
-            </IconButton>
+            <span>어흥!</span>
           </div>
           <div className="message-wrap" ref={this.chatScroll}>
             {this.state.messageList.map((data, i) => (
@@ -116,18 +108,11 @@ export default class ChatComponent extends Component {
                     : " right")
                 }
               >
-                <canvas
-                  id={"userImg-" + i}
-                  width="60"
-                  height="60"
-                  className="user-img"
-                />
                 <div className="msg-detail">
                   <div className="msg-info">
-                    <p> {data.nickname}</p>
+                    <p> {data.nickname}: </p>
                   </div>
                   <div className="msg-content">
-                    <span className="triangle" />
                     <p className="text">{data.message}</p>
                   </div>
                 </div>
@@ -137,7 +122,7 @@ export default class ChatComponent extends Component {
 
           <div id="messageInput">
             <input
-              placeholder="Send a messge"
+              placeholder="메세지를 입력해주세요"
               id="chatInput"
               value={this.state.message}
               onChange={this.handleChange}
@@ -145,7 +130,7 @@ export default class ChatComponent extends Component {
             />
             <Tooltip title="Send message">
               <Fab size="small" id="sendButton" onClick={this.sendMessage}>
-                <Send />
+                <Send style={{ color: "orange" }} />
               </Fab>
             </Tooltip>
           </div>

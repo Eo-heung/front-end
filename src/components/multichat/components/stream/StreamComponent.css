@@ -52,7 +52,6 @@ video {
 
 #statusIcons {
   bottom: 0;
-  background: #c71100;
   width: 40px;
   height: fit-content;
   position: absolute;
@@ -73,9 +72,8 @@ video {
   background-color: #000000c4;
 }
 #volumeButton {
-  background-color: #ced7d4;
   position: absolute;
-  bottom: 45px;
+  bottom: 1vh;
   right: 1px;
   z-index: 1000;
   color: #ffffff;
