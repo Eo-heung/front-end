@@ -4,9 +4,7 @@ import "./IndexStyle.css";
 import Login from "./components/Login";
 import Password from "./components/Password";
 import SignUp from "./components/SignUp";
-<<<<<<< Updated upstream
 import Payment from "./components/charge/Payment";
-import MultiChatting from "./components/chatTest/components/VideoRoomComponent";
 import StartCamera from "./components/chatting/StartCamera";
 import TextChatting from "./components/chatting/TextChatting";
 import AcceptMoim from "./components/moims/AcceptMoim";
@@ -16,30 +14,14 @@ import ListAcceptMoim from "./components/moims/ListAcceptMoim";
 import ListMoim from "./components/moims/ListMoim";
 import ModifyMoim from "./components/moims/ModifyMoim";
 import ViewMoim from "./components/moims/ViewMoim";
-import Mypage from './components/mypage/Mypage';
+import Mypage from "./components/mypage/Mypage";
 import Layout from "./components/partials/Layout";
 import MainContent from "./components/partials/MainContent";
 import KakaoHandler from "./components/socialLogin/KakaoHandler";
 import BasicBoard from "./components/utils/BasicBoard";
-// import MultiChatting from "./components/chatting/MultiChatting";
-import ButtonWithNewWindow from "./components/chatTest/components/ButtonWithNewWindow";
-=======
-import KakaoHandler from "./components/socialLogin/KakaoHandler";
-import NaverHandelr from "./components/socialLogin/NaverHandler";
-import { CookiesProvider } from "react-cookie";
-import ListMoim from "./components/moims/ListMoim";
-import BasicBoard from "./components/utils/BasicBoard";
-import "./IndexStyle.css";
-import StartCamera from "./components/chatting/StartCamera";
-import TextChatting from "./components/chatting/TextChatting";
-import Mypage from "./components/mypage/Mypage";
-import ModifyMoim from "./components/moims/ModifyMoim";
-import ApplyMoim from "./components/moims/ApplyMoim";
-import AcceptMoim from "./components/moims/AcceptMoim";
-import ListAcceptMoim from "./components/moims/ListAcceptMoim";
-import MultiChatting from "./components/multichat/components/VideoRoomComponent";
 import ButtonWithNewWindow from "./components/multichat/components/ButtonWithNewWindow";
->>>>>>> Stashed changes
+import MultiChatting from "./components/multichat/components/VideoRoomComponent";
+
 function App() {
   return (
     <>
@@ -99,7 +81,7 @@ function App() {
           <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/oauth" element={<Login></Login>}></Route>
-          <Route path='/signup' element={<SignUp></SignUp>}></Route>
+          <Route path="/signup" element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
         </Routes>
       </CookiesProvider>

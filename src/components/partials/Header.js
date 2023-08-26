@@ -18,8 +18,8 @@ const StyledTypography = styled(Typography)`
 `;
 
 const StyledRightContainer = styled.div`
-    margin-left: auto;
-  `;
+  margin-left: auto;
+`;
 
 const Header = ({ getFriendList, userId }) => {
   const [isOpen, setIsOpen] = useState(false);
@@ -34,33 +34,44 @@ const Header = ({ getFriendList, userId }) => {
   useEffect(() => {
     console.log(userId);
 
-    console.log("--------------------------------")
+    console.log("--------------------------------");
 
     if (!sessionStorage.getItem("ACCESS_TOKEN")) {
       navi("/login");
       return; // 이후 로직 실행을 중단
-    }
-    else {
+    } else {
       if (userId) {
-        const socketFactory = () => new SockJS('http://localhost:9000/websocket-endpoint');
+        const socketFactory = () =>
+          new SockJS("http://localhost:9000/websocket-endpoint");
         stompClient.current = Stomp.over(socketFactory);
 
         stompClient.current.connect({}, (frame) => {
-          stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'online' }));
+          stompClient.current.send(
+            `/app/online-status/${userId}`,
+            {},
+            JSON.stringify({ status: "online" })
+          );
 
-          stompClient.current.subscribe(`/topic/user-status-updates/${userId}`, function (message) {
-            getFriendList();
-          });
+          stompClient.current.subscribe(
+            `/topic/user-status-updates/${userId}`,
+            function (message) {
+              getFriendList();
+            }
+          );
         });
 
         const beforeUnloadHandler = () => {
-          stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
+          stompClient.current.send(
+            `/app/online-status/${userId}`,
+            {},
+            JSON.stringify({ status: "offline" })
+          );
         };
 
-        window.addEventListener('beforeunload', beforeUnloadHandler);
+        window.addEventListener("beforeunload", beforeUnloadHandler);
 
         const heartbeatInterval = setInterval(() => {
-          console.log('Sending heartbeat...');
+          console.log("Sending heartbeat...");
           if (stompClient.current && stompClient.current.connected) {
             stompClient.current.send(`/app/heartbeat/${userId}`, {}, {});
           }
@@ -68,12 +79,12 @@ const Header = ({ getFriendList, userId }) => {
 
         return () => {
           clearInterval(heartbeatInterval);
-          window.removeEventListener('beforeunload', beforeUnloadHandler);
+          window.removeEventListener("beforeunload", beforeUnloadHandler);
           stompClient.current.disconnect();
         };
       }
     }
-  }, [getFriendList, navi, userId, stompClient]);
+  }, [userId]);
 
   useEffect(() => {
     const handleResize = () => setIsDesktop(window.innerWidth > 992);
@@ -90,15 +101,18 @@ const Header = ({ getFriendList, userId }) => {
     { text: "마이페이지", link: "/mypage" },
   ];
 
-
   // 로그아웃 함수
   const logout = () => {
-    stompClient.current.send(`/app/online-status/${userId}`, {}, JSON.stringify({ status: 'offline' }));
+    stompClient.current.send(
+      `/app/online-status/${userId}`,
+      {},
+      JSON.stringify({ status: "offline" })
+    );
 
     sessionStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
     setIsLogout(true);
-    alert('로그아웃 성공');
+    alert("로그아웃 성공");
   };
 
   useEffect(() => {
@@ -108,10 +122,14 @@ const Header = ({ getFriendList, userId }) => {
   }, [isLogout]);
 
   return (
-    <div className={`sb-nav-fixed mainpage ${(isDesktop || isOpen) ? 'open' : 'closed'}`}>
+    <div
+      className={`sb-nav-fixed mainpage ${
+        isDesktop || isOpen ? "open" : "closed"
+      }`}
+    >
       <nav className="sb-topnav navbar navbar-expand navbar-light bg-light">
         <Link className="navbar-brand" to="/">
-          <Paper elevation={0} style={{ width: '100%', height: '100%' }}>
+          <Paper elevation={0} style={{ width: "100%", height: "100%" }}>
             <img src="https://i.postimg.cc/RFMVM5qM/logo.png" />
           </Paper>
         </Link>
@@ -119,29 +137,46 @@ const Header = ({ getFriendList, userId }) => {
           <div ref={menuRef} onMouseLeave={() => setIsOpen(false)}>
             <MenuIcon
               className="menu-icon"
-              fontSize='large'
+              fontSize="large"
               onMouseOver={() => setIsOpen(true)}
             />
             {isOpen && (
               <div className="nav-item dropdown">
-                <ul className="dropdown-menu dropdown-menu-end" aria-labelledby="navbarDropdown">
+                <ul
+                  className="dropdown-menu dropdown-menu-end"
+                  aria-labelledby="navbarDropdown"
+                >
                   {icons.map((icon, index) => (
-                    <li key={index}><Link className="dropdown-item" to={icon.link}>
-                      <Typography variant="h6" fontWeight="bold" className="btn btn-link btn-lg order-1 order-lg-0">{icon.text}</Typography>
-                    </Link></li>
+                    <li key={index}>
+                      <Link className="dropdown-item" to={icon.link}>
+                        <Typography
+                          variant="h6"
+                          fontWeight="bold"
+                          className="btn btn-link btn-lg order-1 order-lg-0"
+                        >
+                          {icon.text}
+                        </Typography>
+                      </Link>
+                    </li>
                   ))}
                 </ul>
               </div>
             )}
           </div>
         )}
-        {isDesktop && icons.map((icon, index) => (
-          <Link to={icon.link} key={index}>
-            <Typography variant="h6" fontWeight="bold" className="btn btn-link btn-lg order-1 order-lg-0" id={`sidebarToggle${index}`}>
-              {icon.text}
-            </Typography>
-          </Link>
-        ))}
+        {isDesktop &&
+          icons.map((icon, index) => (
+            <Link to={icon.link} key={index}>
+              <Typography
+                variant="h6"
+                fontWeight="bold"
+                className="btn btn-link btn-lg order-1 order-lg-0"
+                id={`sidebarToggle${index}`}
+              >
+                {icon.text}
+              </Typography>
+            </Link>
+          ))}
         <StyledRightContainer>
           <Link className="navbar-logout" to="/" onClick={logout}>
             <StyledTypography variant="body2">로그아웃</StyledTypography>
@@ -151,7 +186,7 @@ const Header = ({ getFriendList, userId }) => {
           </Link>
         </StyledRightContainer>
       </nav>
-    </div >
+    </div>
   );
 };
 
