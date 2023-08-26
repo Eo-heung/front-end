@@ -14,7 +14,7 @@ const ButtonWithNewWindow = () => {
 
   const handleClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://localhost:3000/multichatting",
+      "http://localhost:1234/multichatting",
       "_blank",
       "width=800,height=600"
     );
@@ -25,7 +25,17 @@ const ButtonWithNewWindow = () => {
     };
   }, []);
 
-  return <button onClick={handleClick}>새 창에서 열기</button>;
+  return (
+    <div class="sb-nav-fixed mainpage">
+      <div id="layoutSidenav">
+        <div id="layoutSidenav_content">
+          <div>
+            <button onClick={handleClick}>새 창에서 열기</button>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
 };
 
 export default ButtonWithNewWindow;

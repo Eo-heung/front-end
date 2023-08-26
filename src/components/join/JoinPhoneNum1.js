@@ -10,7 +10,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/01.png';
 
 
 const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {

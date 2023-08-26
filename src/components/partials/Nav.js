@@ -1,12 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useEffect, useState } from "react";
 // import '../../css/partials/Style.css';
-import { data } from "./data.js";
-import { Link } from "react-router-dom";
 
-const Nav = () => {
+const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
-  const [friend, setFriend] = useState(data);
-
   const [appoint, setAppoint] = useState(null);
   const exAppo = [
     { startTime: new Date("2023-08-06T10:00:00"), content: "아침 회의" },
@@ -27,15 +23,28 @@ const Nav = () => {
     );
 
     setAppoint(closest);
+    getFriendList();
   }, []);
   // style={{ width: '45%' }}
   function List(props) {
+    const friend = props.friend;
     return (
-      <tr>
-        <td style={{ width: "100px" }}>{props.friend.pic}</td>
-        <td style={{ width: "100px" }}>{props.friend.fName}</td>
-        <td style={{ width: "50px" }}>{props.friend.log}</td>
-      </tr>
+      <>
+        <tr key={friend.user_name}>
+          <td style={{ width: "90px", paddingLeft: "5px" }}>
+            <img
+              style={{
+                border: '2px solid white',
+                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"}`
+              }}
+              src={`data:image/jpeg;base64,${friend.profile}`}
+              alt="프로필 사진"
+            />
+          </td>
+          <td style={{ width: "100px" }}>{friend.user_name}</td>
+          <td style={{ width: "70px" }}>{friend.online ? "온라인" : "오프라인"}</td>
+        </tr>
+      </>
     );
   }
 
@@ -92,9 +101,13 @@ const Nav = () => {
               </div>
               <div className="sb-sidenav-fri-container">
                 <table className="sb-sidenav-fri">
-                  {friend.map((a, i) => {
-                    return <List friend={friend[i]} i={i}></List>;
-                  })}
+                  {friends.length > 0 ?
+                    friends.map((a, i) => <List friend={a} key={i} />)
+                    :
+                    <tr>
+                      <td style={{ width: "260px", textAlign: "center" }}>활동중인 친구가 없습니다.</td>
+                    </tr>
+                  }
                 </table>
               </div>
             </div>

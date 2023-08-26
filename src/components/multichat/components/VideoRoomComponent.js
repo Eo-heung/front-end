@@ -5,7 +5,6 @@ import ChatComponent from "./chat/ChatComponent";
 import DialogExtensionComponent from "./dialog-extension/DialogExtension";
 import StreamComponent from "./stream/StreamComponent";
 import "./VideoRoomComponent.css";
-
 import OpenViduLayout from "../layout/openvidu-layout";
 import UserModel from "../models/user-model";
 import ToolbarComponent from "./toolbar/ToolbarComponent";
@@ -22,14 +21,11 @@ class VideoRoomComponent extends Component {
     let sessionName = this.props.sessionName
       ? this.props.sessionName
       : "SessionA";
-    let userName = this.props.nickname
-      ? this.props.nickname
-      : "OpenVidu_User" + Math.floor(Math.random() * 100);
     this.remotes = [];
     this.localUserAccessAllowed = false;
     this.state = {
       mySessionId: sessionName,
-      myUserName: userName,
+      myUserName: null,
       session: undefined,
       localUser: undefined,
       subscribers: [],
@@ -37,6 +33,7 @@ class VideoRoomComponent extends Component {
       currentVideoDevice: undefined,
     };
 
+    this.handleMessage = this.handleMessage.bind(this);
     this.joinSession = this.joinSession.bind(this);
     this.leaveSession = this.leaveSession.bind(this);
     this.onbeforeunload = this.onbeforeunload.bind(this);
@@ -73,17 +70,7 @@ class VideoRoomComponent extends Component {
       openViduLayoutOptions
     );
 
-    this.messageListener = (event) => {
-      console.log(
-        "--------------------test---------------",
-        event.data.nickname
-      );
-
-      // state에 userName을 업데이트
-      this.setState({ myUserName: event.data.nickname });
-    };
-
-    window.addEventListener("message", this.messageListener);
+    window.addEventListener("message", this.handleMessage);
     window.addEventListener("beforeunload", this.onbeforeunload);
     window.addEventListener("resize", this.updateLayout);
     window.addEventListener("resize", this.checkSize);
@@ -91,11 +78,22 @@ class VideoRoomComponent extends Component {
   }
 
   componentWillUnmount() {
-    window.removeEventListener("message", this.messageListener);
+    window.removeEventListener("message", this.handleMessage);
     window.removeEventListener("beforeunload", this.onbeforeunload);
     window.removeEventListener("resize", this.updateLayout);
     window.removeEventListener("resize", this.checkSize);
     this.leaveSession();
+  }
+
+  handleMessage(event) {
+    console.log("nickname");
+    console.log(event.data.nickname);
+
+    if (event.data && event.data.nickname) {
+      this.setState({
+        myUserName: event.data.nickname,
+      });
+    }
   }
 
   onbeforeunload(event) {
@@ -253,7 +251,7 @@ class VideoRoomComponent extends Component {
       session: undefined,
       subscribers: [],
       mySessionId: "SessionA",
-      myUserName: "OpenVidu_User" + Math.floor(Math.random() * 100),
+      myUserName: "JUN",
       localUser: undefined,
     });
     if (this.props.leaveSession) {
@@ -624,21 +622,6 @@ class VideoRoomComponent extends Component {
     );
   }
 
-  /**
-   * --------------------------------------------
-   * GETTING A TOKEN FROM YOUR APPLICATION SERVER
-   * --------------------------------------------
-   * The methods below request the creation of a Session and a Token to
-   * your application server. This keeps your OpenVidu deployment secure.
-   *
-   * In this sample code, there is no user control at all. Anybody could
-   * access your application server endpoints! In a real production
-   * environment, your application server must identify the user to allow
-   * access to the endpoints.
-   *
-   * Visit https://docs.openvidu.io/en/stable/application-server to learn
-   * more about the integration of OpenVidu in your application server.
-   */
   async getToken() {
     const sessionId = await this.createSession(this.state.mySessionId);
     return await this.createToken(sessionId);

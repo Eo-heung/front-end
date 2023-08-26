@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 import "@fontsource/roboto/300.css";
 import "@fontsource/roboto/400.css";
 import "@fontsource/roboto/500.css";
@@ -20,6 +21,31 @@ import React, { useCallback, useEffect, useState } from "react";
 import Carousel from "react-material-ui-carousel";
 import { useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
+=======
+import '@fontsource/roboto/300.css';
+import '@fontsource/roboto/400.css';
+import '@fontsource/roboto/500.css';
+import '@fontsource/roboto/700.css';
+import { Visibility, VisibilityOff } from '@mui/icons-material';
+import { Divider, IconButton, InputAdornment } from '@mui/material';
+import Box from '@mui/material/Box';
+import Button from '@mui/material/Button';
+import Checkbox from '@mui/material/Checkbox';
+import CssBaseline from '@mui/material/CssBaseline';
+import FormControlLabel from '@mui/material/FormControlLabel';
+import Grid from '@mui/material/Grid';
+import Link from '@mui/material/Link';
+import Paper from '@mui/material/Paper';
+import TextField from '@mui/material/TextField';
+import Typography from '@mui/material/Typography';
+import { ThemeProvider, createTheme } from '@mui/material/styles';
+import axios from 'axios';
+import React, { useCallback, useEffect, useState } from 'react';
+import { useCookies } from 'react-cookie';
+import Carousel from 'react-material-ui-carousel';
+import { useNavigate } from 'react-router-dom';
+
+>>>>>>> 3972187e12b493e72951bd0bbf50905e571fee56
 
 const Login = () => {
   const navi = useNavigate();
@@ -162,18 +188,24 @@ const Login = () => {
             sessionStorage.setItem("ACCESS_TOKEN", response.data.item.token);
             sessionStorage.setItem("userId", response.data.item.userId);
             navi("/");
-            // try {
-            //     const userInfoResponse = await axios.post('http://localhost:9000/getUserInfo', {}, {
-            //         headers: {
-            //             Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-            //         }
-            //     });
-            //     if (userInfoResponse.data && userInfoResponse.data.item) {
-            //         loginSuccessHandler(userInfoResponse.data.item);
-            //     }
-            // } catch (e) {
-            //     console.log("Error fetching user info: ", e);
-            // }
+            try {
+              const userInfoResponse = await axios.post(
+                "http://localhost:9000/getUserInfo",
+                {},
+                {
+                  headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem(
+                      "ACCESS_TOKEN"
+                    )}`,
+                  },
+                }
+              );
+              if (userInfoResponse.data && userInfoResponse.data.item) {
+                loginSuccessHandler(userInfoResponse.data.item);
+              }
+            } catch (e) {
+              console.log("Error fetching user info: ", e);
+            }
           } else if (remembers === true) {
             alert(`${response.data.item.userName}님 환영합니다.`);
             localStorage.setItem("REFRESH_TOKEN", response.data.item.token);
