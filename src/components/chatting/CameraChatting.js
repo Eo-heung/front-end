@@ -37,9 +37,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [messages, textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("https://eoheung.store:7443");
+    socket.current = io("http://localhost:9000");
     setMyNickname(getCookie("userNickname"));
-    // fetchNickname(); // 여기서 닉네임을 가져옴
+    fetchNickname(); // 여기서 닉네임을 가져옴
 
     startChatting();
 
@@ -312,7 +312,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("https://eoheung.store:7443/nickname", {
+      const response = await axios.get("http://localhost:5000/nickname", {
         params: {
           nickname: userNickname,
         },

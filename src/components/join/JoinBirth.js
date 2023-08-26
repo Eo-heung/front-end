@@ -13,7 +13,7 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/01.png';
 
 const JoinBirth = ({ handleClick, setUserBirth, setUserGender }) => {
     const [progress, setProgress] = useState(0);

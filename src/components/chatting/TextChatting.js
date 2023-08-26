@@ -14,7 +14,7 @@ function TextChatting() {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io("http://localhost:4000");
 
     const handleMessage = (message) => {
       setMessages((prevMessages) => [
