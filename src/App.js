@@ -21,7 +21,7 @@ import KakaoHandler from "./components/socialLogin/KakaoHandler";
 import BasicBoard from "./components/utils/BasicBoard";
 import ButtonWithNewWindow from "./components/multichat/components/ButtonWithNewWindow";
 import MultiChatting from "./components/multichat/components/VideoRoomComponent";
-
+import ChattingPayment from "./components/chatting/ChattingPayment";
 function App() {
   return (
     <>
@@ -83,6 +83,10 @@ function App() {
           <Route path="/oauth" element={<Login></Login>}></Route>
           <Route path="/signup" element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
+          <Route
+            path="/chattingcharge"
+            element={<ChattingPayment></ChattingPayment>}
+          ></Route>
         </Routes>
       </CookiesProvider>
     </>

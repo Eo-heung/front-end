@@ -136,6 +136,7 @@
   padding: 1vh 1vw;
   border-radius: 25px 0px 25px 0px;
   font-size: 1vw;
+  max-width: 11.3vw;
 }
 
 .video-style3 {
@@ -406,7 +407,7 @@
   width: 10px;
   height: 10px;
   border-radius: 50%;
-  background-color: red;
+  background-color: rgb(244, 148, 148);
   position: absolute;
   top: -5px;
   right: -5px;

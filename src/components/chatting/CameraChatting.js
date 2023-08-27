@@ -351,7 +351,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handlechargeClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://localhost:1234/charge",
+      "http://localhost:1234/chattingcharge",
       "_blank",
       "width=800,height=600"
     );
