@@ -104,7 +104,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         console.log("message from welcome:", message);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { content: message, type: "received" },
+          { content: message, type: "received", timestamp: new Date() },
         ]);
         // 채팅창이 닫혀 있을 때만 알림 동그라미를 띄운다.
         if (!textChatVisible) {
@@ -211,7 +211,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       myDataChannel.current.send(message);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { content: message, type: "sent" },
+        { content: message, type: "sent", timestamp: new Date() },
       ]);
     }
   };
@@ -362,7 +362,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     console.log("Received from offer:", message);
     setMessages((prevMessages) => [
       ...prevMessages,
-      { content: message, type: "received" },
+      { content: message, type: "received", timestamp: new Date() },
     ]);
 
     if (!textChatVisible) {
@@ -385,6 +385,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   return (
     <>
       <div id="myStreamState">
+        <Button variant="text" color="primary" onClick={handleCameraOnOff}>
+          {isCameraOff ? <DesktopAccessDisabledIcon /> : <DesktopWindowsIcon />}
+        </Button>
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
           style={{
@@ -485,9 +488,20 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
                 {messages.map((message, index) => (
                   <div className="chat-row" key={index}>
                     <li className={`chat-message ${message.type}`}>
-                      {message.type === "received"
-                        ? `${opponentNickname} : ${message.content}`
-                        : message.content}
+                      <div className="message-content">
+                        {message.type === "received"
+                          ? `${opponentNickname} : ${message.content}`
+                          : message.content}
+                      </div>
+                      <div className="message-time">
+                        {message.timestamp &&
+                        !isNaN(new Date(message.timestamp))
+                          ? new Date(message.timestamp).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : ""}
+                      </div>
                     </li>
                   </div>
                 ))}

@@ -158,7 +158,10 @@ function TextChatting() {
                                 !isNaN(new Date(message.timestamp))
                                   ? new Date(
                                       message.timestamp
-                                    ).toLocaleTimeString()
+                                    ).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })
                                   : ""}
                               </span>
                             </li>

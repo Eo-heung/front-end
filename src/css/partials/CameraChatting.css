@@ -328,6 +328,8 @@
   max-width: 60%; /* 박스 너비 제한 */
   border-radius: 20px; /* 둥글게 만들기 위해 값 증가 */
   font-size: 16px;
+  flex-direction: column;
+  align-items: flex-start;
 }
 
 .camtext .chat-message.sent {
@@ -411,4 +413,12 @@
   position: absolute;
   top: -5px;
   right: -5px;
+}
+
+.message-time {
+  font-size: 0.7em;
+  color: #000000;
+  margin-left: 2px;
+  margin-right: 2px;
+  margin-top: 5px;
 }
