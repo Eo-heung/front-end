@@ -10,23 +10,32 @@ const Layout = () => {
   const [userId, setUserId] = useState("");
 
   const getFriendList = async () => {
-    axios.post('http://localhost:9000/friend/friendList', {}, {
-      headers: {
-        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-      }
-    }).then(res => {
-      console.log(res.data);
-      const onlineFriends = res.data.items.filter(item => item.online);
-      setUserId(res.data.item.userId);
-      setFriends(onlineFriends);
-    }).catch(error => { console.error(error) });
+    axios
+      .post(
+        "http://localhost:9000/friend/friendList",
+        {},
+        {
+          headers: {
+            Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+          },
+        }
+      )
+      .then((res) => {
+        console.log(res.data);
+        const onlineFriends = res.data.items.filter((item) => item.online);
+        setUserId(res.data.item.userId);
+        setFriends(onlineFriends);
+      })
+      .catch((error) => {
+        console.error(error);
+      });
   };
 
   return (
     <>
-      <Header userId={userId} getFriendList={getFriendList} ></Header>
+      <Header userId={userId} getFriendList={getFriendList}></Header>
 
-      <Nav friends={friends} getFriendList={getFriendList} ></Nav>
+      <Nav friends={friends} getFriendList={getFriendList}></Nav>
 
       <Main></Main>
 

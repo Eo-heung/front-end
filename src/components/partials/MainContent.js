@@ -39,7 +39,7 @@ const Main = () => {
   `;
 
   return (
-    <div className="sb-nav-fixed mainpage">
+    <div className="sb-nav-fixed">
       <div id="layoutSidenav">
         <div id="layoutSidenav_content">
           <main>

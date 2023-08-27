@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-// import '../../css/partials/Style.css';
 
 const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
@@ -34,30 +33,31 @@ const Nav = ({ getFriendList, friends }) => {
           <td style={{ width: "90px", paddingLeft: "5px" }}>
             <img
               style={{
-                border: '2px solid white',
-                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"}`
+                border: "2px solid white",
+                boxShadow: `0 0 5px 2px ${
+                  friend.online ? "#05FF00" : "#B6B6B6"
+                }`,
               }}
               src={`data:image/jpeg;base64,${friend.profile}`}
               alt="프로필 사진"
             />
           </td>
           <td style={{ width: "100px" }}>{friend.user_name}</td>
-          <td style={{ width: "70px" }}>{friend.online ? "온라인" : "오프라인"}</td>
+          <td style={{ width: "70px" }}>
+            {friend.online ? "온라인" : "오프라인"}
+          </td>
         </tr>
       </>
     );
   }
 
   return (
-    <div className="sb-nav-fixed mainpage">
+    <div className="sb-nav-fixed">
       <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
           <nav className="sb-sidenav accordion sb-sidenav-light">
             {/* 프로필 영역 */}
             <div className="sb-sidenav-profile">
-              {/* <div className="sidenav-profile-welcome" style={{ height: '10%' }}>
-                                <h4>ooo님, 오늘도 어흥!</h4>
-                            </div> */}
               <div className="sidenav-profile-mypic" style={{ height: "60%" }}>
                 <img
                   className="sidenav-profile-img"
@@ -69,7 +69,7 @@ const Nav = ({ getFriendList, friends }) => {
                 style={{ height: "20%" }}
               >
                 <h4>000님,</h4>
-                <h4>오늘의 약속이에요!</h4>
+                <h4>아농하세요!</h4>
               </div>
               <div
                 className="sidenav-profile-appointList"
@@ -101,13 +101,15 @@ const Nav = ({ getFriendList, friends }) => {
               </div>
               <div className="sb-sidenav-fri-container">
                 <table className="sb-sidenav-fri">
-                  {friends.length > 0 ?
+                  {friends.length > 0 ? (
                     friends.map((a, i) => <List friend={a} key={i} />)
-                    :
+                  ) : (
                     <tr>
-                      <td style={{ width: "260px", textAlign: "center" }}>활동중인 친구가 없습니다.</td>
+                      <td style={{ width: "260px", textAlign: "center" }}>
+                        활동중인 친구가 없습니다.
+                      </td>
                     </tr>
-                  }
+                  )}
                 </table>
               </div>
             </div>

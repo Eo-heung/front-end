@@ -6,19 +6,16 @@ import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styled from "styled-components";
+import logo from "../../public/logo.gif";
 import "../../css/partials/Header.css";
 
 const StyledTypography = styled(Typography)`
   color: #000;
   cursor: pointer;
-
+  marginleft: 10px;
   &:hover {
     color: #ffb471;
   }
-`;
-
-const StyledRightContainer = styled.div`
-  margin-left: auto;
 `;
 
 const Header = ({ getFriendList, userId }) => {
@@ -92,12 +89,9 @@ const Header = ({ getFriendList, userId }) => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const icons = [
-    { text: "홈", link: "/" },
+  const menuList = [
     { text: "채팅", link: "/chatting" },
     { text: "모임", link: "/list-moim" },
-    { text: "예시", link: "/textchatting" },
-    { text: "예시", link: "/multichatting" },
     { text: "마이페이지", link: "/mypage" },
   ];
 
@@ -122,69 +116,115 @@ const Header = ({ getFriendList, userId }) => {
   }, [isLogout]);
 
   return (
-    <div
-      className={`sb-nav-fixed mainpage ${
-        isDesktop || isOpen ? "open" : "closed"
-      }`}
-    >
-      <nav className="sb-topnav navbar navbar-expand navbar-light bg-light">
-        <Link className="navbar-brand" to="/">
-          <Paper elevation={0} style={{ width: "100%", height: "100%" }}>
-            <img src="https://i.postimg.cc/RFMVM5qM/logo.png" />
-          </Paper>
-        </Link>
-        {!isDesktop && (
-          <div ref={menuRef} onMouseLeave={() => setIsOpen(false)}>
-            <MenuIcon
-              className="menu-icon"
-              fontSize="large"
-              onMouseOver={() => setIsOpen(true)}
+    <div className={`sb-nav-fixed ${isDesktop || isOpen ? "open" : "closed"}`}>
+      <nav className="sb-topnav navbar bg-light">
+        <div
+          style={{
+            width: "20%",
+            height: "100%",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <Link className="navbar-brand" to="/">
+            <img
+              src={logo}
+              style={{
+                width: "13vw",
+                height: "12vh",
+              }}
             />
-            {isOpen && (
-              <div className="nav-item dropdown">
-                <ul
-                  className="dropdown-menu dropdown-menu-end"
-                  aria-labelledby="navbarDropdown"
+          </Link>
+        </div>
+        <div
+          style={{
+            width: "60%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+          }}
+        >
+          {!isDesktop && (
+            <div ref={menuRef} onMouseLeave={() => setIsOpen(false)}>
+              <MenuIcon
+                className="menu-icon"
+                fontSize="large"
+                onMouseOver={() => setIsOpen(true)}
+                style={{
+                  position: "absolute",
+                  top: "2.7vh",
+                  left: "3vw",
+                }}
+              />
+              {isOpen && (
+                <div className="nav-item dropdown">
+                  <ul
+                    className="dropdown-menu dropdown-menu-end"
+                    aria-labelledby="navbarDropdown"
+                  >
+                    {menuList.map((eachMenu, index) => (
+                      <li key={index}>
+                        <Link className="dropdown-item" to={eachMenu.link}>
+                          <Typography
+                            variant="h6"
+                            fontWeight="bold"
+                            className="btn btn-link btn-lg order-1 order-lg-0"
+                          >
+                            {eachMenu.text}
+                          </Typography>
+                        </Link>
+                      </li>
+                    ))}
+                  </ul>
+                </div>
+              )}
+            </div>
+          )}
+          {isDesktop &&
+            menuList.map((eachMenu, index) => (
+              <Link to={eachMenu.link} key={index}>
+                <Typography
+                  variant="h6"
+                  fontWeight="bold"
+                  className="btn btn-link btn-lg order-1 order-lg-0"
+                  id={`sidebarToggle${index}`}
                 >
-                  {icons.map((icon, index) => (
-                    <li key={index}>
-                      <Link className="dropdown-item" to={icon.link}>
-                        <Typography
-                          variant="h6"
-                          fontWeight="bold"
-                          className="btn btn-link btn-lg order-1 order-lg-0"
-                        >
-                          {icon.text}
-                        </Typography>
-                      </Link>
-                    </li>
-                  ))}
-                </ul>
-              </div>
-            )}
-          </div>
-        )}
-        {isDesktop &&
-          icons.map((icon, index) => (
-            <Link to={icon.link} key={index}>
-              <Typography
-                variant="h6"
-                fontWeight="bold"
-                className="btn btn-link btn-lg order-1 order-lg-0"
-                id={`sidebarToggle${index}`}
-              >
-                {icon.text}
-              </Typography>
-            </Link>
-          ))}
-        <StyledRightContainer>
+                  {eachMenu.text}
+                </Typography>
+              </Link>
+            ))}
+        </div>
+        <div
+          style={{
+            width: "20%",
+            height: "100%",
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "center",
+          }}
+        >
           <Link className="navbar-logout" to="/" onClick={logout}>
-            <StyledTypography variant="body2">로그아웃</StyledTypography>
+            <StyledTypography
+              variant="body2"
+              style={{
+                marginRight: "10px",
+              }}
+            >
+              로그아웃
+            </StyledTypography>
           </Link>
           <Link className="navbar-credit" to="/charge">
-            <StyledTypography variant="body2">곶감 충전</StyledTypography>
+            <StyledTypography
+              variant="body2"
+              style={{
+                marginLeft: "10px",
+              }}
+            >
+              곶감 충전
+            </StyledTypography>
           </Link>
-        </StyledRightContainer>
+        </div>
       </nav>
     </div>
   );
