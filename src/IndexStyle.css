@@ -238,16 +238,15 @@ label {
 .sb-sidenav-profile {
   margin: 10px 10px 10px 10px;
   padding: 5px;
-  height: 410px;
+  height: 350px;
   border: 5px solid #ffe35a;
   border-radius: 10px;
 }
 
-.sidenav-profile-welcome,
 .sidenav-profile-appoint {
-  font-weight: 900;
-  color: black;
+  /* font-weight: 900; */
   padding-left: 5%;
+  /* color: #828f9e; Casper컬러 좀 더 진하게 */
 }
 
 .sidenav-profile-welcome {
@@ -256,12 +255,13 @@ label {
 }
 
 .sidenav-profile-mypic {
-  padding-top: 30px;
+  padding-top: 10px;
+  padding-bottom: 20px;
 }
 
 .sidenav-profile-img {
-  height: 160px;
-  width: 160px;
+  height: 140px;
+  width: 140px;
   border-radius: 100%;
   text-align: center;
   display: block;
@@ -269,14 +269,10 @@ label {
   margin-right: auto;
 }
 
-.sidenav-profile-appoint {
-  color: #828f9e; /*Casper컬러 좀 더 진하게 */
-}
-
 .sidenav-profile-appointListItem {
   width: 90%;
   padding: 5px 5px 5px 5%;
-  margin: 5px auto;
+  margin: 20px auto;
   color: white;
   background-color: #fcbe71;
   border-radius: 10px;
@@ -400,6 +396,7 @@ table tr:last-child td {
   justify-content: space-between;
   min-width: 0;
   flex-grow: 1;
+  margin-left: -280px;
 }
 
 @media (min-width: 992px) {
