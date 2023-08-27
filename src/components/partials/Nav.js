@@ -1,7 +1,17 @@
 import React, { useEffect, useState } from "react";
+import basicProfile from "../../public/basic_profile.png";
 
 const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
+  const getCookie = (userNicknamename) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${userNicknamename}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  };
+
+  const userNickname = decodeURIComponent(getCookie("userNickname") || "");
   const [appoint, setAppoint] = useState(null);
   const exAppo = [
     { startTime: new Date("2023-08-06T10:00:00"), content: "아침 회의" },
@@ -58,23 +68,32 @@ const Nav = ({ getFriendList, friends }) => {
           <nav className="sb-sidenav accordion sb-sidenav-light">
             {/* 프로필 영역 */}
             <div className="sb-sidenav-profile">
-              <div className="sidenav-profile-mypic" style={{ height: "60%" }}>
+              <div className="sidenav-profile-mypic">
                 <img
                   className="sidenav-profile-img"
-                  src="https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                  }}
+                  src={basicProfile}
                 ></img>
               </div>
-              <div
-                className="sidenav-profile-appoint"
-                style={{ height: "20%" }}
-              >
-                <h4>000님,</h4>
-                <h4>아농하세요!</h4>
+              <div className="sidenav-profile-appoint">
+                <span style={{ fontSize: "1.2rem" }}>{userNickname}</span>
+                <span style={{ fontSize: "1rem" }}> 님</span>
+                <br />
+                <div
+                  style={{
+                    fontSize: "1.1rem",
+                    marginTop: "6px",
+                    paddingLeft: "3px",
+                    color: "gray",
+                  }}
+                >
+                  아농하세요!
+                </div>
               </div>
-              <div
-                className="sidenav-profile-appointList"
-                style={{ height: "15%" }}
-              >
+              <div className="sidenav-profile-appointList">
                 <div className="sidenav-profile-appointListItem">
                   {appoint ? (
                     <tr>

@@ -3,6 +3,9 @@ import { Link as RouterLink } from "react-router-dom";
 import Carousel from "react-material-ui-carousel";
 import { Paper, Typography } from "@mui/material";
 import styled from "styled-components";
+import bannerImgPolice from "../../public/banner_police.png";
+import bannerImgBirthday from "../../public/banner_birthday.png";
+import bannerImgMoim from "../../public/banner_moim.png";
 
 const Main = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 712);
@@ -13,11 +16,12 @@ const Main = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
-  const imageUrls = [
-    "https://i.postimg.cc/PrP5mdfb/001.png",
-    "https://i.postimg.cc/T2S6vgGm/002.png",
-    "https://i.postimg.cc/ZqMSYd31/003.png",
-  ];
+  // const imageUrls = [
+  //   "https://i.postimg.cc/PrP5mdfb/001.png",
+  //   "https://i.postimg.cc/T2S6vgGm/002.png",
+  //   "https://i.postimg.cc/ZqMSYd31/003.png",
+  // ];
+  const imageUrls = [bannerImgBirthday, bannerImgPolice, bannerImgMoim];
 
   const cardHeaders = ["화상채팅", "오늘의 생활팁", "소모임", "예시예시"];
 
@@ -48,38 +52,33 @@ const Main = () => {
                 {isDesktop && (
                   <div
                     className="carousel-container"
-                    style={{ marginBottom: "10px" }}
+                    style={{
+                      marginTop: "1vh",
+                      marginBottom: "10px",
+                    }}
                   >
                     <Carousel
-                      height={230}
+                      height="30vh"
                       animation="slide"
-                      duration={5000}
+                      duration={2000}
                       indicators={true}
                       indicatorContainerProps={{
                         style: {
                           zIndex: 1,
-                          marginTop: "-15px",
+                          marginTop: "-35px",
                           position: "relative",
                         },
                       }}
-                      sx={{
-                        width: "100%",
-                        height: "100%",
-                        position: "relative",
-                      }}
                     >
                       {imageUrls.map((url, index) => (
-                        <Paper
+                        <img
                           key={index}
-                          sx={{
-                            position: "absolute",
-                            top: "55%",
-                            left: "50%",
-                            transform: "translate(-50%, -50%)",
+                          src={url}
+                          style={{
+                            maxWidth: "100%",
+                            height: "auto",
                           }}
-                        >
-                          <img src={url} />
-                        </Paper>
+                        />
                       ))}
                     </Carousel>
                   </div>
