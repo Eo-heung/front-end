@@ -1,3 +1,5 @@
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -11,7 +13,7 @@ import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/01.png';
 
-const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) => {
+const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setUserAddr3, backClick }) => {
     const [progress, setProgress] = useState(0);
     const [ipData, setIpData] = useState(null);
     const [selectedButton, setSelectedButton] = useState(null);
@@ -125,11 +127,23 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                 <CssBaseline />
                 <Box
                     sx={{
+                        position: 'relative', // 추가
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
                         marginTop: 12.5
                     }}
                 >
+                    <IconButton
+                        sx={{
+                            position: 'absolute',
+                            top: "-70px",
+                        }}
+                        onClick={() => {
+                            backClick();
+                        }}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥을 이용할
                     </Typography>
@@ -158,6 +172,7 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
@@ -176,6 +191,7 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
                                     backgroundColor: '#FEA53D', // 평소 색상

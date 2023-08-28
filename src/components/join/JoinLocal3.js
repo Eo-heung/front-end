@@ -1,3 +1,5 @@
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -95,11 +97,23 @@ const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                 <CssBaseline />
                 <Box
                     sx={{
+                        position: 'relative', // 추가
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
                         marginTop: 12.5
                     }}
                 >
+                    <IconButton
+                        sx={{
+                            position: 'absolute',
+                            top: "-70px",
+                        }}
+                        onClick={() => {
+                            backClick();
+                        }}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥을 이용할 내 지역은
                     </Typography>
@@ -141,6 +155,7 @@ const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
@@ -159,6 +174,7 @@ const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
                                     backgroundColor: '#FEA53D', // 평소 색상

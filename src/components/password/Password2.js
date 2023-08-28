@@ -1,3 +1,5 @@
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { IconButton } from '@mui/material';
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -13,7 +15,49 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import thumbImage from '../../public/04.png';
 
-const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
+// 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
+const Circle = styled("div")(({ progress }) => ({
+  position: "absolute",
+  left: `calc(${progress}% - 5px)`,
+  top: "50%",
+  transform: "translateY(-50%)",
+  width: "40px",
+  height: "40px",
+  backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
+  backgroundSize: "cover", // 필요에 따라 배경 이미지 크기를 조절합니다.
+  zIndex: 2,
+  transition: "left 500ms ease-out",
+}));
+
+function LinearProgressWithLabel() {
+  const [progress, setProgress] = useState(0);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setProgress(33);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  return (
+    <Box sx={{ position: "relative", display: "flex", alignItems: "center", width: "100%", height: "20px", }}>
+      <Box sx={{ position: "relative", flex: 14, marginRight: "10px" }}>
+        <LinearProgress variant="determinate" value={progress} />
+        <Circle progress={progress} />
+      </Box>
+      <Box sx={{ flex: 1, marginLeft: 3 }}>
+        <Typography variant="body2" color="black" sx={{ width: "30px" }} >
+          {"1 / 3"}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
+const Password2 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
   const [progress, setProgress] = useState(0);
   const [isTelValid, setIsTelValid] = useState(true);
 
@@ -43,61 +87,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
     }
   };
 
-  // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
-  const Circle = styled("div")(({ progress }) => ({
-    position: "absolute",
-    left: `calc(${progress}% - 5px)`,
-    top: "50%",
-    transform: "translateY(-50%)",
-    width: "40px",
-    height: "40px",
-    backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
-    backgroundSize: "cover", // 필요에 따라 배경 이미지 크기를 조절합니다.
-    zIndex: 2,
-    transition: "left 500ms ease-out",
-  }));
-
   const defaultTheme = createTheme();
-
-  function LinearProgressWithLabel() {
-    const [progress, setProgress] = useState(0);
-
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setProgress(33);
-      }, 500);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }, []);
-
-    return (
-      <Box
-        sx={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          height: "20px",
-        }}
-      >
-        <Box sx={{ position: "relative", flex: 14 }}>
-          <LinearProgress variant="determinate" value={progress} />
-          <Circle progress={progress} />
-        </Box>
-        <Box sx={{ flex: 1, marginLeft: 1 }}>
-          <Typography
-            variant="body2"
-            color="text.secondary"
-            sx={{ width: "30px" }}
-          >
-            {"1 / 3"}
-          </Typography>
-        </Box>
-      </Box>
-    );
-  }
 
   const theme = createTheme({
     palette: {
@@ -113,11 +103,23 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
         <CssBaseline />
         <Box
           sx={{
-            minHeight: "608.57px",
-            maxHeight: "608.57px",
-            marginTop: 12.5,
+            position: 'relative', // 추가
+            minHeight: '608.57px',
+            maxHeight: '608.57px',
+            marginTop: 12.5
           }}
         >
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: "-70px",
+            }}
+            onClick={() => {
+              backClick();
+            }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
           <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
 
             어흥이 알고있는
@@ -159,11 +161,14 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
                 variant="contained"
                 color="primary"
                 sx={{
+                  color: 'black',
+                  height: '44px',
+                  fontFamily: "font-medium",
                   mt: 3,
                   mb: 2,
-                  backgroundColor: "#FFB471", // 평소 색상
-                  "&:hover": {
-                    backgroundColor: "#E55C25", // 호버 시 색상
+                  backgroundColor: '#FEA53D', // 평소 색상
+                  '&:hover': {
+                    backgroundColor: '#FEB158', // 호버 시 색상
                   },
                 }}
               >
