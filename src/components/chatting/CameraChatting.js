@@ -84,7 +84,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:4000");
+    socket.current = io("http://192.168.0.61:4000");
     setMyNickname(getCookie("userNickname"));
     setMyUserId(getCookie("userId"));
 
@@ -369,7 +369,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://localhost:4000/nickname", {
+      const response = await axios.get("http://192.168.0.61:4000/nickname", {
         params: {
           nickname: userNickname,
           userId: userId,
@@ -391,7 +391,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handlechargeClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://localhost:1234/chattingcharge",
+      "http://192.168.0.61:1234/chattingcharge",
       "_blank",
       "width=800,height=600"
     );
@@ -424,7 +424,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const makeFriendRequest = async (opponentUserId, token) => {
     try {
-      const url = `http://localhost:9000/friend/makefriend/${opponentUserId}`;
+      const url = `http://192.168.0.61:9000/friend/makefriend/${opponentUserId}`;
 
       const config = {
         headers: {
@@ -436,7 +436,22 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const response = await axios.post(url, null, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
 
       if (response.data.statusCode === 200) {
-        console.log(response.data.item.msg);
+        const msg = response.data.item.msg;
+
+        console.log(msg);
+        switch (msg) {
+          case "successRequest":
+            alert("우왕! 친구당");
+            break;
+          case "notEnoughGam":
+            alert("곶 감 다 떨어졌네");
+            break;
+          case "alreadyFriend":
+            alert("이미 친군뎅");
+            break;
+          default:
+            console.error("무슨 일인지 나도 몰랑", msg);
+        }
       } else {
         console.error(response.data.errorMessage);
       }
@@ -474,7 +489,11 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         <p>"{opponentNickname}"님을 신고하시겠어요?</p>
       </PopupSiren>
 
-      <PopupFriend isOpen={isFriendPopupOpen} onClose={handleCloseFriendPopup}>
+      <PopupFriend
+        isOpen={isFriendPopupOpen}
+        onClose={handleCloseFriendPopup}
+        handleMakefriend={handleMakefriend}
+      >
         <h2>친구 추가</h2>
         <p>곶감 5개 주면 안 잡아먹지~~~</p>
         <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>

@@ -60,14 +60,14 @@ const Login = () => {
 
   const SocialKakao = () => {
     const Rest_api_key = "d85c142dc0c92939902ad3248688e8ad"; // 환경 변수에서 API 키 가져오기
-    const redirect_uri = "http://localhost:1234/auth";
+    const redirect_uri = "http://192.168.0.61:1234/auth";
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
 
     window.location.href = kakaoURL;
   };
   const SocialNaver = () => {
     const Rest_api_key = "fK9M_7tC_kI7hRd4QXQG"; // 환경 변수에서 API 키 가져오기
-    const redirect_uri = "http://localhost:1234/oauth";
+    const redirect_uri = "http://192.168.0.61:1234/oauth";
     const state = "1234";
     const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${Rest_api_key}&state=${state}&redirect_uri=${redirect_uri}`;
 
@@ -84,7 +84,7 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       axios
-        .post("http://localhost:9000/verify", token)
+        .post("http://192.168.0.61:9000/verify", token)
         .then((response) => {
           console.log(response);
           if (response.data.item) {
@@ -119,7 +119,7 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       axios
-        .post("http://localhost:9000/verify", token)
+        .post("http://192.168.0.61:9000/verify", token)
         .then((response) => {
           console.log(response);
           if (response.data.item) {
@@ -148,7 +148,7 @@ const Login = () => {
       console.log(user);
 
       try {
-        const response = await axios.post("http://localhost:9000/login", {
+        const response = await axios.post("http://192.168.0.61:9000/login", {
           userId: userId,
           userPw: userPw,
         });
@@ -164,7 +164,7 @@ const Login = () => {
             navi("/");
             try {
               const userInfoResponse = await axios.post(
-                "http://localhost:9000/getUserInfo",
+                "http://192.168.0.61:9000/getUserInfo",
                 {},
                 {
                   headers: {
@@ -188,7 +188,7 @@ const Login = () => {
             navi("/");
             try {
               const userInfoResponse = await axios.post(
-                "http://localhost:9000/getUserInfo",
+                "http://192.168.0.61:9000/getUserInfo",
                 {},
                 {
                   headers: {
