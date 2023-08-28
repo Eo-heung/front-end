@@ -12,7 +12,7 @@ const Password1 = ({ handleClick }) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
         <CssBaseline />
         <Box
           sx={{
@@ -22,19 +22,15 @@ const Password1 = ({ handleClick }) => {
             alignItems: 'center',
           }}
         >
-          <Typography sx={{ fontSize: '5px' }}
-          >대충 회사 로고나 이름</Typography>
+          <img src="/static/media/logo.3745e555c6be936e8008.gif" style={{ width: '150px', height: '80px' }} />
           <br></br>
-          <br></br>
-          <Typography component="h1" variant="h5" textAlign={'center'}>
+          <Typography textAlign={'center'} style={{ fontFamily: "font-medium", fontSize: '18pt', color: 'gray' }}>
             비밀번호를 잊으셨다구요?
             <br></br>
             걱정마세요!!
             <br></br>
             제가 찾을 수 있도록 도와드릴게요!
           </Typography>
-          <br></br>
-          <br></br>
         </Box>
         <box sx={{ width: '100%', height: '100%', alignItems: 'center' }}>
           <img style={{ width: '100%', height: '100%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
