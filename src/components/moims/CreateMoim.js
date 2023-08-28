@@ -104,7 +104,7 @@ const CreateMoim = () => {
     const [inputs, setInputs] = useState({
         moimCategory: "",
         userId: sessionStorage.getItem("userId"),
-        moimLeaderNickname: "",
+        moimNickname: "",
         moimAddr: "",
         moimTitle: "",
         maxMoimUser: "",

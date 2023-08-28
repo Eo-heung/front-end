@@ -20,6 +20,8 @@ import ApplyMoim from "./components/moims/ApplyMoim";
 import AcceptMoim from "./components/moims/AcceptMoim";
 import ListAcceptMoim from "./components/moims/ListAcceptMoim";
 import MultiChatting from "./components/chatTest/components/VideoRoomComponent";
+import MoimController from "./components/moims/MoimController";
+import MoimBoard from "./components/moims/MoimBoard";
 // import MultiChatting from "./components/chatting/MultiChatting";
 
 function App() {
@@ -46,11 +48,12 @@ function App() {
               path="/multichatting"
               element={<MultiChatting></MultiChatting>}
             ></Route> */}
-            <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
             <Route path="/modify-moim/:moimId" element={<ModifyMoim></ModifyMoim>}></Route>
             <Route path="/apply-moim/:moimId" element={<ApplyMoim></ApplyMoim>}></Route>
             <Route path="/accept-moim/:moimId/:moimRegId" element={<AcceptMoim></AcceptMoim>}></Route>
             <Route path="/list-accept-moim/:moimId" element={<ListAcceptMoim></ListAcceptMoim>}></Route>
+            <Route path="/moim-controller" element={<MoimController></MoimController>}></Route>
+            <Route path="/moim-board/" element={<MoimBoard></MoimBoard>}></Route>
           </Route>
           <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
           <Route path="/login" element={<Login></Login>}></Route>

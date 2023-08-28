@@ -2,10 +2,38 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { CardContent, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import TopButton from '../utils/TopButton.js';
+import { styled } from '@mui/system';
 import { throttle } from 'lodash';
-import { ListMoimContainer, ListMoimSearchContainer, ListMoimCategoryContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton, ListMoimPageTitle, ListMoimLink, ListMoimButton, ListMoimScrollDiv, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink, ListMoimAd, ListMoimAdContent } from '../utils/StyledListMoim.js';
+import { ListMoimSearchContainer, ListMoimCategoryContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton, ListMoimPageTitle, ListMoimLink, ListMoimButton, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink } from '../utils/StyledListMoim.js';
 
-const ListMoim = () => {
+export const MyMoimContainer = styled('div')`
+    position: fixed;
+    top: 190px;
+    right: 0;
+    left: 400px;
+    padding: 1.5rem 3rem;
+    height: 105px;
+    width: 100%;
+    z-index: 1001;
+    background-color: #fff;
+    &.fixed {
+        position: fixed;
+        padding: 1.5rem 3rem;
+        width: 90%;
+        z-index: 100;
+    }
+    @media (max-width: 992px) {
+        left: 0;
+    }
+`;
+
+export const MymoimScrollDiv = styled('div')`
+    margin-top: 75px;
+    margin-left: 1rem;
+    width: 100%;
+`;
+
+const Mymoim = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
@@ -119,17 +147,11 @@ const ListMoim = () => {
         fetchData();
     }
 
-    const [isHidden, setIsHidden] = useState(false);
-
-    const handleAdClick = () => {
-        setIsHidden(true);
-    };
-
     return (
         <>
-            <ListMoimContainer className={scrollActive ? 'fixed' : ''}>
+            <MyMoimContainer className={scrollActive ? 'fixed' : ''}>
                 {/* <ListMoimPageTitle>새로운 모임 목록</ListMoimPageTitle> */}
-                <ListMoimCategoryContainer>
+                {/* <ListMoimCategoryContainer>
                     {renderCategoryButton("전체")}
                     {renderCategoryButton("인문학/책")}
                     {renderCategoryButton("운동")}
@@ -141,7 +163,7 @@ const ListMoim = () => {
                     {renderCategoryButton("반려동물")}
                     {renderCategoryButton("여행")}
                     {renderCategoryButton("문화/여가")}
-                </ListMoimCategoryContainer>
+                </ListMoimCategoryContainer> */}
                 <ListMoimSearchContainer>
                     <ListMoimTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
                     <ListMoimSelect value={searchType} displayEmpty size="large" onChange={(e) => setSearchType(e.target.value)}>
@@ -154,17 +176,9 @@ const ListMoim = () => {
                     <ListMoimSearchButton variant="contained" size="large" onClick={handleOrderBy}>
                         {orderBy === 'ascending' ? '최신순' : '등록순'}
                     </ListMoimSearchButton>
-                    <ListMoimButton component={ListMoimStyledLink} to="/create-moim" variant="contained" size="large">
-                        새로운 모임 만들기
-                    </ListMoimButton>
                 </ListMoimSearchContainer>
-            </ListMoimContainer>
-            <ListMoimScrollDiv>
-                <ListMoimAd isHidden={isHidden} onClick={handleAdClick}>
-                    <ListMoimAdContent>
-                        같은 관심사를 가진 또래들과 어흥 해보세요!
-                    </ListMoimAdContent>
-                </ListMoimAd>
+            </MyMoimContainer>
+            <MymoimScrollDiv>
                 {data && data.map(moim => (
                     <ListMoimLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
                         <ListMoimCard variant="outlined">
@@ -189,10 +203,10 @@ const ListMoim = () => {
                 ))}
                 {isLoading && <ListMoimLoadingText>새로운 목록을 불러오고 있어요.</ListMoimLoadingText>}
                 {isLastPage && !isLoading && <ListMoimLoadingText>모임 목록의 마지막 페이지예요.</ListMoimLoadingText>}
-            </ListMoimScrollDiv>
+            </MymoimScrollDiv>
             <TopButton />
         </>
     );
 };
 
-export default ListMoim;
+export default Mymoim;
