@@ -230,9 +230,6 @@ const Header = ({ getFriendList, userId }) => {
           >
             <StyledTypography variant="body2">로그아웃</StyledTypography>
           </Link>
-          <Link className="navbar-credit" to="/charge">
-            <StyledTypography variant="body2">곶감 충전</StyledTypography>
-          </Link>
         </div>
       </nav>
     </div>

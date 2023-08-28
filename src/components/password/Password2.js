@@ -109,7 +109,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
         <CssBaseline />
         <Box
           sx={{
@@ -118,27 +118,15 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
             marginTop: 12.5,
           }}
         >
-          <Typography
-            variant="h5"
-            fontSize="10pt"
-            gutterBottom
-            textAlign={"center"}
-          >
+          <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
+
             어흥이 알고있는
           </Typography>
-          <br></br>
-          <br></br>
-          <Typography variant="h6" fontSize="20pt" textAlign={"center"}>
+          <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
             내 핸드폰 번호는?
           </Typography>
-          <br></br>
-          <br></br>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ mt: 3, width: "100%" }}
-          >
-            <Grid container spacing={2}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+            <Grid container spacing={2} style={{ marginTop: '60px' }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -188,7 +176,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
           </Box>
         </Box>
         <ThemeProvider theme={theme}>
-          <Box sx={{ width: "100%", marginTop: "47%" }}>
+          <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
             <LinearProgressWithLabel value={progress} />
           </Box>
         </ThemeProvider>

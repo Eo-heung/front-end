@@ -86,7 +86,6 @@ function App() {
           <Route path="/oauth" element={<Login></Login>}></Route>
           <Route path="/signup" element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
-          <Route path="/success" element={<SuccessPage></SuccessPage>} />
 
 
 
