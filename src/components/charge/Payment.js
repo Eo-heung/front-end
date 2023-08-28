@@ -6,18 +6,19 @@ import LinearProgress from '@mui/material/LinearProgress';
 import { margin } from '@mui/system';
 import { async } from 'q';
 
-const StyledButton = styled.button`
-width: 300px;
-height: 50px;
-border: none;
-border-radius: 5px;
-background-color: #FFFFFF;
-cursor: pointer;
-border: 1px solid rgba(252, 190, 113, 0.85);
-transition: background-color 0.3s ease;
-color: #707070;
 
-&.active {
+const StyledButton = styled.button`
+  width: 300px;
+  height: 50px;
+  border: none;
+  border-radius: 5px;
+  background-color: #ffffff;
+  cursor: pointer;
+  border: 1px solid rgba(252, 190, 113, 0.85);
+  transition: background-color 0.3s ease;
+  color: #707070;
+
+  &.active {
     background-color: rgba(252, 190, 113, 0.85);
     color: black;
     font-weight: bold;
@@ -94,6 +95,7 @@ const Payment = () => {
             console.error("유저 정보를 가져오는 데 실패했습니다:", error);
         }
     };
+  }, []);
 
     const handleCoinChange = (e) => {
 
@@ -115,8 +117,18 @@ const Payment = () => {
         if (value !== "11") {
             setSelectedItem(options[value] || { count: '', price: '' });
         }
+      );
 
-    };
+      setUserName(response.data.item.userName);
+      setUserEmail(response.data.item.userEmail);
+      setUserTel(response.data.item.userTel);
+      setUserAddr1(response.data.item.userAddr1);
+      setUserAddr2(response.data.item.userAddr2);
+      setUserAddr3(response.data.item.userAddr3);
+    } catch (error) {
+      console.error("유저 정보를 가져오는 데 실패했습니다:", error);
+    }
+  };
 
     const handleCustomCountChange = (e) => {
         const countValue = e.target.value;
@@ -128,6 +140,11 @@ const Payment = () => {
             alert("숫자 형식으로 입력하세요");
         }
     };
+    const value = e.target.value;
+    const chosenOption = options[value] || { count: "", price: "" };
+    setSelectedItem(chosenOption);
+    setCoin(value);
+    setCustomCount("");
 
     const handleCustomCountBlur = () => {
         const updatedPrice = coin !== "11" && coin !== '' ? selectedItem.price : String(Number(customCount) * 100);
@@ -137,57 +154,107 @@ const Payment = () => {
         };
         setSelectedItem(updatedSelectedItem);
     };
+    setSelectedItem(updatedSelectedItem);
+  };
 
-    const onClickPayment = () => {
+  const onClickPayment = () => {
+    const { IMP } = window;
+    IMP.init("imp46524082");
 
-        const { IMP } = window;
-        IMP.init('imp46524082');
+    const data = {
+      pg: "kcp.T0000",
+      pay_method: "card",
+      merchant_uid: `mid_${new Date().getTime()}`,
+      name: "곶감 " + selectedItem.count + "개", // "곶감 10개" 사는지 이름
+      amount: selectedItem.price, // 현금? 얼마인지 금액을 넣어야함.
+      custom_data: {
+        name: "부가정보",
+        desc: "세부 부가정보",
+      },
+      buyer_name: userName, // 구매하는 사람 이름
+      buyer_tel: userTel, // 구매하는 사람 전화번호
+      buyer_email: userEmail, // 구매하는 사람 이메일
+      buyer_addr: userAddr1 + " " + userAddr2 + " " + userAddr3, // 구매하는 사람 주소
+    };
+    IMP.request_pay(data, callback);
+  };
 
-        const data = {
-            pg: 'kcp.T0000',
-            pay_method: 'card',
-            merchant_uid: `mid_${new Date().getTime()}`,
-            name: "곶감 " + selectedItem.count + "개", // "곶감 10개" 사는지 이름
-            amount: selectedItem.price, // 현금? 얼마인지 금액을 넣어야함.
-            custom_data: {
-                name: '부가정보',
-                desc: '세부 부가정보'
+  const callback = async (response) => {
+    const {
+      success,
+      error_msg,
+      imp_uid,
+      merchant_uid,
+      pay_method,
+      paid_amount,
+      status,
+    } = response;
+
+    if (success) {
+      const data = await axios.post(
+        `http://localhost:9000/verifyIamport/${imp_uid}`,
+        {}
+      );
+      console.log(data.data.response.amount);
+      if (data.data.response.amount === paid_amount) {
+        // 유저아이디, imp_uid, merchant_uid, paid_amount
+        const result = axios.post(
+          "http://localhost:9000/addPayment",
+          {
+            imp_uid: imp_uid,
+            merchant_uid: merchant_uid,
+            value: paid_amount,
+          },
+          {
+            headers: {
+              Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
             },
-            buyer_name: userName, // 구매하는 사람 이름
-            buyer_tel: userTel, // 구매하는 사람 전화번호
-            buyer_email: userEmail, // 구매하는 사람 이메일
-            buyer_addr: userAddr1 + ' ' + userAddr2 + ' ' + userAddr3, // 구매하는 사람 주소
-        };
-        IMP.request_pay(data, callback);
+          }
+        );
+        alert("결제 성공");
+      } else {
+        alert("결제 실패");
+      }
+    } else {
+      alert(`결제 실패: ${error_msg}`);
     }
+  };
 
-    const callback = async (response) => {
-        const { success, error_msg, imp_uid, merchant_uid, pay_method, paid_amount, status } = response;
-
-        if (success) {
-            const data = await axios.post(`http://localhost:9000/verifyIamport/${imp_uid}`, {})
-            console.log(data.data.response.amount);
-            if (data.data.response.amount === paid_amount) {
-                // 유저아이디, imp_uid, merchant_uid, paid_amount
-                const result = axios.post('http://localhost:9000/addPayment', {
-                    imp_uid: imp_uid,
-                    merchant_uid: merchant_uid,
-                    value: paid_amount
-                },
-                    {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
-                        }
-                    })
-                alert('결제 성공');
-            }
-            else {
-                alert('결제 실패');
-            }
-        } else {
-            alert(`결제 실패: ${error_msg}`);
-        }
-
+  return (
+    <div class="sb-nav-fixed">
+      <div id="layoutSidenav">
+        <div id="layoutSidenav_content">
+          <Paper style={{ width: "50%", marginLeft: "300px", height: "500px" }}>
+            <div
+              style={{
+                display: "flex",
+                flexDirection: "column",
+                justifyContent: "center",
+                alignItems: "center",
+                padding: "20px",
+                marginTop: "5px",
+              }}
+            >
+              <FormControl style={{ marginTop: "50px", width: "70%" }}>
+                <InputLabel>곶감 선택하기</InputLabel>
+                <Select
+                  value={coin}
+                  label="곶감"
+                  onChange={handleCoinChange}
+                  sx={{ marginBottom: "16px" }}
+                >
+                  <MenuItem value="1">1(1000원)</MenuItem>
+                  <MenuItem value="2">2(2000원)</MenuItem>
+                  <MenuItem value="3">3(3000원)</MenuItem>
+                  <MenuItem value="4">4(4000원)</MenuItem>
+                  <MenuItem value="5">5(5000원)</MenuItem>
+                  <MenuItem value="6">10(10000원)</MenuItem>
+                  <MenuItem value="7">20(20000원)</MenuItem>
+                  <MenuItem value="8">30(30000원)</MenuItem>
+                  <MenuItem value="9">40(40000원)</MenuItem>
+                  <MenuItem value="10">50(50000원)</MenuItem>
+                </Select>
+              </FormControl>
     }
 
     const [value, setValue] = React.useState('');
@@ -341,7 +408,6 @@ const Payment = () => {
             </box >
         </div >
     );
-
 };
 
-export default Payment; 
+export default Payment;
