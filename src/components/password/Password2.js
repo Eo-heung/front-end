@@ -169,7 +169,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
               >
                 번호인증
               </Button>
-              <Link href="/login" variant="body2">
+              <Link href="/login" variant="body2" sx={{ float: "right" }} style={{ fontFamily: "font-medium" }}>
                 로그인하러가기
               </Link>
             </Box>
