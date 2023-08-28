@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import io from "socket.io-client";
 import axios from "axios";
 import MicIcon from "@mui/icons-material/Mic";
@@ -31,15 +31,30 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
   const [roomName, setRoomName] = useState("");
+  const newWindowRef = useRef(null);
+  const [showNotification, setShowNotification] = useState(false);
+  const textChatVisibleRef = useRef(textChatVisible);
+  const chatIcon = textChatVisible ? (
+    <SpeakerNotesOffIcon />
+  ) : (
+    <SpeakerNotesIcon />
+  );
+  const notificationIndicator = showNotification ? (
+    <div className="notification-circle"></div>
+  ) : null;
 
   useEffect(() => {
     scrollToBottom();
   }, [messages, textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("https://eoheung.store:7443");
+    textChatVisibleRef.current = textChatVisible;
+  }, [textChatVisible]);
+
+  useEffect(() => {
+    socket.current = io("http://localhost:4000");
     setMyNickname(getCookie("userNickname"));
-    // fetchNickname(); // 여기서 닉네임을 가져옴
+    fetchNickname(); // 여기서 닉네임을 가져옴
 
     startChatting();
 
@@ -89,8 +104,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         console.log("message from welcome:", message);
         setMessages((prevMessages) => [
           ...prevMessages,
-          { content: message, type: "received" },
+          { content: message, type: "received", timestamp: new Date() },
         ]);
+        // 채팅창이 닫혀 있을 때만 알림 동그라미를 띄운다.
+        if (!textChatVisible) {
+          setShowNotification(true);
+        }
       });
 
       console.log("made data channel");
@@ -103,15 +122,14 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     socket.current.on("offer", async (offer) => {
       myPeerConnection.current.addEventListener("datachannel", (event) => {
         myDataChannel.current = event.channel;
-        myDataChannel.current.addEventListener("message", (event) => {
-          const message = event.data;
-          console.log("Received from offer:", message);
-          setMessages((prevMessages) => [
-            ...prevMessages,
-            { content: message, type: "received" },
-          ]);
-        });
+
+        // 기존 리스너 제거 (이중 리스너 추가 방지)
+        myDataChannel.current.removeEventListener("message", onMessage);
+
+        // 새로운 리스너 추가
+        myDataChannel.current.addEventListener("message", onMessage);
       });
+
       console.log("received the offer");
       await myPeerConnection.current.setRemoteDescription(offer);
 
@@ -193,7 +211,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       myDataChannel.current.send(message);
       setMessages((prevMessages) => [
         ...prevMessages,
-        { content: message, type: "sent" },
+        { content: message, type: "sent", timestamp: new Date() },
       ]);
     }
   };
@@ -312,7 +330,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("https://eoheung.store:7443/nickname", {
+      const response = await axios.get("http://localhost:4000/nickname", {
         params: {
           nickname: userNickname,
         },
@@ -327,10 +345,49 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const handleMessageInput = () => {
     socket.current.emit("typing", roomName);
   };
+  const handleInputFocus = () => {
+    setShowNotification(false);
+  };
+
+  const handlechargeClick = useCallback(() => {
+    newWindowRef.current = window.open(
+      "http://localhost:1234/chattingcharge",
+      "_blank",
+      "width=800,height=600"
+    );
+  }, []);
+
+  const onMessage = (event) => {
+    const message = event.data;
+    console.log("Received from offer:", message);
+    setMessages((prevMessages) => [
+      ...prevMessages,
+      { content: message, type: "received", timestamp: new Date() },
+    ]);
+
+    if (!textChatVisible) {
+      setShowNotification(true);
+    }
+  };
+
+  const handleChatButtonClick = () => {
+    console.log("Before:", textChatVisible, showNotification);
+
+    // 먼저 textChatVisible의 상태를 변경
+    setTextChatVisible((prev) => !prev);
+
+    // 그 다음, 변경된 상태에 따라 showNotification 상태를 변경
+    if (!textChatVisible) {
+      setShowNotification(false);
+    }
+  };
 
   return (
     <>
       <div id="myStreamState">
+        <Button variant="text" color="primary" onClick={handleCameraOnOff}>
+          {isCameraOff ? <DesktopAccessDisabledIcon /> : <DesktopWindowsIcon />}
+        </Button>
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
           style={{
@@ -392,13 +449,16 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           >
             정지
           </button>
-          <Button
-            variant="contained"
-            color="primary"
-            onClick={() => setTextChatVisible(!textChatVisible)}
-          >
-            {!textChatVisible ? <SpeakerNotesIcon /> : <SpeakerNotesOffIcon />}
-          </Button>
+          <div className="chat-button-wrapper">
+            <Button
+              variant="contained"
+              color="primary"
+              onClick={handleChatButtonClick}
+            >
+              {chatIcon}
+              {notificationIndicator}
+            </Button>
+          </div>
           <Button variant="contained" color="primary" onClick={handleMuteClick}>
             {isMuted ? <MicOffIcon /> : <MicIcon />}
           </Button>
@@ -416,9 +476,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           <Button
             variant="contained"
             color="primary"
-            onClick={handleCameraOnOff}
+            onClick={handlechargeClick}
           >
-            {isCameraOff ? "곧 감" : "너에게"}
+            곶감충전
           </Button>
         </div>
         {textChatVisible && (
@@ -428,9 +488,20 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
                 {messages.map((message, index) => (
                   <div className="chat-row" key={index}>
                     <li className={`chat-message ${message.type}`}>
-                      {message.type === "received"
-                        ? `${opponentNickname} : ${message.content}`
-                        : message.content}
+                      <div className="message-content">
+                        {message.type === "received"
+                          ? `${opponentNickname} : ${message.content}`
+                          : message.content}
+                      </div>
+                      <div className="message-time">
+                        {message.timestamp &&
+                        !isNaN(new Date(message.timestamp))
+                          ? new Date(message.timestamp).toLocaleTimeString([], {
+                              hour: "2-digit",
+                              minute: "2-digit",
+                            })
+                          : ""}
+                      </div>
                     </li>
                   </div>
                 ))}
@@ -447,6 +518,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
                 name="message"
                 placeholder="메세지를 입력해주세요."
                 onKeyDown={handleMessageInput}
+                onFocus={handleInputFocus}
               />
               <Button variant="contained" color="primary" type="submit">
                 보내기

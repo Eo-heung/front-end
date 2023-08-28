@@ -8,11 +8,11 @@ import { ListMoimSearchContainer, ListMoimCategoryContainer, ListMoimTextField, 
 
 export const MyMoimContainer = styled('div')`
     position: fixed;
-    top: 190px;
+    top: 160px;
     right: 0;
-    left: 400px;
-    padding: 1.5rem 3rem;
-    height: 105px;
+    left: 350px;
+    padding: 1rem 1.5rem;
+    height: 90px;
     width: 100%;
     z-index: 1001;
     background-color: #fff;

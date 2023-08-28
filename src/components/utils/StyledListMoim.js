@@ -4,11 +4,11 @@ import { Link } from 'react-router-dom';
 
 export const ListMoimContainer = styled('div')`
     position: fixed;
-    top: 190px;
+    top: 160px;
     right: 0;
-    left: 400px;
-    padding: 1.5rem 3rem;
-    height: 170px;
+    left: 350px;
+    padding: 1rem 1.5rem;
+    height: 160px;
     width: 100%;
     z-index: 1001;
     background-color: #fff;
@@ -121,7 +121,7 @@ export const ListMoimStyledLink = styled(Link)`
 `;
 
 export const ListMoimScrollDiv = styled('div')`
-    margin-top: 150px;
+    margin-top: 160px;
     margin-left: 1rem;
     width: 100%;
 `;

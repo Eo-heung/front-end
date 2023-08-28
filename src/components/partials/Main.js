@@ -1,12 +1,8 @@
-import React from 'react';
-import { Outlet } from 'react-router-dom';
+import React from "react";
+import { Outlet } from "react-router-dom";
 
 const Main = () => {
-    return (
-        <div className="main-top-space">
-            <Outlet />
-        </div>
-    );
+  return <Outlet />;
 };
 
 export default Main;

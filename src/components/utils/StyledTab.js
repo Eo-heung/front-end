@@ -3,11 +3,11 @@ import { styled } from '@mui/system';
 
 export const TabContainer = styled('div')`
     position: fixed;
-    top: 115px;
+    top: 80px;
     right: 0;
-    left: 400px;
-    padding: 1.5rem 3rem;
-    height: 75px;
+    left: 350px;
+    padding: 1.5rem;
+    height: 80px;
     width: 100%;
     z-index: 1001;
     background-color: #fff;
@@ -25,8 +25,8 @@ export const TabContainer = styled('div')`
 export const TabContent = styled('div')`
     display: flex;
     align-items: center;
-    margin-top: 75px;
-    padding: 1.5rem 3rem;
+    margin-top: 50px;
+    padding: 1.5rem;
     width: 100%;
     gap: 10px;
 `;

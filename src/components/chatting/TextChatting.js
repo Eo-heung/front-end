@@ -14,7 +14,7 @@ function TextChatting() {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://localhost:5000");
+    socket.current = io("http://localhost:4000");
 
     const handleMessage = (message) => {
       setMessages((prevMessages) => [
@@ -158,7 +158,10 @@ function TextChatting() {
                                 !isNaN(new Date(message.timestamp))
                                   ? new Date(
                                       message.timestamp
-                                    ).toLocaleTimeString()
+                                    ).toLocaleTimeString([], {
+                                      hour: "2-digit",
+                                      minute: "2-digit",
+                                    })
                                   : ""}
                               </span>
                             </li>
