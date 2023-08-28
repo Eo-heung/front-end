@@ -275,10 +275,10 @@ const Payment = () => {
                         onBlur={handleCustomCountBlur}
                         placeholder="직접입력하기 (원하는 곶감 수 입력)"
                         onClick={(e) => e.stopPropagation()}
-                        sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '15px' }} />
+                        sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '20px' }} />
                 </div >
-                <hr style={{ marginTop: '40px' }}></hr>
-                <div style={{ height: '0px', textAlign: 'center' }}> 총 결제금액: </div>
+                <hr style={{ marginTop: '30px' }}></hr>
+                <div style={{ height: '0px', textAlign: 'center' }}> 총 결제금액:  </div>
                 <hr style={{ marginTop: '40px' }}></hr>
                 <div style={{ textAlign: 'center' }}>
                     <StyledButton onClick={onClickPayment} style={{ marginTop: '15px', height: '50px', width: '200px' }}>
