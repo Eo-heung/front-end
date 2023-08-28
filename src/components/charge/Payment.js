@@ -200,9 +200,9 @@ const Payment = () => {
             <Paper style={{
                 width: '45%',
                 marginTop: '6.5%',
-                marginLeft: '300px',
+                marginLeft: '0%',
                 height: '590px',
-                marginRight: '80px',  // Paper의 오른쪽 마진 추가
+                // Paper의 오른쪽 마진 추가
                 boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',  // 그림자 효과 수정
                 position: 'relative'  // 추가된 코드
 
@@ -312,16 +312,7 @@ const Payment = () => {
                     </StyledButton>
                 </div>
             </Paper>
-            <div style={{
-                display: 'flex',
-                flexDirection: 'column',
-                justifyContent: 'center',
-                alignItems: 'center',
-                height: '500px',
-                marginLeft: '70px',
-                position: 'relative'
-            }}>
-            </div>
+
         </div>
     );
 
