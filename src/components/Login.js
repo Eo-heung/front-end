@@ -20,6 +20,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Carousel from "react-material-ui-carousel";
 import { useNavigate } from "react-router-dom";
+import { SPRING_API_URL, REDIRECT_URL } from "../config";
 
 const Login = () => {
     const navi = useNavigate();
