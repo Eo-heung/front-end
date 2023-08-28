@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import "../../css/partials/TextChatting.css";
+import Link from "react-router-dom";
 
 function TextChatting() {
   const [roomName, setRoomName] = useState("");

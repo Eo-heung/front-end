@@ -10,6 +10,9 @@ import EoheungImg from "../../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import "../../css/partials/CameraChatting.css";
+import { Link } from "react-router-dom";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -384,10 +387,26 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   return (
     <>
+      <div id="linkbutton">
+        <Link className="toplink" to="/" onClick={handleCameraOnOff}>
+          <NotificationImportantIcon
+            style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
+          />
+          신고하기
+        </Link>
+
+        <Link className="toplink" to="/" onClick={handleCameraOnOff}>
+          <GroupAddIcon
+            style={{
+              verticalAlign: "middle",
+              color: "#b7d4fa",
+              marginRight: "5px",
+            }}
+          />
+          친구추가
+        </Link>
+      </div>
       <div id="myStreamState">
-        <Button variant="text" color="primary" onClick={handleCameraOnOff}>
-          {isCameraOff ? <DesktopAccessDisabledIcon /> : <DesktopWindowsIcon />}
-        </Button>
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
           style={{
