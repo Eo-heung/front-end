@@ -28,15 +28,23 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const peerFaceRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [myNickname, setMyNickname] = useState("");
+  const [myUserId, setMyUserId] = useState("");
+
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
+  const userId = decodeURIComponent(getCookie("userId") || "");
+
   const [opponentNickname, setOpponentNickname] = useState("");
+  const [opponentUserId, setOpponentUserId] = useState("");
+
   const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
   const [roomName, setRoomName] = useState("");
   const newWindowRef = useRef(null);
   const [showNotification, setShowNotification] = useState(false);
   const textChatVisibleRef = useRef(textChatVisible);
+  const token = sessionStorage.getItem("ACCESS_TOKEN");
+
   const chatIcon = textChatVisible ? (
     <SpeakerNotesOffIcon />
   ) : (
@@ -57,6 +65,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   useEffect(() => {
     socket.current = io("http://localhost:4000");
     setMyNickname(getCookie("userNickname"));
+    setMyUserId(getCookie("userId"));
+
     fetchNickname(); // 여기서 닉네임을 가져옴
 
     startChatting();
@@ -82,9 +92,10 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     socket.current.on("matched", async (data) => {
       const roomName = data.roomName;
       const opponentNickname = data.opponentNickname;
+      const opponentUserId = data.opponentUserId;
 
       console.log(
-        `You (${userNickname}) are matched with user ${opponentNickname} in room ${roomName}`
+        `You (${userNickname},${userId}) are matched with user ${opponentNickname} in room ${roomName}`
       );
       setConnectionStatus("매칭됨");
 
@@ -92,7 +103,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setRoomName(roomName);
 
       setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
-
+      setOpponentUserId(opponentUserId);
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
       // 예: setOpponentNickname(opponentNickname);
     });
@@ -288,8 +299,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
+    const userId = getCookie("userId");
     fetchNickname(); // 여기서 닉네임을 가져옴
-    socket.current.emit("request_random_chat", { nickname: userNickname });
+    socket.current.emit("request_random_chat", {
+      nickname: userNickname,
+      userId: userId,
+    });
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
@@ -336,6 +351,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const response = await axios.get("http://localhost:4000/nickname", {
         params: {
           nickname: userNickname,
+          userId: userId,
         },
       });
 
@@ -385,6 +401,33 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     }
   };
 
+  const makeFriendRequest = async (opponentUserId, token) => {
+    try {
+      const url = `http://localhost:9000/friend/makefriend/${opponentUserId}`;
+
+      const config = {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios.post(url, null, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+
+      if (response.data.statusCode === 200) {
+        console.log(response.data.item.msg);
+      } else {
+        console.error(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error("Error sending the request:", error);
+    }
+  };
+
+  const handleMakefriend = () => {
+    makeFriendRequest(opponentUserId, token);
+    console.log(opponentUserId, token);
+  };
   return (
     <>
       <div id="linkbutton">
@@ -395,7 +438,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           신고하기
         </Link>
 
-        <Link className="toplink" to="/" onClick={handleCameraOnOff}>
+        <Link className="toplink" onClick={handleMakefriend}>
           <GroupAddIcon
             style={{
               verticalAlign: "middle",
@@ -417,7 +460,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           {/* 상대방 비디오 혹은 대기 이미지 */}
           {connectionStatus === "매칭됨" ? (
             <div className="opponent-nickname">
-              <span className="nickname-label">{opponentNickname}</span>
+              <span className="nickname-label">
+                {opponentNickname},{opponentUserId}
+              </span>
               <video
                 ref={peerFaceRef}
                 className="video-style3"
@@ -438,6 +483,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           />
         </div>
         <div className="button-container">
+          <h1>{userId}</h1>
           <button
             className="start-button"
             onClick={handleStartRandomChat}
