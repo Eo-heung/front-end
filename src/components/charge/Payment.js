@@ -81,16 +81,12 @@ const Payment = () => {
 
         // 각 value에 따른 count와 price를 정의
         const options = {
-            "1": { count: "1", price: "1000" },
-            "2": { count: "2", price: "2000" },
-            "3": { count: "3", price: "3000" },
-            "4": { count: "4", price: "4000" },
-            "5": { count: "5", price: "5000" },
-            "6": { count: "10", price: "10000" },
-            "7": { count: "20", price: "20000" },
-            "8": { count: "30", price: "30000" },
-            "9": { count: "40", price: "40000" },
-            "10": { count: "50", price: "50000" },
+            "1": { count: "1", price: "100" },
+            "2": { count: "5", price: "500" },
+            "3": { count: "10", price: "1000" },
+            "4": { count: "20", price: "2000" },
+            "5": { count: "30", price: "3000" },
+            "6": { count: "40", price: "4000" },
         };
         const value = e.target.value;
         const chosenOption = options[value] || { count: '', price: '' };
@@ -185,8 +181,9 @@ const Payment = () => {
         <div style={{ display: 'flex', justifyContent: 'center' }}> {/* 이 부분을 추가하여 두 개의 박스가 옆에 나열되도록 함 */}
             <Paper style={{
                 width: '45%',
+                marginTop: '6.5%',
                 marginLeft: '300px',
-                height: '530px',
+                height: '590px',
                 marginRight: '80px',  // Paper의 오른쪽 마진 추가
                 boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',  // 그림자 효과 수정
                 position: 'relative'  // 추가된 코드
@@ -194,26 +191,25 @@ const Payment = () => {
             }}>
                 <div style={{
                     position: 'absolute',
-                    top: '10px',
+                    top: '20px',
                     right: '20px'  // 현재 곶감 수의 위치 조정
                 }}>
                     현재 곶감 수 : "1"
                 </div>
-                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '20px', marginTop: '5px' }}>
+                <hr style={{ marginTop: '60px' }}></hr>
+                <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '0px' }}>
                     <FormControl component="fieldset" style={{ width: '70%' }}>
                         <RadioGroup row value={value} onChange={handleCoinChange}>
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     {[
-                                        ["1", "1(1000₩)"],
-                                        ["2", "2(2000₩)"],
-                                        ["3", "3(3000₩)"],
-                                        ["4", "4(4000₩)"],
-                                        ["5", "5(5000₩)"]
+                                        ["1", "1(100원)"],
+                                        ["2", "5(500원)"],
+                                        ["3", "10(1000원)"],
                                     ].map(([val, label], index) => (
                                         <div
                                             key={index}
-                                            style={{ padding: '5px 0', marginTop: '20px' }}
+                                            style={{ padding: '5px 0', marginTop: '15px' }}
                                             onMouseEnter={() => setHoverIndex(index)}
                                             onMouseLeave={() => setHoverIndex(null)}
                                             onClick={() => handleCoinChange({ target: { value: val } })}
@@ -240,15 +236,13 @@ const Payment = () => {
 
                                 <Grid item xs={6}>
                                     {[
-                                        ["6", "10(10000원)"],
-                                        ["7", "20(20000원)"],
-                                        ["8", "30(30000원)"],
-                                        ["9", "40(40000원)"],
-                                        ["10", "50(50000원)"]
+                                        ["4", "20(2000원)"],
+                                        ["5", "30(3000원)"],
+                                        ["6", "40(4000원)"],
                                     ].map(([val, label], index) => (
                                         <div
                                             key={index}
-                                            style={{ padding: '5px 0', marginTop: '20px' }}
+                                            style={{ padding: '5px 0', marginTop: '15px' }}
                                             onMouseEnter={() => setHoverIndex(index + 5)}
                                             onMouseLeave={() => setHoverIndex(null)}
                                             onClick={() => handleCoinChange({ target: { value: val } })}
@@ -281,10 +275,13 @@ const Payment = () => {
                         onBlur={handleCustomCountBlur}
                         placeholder="직접입력하기 (원하는 곶감 수 입력)"
                         onClick={(e) => e.stopPropagation()}
-                        sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '20px' }} />
+                        sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '15px' }} />
                 </div >
-                <div style={{ marginTop: '0px', textAlign: 'center' }}>
-                    <StyledButton onClick={onClickPayment} style={{ marginTop: '40px' }}>
+                <hr style={{ marginTop: '40px' }}></hr>
+                <div style={{ height: '0px', textAlign: 'center' }}> 총 결제금액: </div>
+                <hr style={{ marginTop: '40px' }}></hr>
+                <div style={{ textAlign: 'center' }}>
+                    <StyledButton onClick={onClickPayment} style={{ marginTop: '15px', height: '50px', width: '200px' }}>
                         결제하기
                     </StyledButton>
                 </div>
