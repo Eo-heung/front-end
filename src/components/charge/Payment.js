@@ -194,13 +194,12 @@ const Payment = () => {
 
     const [hoverIndex, setHoverIndex] = useState(null);
 
-
     return (
         <div style={{ display: 'flex', justifyContent: 'center' }}> {/* 이 부분을 추가하여 두 개의 박스가 옆에 나열되도록 함 */}
             <Paper style={{
                 width: '45%',
                 marginTop: '6.5%',
-                marginLeft: '0%',
+                marginLeft: '270px',
                 height: '590px',
                 // Paper의 오른쪽 마진 추가
                 boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',  // 그림자 효과 수정
@@ -312,8 +311,35 @@ const Payment = () => {
                     </StyledButton>
                 </div>
             </Paper>
-
-        </div>
+            <box style={{
+                width: '20%',
+                marginTop: '6.5%',
+                marginLeft: '70px',
+                height: '590px',
+                boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
+                position: 'relative'
+            }}>
+                <div
+                    style={{ textAlign: 'center', marginTop: '20px', cursor: 'pointer' }}
+                >
+                    약관 내용
+                </div>
+                <hr style={{ marginTop: '20px' }}></hr>
+                <br></br>
+                <div style={{ fontFamily: "font-medium", color: 'gray', marginLeft: '30px', marginRight: '30px' }}>
+                    1. 구매 후 7일 경과 시 자동환불이 불가능합니다.
+                    <br></br>
+                    <br></br>
+                    2. 구매 후 곶감 사용 시 자동환불이 불가능합니다.
+                    <br></br>
+                    <br></br>
+                    3. 잔여 곶감을 환불받고싶으시면  <a style={{ cursor: 'pointer' }}>junghyuna04@gmail.com</a>로 문의해주세요.
+                    <br></br>
+                    <br></br>
+                    4. 잔여 곶감을 환불받을 시 수수료 10%가 요구되며 10000원 이하의 금액을 환불받을 시에는 수수료1000원이 고정 요구됩니다.
+                </div>
+            </box >
+        </div >
     );
 
 };
