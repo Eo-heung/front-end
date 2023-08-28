@@ -5,27 +5,31 @@ import { StyledBasicContainer, StyledPaper, StyledContainer, Styled, StyledHead,
 import noticeData from '../data/noticeData';
 import { stubFalse } from 'lodash';
 
-const MoimNoticeList = ({ moimId, isMainPage = stubFalse, onNoticeListClick }) => {
+const MoimNoticeList = ({ moimId, isMainPage = stubFalse, onNoticeListClick, fetchBoardDetail }) => {
     const navi = useNavigate();
 
     const [notices, setNotices] = useState([]);
 
-    // useEffect(() => {
-    //     const fetchNotices = async () => {
-    //         try {
-    //             const response = await axios.get(`http://localhost:9000/get-moim-notice-list/${moimId}`);
-    //             setNotices(response.data);
-    //         } catch (err) {
-    //             console.error("Error fetching moim notices", err);
-    //         }
-    //     };
-
-    //     fetchNotices();
-    // }, [moimId]);
-
     useEffect(() => {
-        setNotices(noticeData);
-    }, []);
+        const fetchNotices = async () => {
+            try {
+                const response = await axios.post(`http://localhost:9000/board/${moimId}/notice-board`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    }
+                });
+                setNotices(response.data);
+            } catch (err) {
+                console.error("Error fetching moim notices", err);
+            }
+        };
+
+        fetchNotices();
+    }, [moimId]);
+
+    // useEffect(() => {
+    //     setNotices(noticeData);
+    // }, []);
 
     return (
         <StyledBasicContainer>
@@ -43,20 +47,23 @@ const MoimNoticeList = ({ moimId, isMainPage = stubFalse, onNoticeListClick }) =
                                 </StyledRow>
                             ) : (
                                 <StyledRow>
-                                    <StyledHeaderCell style={{ width: "650px", fontSize: "1.2rem" }}>공지 제목</StyledHeaderCell>
-                                    <StyledHeaderCell style={{ width: "200px" }}>작성자</StyledHeaderCell>
+                                    <StyledHeaderCell style={{ width: "700px", fontSize: "1.2rem" }}>공지 제목</StyledHeaderCell>
+                                    <StyledHeaderCell style={{ width: "150px" }}>작성자</StyledHeaderCell>
                                     <StyledHeaderCell style={{ width: "170px" }}>작성일</StyledHeaderCell>
-                                    <StyledHeaderCell style={{ width: "80px" }}>조회</StyledHeaderCell>
                                 </StyledRow>
                             )}
                         </StyledHead>
                         <tbody>
                             {notices.slice(0, isMainPage ? 5 : notices.length).map((notice) => (
-                                <StyledRow key={notice.id}>
-                                    <StyledCell style={{ width: "650px" }}>{notice.title}</StyledCell>
-                                    <StyledCell style={{ width: "200px" }}>{notice.moimNickname}</StyledCell>
-                                    <StyledCell style={{ width: "170px" }}>{notice.date}</StyledCell>
-                                    <StyledCell style={{ width: "80px" }}>{notice.views}</StyledCell>
+                                <StyledRow key={notice.boardId}>
+                                    <StyledCell
+                                        style={{ width: "700px", cursor: "pointer" }}
+                                        onClick={fetchBoardDetail}
+                                    >
+                                        {notice.boardTitle}
+                                    </StyledCell>
+                                    <StyledCell style={{ width: "150px" }}>{notice.moimNickname}</StyledCell>
+                                    <StyledCell style={{ width: "170px" }}>{notice.boardRegdate}</StyledCell>
                                 </StyledRow>
                             ))}
                         </tbody>

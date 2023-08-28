@@ -80,7 +80,7 @@ function App() {
               element={<MoimController></MoimController>
               }></Route>
             <Route
-              path="/moim-board/"
+              path="/:moimId/moim-board"
               element={<MoimBoard></MoimBoard>}
             ></Route>
           </Route>
