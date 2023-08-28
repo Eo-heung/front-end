@@ -6,7 +6,6 @@ import { createTheme, ThemeProvider } from '@mui/material/styles';
 import Typography from '@mui/material/Typography';
 import * as React from 'react';
 
-
 const Join = ({ handleClick }) => {
 
     const defaultTheme = createTheme();
@@ -23,16 +22,13 @@ const Join = ({ handleClick }) => {
                         alignItems: 'center',
                     }}
                 >
-                    <img src="https://i.postimg.cc/RFMVM5qM/logo.png" />
+                    <img src="/static/media/logo.3745e555c6be936e8008.gif" style={{ width: '150px', height: '80px' }} />
                     <br></br>
-                    <br></br>
-                    <Typography component="h1" variant="h5" textAlign={'center'}>
+                    <Typography textAlign={'center'} style={{ fontFamily: "font-medium", fontSize: '18pt', color: 'gray' }}>
+                        {/* style="font-size: 1.1rem; margin-top: 6px; padding-left: 3px; color: gray;" */}
                         어흥! 반가워요!<br></br>
                         당신에 대해 알려주세요<br></br>
-
                     </Typography>
-                    <br></br>
-                    <br></br>
                 </Box>
                 <Box sx={{ width: '100%', height: '100%', alignItems: 'center' }}>
                     <img style={{ width: '100%', height: '100%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />

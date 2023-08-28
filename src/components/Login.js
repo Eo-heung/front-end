@@ -430,7 +430,7 @@ const Login = () => {
               </Button>
               <Grid container sx={{ marginBottom: "35px" }}>
                 <Grid item xs>
-                  <Link href="#" variant="body2">
+                  <Link href="/findpassword" variant="body2">
                     앗! 비밀번호를 까먹었을 땐?
                   </Link>
                 </Grid>
@@ -444,39 +444,41 @@ const Login = () => {
               <Typography
                 component="h2"
                 variant="h6"
-                sx={{ textAlign: "center", fontWeight: "bold" }}
+                sx={{ textAlign: "center", fontWeight: "bold", marginBottom: "20px", }}
               >
                 소셜 로그인
               </Typography>
               <Grid
                 container
                 sx={{ width: "70%", height: "75px", margin: "0 auto" }}
-                spacing={2.5}
+                spacing={0}
               >
-                <Grid item xs={3}>
+                <Grid item xs={6} sx={{ paddingLeft: '56px', paddingTop: "10px" }}>
                   <Link href="#" onClick={SocialNaver}>
                     <Box
                       sx={{
-                        width: "100%",
-                        height: "100%",
+                        width: "70%",
+                        height: "70%",
                         backgroundImage:
                           "url(https://www.inavi.com/Content2/Images/mobileLogin/social-login-naver-icon.svg)",
                         backgroundSize: "contain",
                         backgroundRepeat: "no-repeat",
+                        backgroundPosition: 'center',
                       }}
                     />
                   </Link>
                 </Grid>
-                <Grid item xs={3}>
+                <Grid item xs={6} sx={{ paddingLeft: '26px', paddingRight: '30px', paddingTop: "10px" }}>
                   <Link href="#" onClick={SocialKakao}>
                     <Box
                       sx={{
-                        width: "100%",
-                        height: "100%",
+                        width: "70%",
+                        height: "70%",
                         backgroundImage:
                           "url(https://i0.wp.com/forhappywomen.com/wp-content/uploads/2018/11/%EC%82%B0%EB%B6%80%EC%9D%B8%EA%B3%BC-%ED%8F%AC%ED%95%B4%ED%94%BC%EC%9A%B0%EB%A8%BC-%EB%AC%B8%EC%9D%98-%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%94%8C%EB%9F%AC%EC%8A%A4%EC%B9%9C%EA%B5%AC-%EB%B2%84%ED%8A%BC.png?resize=586%2C586&ssl=1)",
                         backgroundSize: "contain",
                         backgroundRepeat: "no-repeat",
+                        backgroundPosition: 'center',
                       }}
                     />
                   </Link>
