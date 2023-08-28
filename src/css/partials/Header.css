@@ -62,34 +62,35 @@
     --bs-border-radius-2xl: 2rem;
     --bs-border-radius-pill: 50rem;
     --bs-link-color: #000;
-    --bs-link-hover-color:#FCBE71;
+    --bs-link-hover-color: #FCBE71;
     --bs-code-color: #d63384;
     --bs-highlight-bg: #fff3cd;
-  }
+}
 
 .open .dropdown-menu {
     display: block;
 }
-  
+
 .closed .dropdown-menu {
     display: none;
 }
-  
+
 @media (min-width: 992px) {
+
     .open .dropdown-menu,
     .closed .dropdown-menu {
-      display: block;
+        display: block;
     }
 }
-  
+
 .open .btn {
     display: inline-block;
 }
-  
+
 .closed .btn {
     display: none;
 }
-  
+
 @media (min-width: 992px) {
     .open .btn .closed .btn {
         display: inline-block;
@@ -124,18 +125,20 @@
     vertical-align: middle;
     cursor: pointer;
     -webkit-user-select: none;
-        -moz-user-select: none;
-            user-select: none;
+    -moz-user-select: none;
+    user-select: none;
     border: var(--bs-btn-logout-border-width) solid var(--bs-btn-logout-border-color);
     border-radius: var(--bs-btn-logout-border-radius);
     background-color: var(--bs-btn-logout-bg);
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 @media (prefers-reduced-motion: reduce) {
     .btn-logout {
         transition: none;
     }
 }
+
 .btn-logout:hover {
     color: var(--bs-btn-logout-hover-color);
     background-color: var(--bs-btn-logout-hover-bg);
@@ -170,18 +173,20 @@
     vertical-align: middle;
     cursor: pointer;
     -webkit-user-select: none;
-        -moz-user-select: none;
-            user-select: none;
+    -moz-user-select: none;
+    user-select: none;
     border: var(--bs-btn-credit-border-width) solid var(--bs-btn-credit-border-color);
     border-radius: var(--bs-btn-credit-border-radius);
     background-color: var(--bs-btn-credit-bg);
     transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 @media (prefers-reduced-motion: reduce) {
     .btn-credit {
         transition: none;
     }
 }
+
 .btn-credit:hover {
     color: var(--bs-btn-credit-hover-color);
     background-color: var(--bs-btn-credit-hover-bg);
@@ -203,9 +208,11 @@
     --bs-btn-focus-shadow-rgb: 49, 132, 253;
     text-decoration: none;
 }
+
 .btn-link:focus-visible {
     color: var(--bs-btn-color);
 }
+
 .btn-link:hover {
     color: var(--bs-btn-hover-color);
 }

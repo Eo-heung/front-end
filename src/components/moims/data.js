@@ -1,7 +1,8 @@
 let data = [
     {
         moimId: 1,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimLeaderNickname: "내가 있어야 재민있지",
         moimAddr: "논현동",
         currentMoimUser: 3,
         maxMoimUser: 10,
@@ -11,7 +12,7 @@ let data = [
     },
     {
         moimId: 2,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "역삼동",
         currentMoimUser: 17,
         maxMoimUser: 20,
@@ -21,7 +22,7 @@ let data = [
     },
     {
         moimId: 3,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "갈월동",
         currentMoimUser: 5,
         maxMoimUser: 10,
@@ -31,7 +32,7 @@ let data = [
     },
     {
         moimId: 4,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "가리봉동",
         currentMoimUser: 20,
         maxMoimUser: 30,
@@ -41,7 +42,7 @@ let data = [
     },
     {
         moimId: 5,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "지산리",
         currentMoimUser: 3,
         maxMoimUser: 10,
@@ -51,7 +52,7 @@ let data = [
     },
     {
         moimId: 6,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "초산리",
         currentMoimUser: 7,
         maxMoimUser: 15,
@@ -61,7 +62,7 @@ let data = [
     },
     {
         moimId: 7,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "평산리",
         currentMoimUser: 3,
         maxMoimUser: 20,
@@ -71,7 +72,7 @@ let data = [
     },
     {
         moimId: 8,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "두류동",
         currentMoimUser: 14,
         maxMoimUser: 40,
@@ -81,7 +82,7 @@ let data = [
     },
     {
         moimId: 9,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "문현2동",
         currentMoimUser: 9,
         maxMoimUser: 50,
@@ -91,7 +92,7 @@ let data = [
     },
     {
         moimId: 10,
-        imageURL: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
+        moimPic: "https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png",
         moimAddr: "충장동",
         currentMoimUser: 33,
         maxMoimUser: 40,

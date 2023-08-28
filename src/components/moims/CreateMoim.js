@@ -1,11 +1,12 @@
-import React, { useCallback, useState, useEffect } from 'react';
-import axios from 'axios';
+import React, { useCallback, useState, useEffect, useRef } from 'react';
 import { Link, useNavigate } from 'react-router-dom';
+import { useCookies } from 'react-cookie';
 import { TextField, Box, Button, FormControl, FormLabel, Select, MenuItem, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
-import { useCookies } from 'react-cookie';
+import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard';
+import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 
 const StyledForm = styled('form')`
     display: flex;
@@ -20,18 +21,16 @@ const StyledBox = styled(Box)`
     width: 100%;
 `;
 
+const PageTitle = styled('h3')`
+    margin-bottom: 1.5rem;
+`;
+
 const StyledButton = styled(Button)`
     margin-top: 10px;
     background-color: #FCBE71;
-    box-shadow: none;
     &:hover {
         background-color: #FCBE71;
-        box-shadow: none;
     }
-`;
-
-const StyledTypography = styled(Typography)`
-  margin-bottom: 5px;
 `;
 
 const CounterTypography = styled(Typography)`
@@ -85,10 +84,21 @@ const StyledLink = styled(Link)`
     text-decoration: none;
 `;
 
+const ImageAttaZone = styled('div')`
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    width: 100%;
+    max-width: 700px;
+    height: 200px;
+    border: 1px solid grey;
+`;
+
 const CreateMoim = () => {
     const navi = useNavigate();
 
-    const categories = ['인문학/책', '운동', '요리/맛집', '공예/만들기', '원예', '동네친구', '음악/악기', '반려동물', '여행'];
+    const categories = ['인문학/책', '운동', '요리/맛집', '공예/만들기', '원예', '동네친구', '음악/악기', '반려동물', '여행', '문화/여가'];
 
     const [moimTitleLength, setMoimTitleLength] = useState(0);
     const [inputs, setInputs] = useState({
@@ -101,6 +111,7 @@ const CreateMoim = () => {
         moimContent: ""
     });
 
+    const [moimPic, setMoimPic] = useState(null);
     const [cookies] = useCookies(['userNickname', 'userAddr3']);
     const [userData, setUserData] = useState({
         userNickname: '',
@@ -116,12 +127,12 @@ const CreateMoim = () => {
         }
 
         console.log(userData);
-    }, [cookies.userNickname, cookies.userAddr3]);
+    }, [cookies]);
 
     useEffect(() => {
         setInputs(prev => ({
             ...prev,
-            moimLeaderNickname: userData.userNickname,
+            moimrNickname: userData.userNickname,
             moimAddr: userData.userAddr3
         }));
     }, [userData]);
@@ -139,6 +150,22 @@ const CreateMoim = () => {
             [e.target.name]: e.target.value,
         }));
     }, []);
+
+    const moimFileInputRef = useRef(null);
+
+    const triggerFileInput = () => {
+        if (moimFileInputRef.current) {
+            moimFileInputRef.current.click();
+        } else {
+            console.error("File input not found");
+            console.log(moimFileInputRef.current);
+        }
+    };
+
+    const handleImageUpload = (e) => {
+        const file = e.target.files[0];
+        setMoimPic(file);
+    };
 
     const isValidNumber = (input) => {
         const regex = /^[0-9]+$/;
@@ -179,15 +206,57 @@ const CreateMoim = () => {
         }
 
         const createMoimAxios = async () => {
+            const userData = {
+                moimCategory: inputs.moimCategory,
+                userId: sessionStorage.getItem("userId"),
+                moimNickname: cookies.userNickname,
+                moimAddr: cookies.userAddr3,
+                moimTitle: inputs.moimTitle,
+                maxMoimUser: inputs.maxMoimUser,
+                moimContent: inputs.moimContent,
+            };
+
             try {
-                const response = await axios.post('http://localhost:9000/moim/create-moim', inputs, {
+                const response = await axios.post('http://localhost:9000/moim/create-moim', userData, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
                 });
-                console.log(response);
-                if (response.data && response.data.item.msg) {
-                    alert(response.data.item.msg);
+
+                console.log(response.data);
+
+                const formData = new FormData();
+
+                if (!moimPic) {
+                    try {
+                        const defaultImageRes = await axios.get('https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png', {
+                            responseType: 'blob'
+                        });
+
+                        const defaultImageFile = new File([defaultImageRes.data], 'default-image.png', { type: 'image/png' });
+                        formData.append("moimPic", defaultImageFile);
+                        formData.append("moimId", response.data.item.moimId);
+                    } catch (err) {
+                        console.error("Failed to download default image:", err);
+                    }
+                } else {
+                    formData.append("moimPic", moimPic);
+                    formData.append("moimId", response.data.item.moimId);
+                }
+
+                console.log(formData);
+
+                const result = await axios.post('http://localhost:9000/moim/create-moim-pic', formData, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                        'Content-Type': 'multipart/form-data',
+                    }
+                });
+
+                console.log(result.data);
+
+                if (result.data.item) {
+                    alert("등록이 완료되었습니다.");
                     navi('/list-moim');
                 }
             } catch (e) {
@@ -196,14 +265,14 @@ const CreateMoim = () => {
         }
 
         createMoimAxios();
-    }, [inputs]);
+    }, [inputs, moimPic]);
 
 
     return (
         <BasicBoard>
             <StyledForm id="createForm" onSubmit={createMoim}>
-                <StyledBox display="flex" flexDirection="column" alignItems="flex-start">
-                    <Typography variant="h4" style={{ marginBottom: "1rem" }}>새로운 모임을 만들어요.</Typography>
+                <StyledBox>
+                    <PageTitle>새로운 모임을 만들어요.</PageTitle>
                     <StyledFormControl variant="outlined">
                         <FormLabel component="legend"></FormLabel>
                         <Select
@@ -222,14 +291,14 @@ const CreateMoim = () => {
                         </Select>
                     </StyledFormControl>
                     <Box border={0} my={0} display="flex" alignItems="center">
-                        <Typography variant="h7" fontWeight="bold" style={{ width: '110px' }}>모임장</Typography>
+                        <h5 fontWeight="bold" style={{ width: '110px' }}>모임장</h5>
                         <Typography variant="body1" color={grey[600]}>{userData.userNickname}</Typography>
                     </Box>
                     <Box border={0} my={2} display="flex" alignItems="center">
-                        <Typography variant="h7" fontWeight="bold" style={{ width: '110px' }}>모임지역</Typography>
+                        <h5 fontWeight="bold" style={{ width: '110px' }}>모임 지역</h5>
                         <Typography variant="body1" color={grey[600]}>{userData.userAddr3}</Typography>
                     </Box>
-                    <StyledTypography variant="h7" fontWeight="bold">모임명</StyledTypography>
+                    <h5 fontWeight="bold">모임명</h5>
                     <CounterBox>
                         <StyledTextField
                             name="moimTitle"
@@ -240,10 +309,45 @@ const CreateMoim = () => {
                         />
                         <CounterTypography align="right">{moimTitleLength}/24자</CounterTypography>
                     </CounterBox>
-                    <StyledTypography variant="h7" fontWeight="bold">모집인원</StyledTypography>
+                    <h5 fontWeight="bold">모집 인원</h5>
                     <StyledTextField name="maxMoimUser" placeholder="최대 50명까지 모집할 수 있어요." onChange={handleInputChange} variant="outlined" />
-                    <StyledTypography variant="h7" fontWeight="bold" style={{ marginTop: "1rem" }}>모임소개</StyledTypography>
+                    <h5 fontWeight="bold" style={{ marginTop: "1.2rem" }}>모임 소개</h5>
                     <StyledTextField name="moimContent" placeholder="주제 중심으로 모임을 소개해주세요. 모임 설정에서 언제든지 바꿀 수 있어요." onChange={handleInputChange} variant="outlined" multiline rows={4} />
+                    <h5 fontWeight="bold"
+                        style={{ marginTop: "1.2rem" }}
+                    >
+                        모임 대표사진
+                    </h5>
+                    {
+                        moimPic
+                            ?
+                            <div>
+                                <img
+                                    id="previewImage"
+                                    src={URL.createObjectURL(moimPic)}
+                                    alt="대표 사진"
+                                    style={{ maxWidth: "300px", maxHeight: "300px", objectFit: "cover", display: "block", cursor: "pointer" }}
+                                    onClick={triggerFileInput}
+                                />
+                                <input ref={moimFileInputRef} id="MoimImageUpload" type="file" accept="image/*" hidden onChange={handleImageUpload}></input>
+                            </div>
+                            : <ImageAttaZone>
+                                <Button onClick={triggerFileInput} style={{ color: grey[600], padding: "11% 42.1%" }}>
+                                    <AddPhotoAlternateOutlinedIcon
+                                        fontSize="large"
+                                        style={{
+                                            marginBottom: "0.2rem",
+                                            color: grey[600],
+                                            '&:hover': {
+                                                color: "#FCBE71"
+                                            }
+                                        }}
+                                    />
+                                    사진 첨부
+                                    <input ref={moimFileInputRef} id="MoimImageUpload" type="file" accept="image/*" hidden onChange={handleImageUpload}></input>
+                                </Button>
+                            </ImageAttaZone>
+                    }
                 </StyledBox>
                 <StyledButton type="submit" variant="contained" size="large">모임 등록</StyledButton>
             </StyledForm>

@@ -9,7 +9,7 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/01.png';
 
 const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 }) => {
     const [progress, setProgress] = useState(0);
@@ -100,14 +100,14 @@ const JoinLocal3 = ({ handleClick, backClick, userAddr1, userAddr2, userAddr3 })
                         marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} >
-                        어흥을 이용할
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
+                        어흥을 이용할 내 지역은
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
-                        이 지역이 맞나요?
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
+                        이곳이 맞나요?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
                             <Grid item xs={12} >
                                 <TextField
                                     fullWidth

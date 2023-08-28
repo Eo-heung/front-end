@@ -9,7 +9,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/01.png';
 
 const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) => {
     const [progress, setProgress] = useState(0);
@@ -130,14 +130,14 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                         marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥을 이용할
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
                         내 지역은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
 
                         </Grid>
 

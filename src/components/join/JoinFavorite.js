@@ -8,7 +8,7 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/01.png';
 
 const JoinFavorite = ({ userName, user }) => {
     const [hobby, setHobby] = useState('');
@@ -119,14 +119,14 @@ const JoinFavorite = ({ userName, user }) => {
                         marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥과 함께할
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
                         {`\'${userName}\' 님에 대해 알려주세요`}
                     </Typography>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2} style={{ marginTop: '10px' }}>
                             <Grid item xs={12} >
 
                                 <FormControl fullWidth>

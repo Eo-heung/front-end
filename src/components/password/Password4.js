@@ -11,7 +11,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import PropTypes from 'prop-types';
 import React, { useEffect, useState } from 'react';
-import thumbImage from '../../public/image.png';
+import thumbImage from '../../public/04.png';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 
@@ -169,18 +169,14 @@ const Password4 = ({ setUserPw, userTel }) => {
                         marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="10pt" gutterBottom textAlign={'center'}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥!
                     </Typography>
-                    <br></br>
-                    <br></br>
-                    <Typography variant="h6" fontSize="20pt" textAlign={'center'}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
                         변경할 비밀번호를 입력해주세요
                     </Typography>
-                    <br></br>
-                    <br></br>
                     <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-                        <Grid container spacing={2}>
+                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
                             <Grid item xs={12}>
                                 <TextField
                                     required
@@ -242,14 +238,14 @@ const Password4 = ({ setUserPw, userTel }) => {
                                     비밀번호 변경에 성공했어요!
                                 </Typography>
                             )}
-                            <Link href="/login" variant="body2">
+                            <Link href="/login" variant="body2" sx={{ float: "right" }} style={{ fontFamily: "font-medium" }}>
                                 로그인하러가기
                             </Link>
                         </Box>
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', marginTop: "40%" }}>
+                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

@@ -11,7 +11,7 @@ import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
-import thumbImage from "../../public/image.png";
+import thumbImage from '../../public/04.png';
 
 const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
   const [progress, setProgress] = useState(0);
@@ -32,7 +32,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
   const handleSubmit = (e) => {
     e.preventDefault();
     const data = new FormData(e.currentTarget);
-    if (!/^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/.test(data.get('userTel'))) {
+    if (!/^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/.test(data.get("userTel"))) {
       setIsTelValid(false);
     } else {
       setIsTelValid(true);
@@ -87,8 +87,13 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
           <Circle progress={progress} />
         </Box>
         <Box sx={{ flex: 1, marginLeft: 1 }}>
-          <Typography variant="body2" color="text.secondary"
-            sx={{ width: '30px' }}>{'1 / 3'}</Typography>
+          <Typography
+            variant="body2"
+            color="text.secondary"
+            sx={{ width: "30px" }}
+          >
+            {"1 / 3"}
+          </Typography>
         </Box>
       </Box>
     );
@@ -104,36 +109,24 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
         <CssBaseline />
         <Box
           sx={{
-            minHeight: '608.57px',
-            maxHeight: '608.57px',
-            marginTop: 12.5
+            minHeight: "608.57px",
+            maxHeight: "608.57px",
+            marginTop: 12.5,
           }}
         >
-          <Typography
-            variant="h5"
-            fontSize="10pt"
-            gutterBottom
-            textAlign={"center"}
-          >
+          <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
+
             어흥이 알고있는
           </Typography>
-          <br></br>
-          <br></br>
-          <Typography variant="h6" fontSize="20pt" textAlign={"center"}>
+          <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
             내 핸드폰 번호는?
           </Typography>
-          <br></br>
-          <br></br>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ mt: 3, width: "100%" }}
-          >
-            <Grid container spacing={2}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+            <Grid container spacing={2} style={{ marginTop: '60px' }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -176,14 +169,14 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum }) => {
               >
                 번호인증
               </Button>
-              <Link href="/login" variant="body2">
+              <Link href="/login" variant="body2" sx={{ float: "right" }} style={{ fontFamily: "font-medium" }}>
                 로그인하러가기
               </Link>
             </Box>
           </Box>
         </Box>
         <ThemeProvider theme={theme}>
-          <Box sx={{ width: "100%", marginTop: "47%" }}>
+          <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
             <LinearProgressWithLabel value={progress} />
           </Box>
         </ThemeProvider>

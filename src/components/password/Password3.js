@@ -10,7 +10,7 @@ import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
 import React, { useEffect, useState } from "react";
-import thumbImage from "../../public/image.png";
+import thumbImage from '../../public/04.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 
@@ -128,7 +128,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
         <CssBaseline />
         <Box
           sx={{
@@ -137,28 +137,16 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
             marginTop: 12.5
           }}
         >
-          <Typography
-            variant="h5"
-            fontSize="10pt"
-            gutterBottom
-            textAlign={"center"}
-          >
+          <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
             인증번호를 보내드렸어요!
           </Typography>
-          <br></br>
-          <br></br>
-          <Typography variant="h6" fontSize="20pt" textAlign={"center"}>
+          <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
             문자함에서 확인한
             <br />내 인증번호를 입력해주세요!
           </Typography>
-          <br></br>
-          <br></br>
-          <Box
-            component="form"
-            onSubmit={handleSubmit}
-            sx={{ mt: 3, width: "100%" }}
-          >
-            <Grid container spacing={2}>
+          <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
+
+            <Grid container spacing={2} style={{ marginTop: '60px' }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -174,7 +162,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
                     hasError ? "숫자 이외의 다른 문자가 입력되었습니다." : ""
                   } // 에러 메시지
                 />
-                <Link sx={{ float: "right" }} onClick={backClick}>
+                <Link sx={{ float: "right", cursor: 'pointer' }} onClick={backClick} >
                   전화번호를 잘못입력하셨나요??
                 </Link>
               </Grid>
@@ -204,14 +192,14 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
               >
                 인증하기
               </Button>
-              <Link href="/login" variant="body2">
+              <Link href="/login" variant="body2" sx={{ float: "right" }} onClick={backClick} style={{ fontFamily: "font-medium" }}>
                 로그인하러가기
               </Link>
             </Box>
           </Box>
         </Box>
         <ThemeProvider theme={theme}>
-          <Box sx={{ width: "100%", marginTop: "47%" }}>
+          <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
             <LinearProgressWithLabel value={progress} />
           </Box>
         </ThemeProvider>
