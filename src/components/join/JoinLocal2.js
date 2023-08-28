@@ -12,8 +12,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import DaumPostcode from "react-daum-postcode";
-import thumbImage from '../../public/image.png';
-
+import thumbImage from '../../public/01.png';
 
 const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) => {
     const [progress, setProgress] = useState(0);
