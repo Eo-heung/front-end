@@ -18,6 +18,7 @@ import Mypage from "./components/mypage/Mypage";
 import Layout from "./components/partials/Layout";
 import MainContent from "./components/partials/MainContent";
 import KakaoHandler from "./components/socialLogin/KakaoHandler";
+import NaverHandler from "./components/socialLogin/NaverHandler";
 import BasicBoard from "./components/utils/BasicBoard";
 import ButtonWithNewWindow from "./components/multichat/components/ButtonWithNewWindow";
 import MultiChatting from "./components/multichat/components/VideoRoomComponent";
@@ -80,7 +81,7 @@ function App() {
           ></Route>
           <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
           <Route path="/login" element={<Login></Login>}></Route>
-          <Route path="/oauth" element={<Login></Login>}></Route>
+          <Route path="/oauth" element={<NaverHandler></NaverHandler>}></Route>
           <Route path="/signup" element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
           <Route
