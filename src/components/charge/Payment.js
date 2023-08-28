@@ -4,6 +4,7 @@ import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
 import LinearProgress from '@mui/material/LinearProgress';
 import { margin } from '@mui/system';
+import { async } from 'q';
 
 const StyledButton = styled.button`
 width: 300px;
@@ -38,6 +39,7 @@ const Payment = () => {
     const [userAddr1, setUserAddr1] = useState('');
     const [userAddr2, setUserAddr2] = useState('');
     const [userAddr3, setUserAddr3] = useState('');
+    const [totalGotGam, setTotalGotGam] = useState('');
 
     useEffect(() => {
 
@@ -48,6 +50,7 @@ const Payment = () => {
         document.head.appendChild(jquery);
         document.head.appendChild(iamport);
         fetchUserInfo();
+        totalGam();
         return () => {
             document.head.removeChild(jquery);
             document.head.removeChild(iamport);
@@ -55,6 +58,21 @@ const Payment = () => {
 
 
     }, []);
+
+    const totalGam = async () => {
+        axios.post(
+            "http://localhost:9000/totalGotGam",
+            {},
+            {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                }
+            })
+            .then(res => {
+                setTotalGotGam(res.data.items);
+                console.log(res.data.items);
+            }).catch(error => { console.error(error) });
+    }
 
     const fetchUserInfo = async () => {
         try {
@@ -104,7 +122,7 @@ const Payment = () => {
         const countValue = e.target.value;
         if (!isNaN(countValue)) {
             setCustomCount(countValue);
-            setSelectedItem({ count: countValue, price: String(Number(countValue) * 1000) });
+            setSelectedItem({ count: countValue, price: String(Number(countValue) * 100) });
             setCoin('');
         } else {
             alert("숫자 형식으로 입력하세요");
@@ -112,7 +130,7 @@ const Payment = () => {
     };
 
     const handleCustomCountBlur = () => {
-        const updatedPrice = coin !== "11" && coin !== '' ? selectedItem.price : String(Number(customCount) * 1000);
+        const updatedPrice = coin !== "11" && coin !== '' ? selectedItem.price : String(Number(customCount) * 100);
         const updatedSelectedItem = {
             count: customCount,
             price: String(Number(updatedPrice))
@@ -194,7 +212,9 @@ const Payment = () => {
                     top: '20px',
                     right: '20px'  // 현재 곶감 수의 위치 조정
                 }}>
-                    현재 곶감 수 : "1"
+                    <Grid>{[
+                        ["현재 곶감 수 : ", `${totalGotGam}`]
+                    ]}</Grid>
                 </div>
                 <hr style={{ marginTop: '60px' }}></hr>
                 <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '0px' }}>
@@ -278,7 +298,13 @@ const Payment = () => {
                         sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '20px' }} />
                 </div >
                 <hr style={{ marginTop: '30px' }}></hr>
-                <div style={{ height: '0px', textAlign: 'center' }}> 총 결제금액:  </div>
+                <div style={{ height: '0px', textAlign: 'center' }}>
+                    <Grid>
+                        {[
+                            ["총 결제 금액 : ", `${selectedItem.price} 원`]
+                        ]}
+                    </Grid>
+                </div>
                 <hr style={{ marginTop: '40px' }}></hr>
                 <div style={{ textAlign: 'center' }}>
                     <StyledButton onClick={onClickPayment} style={{ marginTop: '15px', height: '50px', width: '200px' }}>
