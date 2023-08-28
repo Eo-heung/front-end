@@ -138,7 +138,6 @@ const Header = ({ getFriendList, userId }) => {
                 width: "200px",
                 height: "90px",
                 // marginTop: "15px",
-                marginRight: "20px",
               }}
             />
           </Link>
