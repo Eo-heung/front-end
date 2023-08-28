@@ -441,7 +441,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         console.log(msg);
         switch (msg) {
           case "successRequest":
-            alert("우왕! 친구당");
+            alert("우왕! 친구요청을 보냈어! 기다료봐!!!");
             break;
           case "notEnoughGam":
             alert("곶 감 다 떨어졌네");
