@@ -13,6 +13,8 @@ import "../../css/partials/CameraChatting.css";
 import { Link } from "react-router-dom";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
+import PopupSiren from "../popup/PopupFriend";
+import PopupFriend from "../popup/PopupFriend";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -42,6 +44,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [roomName, setRoomName] = useState("");
   const newWindowRef = useRef(null);
   const [showNotification, setShowNotification] = useState(false);
+  const [isSirenPopupOpen, setIsSirenPopupOpen] = useState(false);
+  const [isFriendPopupOpen, setIsFriendPopupOpen] = useState(false);
+
   const textChatVisibleRef = useRef(textChatVisible);
   const token = sessionStorage.getItem("ACCESS_TOKEN");
 
@@ -53,6 +58,22 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const notificationIndicator = showNotification ? (
     <div className="notification-circle"></div>
   ) : null;
+
+  const handleOpenSirenPopup = () => {
+    setIsSirenPopupOpen(true);
+  };
+
+  const handleCloseSirenPopup = () => {
+    setIsSirenPopupOpen(false);
+  };
+
+  const handleOpenFriendPopup = () => {
+    setIsFriendPopupOpen(true);
+  };
+
+  const handleCloseFriendPopup = () => {
+    setIsFriendPopupOpen(false);
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -431,14 +452,13 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   return (
     <>
       <div id="linkbutton">
-        <Link className="toplink" to="/" onClick={handleCameraOnOff}>
+        <Link className="toplink" onClick={handleOpenSirenPopup}>
           <NotificationImportantIcon
             style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
           />
           신고하기
         </Link>
-
-        <Link className="toplink" onClick={handleMakefriend}>
+        <Link className="toplink" onClick={handleOpenFriendPopup}>
           <GroupAddIcon
             style={{
               verticalAlign: "middle",
@@ -449,6 +469,17 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           친구추가
         </Link>
       </div>
+      <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
+        <h2>신고 하기</h2>
+        <p>"{opponentNickname}"님을 신고하시겠어요?</p>
+      </PopupSiren>
+
+      <PopupFriend isOpen={isFriendPopupOpen} onClose={handleCloseFriendPopup}>
+        <h2>친구 추가</h2>
+        <p>곶감 5개 주면 안 잡아먹지~~~</p>
+        <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
+      </PopupFriend>
+
       <div id="myStreamState">
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
