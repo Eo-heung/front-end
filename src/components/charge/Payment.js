@@ -40,6 +40,7 @@ const Payment = () => {
     const [userAddr2, setUserAddr2] = useState('');
     const [userAddr3, setUserAddr3] = useState('');
     const [totalGotGam, setTotalGotGam] = useState('');
+    const [addGotGam, setAddGotGam] = useState('')
 
     useEffect(() => {
 
@@ -58,6 +59,10 @@ const Payment = () => {
 
 
     }, []);
+
+    useEffect(() => {
+        setAddGotGam(Number(totalGotGam) + Number(selectedItem.count));
+    }, [selectedItem]);
 
     const totalGam = async () => {
         axios.post(
@@ -190,9 +195,11 @@ const Payment = () => {
 
     }
 
+
     const [value, setValue] = React.useState('');
 
     const [hoverIndex, setHoverIndex] = useState(null);
+
 
     return (
         <div style={{ display: 'flex', justifyContent: 'center' }}> {/* 이 부분을 추가하여 두 개의 박스가 옆에 나열되도록 함 */}
@@ -212,7 +219,7 @@ const Payment = () => {
                     right: '20px'  // 현재 곶감 수의 위치 조정
                 }}>
                     <Grid>{[
-                        ["현재 곶감 수 : ", `${totalGotGam}`]
+                        ["현재 곶감 수 : ", `${totalGotGam}`, "개"]
                     ]}</Grid>
                 </div>
                 <hr style={{ marginTop: '60px' }}></hr>
@@ -222,13 +229,13 @@ const Payment = () => {
                             <Grid container spacing={2}>
                                 <Grid item xs={6}>
                                     {[
-                                        ["1", "1(100원)"],
-                                        ["2", "5(500원)"],
-                                        ["3", "10(1000원)"],
+                                        ["1", "1개(100원)"],
+                                        ["2", "5개(500원)"],
+                                        ["3", "10개(1000원)"],
                                     ].map(([val, label], index) => (
                                         <div
                                             key={index}
-                                            style={{ padding: '5px 0', marginTop: '15px' }}
+                                            style={{ padding: '5px 0', marginTop: '10px' }}
                                             onMouseEnter={() => setHoverIndex(index)}
                                             onMouseLeave={() => setHoverIndex(null)}
                                             onClick={() => handleCoinChange({ target: { value: val } })}
@@ -255,13 +262,13 @@ const Payment = () => {
 
                                 <Grid item xs={6}>
                                     {[
-                                        ["4", "20(2000원)"],
-                                        ["5", "30(3000원)"],
-                                        ["6", "40(4000원)"],
+                                        ["4", "20개(2000원)"],
+                                        ["5", "30개(3000원)"],
+                                        ["6", "40개(4000원)"],
                                     ].map(([val, label], index) => (
                                         <div
                                             key={index}
-                                            style={{ padding: '5px 0', marginTop: '15px' }}
+                                            style={{ padding: '5px 0', marginTop: '10px' }}
                                             onMouseEnter={() => setHoverIndex(index + 5)}
                                             onMouseLeave={() => setHoverIndex(null)}
                                             onClick={() => handleCoinChange({ target: { value: val } })}
@@ -296,7 +303,13 @@ const Payment = () => {
                         onClick={(e) => e.stopPropagation()}
                         sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '20px' }} />
                 </div >
-                <hr style={{ marginTop: '30px' }}></hr>
+                <hr></hr>
+                <div style={{ height: '0px', textAlign: 'center' }}>
+                    <Grid style={{ alignItems: 'center' }}>
+                        {[`구매 후 총 곶감 수 : ${addGotGam}개`]}
+                    </Grid>
+                </div>
+                <hr style={{ marginTop: '35px' }}></hr>
                 <div style={{ height: '0px', textAlign: 'center' }}>
                     <Grid>
                         {[
@@ -304,9 +317,9 @@ const Payment = () => {
                         ]}
                     </Grid>
                 </div>
-                <hr style={{ marginTop: '40px' }}></hr>
+                <hr style={{ marginTop: '35px' }}></hr>
                 <div style={{ textAlign: 'center' }}>
-                    <StyledButton onClick={onClickPayment} style={{ marginTop: '15px', height: '50px', width: '200px' }}>
+                    <StyledButton onClick={onClickPayment} style={{ marginTop: '10px', height: '50px', width: '200px' }}>
                         결제하기
                     </StyledButton>
                 </div>
