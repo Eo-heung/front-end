@@ -7,15 +7,19 @@ import { Link, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styled from "styled-components";
 import logo from "../../public/logo.gif";
+// import logo from "../../public/logo.png";
+import PersonIcon from "@mui/icons-material/Person";
+import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
+
 import "../../css/partials/Header.css";
 
 const StyledTypography = styled(Typography)`
   color: #000;
   cursor: pointer;
-  marginleft: 10px;
   &:hover {
     color: #ffb471;
   }
+  margin: auto;
 `;
 
 const Header = ({ getFriendList, userId }) => {
@@ -90,9 +94,8 @@ const Header = ({ getFriendList, userId }) => {
   }, []);
 
   const menuList = [
-    { text: "채팅", link: "/chatting" },
-    { text: "모임", link: "/list-moim" },
-    { text: "마이페이지", link: "/mypage" },
+    { text: "랜덤채팅", link: "/chatting" },
+    { text: "소모임", link: "/list-moim" },
   ];
 
   // 로그아웃 함수
@@ -131,15 +134,18 @@ const Header = ({ getFriendList, userId }) => {
             <img
               src={logo}
               style={{
-                width: "13vw",
-                height: "12vh",
+                // width: "250px",
+                width: "200px",
+                height: "90px",
+                // marginTop: "15px",
+                marginRight: "20px",
               }}
             />
           </Link>
         </div>
         <div
           style={{
-            width: "60%",
+            width: "50%",
             height: "100%",
             display: "flex",
             alignItems: "center",
@@ -197,37 +203,40 @@ const Header = ({ getFriendList, userId }) => {
         </div>
         <div
           style={{
-            width: "20%",
+            width: "30%",
             height: "100%",
             display: "flex",
             alignItems: "center",
-            justifyContent: "center",
+            justifyContent: "flex-end",
+            gap: "1.5vw",
           }}
         >
-          <Link className="navbar-logout" to="/" onClick={logout}>
-            <StyledTypography
-              variant="body2"
-              style={{
-                marginRight: "10px",
-              }}
-            >
-              로그아웃
+          <Link className="navbar-logout" to="/mypage">
+            <StyledTypography variant="body2">
+              <StyledTypography variant="body2">마이페이지</StyledTypography>
             </StyledTypography>
           </Link>
+
           <Link className="navbar-credit" to="/charge">
-            <StyledTypography
-              variant="body2"
-              style={{
-                marginLeft: "10px",
-              }}
-            >
-              곶감 충전
-            </StyledTypography>
+            <StyledTypography variant="body2">곶감충전</StyledTypography>
+          </Link>
+          <Link
+            className="navbar-logout"
+            to="/"
+            onClick={logout}
+            style={{
+              marginRight: "3vw",
+            }}
+          >
+            <StyledTypography variant="body2">로그아웃</StyledTypography>
           </Link>
         </div>
       </nav>
     </div>
   );
 };
+
+// { text: "마이페이지", link: "/mypage" },
+//
 
 export default Header;
