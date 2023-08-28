@@ -925,16 +925,16 @@ const Mypage = () => {
                             style={{ padding: "24px 24px 24px 50px" }}
                           >
                             {[
-                              ["닉네임", userName],
+                              ["닉네임", userName || "닉네임을 입력해주세요."],
                               [
                                 "내 지역",
-                                `${userAddr1} ${userAddr2} ${userAddr3}`,
+                                `${userAddr1 || "지역을 입력해주세요."} ${userAddr2 || ""} ${userAddr3 || ""}`,
                               ],
-                              ["관심사", userHobby1 || ""],
+                              ["관심사", userHobby1 || "관심사를 입력해주세요."],
                               ["좋아하는 음악 장르", userHobby2 || ""],
                               ["좋아하는 음식 종류", userHobby3 || ""],
                               ["그 외 관심사", userRecommend || ""],
-                              ["상태메세지", userStatusMessage || ""],
+                              ["상태메세지", userStatusMessage || "상태메세지를 입력해주세요."],
                             ].map(([label, value]) => (
                               <>
                                 <Grid container spacing={2} alignItems="center">
@@ -1214,11 +1214,11 @@ const Mypage = () => {
                           style={{ padding: "24px 500px 24px 50px" }}
                         >
                           {[
-                            ["휴대폰 번호", userTel],
+                            ["휴대폰 번호", userTel || "휴대폰을 인증해주세요."],
                             ["비밀번호", ""],
                             ["생년월일", userBirth || ""],
-                            ["성별", userGender || ""],
-                            ["이메일", userEmail || ""],
+                            ["성별", userGender || "성별을 입력해주세요."],
+                            ["이메일", userEmail || "이메일을 입력해주세요."],
                             ["가입일", userRegdate || ""],
                           ].map(([label, value]) => (
                             <>
@@ -1704,8 +1704,8 @@ const Mypage = () => {
                                             marginRight: "8px",
                                             border: "2px solid white",
                                             boxShadow: `0 0 5px 2px ${friend.online
-                                                ? "#05FF00"
-                                                : "#B6B6B6"
+                                              ? "#05FF00"
+                                              : "#B6B6B6"
                                               }`,
                                           }}
                                         />
