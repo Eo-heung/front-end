@@ -69,8 +69,8 @@ const Payment = () => {
                 }
             })
             .then(res => {
-                setTotalGotGam(res.data.items);
-                console.log(res.data.items);
+                setTotalGotGam(res.data.item);
+                console.log(res.data.item);
             }).catch(error => { console.error(error) });
     }
 
