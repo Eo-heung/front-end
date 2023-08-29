@@ -1,21 +1,21 @@
 import axios from 'axios';
 import React, { useEffect, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
-
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 
 
 const KakaoHandler = () => {
     const navi = useNavigate();
     const grant_type = "authorization_code";
     const client_id = 'd85c142dc0c92939902ad3248688e8ad';
-    const REDIRECT_URL = 'http://localhost:1234/auth';
+    const REDIRECT_URL2 = `${REDIRECT_URL}/auth`;
     const [code, setCode] = useState(new URL(window.location.href).searchParams.get("code"));
     useEffect(() => {
         console.log(code);
         axios.post(`https://kauth.kakao.com/oauth/token`, {
             grant_type: `${grant_type}`,
             client_id: `${client_id}`,
-            redirect_uri: `${REDIRECT_URL}`,
+            redirect_uri: `${REDIRECT_URL2}`,
             code: `${code}`,
         },
 
@@ -43,10 +43,11 @@ const KakaoHandler = () => {
                         .then((res) => {
                             console.log("데이터 성공 :")
                             console.log(res);
-                            axios.post('http://localhost:9000/kakaoLogin', {
+                            axios.post(`${SPRING_API_URL}/kakaoLogin`, {
                                 userId: res.data.kakao_account.email,
                                 userBirth: res.data.kakao_account.birthday,
                                 userNickname: res.data.kakao_account.nickname
+
                             })
                                 .then((res) => {
                                     alert(`${res.data.item.userName}님 환영합니다.`);
