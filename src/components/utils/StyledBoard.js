@@ -10,7 +10,10 @@ export const BoardContainer = styled('div')`
 export const BoardInfoRow = styled('div')`
     display: flex;
     align-items: center;
+    justify-content: space-between;
+    margin: 0 auto;
     margin-bottom: 1rem;
+    gap: 30px;
 `
 
 export const BoardTitle = styled('h1')`
@@ -18,6 +21,7 @@ export const BoardTitle = styled('h1')`
 `;
 
 export const BoardInfo = styled('span')`
+    width: 180px;
     font-size: 1rem;
     color: grey;
 `;
@@ -26,7 +30,10 @@ export const BoardContent = styled('div')`
     padding: 1.5rem;
     border: 1px solid grey;
     border-radius: 8px;
-    max-width: 800px;
+    width: 100%;
+    max-width: 700px;
+    min-height: 300px;
+    margin-bottom: 1.5rem;
 `;
 
 export const BoardMessage = styled('div')`

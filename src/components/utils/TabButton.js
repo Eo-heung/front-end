@@ -1,7 +1,7 @@
 import React from 'react';
 import { Button } from '@mui/material';
 
-const TabButton = ({ label, activeTab, hoveredButton, onTabClick, onMouseEnter, onMouseLeave }) => {
+const TabButton = ({ label, activeTab, hoveredButton, onTabClick, onMouseEnter, onMouseLeave, style = {} }) => {
     return (
         <Button
             size="large"
@@ -12,7 +12,8 @@ const TabButton = ({ label, activeTab, hoveredButton, onTabClick, onMouseEnter, 
                 color: (activeTab === label || hoveredButton === label) ? '#fff' : '#000',
                 fontWeight: activeTab === label ? 'bold' : 'normal',
                 width: "12%",
-                marginRight: "1.5rem"
+                marginRight: "1.5rem",
+                ...style
             }}
             onClick={() => onTabClick(label)}
             onMouseEnter={() => onMouseEnter(label)}

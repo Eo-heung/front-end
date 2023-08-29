@@ -1,24 +1,32 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
 import { useCookies } from 'react-cookie';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
 import { StyledForm, WriteZone, StyledBox, PageTitle, StyledButton, CounterTypography, CounterBox, StyledTextField, StyledLink, ImageAttaZone, ButtonZone } from '../utils/StyledCreate';
 import { Button, Box, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
-import { useNavigate } from 'react-router';
+import BasicBoard from '../utils/BasicBoard';
 
-const CreateBoard = ({ moimId, boardType, onSuccess, boardId, onModifySuccess }) => {
+const CreateBoard = () => {
     const navi = useNavigate();
     const [cookie] = useCookies("userNickname");
 
-    const boardFileInputRef = useRef(null);
+    const { moimId, boardId } = useParams();
+    const location = useLocation();
+    const boardType = location.state?.boardType;
+
+    const multipleFileInputRef = useRef(null);
+    const singleFileInputRef = useRef(null);
+    const [imageUpdateCount, setImageUpdateCount] = useState(0);
 
     const [boardInputs, setBoardInputs] = useState({
-        userNickname: cookie.userNickname || "",
+        userName: cookie.userNickname || "",
         boardTitle: "",
         boardContent: "",
         freePics: []
     });
+    const [boardPics, setBoardPics] = useState([]);
 
     const handleInputChange = useCallback((e) => {
         setBoardInputs(prev => ({
@@ -28,11 +36,8 @@ const CreateBoard = ({ moimId, boardType, onSuccess, boardId, onModifySuccess })
     }, []);
 
     const triggerFileInput = () => {
-        if (boardFileInputRef.current) {
-            boardFileInputRef.current.click();
-        } else {
-            console.error("File input not found");
-            console.log(boardFileInputRef.current);
+        if (multipleFileInputRef.current) {
+            multipleFileInputRef.current.click();
         }
     };
 
@@ -44,63 +49,120 @@ const CreateBoard = ({ moimId, boardType, onSuccess, boardId, onModifySuccess })
         }));
     };
 
+    const handleSingleImageUpload = (e) => {
+        const newFile = e.target.files[0];
+        const index = e.target.dataset.index;
+
+        if (newFile && typeof index !== 'undefined') {
+            handleImageReplace(Number(index), newFile);
+        }
+    };
+
     const handleImageRemove = (indexToRemove) => {
-        setBoardInputs(prev => ({
-            ...prev,
-            freePics: prev.freePics.filter((_, index) => index !== indexToRemove)
-        }));
+        const mergedPics = [...boardPics, ...boardInputs.freePics];
+
+        if (indexToRemove < boardPics.length) {
+            const newBoardPics = mergedPics.filter((_, index) => index !== indexToRemove);
+            setBoardPics(newBoardPics);
+        } else {
+            const indexInFreePics = indexToRemove - boardPics.length;
+            setBoardInputs(prev => ({
+                ...prev,
+                freePics: prev.freePics.filter((_, index) => index !== indexInFreePics)
+            }));
+        }
     };
 
     const handleImageReplace = (index, newFile) => {
-        setBoardInputs(prev => {
-            const newFreePics = [...prev.freePics];
-            newFreePics[index] = newFile;
-            return { ...prev, freePics: newFreePics };
-        });
+        const mergedPics = [...boardPics, ...boardInputs.freePics];
+
+        if (index < boardPics.length) {
+            const newBoardPics = [...mergedPics];
+            newBoardPics[index] = newFile;
+            setBoardPics(newBoardPics);
+        } else {
+            const indexInFreePics = index - boardPics.length;
+            setBoardInputs(prev => {
+                const newFreePics = [...prev.freePics];
+                newFreePics[indexInFreePics] = newFile;
+                return { ...prev, freePics: newFreePics };
+            });
+        }
+
+        setImageUpdateCount(prev => prev + 1);
     };
 
     const handleImageUploadAgain = (index) => {
-        if (boardFileInputRef.current) {
-            const fileInput = boardFileInputRef.current;
-            fileInput.onchange = (e) => {
-                const newFile = e.target.files[0];
-
-                if (newFile) {
-                    handleImageReplace(index, newFile);
-                }
-            };
-
-            fileInput.click();
+        if (singleFileInputRef.current) {
+            singleFileInputRef.current.dataset.index = index;
+            singleFileInputRef.current.click();
         }
+    };
+
+    const renderPreviewImage = (pic, index, isFreePic = false) => {
+        let imgSrc;
+
+        if (isFreePic) {
+            // freePics (새로 추가된 이미지나 교체된 이미지)의 경우
+            imgSrc = URL.createObjectURL(pic);
+        } else if (typeof pic === 'object' && pic instanceof File) {
+            // boardPics에서 File 객체 형태로 저장된 이미지 (새로 교체된 이미지)의 경우
+            imgSrc = URL.createObjectURL(pic);
+        } else {
+            // boardPics에서 base64 문자열로 저장된 이미지의 경우
+            imgSrc = `data:image/jpeg;base64,${pic}`;
+        }
+
+        return (
+            <div key={index} style={{ position: 'relative', display: 'inline-block', marginRight: '10px' }}>
+                <img
+                    src={imgSrc}
+                    alt={`게시글 사진 ${index}`}
+                    style={{ maxWidth: "300px", maxHeight: "300px", objectFit: "cover", cursor: "pointer" }}
+                    onClick={() => handleImageUploadAgain(isFreePic ? index + boardPics.length : index)}
+                />
+                <div
+                    style={{
+                        position: "absolute",
+                        top: "0",
+                        right: "0",
+                        backgroundColor: "white",
+                        color: "red",
+                        cursor: "pointer",
+                        padding: "5px 5px",
+                        borderRadius: "50%"
+                    }}
+                    onClick={(e) => {
+                        e.stopPropagation();
+                        handleImageRemove(isFreePic ? index + boardPics.length : index);
+                    }}
+                >
+                    X
+                </div>
+            </div>
+        );
     };
 
     useEffect(() => {
         const fetchBoardData = async () => {
             try {
-                let response;
+                const response = await axios.post(`http://localhost:9000/board/${moimId}/view-board/${boardId}`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    }
+                });
 
-                if (boardType === "FREE") {
-                    response = await axios.post(`http://localhost:9000/board/${moimId}/free-board/${boardId}`, {}, {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-                        }
-                    });
-                } else {
-                    response = await axios.post(`http://localhost:9000/board/${moimId}/notice-board/${boardId}`, {}, {
-                        headers: {
-                            Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-                        }
-                    });
-                }
-
-                const { boardTitle, boardContent } = response.data;
-
+                const { userName, boardTitle, boardContent } = response.data.item.boardDTO;
                 setBoardInputs(prev => ({
                     ...prev,
-                    userNickname: response.data.userNickname,
-                    boardTitle: response.data.boardTitle,
-                    boardContent: response.data.boardContent
+                    userName,
+                    boardTitle,
+                    boardContent,
+                    boardType
                 }));
+
+                const fetchBoardPics = response.data.item.boardPics;
+                setBoardPics(fetchBoardPics);
             } catch (err) {
                 console.error("Error fetching board data", err);
             }
@@ -111,7 +173,8 @@ const CreateBoard = ({ moimId, boardType, onSuccess, boardId, onModifySuccess })
         }
     }, [boardId, moimId, boardType]);
 
-    const handleSubmit = async () => {
+    const handleSubmit = async (e) => {
+        e.preventDefault();
         const { boardTitle, boardContent, freePics } = boardInputs;
         const formData = new FormData();
 
@@ -126,29 +189,34 @@ const CreateBoard = ({ moimId, boardType, onSuccess, boardId, onModifySuccess })
         }
 
         try {
+            console.log("11111");
             if (boardId) {
-                const response = await axios.post(`http://localhost:9000/${moimId}/modify-board/${boardId}`, formData, {
+                console.log("22222");
+                const response = await axios.post(`http://localhost:9000/board/${moimId}/modify-board/${boardId}`, formData, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 });
 
-                if (response.status === 200) {
+                if (response.status === 200 || response.status === 201) {
                     console.log("modify success!")
-                    onModifySuccess();
+                    handleModifySuccess();
+                } else {
+                    console.log("modify failed");
                 }
             } else {
-                const response = await axios.post(`http://localhost:9000/${moimId}/create-board`, formData, {
+                console.log("33333");
+                const response = await axios.post(`http://localhost:9000/board/${moimId}/create-board`, formData, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
                         'Content-Type': 'multipart/form-data'
                     }
                 });
 
-                if (response.status === 200) {
+                if (response.status === 200 || response.status === 201) {
                     console.log("submit success!");
-                    onSuccess();
+                    handleSuccess();
                 }
             }
         } catch (err) {
@@ -160,90 +228,104 @@ const CreateBoard = ({ moimId, boardType, onSuccess, boardId, onModifySuccess })
         navi(-1);
     };
 
+    const handleSuccess = () => {
+        alert("성공적으로 게시글을 등록했어요.");
+
+        switch (boardType) {
+            case 'FREE':
+                navi(`/${moimId}/moim-board?label=자유 게시판`);
+                break;
+            case 'NOTICE':
+                navi(`${moimId}/moim-board?label=공지 게시판`);
+                break;
+            default:
+                console.error("Unknown boardType", boardType);
+                break;
+        }
+    };
+
+    const handleModifySuccess = () => {
+        alert("성공적으로 게시글을 수정했어요.");
+
+        switch (boardType) {
+            case 'FREE':
+                navi(`/${moimId}/free-board`);
+                break;
+            case 'NOTICE':
+                navi(`${moimId}/notice-board`);
+                break;
+            default:
+                console.error("Unknown boardType", boardType);
+                break;
+        }
+    };
+
     return (
-        <StyledBox>
-            <StyledForm onSubmit={handleSubmit}>
-                <WriteZone>
-                    <PageTitle>새로운 글을 작성해요.</PageTitle>
-                    <Box border={0} my={0} display="flex" alignItems="center">
-                        <h5 fontWeight="bold" style={{ width: '110px' }}>작성자</h5>
-                        <Typography variant="body1" color={grey[600]}>{boardInputs.userNickname}</Typography>
-                    </Box>
-                    <h5 fontWeight="bold">제목</h5>
-                    <StyledTextField
-                        name="boardTitle"
-                        value={boardInputs.boardTitle}
-                        onChange={handleInputChange}
-                        variant="outlined"
-                        placeholder="제목을 입력해주세요."
-                    />
-                    <h5 fontWeight="bold">내용</h5>
-                    <StyledTextField
-                        name="boardContent"
-                        value={boardInputs.boardContent}
-                        onChange={handleInputChange}
-                        variant="outlined"
-                        placeholder="내용을 입력해주세요."
-                        multiline rows={4}
-                    />
-                    <h5 fontWeight="bold" style={{ marginTop: "1.2rem" }}>
-                        첨부 사진
-                    </h5>
-                    {
-                        boardInputs.freePics.length > 0
-                            ?
-                            boardInputs.freePics.map((freePic, index) => (
-                                <div key={index} style={{ position: 'relative', display: 'inline-block', marginRight: '10px' }}>
-                                    <img
-                                        id={`previewImage-${index}`}
-                                        src={URL.createObjectURL(freePic)}
-                                        alt={`게시글 사진 ${index}`}
-                                        style={{ maxWidth: "300px", maxHeight: "300px", objectFit: "cover", cursor: "pointer" }}
-                                        onClick={() => handleImageUploadAgain(index)}
-                                    />
-                                    <div
-                                        style={{
-                                            position: "absolute",
-                                            top: "0",
-                                            right: "0",
-                                            backgroundColor: "white",
-                                            color: "red",
-                                            cursor: "pointer",
-                                            padding: "5px 5px",
-                                            borderRadius: "50%"
-                                        }}
-                                        onClick={() => handleImageRemove(index)}
-                                    >
-                                        X
-                                    </div>
-                                    <input ref={boardFileInputRef} type="file" accept="image/*" hidden></input>
-                                </div>
-                            ))
-                            :
-                            <ImageAttaZone>
-                                <Button onClick={triggerFileInput} style={{ color: grey[600], padding: "11% 42.1%" }}>
-                                    <AddPhotoAlternateOutlinedIcon
-                                        fontSize="large"
-                                        style={{
-                                            marginBottom: "0.2rem",
-                                            color: grey[600],
-                                            '&:hover': {
-                                                color: "#FCBE71"
-                                            }
-                                        }}
-                                    />
-                                    사진 첨부
-                                    <input ref={boardFileInputRef} type="file" accept="image/*" multiple hidden onChange={handleImageUpload}></input>
-                                </Button>
-                            </ImageAttaZone>
-                    }
-                </WriteZone>
-                <ButtonZone>
-                    <StyledButton type="submit" variant="contained" size="large">등록</StyledButton>
-                    <StyledButton type="button" variant="contained" size="large" onClick={handleCancel}>취소</StyledButton>
-                </ButtonZone>
-            </StyledForm>
-        </StyledBox>
+        <BasicBoard>
+            <StyledBox>
+                <StyledForm onSubmit={handleSubmit}>
+                    <WriteZone>
+                        <PageTitle>
+                            {boardId ? "게시글 수정하기" : "새로운 글을 작성해요."}
+                        </PageTitle>
+                        <Box border={0} my={0} display="flex" alignItems="center">
+                            <h5 fontWeight="bold" style={{ width: '110px' }}>작성자</h5>
+                            <Typography variant="body1" color={grey[600]}>{boardInputs.userName}</Typography>
+                        </Box>
+                        <h5 fontWeight="bold">제목</h5>
+                        <StyledTextField
+                            name="boardTitle"
+                            value={boardInputs.boardTitle}
+                            onChange={handleInputChange}
+                            variant="outlined"
+                            placeholder="제목을 입력해주세요."
+                        />
+                        <h5 fontWeight="bold">내용</h5>
+                        <StyledTextField
+                            name="boardContent"
+                            value={boardInputs.boardContent}
+                            onChange={handleInputChange}
+                            variant="outlined"
+                            placeholder="내용을 입력해주세요."
+                            multiline rows={4}
+                        />
+                        <h5 fontWeight="bold" style={{ marginTop: "1.2rem" }}>
+                            첨부 사진
+                        </h5>
+                        <div>
+                            {(boardId && boardPics.length > 0) || boardInputs.freePics.length > 0 ? (
+                                <>
+                                    <input ref={singleFileInputRef} type="file" accept="image/*" hidden onChange={handleSingleImageUpload} />
+                                    {boardPics.map((pic, index) => renderPreviewImage(pic, index))}
+                                    {boardInputs.freePics.map((freePic, index) => renderPreviewImage(freePic, index, true))}
+                                </>
+                            ) : (
+                                <ImageAttaZone>
+                                    <Button onClick={triggerFileInput} style={{ color: grey[600], padding: "11% 42.1%" }}>
+                                        <AddPhotoAlternateOutlinedIcon
+                                            fontSize="large"
+                                            style={{
+                                                marginBottom: "0.2rem",
+                                                color: grey[600],
+                                                '&:hover': {
+                                                    color: "#FCBE71"
+                                                }
+                                            }}
+                                        />
+                                        사진 첨부
+                                        <input ref={multipleFileInputRef} type="file" accept="image/*" multiple hidden onChange={handleImageUpload}></input>
+                                    </Button>
+                                </ImageAttaZone>
+                            )}
+                        </div>
+                    </WriteZone>
+                    <ButtonZone>
+                        <StyledButton type="submit" variant="contained" size="large">등록</StyledButton>
+                        <StyledButton type="button" variant="contained" size="large" onClick={handleCancel}>취소</StyledButton>
+                    </ButtonZone>
+                </StyledForm>
+            </StyledBox>
+        </BasicBoard>
     );
 };
 

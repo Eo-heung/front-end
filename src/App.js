@@ -24,6 +24,12 @@ import MultiChatting from "./components/multichat/components/VideoRoomComponent"
 import ChattingPayment from "./components/chatting/ChattingPayment";
 import MoimController from "./components/moims/MoimController";
 import MoimBoard from "./components/moims/MoimBoard";
+import FreeBoardList from "./components/moims/FreeBoardList";
+import FreeBoard from "./components/moims/FreeBoard";
+import MoimNoticeList from "./components/moims/MoimNoticeList";
+import MoimNotice from "./components/moims/MoimNotice";
+import CreateBoard from "./components/moims/CreateBoard";
+
 function App() {
   return (
     <>
@@ -83,6 +89,29 @@ function App() {
               path="/:moimId/moim-board"
               element={<MoimBoard></MoimBoard>}
             ></Route>
+            <Route
+              path="/:moimId/free-board"
+              element={<FreeBoardList></FreeBoardList>}
+            ></Route>
+            <Route
+              path="/:moimId/free-board/:boardId"
+              element={<FreeBoard type="FREE" />}
+            ></Route>
+            <Route
+              path="/:moimId/notice-board"
+              element={<MoimNoticeList></MoimNoticeList>}
+            ></Route>
+            <Route
+              path="/:moimId/notice-board/:boardId"
+              element={<MoimNotice type="NOTICE" />}
+            ></Route>
+            <Route
+              path="/:moimId/create-board"
+              element={<CreateBoard></CreateBoard>}
+            ></Route>
+            <Route
+              path="/:moimId/create-board/:boardId"
+              element={<CreateBoard></CreateBoard>}></Route>
           </Route>
           <Route
             path="/multichatting"
