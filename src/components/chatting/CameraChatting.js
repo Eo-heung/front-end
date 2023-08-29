@@ -15,6 +15,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import PopupSiren from "../popup/PopupFriend";
 import PopupFriend from "../popup/PopupFriend";
+import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -84,7 +85,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://192.168.0.61:4000");
+    socket.current = io(`${NODE_API_URL}`);
     setMyNickname(getCookie("userNickname"));
     setMyUserId(getCookie("userId"));
 
@@ -369,7 +370,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://192.168.0.61:4000/nickname", {
+      const response = await axios.get(`${NODE_API_URL}/nickname`, {
         params: {
           nickname: userNickname,
           userId: userId,
@@ -391,7 +392,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handlechargeClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://192.168.0.61:1234/chattingcharge",
+      `${REDIRECT_URL}/chattingcharge`,
       "_blank",
       "width=800,height=600"
     );
@@ -424,7 +425,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const makeFriendRequest = async (opponentUserId, token) => {
     try {
-      const url = `http://192.168.0.61:9000/friend/makefriend/${opponentUserId}`;
+      const url = `${SPRING_API_URL}/friend/makefriend/${opponentUserId}`;
 
       const config = {
         headers: {
