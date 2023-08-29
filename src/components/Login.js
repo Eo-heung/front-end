@@ -21,7 +21,6 @@ import { useCookies } from "react-cookie";
 import Carousel from "react-material-ui-carousel";
 import { useNavigate } from "react-router-dom";
 import { SPRING_API_URL, REDIRECT_URL } from "../config";
-import { SPRING_API_URL, REDIRECT_URL } from "../config";
 
 const Login = () => {
     const navi = useNavigate();
@@ -69,7 +68,7 @@ const Login = () => {
     };
     const SocialNaver = () => {
         const Rest_api_key = "fK9M_7tC_kI7hRd4QXQG"; // 환경 변수에서 API 키 가져오기
-        const redirect_uri = `${REDIRECT_URL}/auth`;
+        const redirect_uri = `${REDIRECT_URL}/oauth`;
         const state = "1234";
         const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${Rest_api_key}&state=${state}&redirect_uri=${redirect_uri}`;
 
