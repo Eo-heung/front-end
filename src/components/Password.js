@@ -11,11 +11,6 @@ const Password = () => {
     const [userPw, setUserPw] = useState('');
     const [checkNum, setCheckNum] = useState('');
 
-    const updatePW = {
-        userId: userTel,
-        userPw: userPw
-    };
-
     const handleClick = () => {
         if (pageIndex < 10) {
             setPageIndex(pageIndex + 1);
@@ -24,16 +19,6 @@ const Password = () => {
 
     const backClick = () => {
         setPageIndex(pageIndex + -1);
-    };
-
-    const setPassword = async () => {
-        try {
-            const response = await axios.post('http://localhost:9000/findpassword', updatePW);
-
-            console.log(response)
-            navigator('/login');
-        } catch (error) {
-        }
     };
 
 

@@ -10,6 +10,7 @@ import {
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { SPRING_API_URL } from "../../config";
 import thumbImage from '../../public/01.png';
 
 
@@ -66,7 +67,7 @@ const JoinFavorite = ({ userName, user, backClick }) => {
 
         try {
 
-            const response = await axios.post('http://localhost:9000/join', user);
+            const response = await axios.post(`${SPRING_API_URL}/join`, user);
 
             console.log(response)
             navi('/login');
