@@ -20,7 +20,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Carousel from "react-material-ui-carousel";
 import { useNavigate } from "react-router-dom";
-import { SPRING_API_URL, REDIRECT_URL } from "../config";
+import { REDIRECT_URL, SPRING_API_URL } from "../config";
 
 const Login = () => {
   const navi = useNavigate();
@@ -224,10 +224,20 @@ const Login = () => {
 
     loginAxios();
   });
-  const defaultTheme = createTheme();
+
+  const theme1 = createTheme({
+    palette: {
+      primary: {
+        main: '#FEA53D',
+      },
+      secondary: {
+        main: '#FEB158',
+      },
+    },
+  });
 
   return (
-    <ThemeProvider theme={defaultTheme}>
+    <ThemeProvider theme={theme1}>
       {console.log(`remember : ${remember}`)}
       <Grid
         container
@@ -373,6 +383,7 @@ const Login = () => {
             </Typography>
             <Box component="form" onSubmit={login} sx={{ mt: 1 }}>
               <TextField
+                color="secondary"
                 margin="dense"
                 fullWidth
                 id="userId"
@@ -386,6 +397,7 @@ const Login = () => {
                 onChange={changeUserId}
               />
               <TextField
+                color="secondary"
                 margin="dense"
                 fullWidth
                 name="userPw"
@@ -430,12 +442,24 @@ const Login = () => {
               </Button>
               <Grid container sx={{ marginBottom: "35px" }}>
                 <Grid item xs>
-                  <Link href="/findpassword" variant="body2">
+                  <Link href="/findpassword" variant="body2" sx={{
+                    color: '#1565c0', textDecorationColor: '#1565c0',
+                    ":hover": {
+                      color: '#1565c0',
+                      opacity: 0.7,
+                    }
+                  }}>
                     앗! 비밀번호를 까먹었을 땐?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/signup" variant="body2">
+                  <Link href="/signup" variant="body2" sx={{
+                    color: '#1565c0', textDecorationColor: '#1565c0',
+                    ":hover": {
+                      color: '#1565c0',
+                      opacity: 0.7,
+                    }
+                  }}>
                     {"계정이 없으신가요?"}
                   </Link>
                 </Grid>
