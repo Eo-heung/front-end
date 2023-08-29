@@ -47,6 +47,7 @@ const KakaoHandler = () => {
                                 userId: res.data.kakao_account.email,
                                 userBirth: res.data.kakao_account.birthday,
                                 userNickname: res.data.kakao_account.nickname
+
                             })
                                 .then((res) => {
                                     alert(`${res.data.item.userName}님 환영합니다.`);

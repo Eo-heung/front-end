@@ -2,7 +2,9 @@ import { FormControl, FormControlLabel, InputLabel, MenuItem, Paper, Select, Tex
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import styled from 'styled-components';
-import { SPRING_API_URL } from "../../config"
+import LinearProgress from '@mui/material/LinearProgress';
+import { margin } from '@mui/system';
+import { async } from 'q';
 
 const StyledButton = styled.button`
 width: 300px;
@@ -64,7 +66,7 @@ const Payment = () => {
 
   const totalGam = async () => {
     axios.post(
-      `${SPRING_API_URL}/totalGotGam`,
+      "http://localhost:9000/totalGotGam",
       {},
       {
         headers: {
@@ -79,7 +81,7 @@ const Payment = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await axios.post(`${SPRING_API_URL}/mypage/myinfo`,
+      const response = await axios.post('http://localhost:9000/mypage/myinfo',
         {},
         {
           headers: {
@@ -168,11 +170,11 @@ const Payment = () => {
     const { success, error_msg, imp_uid, merchant_uid, pay_method, paid_amount, status } = response;
 
     if (success) {
-      const data = await axios.post(`${SPRING_API_URL}/verifyIamport/${imp_uid}`, {})
+      const data = await axios.post(`http://localhost:9000/verifyIamport/${imp_uid}`, {})
       console.log(data.data.response.amount);
       if (data.data.response.amount === paid_amount) {
         // 유저아이디, imp_uid, merchant_uid, paid_amount
-        const result = axios.post(`${SPRING_API_URL}/addPayment`, {
+        const result = axios.post('http://localhost:9000/addPayment', {
           imp_uid: imp_uid,
           merchant_uid: merchant_uid,
           value: paid_amount

@@ -6,6 +6,7 @@ import CssBaseline from '@mui/material/CssBaseline';
 import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import * as React from 'react';
+import secondImage from '../../public/02.png'; // 추가된 이미지 가져오기
 
 const Join = ({ handleClick }) => {
     const defaultTheme = createTheme();
@@ -41,10 +42,10 @@ const Join = ({ handleClick }) => {
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥! 반가워요!
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black', marginBottom: '20px' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black', marginBottom: '0px' }}>
                         당신에 대해 알려주세요!
                     </Typography>
-                    <img alt='' style={{ width: '100%', height: '100%' }} src={"https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"} />
+                    <img alt="" style={{ width: '100%', height: '100%', marginTop: '-40px' }} src={secondImage} />
                 </Box>
                 <Button onClick={handleClick}
                     fullWidth
@@ -53,9 +54,8 @@ const Join = ({ handleClick }) => {
                     sx={{
                         color: 'black',
                         height: '44px',
-                        fontFamily: "font-medium",
-                        mt: 3,
                         mb: 2,
+                        fontFamily: "font-medium",
                         backgroundColor: '#FEA53D', // 평소 색상
                         '&:hover': {
                             backgroundColor: '#FEB158', // 호버 시 색상

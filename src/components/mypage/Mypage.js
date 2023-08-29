@@ -1,34 +1,12 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  Link,
-  MenuItem,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Tabs,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Divider, FormControl, FormControlLabel, Grid, Link, MenuItem, Paper, Radio, RadioGroup, Select, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Typography, } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 import basicProfile from "../../public/basic_profile.png";
 
 const TabButton = styled.button`
@@ -133,7 +111,7 @@ const Mypage = () => {
   useEffect(() => {
     // 예를 들면 아래와 같이 DB에서 데이터를 가져온다고 가정합니다.
     axios
-      .post("http://localhost:9000/hobby/gethobby")
+      .post(`${SPRING_API_URL}/hobby/gethobby`)
       .then((res) => res.data)
       .then((data) => {
         const interests = [];
@@ -213,7 +191,7 @@ const Mypage = () => {
   const checkPhone = async (tel) => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/checkphone",
+        `${SPRING_API_URL}/checkphone`,
         tel
       );
       console.log(response.data);
@@ -234,7 +212,7 @@ const Mypage = () => {
       console.log(userinfo);
 
       const response = await axios.post(
-        "http://localhost:9000/mypage/changephone",
+        `${SPRING_API_URL}/mypage/changephone`,
         userinfo,
         {
           headers: {
@@ -253,7 +231,7 @@ const Mypage = () => {
   const checkPassword = async (userPw) => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/checkpassword",
+        `${SPRING_API_URL}/mypage/checkpassword`,
         { userPw: userPw },
         {
           headers: {
@@ -274,7 +252,7 @@ const Mypage = () => {
         userPw: userPw,
       };
       const response = await axios.post(
-        "http://localhost:9000/mypage/changepassword",
+        `${SPRING_API_URL}/mypage/changepassword`,
         userinfo,
         {
           headers: {
@@ -291,7 +269,7 @@ const Mypage = () => {
   const getProfileImage = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/getprofileimage",
+        `${SPRING_API_URL}/mypage/getprofileimage`,
         {},
         {
           headers: {
@@ -326,7 +304,7 @@ const Mypage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/changeprofileimage",
+        `${SPRING_API_URL}/mypage/changeprofileimage`,
         formData,
         {
           headers: {
@@ -636,7 +614,7 @@ const Mypage = () => {
   const fetchUserInfo = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/myinfo",
+        `${SPRING_API_URL}/mypage/myinfo`,
         {},
         {
           headers: {
@@ -677,7 +655,7 @@ const Mypage = () => {
   useEffect(() => {
     axios
       .post(
-        "http://localhost:9000/mypage/mymoim",
+        `${SPRING_API_URL}/mypage/mymoim`,
         {}, // This is the request body. It's empty in this case.
         {
           headers: {
@@ -700,7 +678,7 @@ const Mypage = () => {
   const editInfo = () => {
     axios
       .post(
-        "http://localhost:9000/mypage/editinfo",
+        `${SPRING_API_URL}/mypage/editinfo`,
         {
           userName: userName,
           userAddr1: userAddr1,
@@ -730,7 +708,7 @@ const Mypage = () => {
   const getFriendList = async () => {
     axios
       .post(
-        "http://localhost:9000/friend/friendList",
+        `${SPRING_API_URL}/friend/friendList`,
         {},
         {
           headers: {
@@ -750,7 +728,7 @@ const Mypage = () => {
   const getRequestFriendList = async () => {
     axios
       .post(
-        "http://localhost:9000/friend/requestFriendList",
+        `${SPRING_API_URL}/friend/requestFriendList`,
         {},
         {
           headers: {
@@ -769,7 +747,7 @@ const Mypage = () => {
   const getPaymentList = async () => {
     axios
       .post(
-        "http://localhost:9000/paymentList",
+        `${SPRING_API_URL}/paymentList`,
         {},
         {
           headers: {
@@ -788,7 +766,7 @@ const Mypage = () => {
 
   const acceptRequestFriend = async (id, requestValue) => {
     axios
-      .post(`http://localhost:9000/friend/requestFriend/${id}`, {
+      .post(`${SPRING_API_URL}/friend/requestFriend/${id}`, {
         id: requestValue,
       })
       .then((res) => {
@@ -809,7 +787,7 @@ const Mypage = () => {
     }
 
     axios
-      .post(`http://localhost:9000/friend/deleteFriend/${id}`, {})
+      .post(`${SPRING_API_URL}/friend/deleteFriend/${id}`, {})
       .then((res) => {
         console.log(res.data);
         getRequestFriendList();
@@ -826,7 +804,7 @@ const Mypage = () => {
       return; // 사용자가 취소를 누르면 여기에서 함수를 종료합니다
     } else {
       axios
-        .post(`http://localhost:9000/cancelPayment/${id}`, {})
+        .post(`${SPRING_API_URL}/cancelPayment/${id}`, {})
         .then((res) => {
           console.log(res.data);
           alert(res.data.item.msg);

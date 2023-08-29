@@ -14,6 +14,7 @@ import { styled } from "@mui/system";
 import axios from 'axios';
 import React, { useEffect, useState } from "react";
 import { useNavigate } from 'react-router-dom';
+import { SPRING_API_URL } from "../../config";
 import thumbImage from '../../public/04.png';
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
@@ -65,7 +66,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
 
   const idCheck = async () => {
     try {
-      const response = await axios.post('http://localhost:9000/idcheck', {
+      const response = await axios.post(`${SPRING_API_URL}/idcheck`, {
         userId: userTel
       });
       console.log(response);

@@ -12,6 +12,7 @@ import { styled } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/01.png';
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 
 const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setUserAddr3, backClick }) => {
     const [progress, setProgress] = useState(0);
@@ -33,7 +34,7 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
         try {
             console.log(ipData);
 
-            const response = await axios.get('http://localhost:9000/getlocation', {
+            const response = await axios.get(`${SPRING_API_URL}/getlocation`, {
                 params: {
                     ip: ip
                 }

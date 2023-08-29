@@ -224,7 +224,16 @@ const Login = () => {
 
         loginAxios();
     });
-    const defaultTheme = createTheme();
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
 
     // 캐러셀
     function CarouselItem({ src }) {
@@ -351,12 +360,24 @@ const Login = () => {
                             </Button>
                             <Grid container sx={{ marginBottom: "35px" }}>
                                 <Grid item xs>
-                                    <Link href="/findpassword" variant="body2">
+                                    <Link href="/findpassword" variant="body2" sx={{
+                                        color: '#1565c0', textDecorationColor: '#1565c0',
+                                        ":hover": {
+                                            color: '#1565c0',
+                                            opacity: 0.7,
+                                        }
+                                    }}>
                                         앗! 비밀번호를 까먹었을 땐?
                                     </Link>
                                 </Grid>
                                 <Grid item>
-                                    <Link href="/signup" variant="body2">
+                                    <Link href="/signup" variant="body2" sx={{
+                                        color: '#1565c0', textDecorationColor: '#1565c0',
+                                        ":hover": {
+                                            color: '#1565c0',
+                                            opacity: 0.7,
+                                        }
+                                    }}>
                                         {"계정이 없으신가요?"}
                                     </Link>
                                 </Grid>

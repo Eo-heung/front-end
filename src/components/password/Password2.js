@@ -14,6 +14,7 @@ import { styled } from "@mui/system";
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import thumbImage from '../../public/04.png';
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled("div")(({ progress }) => ({
@@ -63,7 +64,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
 
   const checkPhone = (tel) => {
     axios
-      .post("http://localhost:9000/checkphone", tel)
+      .post(`${SPRING_API_URL}/checkphone`, tel)
       .then((response) => {
         console.log(response.data); // 서버로부터의 응답을 출력합니다.
         setCheckNum(() => response.data.item);
