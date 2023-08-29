@@ -92,14 +92,14 @@ const JoinName = ({ handleClick, setUserName }) => {
                         marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥에서 사용할
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
                         내 닉네임은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2} style={{ marginTop: '60px', width: '100%', alignItems: 'center' }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required

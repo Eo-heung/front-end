@@ -87,6 +87,7 @@
   .closed .dropdown-menu {
     display: block;
   }
+
 }
 
 .open .btn {
@@ -141,11 +142,13 @@
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 @media (prefers-reduced-motion: reduce) {
   .btn-logout {
     transition: none;
   }
 }
+
 .btn-logout:hover {
   color: var(--bs-btn-logout-hover-color);
   background-color: var(--bs-btn-logout-hover-bg);
@@ -190,11 +193,13 @@
   transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out,
     border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
 }
+
 @media (prefers-reduced-motion: reduce) {
   .btn-credit {
     transition: none;
   }
 }
+
 .btn-credit:hover {
   color: var(--bs-btn-credit-hover-color);
   background-color: var(--bs-btn-credit-hover-bg);
@@ -216,9 +221,11 @@
   --bs-btn-focus-shadow-rgb: 49, 132, 253;
   text-decoration: none;
 }
+
 .btn-link:focus-visible {
   color: var(--bs-btn-color);
 }
+
 .btn-link:hover {
   color: var(--bs-btn-hover-color);
 }

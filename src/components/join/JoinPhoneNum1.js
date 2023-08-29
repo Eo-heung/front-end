@@ -114,14 +114,14 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
                     }}
                 >
 
-                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ marginBottom: '5px' }}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥과 함께할
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
                         내 핸드폰 번호는?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required

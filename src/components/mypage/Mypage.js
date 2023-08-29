@@ -925,16 +925,16 @@ const Mypage = () => {
                             style={{ padding: "24px 24px 24px 50px" }}
                           >
                             {[
-                              ["닉네임", userName],
+                              ["닉네임", userName || "닉네임을 입력해주세요."],
                               [
                                 "내 지역",
-                                `${userAddr1} ${userAddr2} ${userAddr3}`,
+                                `${userAddr1 || "지역을 입력해주세요."} ${userAddr2 || ""} ${userAddr3 || ""}`,
                               ],
-                              ["관심사", userHobby1 || ""],
+                              ["관심사", userHobby1 || "관심사를 입력해주세요."],
                               ["좋아하는 음악 장르", userHobby2 || ""],
                               ["좋아하는 음식 종류", userHobby3 || ""],
                               ["그 외 관심사", userRecommend || ""],
-                              ["상태메세지", userStatusMessage || ""],
+                              ["상태메세지", userStatusMessage || "상태메세지를 입력해주세요."],
                             ].map(([label, value]) => (
                               <>
                                 <Grid container spacing={2} alignItems="center">
@@ -1066,11 +1066,11 @@ const Mypage = () => {
                                           "좋아하는 음식 종류",
                                         ].includes(label)
                                           ? getHobbyNameByCode(
-                                              value,
-                                              interests,
-                                              musicGenres,
-                                              foodTypes
-                                            )
+                                            value,
+                                            interests,
+                                            musicGenres,
+                                            foodTypes
+                                          )
                                           : value}
                                       </div>
                                     )}
@@ -1214,11 +1214,11 @@ const Mypage = () => {
                           style={{ padding: "24px 500px 24px 50px" }}
                         >
                           {[
-                            ["휴대폰 번호", userTel],
+                            ["휴대폰 번호", userTel || "휴대폰을 인증해주세요."],
                             ["비밀번호", ""],
                             ["생년월일", userBirth || ""],
-                            ["성별", userGender || ""],
-                            ["이메일", userEmail || ""],
+                            ["성별", userGender || "성별을 입력해주세요."],
+                            ["이메일", userEmail || "이메일을 입력해주세요."],
                             ["가입일", userRegdate || ""],
                           ].map(([label, value]) => (
                             <>
@@ -1234,7 +1234,7 @@ const Mypage = () => {
                                 </Grid>
                                 <Grid item xs={8}>
                                   {isEditing &&
-                                  !["생년월일", "가입일"].includes(label) ? (
+                                    !["생년월일", "가입일"].includes(label) ? (
                                     label === "휴대폰 번호" ? (
                                       <div>
                                         <Typography
@@ -1320,26 +1320,26 @@ const Mypage = () => {
                                     <div sx={{ width: "650px" }}>
                                       {label === "휴대폰 번호"
                                         ? value.replace(
-                                            /^(\d{3})(\d{4})(\d{4})$/,
-                                            "$1 - $2 - $3"
-                                          )
+                                          /^(\d{3})(\d{4})(\d{4})$/,
+                                          "$1 - $2 - $3"
+                                        )
                                         : label === "생년월일"
-                                        ? `${value.slice(0, 4)}년 ${value.slice(
+                                          ? `${value.slice(0, 4)}년 ${value.slice(
                                             4,
                                             6
                                           )}월 ${value.slice(6, 8)}일`
-                                        : label === "가입일"
-                                        ? value
-                                            .slice(0, 10)
-                                            .replace(/-/g, "년 ")
-                                            .replace(/-/g, "월 ") + "일"
-                                        : label === "성별"
-                                        ? userGender === 1
-                                          ? "남자"
-                                          : userGender === 0
-                                          ? "여자"
-                                          : ""
-                                        : value}
+                                          : label === "가입일"
+                                            ? value
+                                              .slice(0, 10)
+                                              .replace(/-/g, "년 ")
+                                              .replace(/-/g, "월 ") + "일"
+                                            : label === "성별"
+                                              ? userGender === 1
+                                                ? "남자"
+                                                : userGender === 0
+                                                  ? "여자"
+                                                  : ""
+                                              : value}
                                     </div>
                                   )}
                                   {/* Example Modal component */}
@@ -1580,26 +1580,26 @@ const Mypage = () => {
                                             )
                                               .toString()
                                               .padStart(2, "0")}월 ${new Date(
-                                              payment.payDate
-                                            )
-                                              .getDate()
-                                              .toString()
-                                              .padStart(2, "0")}일(${new Date(
-                                              payment.payDate
-                                            )
-                                              .getHours()
-                                              .toString()
-                                              .padStart(2, "0")}:${new Date(
-                                              payment.payDate
-                                            )
-                                              .getMinutes()
-                                              .toString()
-                                              .padStart(2, "0")}:${new Date(
-                                              payment.payDate
-                                            )
-                                              .getSeconds()
-                                              .toString()
-                                              .padStart(2, "0")})`) ||
+                                                payment.payDate
+                                              )
+                                                .getDate()
+                                                .toString()
+                                                .padStart(2, "0")}일(${new Date(
+                                                  payment.payDate
+                                                )
+                                                  .getHours()
+                                                  .toString()
+                                                  .padStart(2, "0")}:${new Date(
+                                                    payment.payDate
+                                                  )
+                                                    .getMinutes()
+                                                    .toString()
+                                                    .padStart(2, "0")}:${new Date(
+                                                      payment.payDate
+                                                    )
+                                                      .getSeconds()
+                                                      .toString()
+                                                      .padStart(2, "0")})`) ||
                                             "날짜 확인 불가"}
                                         </Typography>
                                       </div>
@@ -1703,11 +1703,10 @@ const Mypage = () => {
                                             borderRadius: "25px",
                                             marginRight: "8px",
                                             border: "2px solid white",
-                                            boxShadow: `0 0 5px 2px ${
-                                              friend.online
-                                                ? "#05FF00"
-                                                : "#B6B6B6"
-                                            }`,
+                                            boxShadow: `0 0 5px 2px ${friend.online
+                                              ? "#05FF00"
+                                              : "#B6B6B6"
+                                              }`,
                                           }}
                                         />
                                       </div>
