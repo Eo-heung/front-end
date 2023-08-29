@@ -13,7 +13,7 @@ import "../../css/partials/CameraChatting.css";
 import { Link } from "react-router-dom";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
-import PopupSiren from "../popup/PopupFriend";
+import PopupSiren from "../popup/PopupSiren";
 import PopupFriend from "../popup/PopupFriend";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
@@ -46,6 +46,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [isSirenPopupOpen, setIsSirenPopupOpen] = useState(false);
   const [isFriendPopupOpen, setIsFriendPopupOpen] = useState(false);
+  const [connectedTime, setConnectedTime] = useState("");
 
   const textChatVisibleRef = useRef(textChatVisible);
   const token = sessionStorage.getItem("ACCESS_TOKEN");
@@ -61,6 +62,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleOpenSirenPopup = () => {
     setIsSirenPopupOpen(true);
+    console.log(connectedTime);
   };
 
   const handleCloseSirenPopup = () => {
@@ -84,7 +86,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://192.168.0.61:4000");
+    socket.current = io("http://localhost:4000");
     setMyNickname(getCookie("userNickname"));
     setMyUserId(getCookie("userId"));
 
@@ -114,7 +116,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const roomName = data.roomName;
       const opponentNickname = data.opponentNickname;
       const opponentUserId = data.opponentUserId;
-
       console.log(
         `You (${userNickname},${userId}) are matched with user ${opponentNickname} in room ${roomName}`
       );
@@ -130,6 +131,10 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     });
 
     socket.current.on("welcome", async () => {
+      const currentTime = new Date();
+      setConnectedTime(currentTime);
+
+      console.log("Current Time:", currentTime);
       console.log("welcome");
 
       myDataChannel.current =
@@ -217,6 +222,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       socket.current.off("answer");
       socket.current.off("ice");
       socket.current.disconnect();
+
       socket.current.on("typing", handleTyping);
       if (myStreamRef.current) {
         myStreamRef.current.getTracks().forEach((track) => {
@@ -369,13 +375,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://192.168.0.61:4000/nickname", {
+      const response = await axios.get("http://localhost:4000/nickname", {
         params: {
           nickname: userNickname,
           userId: userId,
         },
       });
-
       // 응답 데이터를 콘솔에 출력
       console.log(response);
     } catch (error) {
@@ -391,7 +396,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handlechargeClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://192.168.0.61:1234/chattingcharge",
+      "http://localhost:1234/chattingcharge",
       "_blank",
       "width=800,height=600"
     );
@@ -424,7 +429,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const makeFriendRequest = async (opponentUserId, token) => {
     try {
-      const url = `http://192.168.0.61:9000/friend/makefriend/${opponentUserId}`;
+      const url = `http://localhost:9000/friend/makefriend/${opponentUserId}`;
 
       const config = {
         headers: {
@@ -464,10 +469,16 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     makeFriendRequest(opponentUserId, token);
     console.log(opponentUserId, token);
   };
+
   return (
     <>
       <div id="linkbutton">
-        <Link className="toplink" onClick={handleOpenSirenPopup}>
+        <Link
+          className="toplink"
+          value={connectedTime}
+          onChange={(e) => setRoomName(e.target.value)}
+          onClick={handleOpenSirenPopup}
+        >
           <NotificationImportantIcon
             style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
           />
@@ -486,6 +497,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       </div>
       <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
         <h2>신고 하기</h2>
+
         <p>"{opponentNickname}"님을 신고하시겠어요?</p>
       </PopupSiren>
 
@@ -510,9 +522,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           {/* 상대방 비디오 혹은 대기 이미지 */}
           {connectionStatus === "매칭됨" ? (
             <div className="opponent-nickname">
-              <span className="nickname-label">
-                {opponentNickname},{opponentUserId}
-              </span>
+              <span className="nickname-label">{opponentNickname}</span>
               <video
                 ref={peerFaceRef}
                 className="video-style3"
@@ -533,7 +543,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           />
         </div>
         <div className="button-container">
-          <h1>{userId}</h1>
           <button
             className="start-button"
             onClick={handleStartRandomChat}
