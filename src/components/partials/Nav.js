@@ -37,6 +37,12 @@ const Nav = ({ getFriendList, friends }) => {
   // style={{ width: '45%' }}
   function List(props) {
     const friend = props.friend;
+
+    // 글자 수가 10자 초과일 때 '...'을 추가하는 로직
+    const displayName = friend.user_name.length > 10
+      ? friend.user_name.substring(0, 10) + "..."
+      : friend.user_name;
+
     return (
       <>
         <tr key={friend.user_name}>
@@ -44,22 +50,19 @@ const Nav = ({ getFriendList, friends }) => {
             <img
               style={{
                 border: "2px solid white",
-                boxShadow: `0 0 5px 2px ${
-                  friend.online ? "#05FF00" : "#B6B6B6"
-                }`,
+                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"
+                  }`,
               }}
-              src={`data:image/jpeg;base64,${friend.profile}`}
+              src={friend.profile && `data:image/jpeg;base64,${friend.profile}` || basicProfile}
               alt="프로필 사진"
             />
           </td>
-          <td style={{ width: "100px" }}>{friend.user_name}</td>
-          <td style={{ width: "70px" }}>
-            {friend.online ? "온라인" : "오프라인"}
-          </td>
+          <td style={{ width: "170px" }}>{displayName}</td>
         </tr>
       </>
     );
   }
+
 
   return (
     <div className="sb-nav-fixed">
@@ -70,6 +73,7 @@ const Nav = ({ getFriendList, friends }) => {
             <div className="sb-sidenav-profile">
               <div className="sidenav-profile-mypic">
                 <img
+                  alt="프로필 이미지"
                   className="sidenav-profile-img"
                   style={{
                     maxWidth: "100%",
