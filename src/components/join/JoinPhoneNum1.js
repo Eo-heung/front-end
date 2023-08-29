@@ -10,6 +10,7 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { SPRING_API_URL } from "../../config";
 import thumbImage from '../../public/01.png';
 
 
@@ -18,7 +19,7 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
     const [isTelValid, setIsTelValid] = useState(true);
 
     const checkPhone = (tel) => {
-        axios.post('http://localhost:9000/checkphone', tel)
+        axios.post(`${SPRING_API_URL}/checkphone`, tel)
             .then(response => {
                 console.log(response.data); // 서버로부터의 응답을 출력합니다.
                 setCheckNum(() => response.data.item)

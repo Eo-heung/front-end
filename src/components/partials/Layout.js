@@ -4,6 +4,7 @@ import Footer from "../partials/Footer";
 import Header from "../partials/Header";
 import Main from "../partials/Main";
 import Nav from "../partials/Nav";
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 
 const Layout = () => {
   const [friends, setFriends] = useState([]);
@@ -12,7 +13,7 @@ const Layout = () => {
   const getFriendList = async () => {
     axios
       .post(
-        "http://localhost:9000/friend/friendList",
+        `${SPRING_API_URL}/friend/friendList`,
         {},
         {
           headers: {

@@ -13,6 +13,8 @@ import React, { useEffect, useState } from "react";
 import thumbImage from '../../public/04.png';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
+
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled("div")(({ progress }) => ({
@@ -35,7 +37,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
 
   const idCheck = async () => {
     try {
-      const response = await axios.post('http://localhost:9000/idcheck', {
+      const response = await axios.post(`${SPRING_API_URL}/idcheck`, {
         userId: userTel
       });
       console.log(response);
