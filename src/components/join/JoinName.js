@@ -1,3 +1,5 @@
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { IconButton } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
@@ -11,24 +13,30 @@ import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/01.png';
 
-const JoinName = ({ handleClick, setUserName }) => {
+const JoinName = ({ handleClick, setUserName, backClick }) => {
     const [progress, setProgress] = useState(0);
 
     const handleSubmit = (event) => {
         event.preventDefault();
         const data = new FormData(event.currentTarget);
+        const name = data.get('name');
 
-        const message = `'${data.get('name')}' 님이 맞나요?`
+        // 이름의 길이가 3-8자 사이인지 검증
+        if (name.length < 3 || name.length > 8) {
+            alert("닉네임은 3-8자 사이로 입력해주세요.");
+            return; // 길이 조건에 맞지 않으면 함수를 종료
+        }
+
+        const message = `'${name}' 님이 맞나요?`
 
         if (window.confirm(message)) {
-            setUserName(() => data.get('name'));
+            setUserName(() => name);
             handleClick();
         } else {
             console.log("다시 입력해주세요");
         }
-
-
     };
+
 
     const Circle = styled('div')(({ progress }) => ({
         position: 'absolute',
@@ -87,11 +95,23 @@ const JoinName = ({ handleClick, setUserName }) => {
                 <CssBaseline />
                 <Box
                     sx={{
+                        position: 'relative', // 추가
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
                         marginTop: 12.5
                     }}
                 >
+                    <IconButton
+                        sx={{
+                            position: 'absolute',
+                            top: "-70px",
+                        }}
+                        onClick={() => {
+                            backClick();
+                        }}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥에서 사용할
                     </Typography>
@@ -99,7 +119,7 @@ const JoinName = ({ handleClick, setUserName }) => {
                         내 닉네임은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} style={{ marginTop: '60px', width: '100%', alignItems: 'center' }}>
+                        <Grid container spacing={2} style={{ marginTop: '60px', }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required
@@ -128,6 +148,7 @@ const JoinName = ({ handleClick, setUserName }) => {
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
                                     backgroundColor: '#FEA53D', // 평소 색상
