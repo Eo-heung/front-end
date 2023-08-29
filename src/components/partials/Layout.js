@@ -33,15 +33,17 @@ const Layout = () => {
   };
 
   return (
-    <>
+    <div className="layoutWrapper">
       <Header userId={userId} getFriendList={getFriendList}></Header>
 
       <Nav friends={friends} getFriendList={getFriendList}></Nav>
 
-      <Main></Main>
+      <div className="layoutContent">
+        <Main ></Main>
+      </div>
 
       <Footer></Footer>
-    </>
+    </div>
   );
 };
 

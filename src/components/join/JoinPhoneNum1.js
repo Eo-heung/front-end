@@ -1,8 +1,10 @@
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -14,7 +16,8 @@ import { SPRING_API_URL } from "../../config";
 import thumbImage from '../../public/01.png';
 
 
-const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
+
+const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
     const [progress, setProgress] = useState(0);
     const [isTelValid, setIsTelValid] = useState(true);
 
@@ -109,11 +112,23 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
                 <CssBaseline />
                 <Box
                     sx={{
+                        position: 'relative', // 추가
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
                         marginTop: 12.5
                     }}
                 >
+                    <IconButton
+                        sx={{
+                            position: 'absolute',
+                            top: "-70px",
+                        }}
+                        onClick={() => {
+                            backClick();
+                        }}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>
 
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥과 함께할
@@ -155,6 +170,7 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
                                     backgroundColor: '#FEA53D', // 평소 색상

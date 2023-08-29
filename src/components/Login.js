@@ -33,13 +33,13 @@ const Login = () => {
   const loginSuccessHandler = (data) => {
     console.log("Received data:", data);
     if (data.userName) {
-      setCookie("userNickname", data.userName, { path: "/" });
+      setCookie('userNickname', data.userName, { path: '/' });
     }
     if (data.userAddr3) {
-      setCookie("userAddr3", data.userAddr3, { path: "/" });
+      setCookie('userAddr3', data.userAddr3, { path: '/' });
     }
     if (data.userId) {
-      setCookie("userId", data.userId, { path: "/" });
+      setCookie('userId', data.userId, { path: '/' });
     }
   };
 
@@ -224,8 +224,7 @@ const Login = () => {
 
     loginAxios();
   });
-
-  const theme1 = createTheme({
+  const defaultTheme = createTheme({
     palette: {
       primary: {
         main: '#FEA53D',
@@ -236,20 +235,22 @@ const Login = () => {
     },
   });
 
+  // 캐러셀
+  function CarouselItem({ src }) {
+    return (
+      <Box sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100%' }}>
+        <Paper sx={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+          <img sx={{ width: '80%', height: '80%' }} src={src} />
+        </Paper>
+      </Box>
+    );
+  }
+
+
   return (
-    <ThemeProvider theme={theme1}>
+    <ThemeProvider theme={defaultTheme}>
       {console.log(`remember : ${remember}`)}
-      <Grid
-        container
-        component="main"
-        sx={{
-          minWidth: "512px",
-          width: "60%",
-          height: "100vh",
-          alignItems: "center",
-          margin: "auto",
-        }}
-      >
+      <Grid container component="main" sx={{ minWidth: '512px', width: '60%', height: '100vh', alignItems: 'center', margin: 'auto' }}>
         <CssBaseline />
         <Grid
           item
@@ -257,111 +258,30 @@ const Login = () => {
           sm={4}
           md={7}
           sx={{
-            height: "70%",
-            backgroundRepeat: "no-repeat",
+            height: '70%',
+            backgroundRepeat: 'no-repeat',
             backgroundColor: (t) =>
-              t.palette.mode === "light"
-                ? t.palette.grey[50]
-                : t.palette.grey[900],
-            backgroundSize: "contain",
-            backgroundPosition: "center",
+              t.palette.mode === 'light' ? t.palette.grey[50] : t.palette.grey[900],
+            backgroundSize: 'contain',
+            backgroundPosition: 'center',
+            overflow: 'hidden',
           }}
         >
-          {/* 캐러셀 내부에 이미지 넣고 싶으면, 아래에 paper 복사해서 Carousel 내부에 추가한 후, img src 맞춰서 넣으면 됨. */}
-          <Carousel
-            height={600}
-            animation="slide"
-            navButtonsAlwaysVisible="true"
+          <Carousel height={600} animation='slide' navButtonsAlwaysVisible='true'
             indicatorContainerProps={{
               style: {
-                marginBottom: "10%", // 5
-                textAlign: "center", // 4
-              },
+                marginBottom: '10%',
+                textAlign: 'center'
+              }
             }}
-            duration={1000}
-            sx={{ width: "100%", height: "100%" }}
+            duration={1000} sx={{ width: '100%', height: '100%' }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  style={{ width: "80%", height: "80%", cursor: "pointer" }}
-                  src={
-                    "https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"
-                  }
-                />
-              </Paper>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  style={{ width: "80%", height: "80%" }}
-                  src={
-                    "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"
-                  }
-                />
-              </Paper>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  style={{ width: "80%", height: "80%" }}
-                  src={
-                    "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832"
-                  }
-                />
-              </Paper>
-            </Box>
+            <CarouselItem src="https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d" />
+            <CarouselItem src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340" />
+            <CarouselItem src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832" />
           </Carousel>
         </Grid>
-        <Grid
-          item
-          xs={12}
-          sm={8}
-          md={5}
-          component={Paper}
-          elevation={6}
-          square
-          sx={{ height: "70%" }}
-        >
+        <Grid item xs={12} sm={8} md={5} component={Paper} elevation={6} square sx={{ height: '70%', overflowY: 'auto' }}>
           <Box
             sx={{
               my: 8,
@@ -383,7 +303,6 @@ const Login = () => {
             </Typography>
             <Box component="form" onSubmit={login} sx={{ mt: 1 }}>
               <TextField
-                color="secondary"
                 margin="dense"
                 fullWidth
                 id="userId"
@@ -397,7 +316,6 @@ const Login = () => {
                 onChange={changeUserId}
               />
               <TextField
-                color="secondary"
                 margin="dense"
                 fullWidth
                 name="userPw"

@@ -7,6 +7,7 @@ import axios from "axios";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
 import { SPRING_API_URL, REDIRECT_URL } from "../../config";
+import basicProfile from "../../public/basic_profile.png";
 
 const TabButton = styled.button`
   width: 17%;
@@ -1085,7 +1086,7 @@ const Mypage = () => {
                               id="previewImage"
                               src={
                                 imageFile ||
-                                "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                                basicProfile
                               }
                               alt="프로필 사진"
                               style={{
@@ -1672,7 +1673,7 @@ const Mypage = () => {
                                           src={
                                             friend.profile
                                               ? `data:image/jpeg;base64,${friend.profile}`
-                                              : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                                              : basicProfile
                                           }
                                           alt="프로필 사진"
                                           style={{

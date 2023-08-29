@@ -23,8 +23,6 @@ const SignUp = () => {
     const [checkNum, setCheckNum] = useState('');
     const [userGender, setUserGender] = useState(0);
 
-
-
     const user = {
         userId: userTel,
         userPw: userPw,
@@ -54,9 +52,9 @@ const SignUp = () => {
     const renderPage = () => {
         switch (pageIndex) {
             case 0:
-                return <Join handleClick={handleClick} />;
+                return <Join handleClick={handleClick} backClick={backClick} />;
             case 1:
-                return <JoinPhoneNum1 handleClick={handleClick} setUserTel={setUserTel} setCheckNum={setCheckNum} />;
+                return <JoinPhoneNum1 handleClick={handleClick} setUserTel={setUserTel} setCheckNum={setCheckNum} backClick={backClick} />;
             case 2:
                 return <JoinPhoneNum2 handleClick={handleClick} backClick={backClick} checkNum={checkNum} />;
             case 3:
@@ -72,7 +70,7 @@ const SignUp = () => {
             case 8:
                 return <JoinLocal3 handleClick={handleClick} backClick={backClick} userAddr1={userAddr1} userAddr2={userAddr2} userAddr3={userAddr3} />;
             case 9:
-                return <JoinFavorite handleClick={handleClick} user={user} userName={userName} />;
+                return <JoinFavorite handleClick={handleClick} backClick={backClick} user={user} userName={userName} />;
             default:
                 return <Join />;
         }
