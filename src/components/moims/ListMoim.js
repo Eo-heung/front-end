@@ -4,6 +4,7 @@ import axios from 'axios';
 import TopButton from '../utils/TopButton.js';
 import { throttle } from 'lodash';
 import { ListMoimContainer, ListMoimSearchContainer, ListMoimCategoryContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton, ListMoimPageTitle, ListMoimLink, ListMoimButton, ListMoimScrollDiv, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink, ListMoimAd, ListMoimAdContent } from '../utils/StyledListMoim.js';
+import { SPRING_API_URL } from '../../config';
 
 const ListMoim = () => {
     const [data, setData] = useState([]);
@@ -75,8 +76,8 @@ const ListMoim = () => {
         setIsLoading(true);
 
         const apiEndPoint = orderBy === 'ascending'
-            ? "http://localhost:9000/moim/list-moim/asc"
-            : "http://localhost:9000/moim/list-moim/desc";
+            ? `${SPRING_API_URL}/moim/list-moim/asc`
+            : `${SPRING_API_URL}/moim/list-moim/desc`;
 
         axios.post(apiEndPoint, {}, {
             headers: {

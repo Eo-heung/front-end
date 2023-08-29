@@ -1,4 +1,5 @@
 import { Visibility, VisibilityOff } from '@mui/icons-material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import { IconButton, InputAdornment } from '@mui/material';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
@@ -13,7 +14,47 @@ import { styled } from '@mui/system';
 import React, { useEffect, useState } from 'react';
 import thumbImage from '../../public/01.png';
 
-const JoinPW = ({ handleClick, setUserPw }) => {
+function LinearProgressWithLabel() {
+    const [progress, setProgress] = useState(16.67);
+
+    useEffect(() => {
+        const timer = setTimeout(() => {
+            setProgress(33.333);
+        }, 500);
+
+        return () => {
+            clearTimeout(timer);
+        };
+    }, []);
+
+
+    return (
+        <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
+            <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
+                <LinearProgress variant="determinate" value={progress} />
+                <Circle progress={progress} />
+            </Box>
+            <Box sx={{ flex: 1, marginLeft: 3 }}>
+                <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'2 / 6'}</Typography>
+            </Box>
+        </Box>
+    );
+}
+
+const Circle = styled('div')(({ progress }) => ({
+    position: 'absolute',
+    left: `calc(${progress}% - 5px)`,
+    top: '50%',
+    transform: 'translateY(-50%)',
+    width: '40px',
+    height: '40px',
+    backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
+    backgroundSize: 'cover', // 필요에 따라 배경 이미지 크기를 조절합니다.
+    zIndex: 2,
+    transition: "left 500ms ease-out"
+}));
+
+const JoinPW = ({ handleClick, setUserPw, backClick }) => {
     const [progress, setProgress] = useState(0);
     const [password, setPassword] = useState('');
     const [confirmPassword, setConfirmPassword] = useState('');
@@ -57,47 +98,9 @@ const JoinPW = ({ handleClick, setUserPw }) => {
     };
 
 
-    const Circle = styled('div')(({ progress }) => ({
-        position: 'absolute',
-        left: `calc(${progress}% - 5px)`,
-        top: '50%',
-        transform: 'translateY(-50%)',
-        width: '40px',
-        height: '40px',
-        backgroundImage: `url(${thumbImage})`, // 가져온 이미지를 배경 이미지로 사용합니다.
-        backgroundSize: 'cover', // 필요에 따라 배경 이미지 크기를 조절합니다.
-        zIndex: 2,
-        transition: "left 500ms ease-out"
-    }));
 
     const defaultTheme = createTheme();
 
-    function LinearProgressWithLabel() {
-        const [progress, setProgress] = useState(16.67);
-
-        useEffect(() => {
-            const timer = setTimeout(() => {
-                setProgress(33.333);
-            }, 500);
-
-            return () => {
-                clearTimeout(timer);
-            };
-        }, []);
-
-
-        return (
-            <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-                <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
-                    <LinearProgress variant="determinate" value={progress} />
-                    <Circle progress={progress} />
-                </Box>
-                <Box sx={{ flex: 1, marginLeft: 3 }}>
-                    <Typography variant="body2" color="black" sx={{ width: '30px' }}>{'2 / 6'}</Typography>
-                </Box>
-            </Box>
-        );
-    }
 
     const theme = createTheme({
         palette: {
@@ -114,19 +117,31 @@ const JoinPW = ({ handleClick, setUserPw }) => {
                 <CssBaseline />
                 <Box
                     sx={{
+                        position: 'relative', // 추가
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
                         marginTop: 12.5
                     }}
                 >
-                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'}>
+                    <IconButton
+                        sx={{
+                            position: 'absolute',
+                            top: "-70px",
+                        }}
+                        onClick={() => {
+                            backClick();
+                        }}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥 입장시에 사용할
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
                         비밀번호를 입력해 주세요
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required
@@ -199,6 +214,7 @@ const JoinPW = ({ handleClick, setUserPw }) => {
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
                                     backgroundColor: '#FEA53D', // 평소 색상

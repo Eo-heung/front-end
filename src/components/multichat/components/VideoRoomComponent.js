@@ -8,6 +8,7 @@ import "./VideoRoomComponent.css";
 import OpenViduLayout from "../layout/openvidu-layout";
 import UserModel from "../models/user-model";
 import ToolbarComponent from "./toolbar/ToolbarComponent";
+import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../../config";
 
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL =

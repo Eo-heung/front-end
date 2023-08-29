@@ -1,8 +1,10 @@
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
 import Box from '@mui/material/Box';
 import Button from '@mui/material/Button';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
 import Grid from '@mui/material/Grid';
+import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
@@ -10,15 +12,17 @@ import { ThemeProvider, createTheme } from '@mui/material/styles';
 import { styled } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
+import { SPRING_API_URL } from "../../config";
 import thumbImage from '../../public/01.png';
 
 
-const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
+
+const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
     const [progress, setProgress] = useState(0);
     const [isTelValid, setIsTelValid] = useState(true);
 
     const checkPhone = (tel) => {
-        axios.post('http://localhost:9000/checkphone', tel)
+        axios.post(`${SPRING_API_URL}/checkphone`, tel)
             .then(response => {
                 console.log(response.data); // 서버로부터의 응답을 출력합니다.
                 setCheckNum(() => response.data.item)
@@ -108,20 +112,32 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
                 <CssBaseline />
                 <Box
                     sx={{
+                        position: 'relative', // 추가
                         minHeight: '608.57px',
                         maxHeight: '608.57px',
                         marginTop: 12.5
                     }}
                 >
+                    <IconButton
+                        sx={{
+                            position: 'absolute',
+                            top: "-70px",
+                        }}
+                        onClick={() => {
+                            backClick();
+                        }}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>
 
-                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ marginBottom: '5px' }}>
+                    <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥과 함께할
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontWeight: 'bold' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
                         내 핸드폰 번호는?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} >
+                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required
@@ -154,6 +170,7 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum }) => {
                                 sx={{
                                     color: 'black',
                                     height: '44px',
+                                    fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
                                     backgroundColor: '#FEA53D', // 평소 색상

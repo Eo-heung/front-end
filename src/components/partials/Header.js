@@ -1,17 +1,13 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import { Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Stomp } from "@stomp/stompjs";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styled from "styled-components";
-import logo from "../../public/logo.gif";
-// import logo from "../../public/logo.png";
-import PersonIcon from "@mui/icons-material/Person";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-
+import { SPRING_API_URL } from "../../config";
 import "../../css/partials/Header.css";
+import logo from "../../public/logo.gif";
 
 const StyledTypography = styled(Typography)`
   color: #000;
@@ -41,7 +37,7 @@ const Header = ({ getFriendList, userId }) => {
     } else {
       if (userId) {
         const socketFactory = () =>
-          new SockJS("http://localhost:9000/websocket-endpoint");
+          new SockJS(`${SPRING_API_URL}/websocket-endpoint`);
         stompClient.current = Stomp.over(socketFactory);
 
         stompClient.current.connect({}, (frame) => {
@@ -136,7 +132,6 @@ const Header = ({ getFriendList, userId }) => {
                 width: "200px",
                 height: "90px",
                 // marginTop: "15px",
-                marginRight: "20px",
               }}
             />
           </Link>
