@@ -367,7 +367,6 @@ table tr:last-child td {
   bottom: 0;
   left: 0;
   width: 100%;
-  border: "10px solid green";
   z-index: -10;
 }
 
@@ -376,7 +375,7 @@ table tr:last-child td {
 /*0811 수정. 헤더 부분 별도 지정*/
 .sb-nav-fixed .sb-topnav {
   position: fixed;
-  height: 10vh;
+  height: 11vh;
   top: 0;
   left: 0;
   right: 0;
