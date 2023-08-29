@@ -7,6 +7,7 @@ import { styled } from '@mui/system';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import { SPRING_API_URL } from '../../config';
 
 const StyledForm = styled('form')`
     display: flex;
@@ -217,7 +218,7 @@ const CreateMoim = () => {
             };
 
             try {
-                const response = await axios.post('http://localhost:9000/moim/create-moim', userData, {
+                const response = await axios.post(`${SPRING_API_URL}/moim/create-moim`, userData, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
@@ -246,7 +247,7 @@ const CreateMoim = () => {
 
                 console.log(formData);
 
-                const result = await axios.post('http://localhost:9000/moim/create-moim-pic', formData, {
+                const result = await axios.post(`${SPRING_API_URL}/moim/create-moim-pic`, formData, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
                         'Content-Type': 'multipart/form-data',
