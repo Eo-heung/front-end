@@ -31,10 +31,15 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const peerFaceRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [myNickname, setMyNickname] = useState("");
+  const [myUserId, setMyUserId] = useState("");
+
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
+  const userId = decodeURIComponent(getCookie("userId") || "");
+
   const [opponentNickname, setOpponentNickname] = useState("");
   const [opponentUserId, setOpponentUserId] = useState("");
+
   const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
   const [roomName, setRoomName] = useState("");
@@ -84,6 +89,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   useEffect(() => {
     socket.current = io(`${NODE_API_URL}`);
     setMyNickname(getCookie("userNickname"));
+    setMyUserId(getCookie("userId"));
+
     fetchNickname(); // 여기서 닉네임을 가져옴
 
     startChatting();
@@ -321,8 +328,15 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
+    const userId = getCookie("userId");
+
     fetchNickname(); // 여기서 닉네임을 가져옴
+    socket.current.emit("request_random_chat", {
+      nickname: userNickname,
+      userId: userId,
+    });
     socket.current.emit("request_random_chat", { nickname: userNickname });
+
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
@@ -369,6 +383,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const response = await axios.get(`${NODE_API_URL}/nickname`, {
         params: {
           nickname: userNickname,
+          userId: userId,
         },
       });
       // 응답 데이터를 콘솔에 출력
@@ -504,12 +519,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   return (
     <>
       <div id="linkbutton">
-        <Link
-          className="toplink"
-          value={connectedTime}
-          onChange={(e) => setRoomName(e.target.value)}
-          onClick={handleOpenSirenPopup}
-        >
+        <Link className="toplink" onClick={handleOpenSirenPopup}>
           <NotificationImportantIcon
             style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
           />
@@ -526,11 +536,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           친구추가
         </Link>
       </div>
-      <PopupSiren
-        isOpen={isSirenPopupOpen}
-        onClose={handleCloseSirenPopup}
-        handleSubmitSiren={handleSubmitSiren}
-      >
+      <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
         <h2>신고 하기</h2>
         <p>"{opponentNickname}"님을 신고하시겠어요?</p>
       </PopupSiren>
@@ -546,9 +552,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       </PopupFriend>
 
       <div id="myStreamState">
-        <Button variant="text" color="primary" onClick={handleCameraOnOff}>
-          {isCameraOff ? <DesktopAccessDisabledIcon /> : <DesktopWindowsIcon />}
-        </Button>
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
           style={{
