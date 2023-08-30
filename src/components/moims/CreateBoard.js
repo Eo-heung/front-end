@@ -223,7 +223,17 @@ const CreateBoard = () => {
     };
 
     const handleCancel = () => {
-        navi(-1);
+        switch (boardType) {
+            case 'FREE':
+                navi(`/${moimId}/moim-board?label=자유 게시판`);
+                break;
+            case 'NOTICE':
+                navi(`/${moimId}/moim-board?label=공지 게시판`);
+                break;
+            default:
+                console.error("Unknown boardType", boardType);
+                break;
+        }
     };
 
     const handleSuccess = () => {

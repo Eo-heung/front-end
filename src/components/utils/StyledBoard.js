@@ -1,4 +1,5 @@
 import { styled } from '@mui/system';
+import { Button } from '@mui/material';
 
 export const BoardContainer = styled('div')`
     display: flex;
@@ -41,4 +42,16 @@ export const BoardMessage = styled('div')`
     text-align: center;
     padding: 20px 0;
     color: grey;
+`;
+
+export const BoardLinkButton = styled(Button)`
+    margin-top: 10px;
+    background-color: #fff;
+    color: #000;
+    font-weight: bold;
+    cursor: pointer;
+    &:hover {
+        background-color: #fff;
+        color: #FCBE71;
+    }
 `;

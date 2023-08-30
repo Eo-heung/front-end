@@ -28,7 +28,7 @@ const Login = () => {
     const [userPw, setUserPw] = useState("");
     const [token, setToken] = useState();
     const [remember, setRemember] = useState(false);
-    const [cookies, setCookie] = useCookies(["userNickname", "userAddr3"]);
+    const [cookies, setCookie] = useCookies(["userNickname", "userAddr3", "userId"]);
 
     const loginSuccessHandler = (data) => {
         console.log("Received data:", data);

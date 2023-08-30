@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
-import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent } from '../utils/StyledBoard';
+import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent, BoardLinkButton } from '../utils/StyledBoard';
 import { ButtonZone, StyledButton } from '../utils/StyledCreate';
 import { SPRING_API_URL } from '../../config';
+import { useCookies } from 'react-cookie';
 
 const FreeBoard = (props) => {
     const navi = useNavigate();
@@ -11,6 +12,10 @@ const FreeBoard = (props) => {
 
     const [boardDetail, setBoardDetail] = useState(null);
     const [boardPics, setBoardPics] = useState([]);
+
+    const [cookie] = useCookies("userId");
+
+    const isLoginUserTheWriter = boardDetail && boardDetail.userId === cookie.userId;
 
     useEffect(() => {
         const fetchBoardDetail = async () => {
@@ -36,8 +41,6 @@ const FreeBoard = (props) => {
 
         fetchBoardDetail();
     }, [moimId, boardId, props.type]);
-
-    console.log("type", type);
 
     const handleEditClick = () => {
         navi(`/${moimId}/create-board/${boardId}`, { state: { boardType: "FREE" } });
@@ -84,10 +87,29 @@ const FreeBoard = (props) => {
                     />
                 ))
             }
-            <ButtonZone style={{ marginTop: "1.5rem" }}>
-                <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
-                <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
-            </ButtonZone>
+            {isLoginUserTheWriter ? (
+                <>
+                    <ButtonZone style={{ marginTop: "1.5rem" }}>
+                        <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
+                        <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                    </ButtonZone>
+                    <ButtonZone>
+                        <BoardLinkButton
+                            type="button"
+                            variant="text"
+                            size="large"
+                        >목록으로 돌아가기</BoardLinkButton>
+                    </ButtonZone>
+                </>
+            ) : (
+                <ButtonZone>
+                    <BoardLinkButton
+                        type="button"
+                        variant="text"
+                        size="large"
+                    >목록으로 돌아가기</BoardLinkButton>
+                </ButtonZone>
+            )}
         </BoardContainer>
     );
 };

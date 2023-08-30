@@ -65,3 +65,9 @@ export const StyledText = styled('span')`
             color: #FCBE71;
         }
 `;
+
+export const StyledFooter = styled('div')`
+    display: flex;
+    align-items: center;
+    margin-top: 1rem;
+`;

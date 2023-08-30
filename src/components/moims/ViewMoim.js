@@ -66,13 +66,13 @@ const ViewMoim = () => {
     const { moimId } = useParams();
     const [id, setId] = useState(null);
     const [moimPic, setMoimPic] = useState(null);
-    const [cookie] = useCookies('userNickname');
+    const [cookie] = useCookies("userId");
     const [status, setStatus] = useState({
         status: "",
         moimRegId: ""
     });
 
-    const isCurrentUserTheHost = moimDetail.moimNickname === cookie.userNickname;
+    const isCurrentUserTheHost = moimDetail && moimDetail.userId === cookie.userId;
     const isWaiting = status.status === "WAITING";
     const isApproved = status.status === "APPROVED";
 
@@ -85,7 +85,7 @@ const ViewMoim = () => {
             try {
                 const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
 
-                console.log(response.data);
+                console.log("response.data", response.data);
 
                 if (response.data) {
                     setMoimDetail(response.data.item.moimDTO);

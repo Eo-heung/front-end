@@ -9,7 +9,28 @@ const MoimNotice = (props) => {
     const navi = useNavigate();
     const { moimId, boardId, type } = props;
 
+    const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
+
     const [boardDetail, setBoardDetail] = useState(null);
+    const [boardPics, setBoardPics] = useState([]);
+
+    useEffect(() => {
+        const verifyUserRole = async () => {
+            try {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/verify-role`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    }
+                });
+
+                setUserRole(response.data.item);
+            } catch (err) {
+                console.error("Error verifying user role", err);
+            }
+        };
+
+        verifyUserRole();
+    }, [moimId]);
 
     useEffect(() => {
         const fetchBoardDetail = async () => {
@@ -26,6 +47,7 @@ const MoimNotice = (props) => {
                 });
 
                 setBoardDetail(response.data.item.boardDTO);
+                setBoardPics(response.data.item.boardPics);
             } catch (err) {
                 console.error("Error fetching board details", err);
             }
@@ -65,14 +87,26 @@ const MoimNotice = (props) => {
         <BoardContainer>
             <BoardTitle>{boardDetail && boardDetail.boardTitle}</BoardTitle>
             <BoardInfoRow>
-                <BoardInfo>{boardDetail && boardDetail.userNickname}</BoardInfo>
-                <BoardInfo>{boardDetail && boardDetail.boardRegdate}</BoardInfo>
+                <BoardInfo>{boardDetail && boardDetail.userName}</BoardInfo>
+                <BoardInfo>{boardDetail && boardDetail.boardRegdate.slice(0, 10)}</BoardInfo>
             </BoardInfoRow>
             <BoardContent>{boardDetail && boardDetail.boardContent}</BoardContent>
-            <ButtonZone>
-                <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
-                <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
-            </ButtonZone>
+            {
+                boardPics.map((pic, index) => (
+                    <img
+                        key={index}
+                        src={`data:image/jpeg;base64,${pic}`}
+                        alt={`게시글-사진-${index}`}
+                        style={{ marginBottom: "1.5rem", maxWidth: "650px", maxHeight: "650px" }}
+                    />
+                ))
+            }
+            {userRole.isLeader ? (
+                <ButtonZone style={{ marginTop: "1.5rem" }}>
+                    <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
+                    <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                </ButtonZone>
+            ) : null}
         </BoardContainer>
     );
 };

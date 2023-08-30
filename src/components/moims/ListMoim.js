@@ -16,7 +16,7 @@ const ListMoim = () => {
     const [searchType, setSearchType] = useState("all");
     const [category, setCategory] = useState("전체");
     const [scrollActive, setScrollActive] = useState(false);
-    const [orderBy, setOrderBy] = useState("ascending");
+    const [orderBy, setOrderBy] = useState("descending");
 
     const [hoveredButton, setHoveredButton] = useState(null);
 

@@ -69,7 +69,6 @@ const MoimBoard = () => {
                 });
 
                 setUserRole(response.data.item);
-                console.log("isMember", response.data.item.isMember, "isLeader", response.data.item.isLeader);
 
                 if (!response.data.item.isMember && !response.data.item.isLeader) {
                     setOpen(true);
@@ -191,7 +190,8 @@ const MoimBoard = () => {
                             setActiveTab={setActiveTab}
                             setBoardType={setBoardType}
                             setBoardId={setBoardId}
-                            key={`moim-notice-board-list-${clickCount["공지 게시판"]}`} />}
+                            key={`moim-notice-board-list-${clickCount["공지 게시판"]}`}
+                            isMainPage={false} />}
                         {activeTab === "게시글" && (
                             boardType === "FREE" ?
                                 <FreeBoard type={boardType} moimId={moimId} boardId={boardId} key={`free-board-${clickCount["게시글"]}`} />
