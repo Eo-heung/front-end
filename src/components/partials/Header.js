@@ -116,27 +116,32 @@ const Header = ({ getFriendList, userId }) => {
 
   return (
     <div className={`sb-nav-fixed ${isDesktop || isOpen ? "open" : "closed"}`}>
-      <nav className="sb-topnav navbar bg-light">
+      <nav className="sb-topnav navbar bg-light" style={{}}>
         <div
           style={{
-            width: "20%",
+            width: "15%",
             height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
           }}
         >
-          <Link className="navbar-brand" to="/">
-            <img
-              src={logo}
-              style={{
-                // width: "250px",
-                width: "200px",
-                height: "90px",
-                // marginTop: "15px",
-              }}
-            />
-          </Link>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Link className="navbar-brand" to="/">
+              <img
+                src={logo}
+                style={{
+                  marginLeft: "13%",
+                  width: "70%",
+                  height: "100%",
+                  // width: "90px",
+                  // height: "200px",
+                }}
+              />
+            </Link>
+          </div>
         </div>
         <div
           style={{
@@ -159,7 +164,10 @@ const Header = ({ getFriendList, userId }) => {
                 }}
               />
               {isOpen && (
-                <div className="nav-item dropdown">
+                <div
+                  className="nav-item dropdown"
+                  style={{ position: "absolute", top: "2.7vh", left: "6.7vw" }}
+                >
                   <ul
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="navbarDropdown"

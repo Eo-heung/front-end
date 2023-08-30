@@ -17,6 +17,7 @@ import PopupSiren from "../popup/PopupFriend";
 import PopupFriend from "../popup/PopupFriend";
 import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
 
+
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
@@ -31,26 +32,15 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const peerFaceRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [myNickname, setMyNickname] = useState("");
-  const [myUserId, setMyUserId] = useState("");
-
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
-  const userId = decodeURIComponent(getCookie("userId") || "");
-
   const [opponentNickname, setOpponentNickname] = useState("");
-  const [opponentUserId, setOpponentUserId] = useState("");
-
   const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
   const [roomName, setRoomName] = useState("");
   const newWindowRef = useRef(null);
   const [showNotification, setShowNotification] = useState(false);
-  const [isSirenPopupOpen, setIsSirenPopupOpen] = useState(false);
-  const [isFriendPopupOpen, setIsFriendPopupOpen] = useState(false);
-
   const textChatVisibleRef = useRef(textChatVisible);
-  const token = sessionStorage.getItem("ACCESS_TOKEN");
-
   const chatIcon = textChatVisible ? (
     <SpeakerNotesOffIcon />
   ) : (
@@ -59,22 +49,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const notificationIndicator = showNotification ? (
     <div className="notification-circle"></div>
   ) : null;
-
-  const handleOpenSirenPopup = () => {
-    setIsSirenPopupOpen(true);
-  };
-
-  const handleCloseSirenPopup = () => {
-    setIsSirenPopupOpen(false);
-  };
-
-  const handleOpenFriendPopup = () => {
-    setIsFriendPopupOpen(true);
-  };
-
-  const handleCloseFriendPopup = () => {
-    setIsFriendPopupOpen(false);
-  };
 
   useEffect(() => {
     scrollToBottom();
@@ -87,8 +61,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   useEffect(() => {
     socket.current = io(`${NODE_API_URL}`);
     setMyNickname(getCookie("userNickname"));
-    setMyUserId(getCookie("userId"));
-
     fetchNickname(); // 여기서 닉네임을 가져옴
 
     startChatting();
@@ -114,10 +86,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     socket.current.on("matched", async (data) => {
       const roomName = data.roomName;
       const opponentNickname = data.opponentNickname;
-      const opponentUserId = data.opponentUserId;
 
       console.log(
-        `You (${userNickname},${userId}) are matched with user ${opponentNickname} in room ${roomName}`
+        `You (${userNickname}) are matched with user ${opponentNickname} in room ${roomName}`
       );
       setConnectionStatus("매칭됨");
 
@@ -125,7 +96,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setRoomName(roomName);
 
       setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
-      setOpponentUserId(opponentUserId);
+
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
       // 예: setOpponentNickname(opponentNickname);
     });
@@ -321,12 +292,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
-    const userId = getCookie("userId");
     fetchNickname(); // 여기서 닉네임을 가져옴
-    socket.current.emit("request_random_chat", {
-      nickname: userNickname,
-      userId: userId,
-    });
+    socket.current.emit("request_random_chat", { nickname: userNickname });
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
@@ -373,7 +340,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const response = await axios.get(`${NODE_API_URL}/nickname`, {
         params: {
           nickname: userNickname,
-          userId: userId,
         },
       });
 
@@ -467,40 +433,10 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   };
   return (
     <>
-      <div id="linkbutton">
-        <Link className="toplink" onClick={handleOpenSirenPopup}>
-          <NotificationImportantIcon
-            style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
-          />
-          신고하기
-        </Link>
-        <Link className="toplink" onClick={handleOpenFriendPopup}>
-          <GroupAddIcon
-            style={{
-              verticalAlign: "middle",
-              color: "#b7d4fa",
-              marginRight: "5px",
-            }}
-          />
-          친구추가
-        </Link>
-      </div>
-      <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
-        <h2>신고 하기</h2>
-        <p>"{opponentNickname}"님을 신고하시겠어요?</p>
-      </PopupSiren>
-
-      <PopupFriend
-        isOpen={isFriendPopupOpen}
-        onClose={handleCloseFriendPopup}
-        handleMakefriend={handleMakefriend}
-      >
-        <h2>친구 추가</h2>
-        <p>곶감 5개 주면 안 잡아먹지~~~</p>
-        <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
-      </PopupFriend>
-
       <div id="myStreamState">
+        <Button variant="text" color="primary" onClick={handleCameraOnOff}>
+          {isCameraOff ? <DesktopAccessDisabledIcon /> : <DesktopWindowsIcon />}
+        </Button>
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
           style={{
@@ -511,9 +447,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           {/* 상대방 비디오 혹은 대기 이미지 */}
           {connectionStatus === "매칭됨" ? (
             <div className="opponent-nickname">
-              <span className="nickname-label">
-                {opponentNickname},{opponentUserId}
-              </span>
+              <span className="nickname-label">{opponentNickname}</span>
               <video
                 ref={peerFaceRef}
                 className="video-style3"
@@ -534,7 +468,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           />
         </div>
         <div className="button-container">
-          <h1>{userId}</h1>
           <button
             className="start-button"
             onClick={handleStartRandomChat}

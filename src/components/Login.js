@@ -20,7 +20,6 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Carousel from "react-material-ui-carousel";
 import { useNavigate } from "react-router-dom";
-import { SPRING_API_URL, REDIRECT_URL } from "../config";
 
 const Login = () => {
     const navi = useNavigate();
@@ -59,6 +58,7 @@ const Login = () => {
         setUserPw(() => e.target.value);
     }, []);
 
+
     const SocialKakao = () => {
         const Rest_api_key = "d85c142dc0c92939902ad3248688e8ad"; // 환경 변수에서 API 키 가져오기
         const redirect_uri = `${REDIRECT_URL}/auth`;
@@ -71,7 +71,6 @@ const Login = () => {
         const redirect_uri = `${REDIRECT_URL}/oauth`;
         const state = "1234";
         const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${Rest_api_key}&state=${state}&redirect_uri=${redirect_uri}`;
-
         window.location.href = naverURL;
     };
 
