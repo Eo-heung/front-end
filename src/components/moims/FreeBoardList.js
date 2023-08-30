@@ -68,6 +68,12 @@ const FreeBoardList = ({ setActiveTab }) => {
         console.log("검색", boards);
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
+
     const onPageChange = (e, page) => {
         console.log("Page changed to: ", page);
         setCurrentPage(page);
@@ -152,7 +158,8 @@ const FreeBoardList = ({ setActiveTab }) => {
                                     size="small"
                                     variant="outlined"
                                     placeholder="검색어를 입력하세요."
-                                    onChange={(e) => setKeyword(e.target.value)} />
+                                    onChange={(e) => setKeyword(e.target.value)}
+                                    onKeyDown={handleKeyDown} />
                                 <ListMoimSelect
                                     value={searchType}
                                     displayEmpty

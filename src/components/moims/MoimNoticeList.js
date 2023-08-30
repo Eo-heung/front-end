@@ -84,6 +84,12 @@ const MoimNoticeList = ({ setActiveTab }) => {
         console.log("검색", notices);
     };
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
+
     const onPageChange = (e, page) => {
         console.log("Page changed to: ", page);
         setCurrentPage(page);
@@ -152,14 +158,16 @@ const MoimNoticeList = ({ setActiveTab }) => {
                                         size="small"
                                         variant="outlined"
                                         placeholder="검색어를 입력하세요."
-                                        onChange={(e) => setKeyword(e.target.value)} />
+                                        onChange={(e) => setKeyword(e.target.value)}
+                                        onKeyDown={handleKeyDown} />
                                 ) : (
                                     <ListMoimTextField
                                         style={{ marginLeft: "10rem" }}
                                         size="small"
                                         variant="outlined"
                                         placeholder="검색어를 입력하세요."
-                                        onChange={(e) => setKeyword(e.target.value)} />
+                                        onChange={(e) => setKeyword(e.target.value)}
+                                        onKeyDown={handleKeyDown} />
                                 )}
                                 <ListMoimSelect
                                     value={searchType}

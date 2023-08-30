@@ -120,6 +120,12 @@ const ListMoim = () => {
         fetchData();
     }
 
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
+
     const [isHidden, setIsHidden] = useState(false);
 
     const handleAdClick = () => {
@@ -144,7 +150,11 @@ const ListMoim = () => {
                     {renderCategoryButton("문화/여가")}
                 </ListMoimCategoryContainer>
                 <ListMoimSearchContainer>
-                    <ListMoimTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
+                    <ListMoimTextField
+                        variant="outlined"
+                        placeholder="검색어를 입력하세요."
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                        onKeyDown={handleKeyDown} />
                     <ListMoimSelect value={searchType} displayEmpty size="large" onChange={(e) => setSearchType(e.target.value)}>
                         <ListMoimMenuItem value="all">전체</ListMoimMenuItem>
                         <ListMoimMenuItem value="title">제목</ListMoimMenuItem>
