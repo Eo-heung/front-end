@@ -327,11 +327,13 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
+
     fetchNickname(); // 여기서 닉네임을 가져옴
-    // const userId = getCookie("userId");
+    const userId = getCookie("userId");
 
     socket.current.emit("request_random_chat", {
       nickname: userNickname,
+      userId: userId,
     });
 
     setConnectionStatus("상대 찾는 중 ...");
