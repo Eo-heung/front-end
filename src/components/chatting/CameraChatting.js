@@ -129,14 +129,39 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setOpponentUserId(opponentUserId);
 
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
-      // 예: setOpponentNickname(opponentNickname);
     });
 
     socket.current.on("welcome", async () => {
       const currentTime = new Date();
-      setConnectedTime(currentTime);
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // 24시간 형식으로 설정
+        timeZone: "Asia/Seoul",
+      };
 
-      console.log("Current Time:", currentTime);
+      const koreanTimeString = currentTime
+        .toLocaleString("ko-KR", options)
+        .replace(/\./g, "")
+        .replace(/ /g, " ")
+        .replace(/: /g, " ")
+        .replace(/시 /g, ":")
+        .replace(/분 /g, ":")
+        .replace(/초/, "");
+      const formattedTime = `${koreanTimeString.substr(
+        0,
+        4
+      )}년 ${koreanTimeString.substr(5, 2)}월 ${koreanTimeString.substr(
+        8,
+        2
+      )}일 ${koreanTimeString.substr(11)}`;
+
+      setConnectedTime(formattedTime);
+
       console.log("welcome");
 
       myDataChannel.current =
@@ -328,10 +353,11 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
     fetchNickname(); // 여기서 닉네임을 가져옴
-    // const userId = getCookie("userId");
+    const userId = getCookie("userId");
 
     socket.current.emit("request_random_chat", {
       nickname: userNickname,
+      userId: userId,
     });
 
     setConnectionStatus("상대 찾는 중 ...");
@@ -475,19 +501,28 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     imagePreviews
   ) => {
     try {
-      const url = `${SPRING_API_URL}/siren/makefriend/${opponentUserId}`;
+      const url = `${SPRING_API_URL}/siren/report/${opponentUserId}`;
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
       const bodyData = {
-        reportType: reportType,
-        reportContent: reportContent,
-        imagePreviews: imagePreviews,
-        connectedTime: connectedTime,
+        singoCategoryCode: reportType,
+        singoContent: reportContent,
+        singoDate: connectedTime,
+        singoMsg: messages,
       };
-      const response = await axios.post(url, bodyData, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+      console.log(bodyData);
+      const formData = new FormData();
+      formData.append("singoImgA", imagePreviews[0]); // Assuming imagePreviews contains the file data
+      formData.append("singoImgB", imagePreviews[1]);
+      formData.append("singoImgC", imagePreviews[2]);
+      formData.append("sirenDTO", JSON.stringify(bodyData));
+
+      const response = await axios.post(url, formData, config);
+      console.log(response);
+
       if (response.data.statusCode === 200) {
         const msg = response.data.item.msg;
         console.log(msg);
@@ -533,7 +568,11 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           친구추가
         </Link>
       </div>
-      <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
+      <PopupSiren
+        isOpen={isSirenPopupOpen}
+        onClose={handleCloseSirenPopup}
+        handleSubmitSiren={handleSubmitSiren}
+      >
         <h2>신고 하기</h2>
         <p>"{opponentNickname}"님을 신고하시겠어요?</p>
       </PopupSiren>
