@@ -32,6 +32,9 @@ import FreeBoard from "./components/moims/FreeBoard";
 import MoimNoticeList from "./components/moims/MoimNoticeList";
 import MoimNotice from "./components/moims/MoimNotice";
 import CreateBoard from "./components/moims/CreateBoard";
+import PictureLib from "./components/moims/PictureLib";
+import MoimSchedule from "./components/moims/MoimSchedule";
+import MoimUsers from "./components/moims/MoimUsers";
 
 function App() {
   return (
@@ -89,26 +92,21 @@ function App() {
               path="/moim-controller"
               element={<MoimController></MoimController>
               }></Route>
-            <Route
-              path="/:moimId/moim-board"
-              element={<MoimBoard></MoimBoard>}
-            ></Route>
-            <Route
-              path="/:moimId/free-board"
-              element={<FreeBoardList></FreeBoardList>}
-            ></Route>
-            <Route
-              path="/:moimId/free-board/:boardId"
-              element={<FreeBoard type="FREE" />}
-            ></Route>
-            <Route
-              path="/:moimId/notice-board"
-              element={<MoimNoticeList></MoimNoticeList>}
-            ></Route>
-            <Route
-              path="/:moimId/notice-board/:boardId"
-              element={<MoimNotice type="NOTICE" />}
-            ></Route>
+            <Route path="/:moimId/moim-board" element={<MoimBoard></MoimBoard>}>
+              <Route index element={
+                <div style={{ display: "flex", flexDirection: "column" }}>
+                  <FreeBoardList isMainPage={true} />
+                  <MoimNoticeList isMainPage={true} />
+                </div>
+              } />
+              <Route path="free-board" element={<FreeBoardList />} />
+              <Route path="free-board/:boardId" element={<FreeBoard type="FREE" />} />
+              <Route path="notice-board" element={<MoimNoticeList />} />
+              <Route path="notice-board/:boardId" element={<MoimNotice type="NOTICE" />} />
+              <Route path="picture-lib" element={<PictureLib></PictureLib>} />
+              <Route path="moim-schedule" element={<MoimSchedule></MoimSchedule>} />
+              <Route path="moim-users" element={<MoimUsers></MoimUsers>} />
+            </Route>
             <Route
               path="/:moimId/create-board"
               element={<CreateBoard></CreateBoard>}

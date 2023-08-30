@@ -1,29 +1,13 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { styled } from '@mui/system';
-import { useParams, useSearchParams, useLocation, useNavigate } from 'react-router-dom';
+import { useParams, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import BasicBoard from '../utils/BasicBoard';
 import TabButton from '../utils/TabButton';
 import { TabContainer, TabContent } from '../utils/StyledTab';
-import FreeBoardList from './FreeBoardList';
-import MoimNoticeList from './MoimNoticeList';
-import PictureLib from './PictureLib';
-import MoimSchedule from './MoimSchedule';
-import MoimUsers from './MoimUsers';
-import FreeBoard from './FreeBoard';
-import MoimNotice from './MoimNotice';
 import { SPRING_API_URL } from '../../config';
 import { Modal, Box, Typography } from '@mui/material';
 import { StyledButton } from '../utils/StyledCreate';
-
-const ListContainer = styled('div')`
-    display: flex;
-    flex-direction: column;
-    height: 100%;
-    > * {
-        flex: 1;
-    }
-`;
 
 const style = {
     position: 'absolute',
@@ -41,19 +25,12 @@ const MoimBoard = () => {
     const navi = useNavigate();
 
     const { moimId } = useParams();
-    const [moimData, setMoimData] = useState("");
 
-    const [boardType, setBoardType] = useState("");
-    const [boardId, setBoardId] = useState(null);
-
-    const [activeTab, setActiveTab] = useState(moimData.moimTitle || "");
+    const [activeTab, setActiveTab] = useState("");
     const [hoveredButton, setHoveredButton] = useState(null);
-    const [clickCount, setClickCount] = useState({ "자유 게시판": 0, "사진첩": 0, "일정": 0, "멤버": 0, "공지 게시판": 0, "게시글": 0 });
 
-    const tabLabels = [moimData.moimTitle || "내 모임", "자유 게시판", "사진첩", "일정", "멤버", "공지 게시판", "게시글"];
+    const tabLabels = ["메인", "자유 게시판", "사진첩", "일정", "멤버", "공지 게시판", "자유 게시글", "공지 게시글"];
 
-    const [searchParams] = useSearchParams();
-    const labelFromUrl = searchParams.get("label");
     const location = useLocation();
 
     const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
@@ -85,55 +62,32 @@ const MoimBoard = () => {
         navi(`/apply-moim/${moimId}`);
     };
 
+    const tabPaths = {
+        "메인": "",
+        "자유 게시판": "free-board",
+        "사진첩": "picture-lib",
+        "일정": "moim-schedule",
+        "멤버": "moim-users",
+        "공지 게시판": "notice-board",
+        "자유 게시글": "free-board/:boardId",
+        "공지 게시글": "notice-board/:boardId"
+    };
+
     useEffect(() => {
-        const fetchMoimData = async () => {
-            try {
-                const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
-                const data = response.data.item.moimDTO;
-
-                setMoimData({
-                    moimTitle: data.moimTitle
-                });
-
-                return response.data.item;
-
-            } catch (e) {
-                console.error("Error fetching moim data", e);
+        const currentPath = location.pathname.split("/").slice(-2).join('/'); // 마지막 두 세그먼트를 가져옵니다.
+        const matchedLabel = Object.keys(tabPaths).find(label => {
+            if (tabPaths[label].includes(":boardId")) { // 동적 경로인 경우
+                const regex = new RegExp(tabPaths[label].replace(":boardId", "\\d+")); // :boardId를 숫자로 바꿔서 매칭합니다.
+                return regex.test(currentPath);
             }
-        };
+            return tabPaths[label] === currentPath;
+        });
 
-        fetchMoimData();
-    }, [moimId]);
-
-    useEffect(() => {
-        if (moimData.moimTitle && !activeTab) {
-            setActiveTab(moimData.moimTitle);
-        }
-
-        if (moimData.moimTitle && !(moimData.moimTitle in clickCount)) {
-            setClickCount(prev => ({
-                ...prev,
-                [moimData.moimTitle]: 0,
-            }));
-        }
-    }, [moimData.moimTitle, activeTab, clickCount]);
-
-    useEffect(() => {
-        if (labelFromUrl && tabLabels.includes(labelFromUrl)) {
-            setActiveTab(labelFromUrl);
-        }
-        console.log("labelFromUrl", labelFromUrl);
-    }, [labelFromUrl, location.key]);
+        setActiveTab(matchedLabel || "메인");
+    }, [location.pathname]);
 
     const handleTabClick = (label) => {
-        if (label === moimData.moimTitle) {
-            setActiveTab("");
-            setClickCount(prev => ({ ...prev, [moimData.moimTitle]: prev[moimData.moimTitle] + 1 }));
-            return;
-        }
-        setActiveTab(label);
-        setClickCount(prev => ({ ...prev, [label]: prev[label] + 1 }));
-        window.scrollTo(0, 0);
+        navi(`/${moimId}/moim-board/${tabPaths[label]}`);
     };
 
     return (
@@ -144,60 +98,19 @@ const MoimBoard = () => {
                         {tabLabels.map(label => (
                             <TabButton
                                 key={label}
+                                moimId={moimId}
                                 label={label}
                                 activeTab={activeTab}
                                 hoveredButton={hoveredButton}
-                                onTabClick={handleTabClick}
+                                onTabClick={() => handleTabClick(label)}
                                 onMouseEnter={() => setHoveredButton(label)}
                                 onMouseLeave={() => setHoveredButton(null)}
-                                style={(label === "공지 게시판" || label === "게시글") ? { display: "none" } : {}}
+                                style={(label === "공지 게시판" || label === "자유 게시글" || label === "공지 게시글") ? { display: "none" } : {}}
                             />
                         ))}
                     </TabContainer>
                     <TabContent>
-                        {!activeTab || activeTab === moimData.moimTitle ? (
-                            <ListContainer>
-                                <FreeBoardList
-                                    key="free-board-list"
-                                    isMainPage={true}
-                                    moimId={moimId}
-                                    setActiveTab={setActiveTab}
-                                    setBoardType={setBoardType}
-                                    setBoardId={setBoardId}
-                                />
-                                <MoimNoticeList
-                                    key="moim-notice-list"
-                                    isMainPage={true}
-                                    moimId={moimId}
-                                    setActiveTab={setActiveTab}
-                                    setBoardType={setBoardType}
-                                    setBoardId={setBoardId}
-                                />
-                            </ListContainer>
-                        ) : null}
-                        {activeTab === "자유 게시판" && <FreeBoardList
-                            moimId={moimId}
-                            setActiveTab={setActiveTab}
-                            setBoardType={setBoardType}
-                            setBoardId={setBoardId}
-                            key={`free-full-board-list-${clickCount["자유 게시판"]}`}
-                            isMainPage={false} />}
-                        {activeTab === "사진첩" && <PictureLib moimId={moimId} key={`picture-lib-${clickCount["사진첩"]}`} />}
-                        {activeTab === "일정" && <MoimSchedule moimId={moimId} key={`moim-schedule-${clickCount["일정"]}`} />}
-                        {activeTab === "멤버" && <MoimUsers moimId={moimId} key={`moim-users-${clickCount["멤버"]}`} />}
-                        {activeTab === "공지 게시판" && <MoimNoticeList
-                            moimId={moimId}
-                            setActiveTab={setActiveTab}
-                            setBoardType={setBoardType}
-                            setBoardId={setBoardId}
-                            key={`moim-notice-board-list-${clickCount["공지 게시판"]}`}
-                            isMainPage={false} />}
-                        {activeTab === "게시글" && (
-                            boardType === "FREE" ?
-                                <FreeBoard type={boardType} moimId={moimId} boardId={boardId} key={`free-board-${clickCount["게시글"]}`} />
-                                :
-                                <MoimNotice type={boardType} moimId={moimId} boardId={boardId} key={`notice-board-${clickCount["게시글"]}`} />
-                        )}
+                        <Outlet />
                     </TabContent>
                 </>
             ) : (
