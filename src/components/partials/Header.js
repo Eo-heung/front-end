@@ -1,17 +1,13 @@
 import MenuIcon from "@mui/icons-material/Menu";
-import { Paper } from "@mui/material";
 import Typography from "@mui/material/Typography";
 import { Stomp } from "@stomp/stompjs";
 import React, { useEffect, useRef, useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styled from "styled-components";
-import logo from "../../public/logo.gif";
-// import logo from "../../public/logo.png";
-import PersonIcon from "@mui/icons-material/Person";
-import PersonOutlineIcon from "@mui/icons-material/PersonOutline";
-
+import { SPRING_API_URL } from "../../config";
 import "../../css/partials/Header.css";
+import logo from "../../public/logo.gif";
 
 const StyledTypography = styled(Typography)`
   color: #000;
@@ -43,7 +39,7 @@ const Header = ({ getFriendList, userId }) => {
     } else {
       if (userId) {
         const socketFactory = () =>
-          new SockJS("http://localhost:9000/websocket-endpoint");
+          new SockJS(`${SPRING_API_URL}/websocket-endpoint`);
         stompClient.current = Stomp.over(socketFactory);
 
         stompClient.current.connect({}, (frame) => {
@@ -120,28 +116,32 @@ const Header = ({ getFriendList, userId }) => {
 
   return (
     <div className={`sb-nav-fixed ${isDesktop || isOpen ? "open" : "closed"}`}>
-      <nav className="sb-topnav navbar bg-light">
+      <nav className="sb-topnav navbar bg-light" style={{}}>
         <div
           style={{
-            width: "20%",
+            width: "15%",
             height: "100%",
-            display: "flex",
-            justifyContent: "center",
-            alignItems: "center",
           }}
         >
-          <Link className="navbar-brand" to="/">
-            <img
-              src={logo}
-              style={{
-                // width: "250px",
-                width: "200px",
-                height: "90px",
-                // marginTop: "15px",
-                marginRight: "20px",
-              }}
-            />
-          </Link>
+          <div
+            style={{
+              width: "100%",
+              height: "100%",
+            }}
+          >
+            <Link className="navbar-brand" to="/">
+              <img
+                src={logo}
+                style={{
+                  marginLeft: "13%",
+                  width: "70%",
+                  height: "100%",
+                  // width: "90px",
+                  // height: "200px",
+                }}
+              />
+            </Link>
+          </div>
         </div>
         <div
           style={{
@@ -164,7 +164,10 @@ const Header = ({ getFriendList, userId }) => {
                 }}
               />
               {isOpen && (
-                <div className="nav-item dropdown">
+                <div
+                  className="nav-item dropdown"
+                  style={{ position: "absolute", top: "2.7vh", left: "6.7vw" }}
+                >
                   <ul
                     className="dropdown-menu dropdown-menu-end"
                     aria-labelledby="navbarDropdown"

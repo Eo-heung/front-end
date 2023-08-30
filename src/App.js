@@ -20,7 +20,7 @@ import MainContent from "./components/partials/MainContent";
 import KakaoHandler from "./components/socialLogin/KakaoHandler";
 import NaverHandler from "./components/socialLogin/NaverHandler";
 import BasicBoard from "./components/utils/BasicBoard";
-import Charge from "./components/charge/Charge";
+import Charge from "./components/charge/Payment";
 
 import ButtonWithNewWindow from "./components/multichat/components/ButtonWithNewWindow";
 import MultiChatting from "./components/multichat/components/VideoRoomComponent";

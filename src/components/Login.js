@@ -20,6 +20,7 @@ import React, { useCallback, useEffect, useState } from "react";
 import { useCookies } from "react-cookie";
 import Carousel from "react-material-ui-carousel";
 import { useNavigate } from "react-router-dom";
+import { SPRING_API_URL, REDIRECT_URL } from "../config";
 
 const Login = () => {
   const navi = useNavigate();
@@ -60,14 +61,14 @@ const Login = () => {
 
   const SocialKakao = () => {
     const Rest_api_key = "d85c142dc0c92939902ad3248688e8ad"; // 환경 변수에서 API 키 가져오기
-    const redirect_uri = "http://localhost:1234/auth";
+    const redirect_uri = `${REDIRECT_URL}/auth`;
     const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${Rest_api_key}&redirect_uri=${redirect_uri}&response_type=code`;
 
     window.location.href = kakaoURL;
   };
   const SocialNaver = () => {
     const Rest_api_key = "fK9M_7tC_kI7hRd4QXQG"; // 환경 변수에서 API 키 가져오기
-    const redirect_uri = "http://localhost:1234/oauth";
+    const redirect_uri = `${REDIRECT_URL}/oauth`;
     const state = "1234";
     const naverURL = `https://nid.naver.com/oauth2.0/authorize?response_type=code&client_id=${Rest_api_key}&state=${state}&redirect_uri=${redirect_uri}`;
 
@@ -84,7 +85,7 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       axios
-        .post("http://localhost:9000/verify", token)
+        .post(`${SPRING_API_URL}/verify`, token)
         .then((response) => {
           console.log(response);
           if (response.data.item) {
@@ -119,7 +120,7 @@ const Login = () => {
   useEffect(() => {
     if (token) {
       axios
-        .post("http://localhost:9000/verify", token)
+        .post(`${SPRING_API_URL}/verify`, token)
         .then((response) => {
           console.log(response);
           if (response.data.item) {
@@ -148,7 +149,7 @@ const Login = () => {
       console.log(user);
 
       try {
-        const response = await axios.post("http://localhost:9000/login", {
+        const response = await axios.post(`${SPRING_API_URL}/login`, {
           userId: userId,
           userPw: userPw,
         });
@@ -164,7 +165,7 @@ const Login = () => {
             navi("/");
             try {
               const userInfoResponse = await axios.post(
-                "http://localhost:9000/getUserInfo",
+                `${SPRING_API_URL}/getUserInfo`,
                 {},
                 {
                   headers: {
@@ -188,7 +189,7 @@ const Login = () => {
             navi("/");
             try {
               const userInfoResponse = await axios.post(
-                "http://localhost:9000/getUserInfo",
+                `${SPRING_API_URL}/getUserInfo`,
                 {},
                 {
                   headers: {
@@ -223,7 +224,40 @@ const Login = () => {
 
     loginAxios();
   });
-  const defaultTheme = createTheme();
+  const defaultTheme = createTheme({
+    palette: {
+      primary: {
+        main: "#FEA53D",
+      },
+      secondary: {
+        main: "#FEB158",
+      },
+    },
+  });
+
+  // 캐러셀
+  function CarouselItem({ src }) {
+    return (
+      <Box
+        sx={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100%",
+        }}
+      >
+        <Paper
+          sx={{
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <img sx={{ width: "80%", height: "80%" }} src={src} />
+        </Paper>
+      </Box>
+    );
+  }
 
   return (
     <ThemeProvider theme={defaultTheme}>
@@ -254,91 +288,25 @@ const Login = () => {
                 : t.palette.grey[900],
             backgroundSize: "contain",
             backgroundPosition: "center",
+            overflow: "hidden",
           }}
         >
-          {/* 캐러셀 내부에 이미지 넣고 싶으면, 아래에 paper 복사해서 Carousel 내부에 추가한 후, img src 맞춰서 넣으면 됨. */}
           <Carousel
             height={600}
             animation="slide"
             navButtonsAlwaysVisible="true"
             indicatorContainerProps={{
               style: {
-                marginBottom: "10%", // 5
-                textAlign: "center", // 4
+                marginBottom: "10%",
+                textAlign: "center",
               },
             }}
             duration={1000}
             sx={{ width: "100%", height: "100%" }}
           >
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  style={{ width: "80%", height: "80%", cursor: "pointer" }}
-                  src={
-                    "https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d"
-                  }
-                />
-              </Paper>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  style={{ width: "80%", height: "80%" }}
-                  src={
-                    "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340"
-                  }
-                />
-              </Paper>
-            </Box>
-            <Box
-              sx={{
-                display: "flex",
-                justifyContent: "center",
-                alignItems: "center",
-                height: "100%",
-              }}
-            >
-              <Paper
-                sx={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                }}
-              >
-                <img
-                  style={{ width: "80%", height: "80%" }}
-                  src={
-                    "https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832"
-                  }
-                />
-              </Paper>
-            </Box>
+            <CarouselItem src="https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d" />
+            <CarouselItem src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340" />
+            <CarouselItem src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832" />
           </Carousel>
         </Grid>
         <Grid
@@ -349,7 +317,7 @@ const Login = () => {
           component={Paper}
           elevation={6}
           square
-          sx={{ height: "70%" }}
+          sx={{ height: "70%", overflowY: "auto" }}
         >
           <Box
             sx={{
@@ -429,12 +397,34 @@ const Login = () => {
               </Button>
               <Grid container sx={{ marginBottom: "35px" }}>
                 <Grid item xs>
-                  <Link href="/findpassword" variant="body2">
+                  <Link
+                    href="/findpassword"
+                    variant="body2"
+                    sx={{
+                      color: "#1565c0",
+                      textDecorationColor: "#1565c0",
+                      ":hover": {
+                        color: "#1565c0",
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
                     앗! 비밀번호를 까먹었을 땐?
                   </Link>
                 </Grid>
                 <Grid item>
-                  <Link href="/signup" variant="body2">
+                  <Link
+                    href="/signup"
+                    variant="body2"
+                    sx={{
+                      color: "#1565c0",
+                      textDecorationColor: "#1565c0",
+                      ":hover": {
+                        color: "#1565c0",
+                        opacity: 0.7,
+                      },
+                    }}
+                  >
                     {"계정이 없으신가요?"}
                   </Link>
                 </Grid>
@@ -443,7 +433,11 @@ const Login = () => {
               <Typography
                 component="h2"
                 variant="h6"
-                sx={{ textAlign: "center", fontWeight: "bold", marginBottom: "20px", }}
+                sx={{
+                  textAlign: "center",
+                  fontWeight: "bold",
+                  marginBottom: "20px",
+                }}
               >
                 소셜 로그인
               </Typography>
@@ -452,7 +446,11 @@ const Login = () => {
                 sx={{ width: "70%", height: "75px", margin: "0 auto" }}
                 spacing={0}
               >
-                <Grid item xs={6} sx={{ paddingLeft: '56px', paddingTop: "10px" }}>
+                <Grid
+                  item
+                  xs={6}
+                  sx={{ paddingLeft: "56px", paddingTop: "10px" }}
+                >
                   <Link href="#" onClick={SocialNaver}>
                     <Box
                       sx={{
@@ -462,12 +460,20 @@ const Login = () => {
                           "url(https://www.inavi.com/Content2/Images/mobileLogin/social-login-naver-icon.svg)",
                         backgroundSize: "contain",
                         backgroundRepeat: "no-repeat",
-                        backgroundPosition: 'center',
+                        backgroundPosition: "center",
                       }}
                     />
                   </Link>
                 </Grid>
-                <Grid item xs={6} sx={{ paddingLeft: '26px', paddingRight: '30px', paddingTop: "10px" }}>
+                <Grid
+                  item
+                  xs={6}
+                  sx={{
+                    paddingLeft: "26px",
+                    paddingRight: "30px",
+                    paddingTop: "10px",
+                  }}
+                >
                   <Link href="#" onClick={SocialKakao}>
                     <Box
                       sx={{
@@ -477,7 +483,7 @@ const Login = () => {
                           "url(https://i0.wp.com/forhappywomen.com/wp-content/uploads/2018/11/%EC%82%B0%EB%B6%80%EC%9D%B8%EA%B3%BC-%ED%8F%AC%ED%95%B4%ED%94%BC%EC%9A%B0%EB%A8%BC-%EB%AC%B8%EC%9D%98-%EC%B9%B4%EC%B9%B4%EC%98%A4%ED%94%8C%EB%9F%AC%EC%8A%A4%EC%B9%9C%EA%B5%AC-%EB%B2%84%ED%8A%BC.png?resize=586%2C586&ssl=1)",
                         backgroundSize: "contain",
                         backgroundRepeat: "no-repeat",
-                        backgroundPosition: 'center',
+                        backgroundPosition: "center",
                       }}
                     />
                   </Link>

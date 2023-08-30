@@ -10,6 +10,12 @@ import EoheungImg from "../../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import "../../css/partials/CameraChatting.css";
+import { Link } from "react-router-dom";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
+import PopupSiren from "../popup/PopupSiren";
+import PopupFriend from "../popup/PopupFriend";
+import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -25,15 +31,27 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const peerFaceRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [myNickname, setMyNickname] = useState("");
+  const [myUserId, setMyUserId] = useState("");
+
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
+  const userId = decodeURIComponent(getCookie("userId") || "");
+
   const [opponentNickname, setOpponentNickname] = useState("");
+  const [opponentUserId, setOpponentUserId] = useState("");
+
   const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
   const [roomName, setRoomName] = useState("");
   const newWindowRef = useRef(null);
   const [showNotification, setShowNotification] = useState(false);
+  const [isSirenPopupOpen, setIsSirenPopupOpen] = useState(false);
+  const [isFriendPopupOpen, setIsFriendPopupOpen] = useState(false);
+  const [connectedTime, setConnectedTime] = useState("");
+
   const textChatVisibleRef = useRef(textChatVisible);
+  const token = sessionStorage.getItem("ACCESS_TOKEN");
+
   const chatIcon = textChatVisible ? (
     <SpeakerNotesOffIcon />
   ) : (
@@ -42,6 +60,23 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const notificationIndicator = showNotification ? (
     <div className="notification-circle"></div>
   ) : null;
+
+  const handleOpenSirenPopup = () => {
+    setIsSirenPopupOpen(true);
+    console.log(connectedTime);
+  };
+
+  const handleCloseSirenPopup = () => {
+    setIsSirenPopupOpen(false);
+  };
+
+  const handleOpenFriendPopup = () => {
+    setIsFriendPopupOpen(true);
+  };
+
+  const handleCloseFriendPopup = () => {
+    setIsFriendPopupOpen(false);
+  };
 
   useEffect(() => {
     scrollToBottom();
@@ -52,8 +87,10 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:4000");
+    socket.current = io(`${NODE_API_URL}`);
     setMyNickname(getCookie("userNickname"));
+    setMyUserId(getCookie("userId"));
+
     fetchNickname(); // 여기서 닉네임을 가져옴
 
     startChatting();
@@ -79,7 +116,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     socket.current.on("matched", async (data) => {
       const roomName = data.roomName;
       const opponentNickname = data.opponentNickname;
-
+      const opponentUserId = data.opponentUserId;
       console.log(
         `You (${userNickname}) are matched with user ${opponentNickname} in room ${roomName}`
       );
@@ -89,12 +126,17 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setRoomName(roomName);
 
       setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
+      setOpponentUserId(opponentUserId);
 
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
       // 예: setOpponentNickname(opponentNickname);
     });
 
     socket.current.on("welcome", async () => {
+      const currentTime = new Date();
+      setConnectedTime(currentTime);
+
+      console.log("Current Time:", currentTime);
       console.log("welcome");
 
       myDataChannel.current =
@@ -286,7 +328,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
     fetchNickname(); // 여기서 닉네임을 가져옴
-    socket.current.emit("request_random_chat", { nickname: userNickname });
+    // const userId = getCookie("userId");
+
+    socket.current.emit("request_random_chat", {
+      nickname: userNickname,
+    });
+
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
@@ -330,12 +377,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://localhost:4000/nickname", {
+      const response = await axios.get(`${NODE_API_URL}/nickname`, {
         params: {
           nickname: userNickname,
+          userId: userId,
         },
       });
-
       // 응답 데이터를 콘솔에 출력
       console.log(response);
     } catch (error) {
@@ -351,7 +398,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handlechargeClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://localhost:1234/chattingcharge",
+      `${REDIRECT_URL}/chattingcharge`,
       "_blank",
       "width=800,height=600"
     );
@@ -382,12 +429,126 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     }
   };
 
+  const makeFriendRequest = async (opponentUserId, token) => {
+    try {
+      const url = `${SPRING_API_URL}/friend/makefriend/${opponentUserId}`;
+
+      const config = {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios.post(url, null, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+
+      if (response.data.statusCode === 200) {
+        const msg = response.data.item.msg;
+
+        console.log(msg);
+        switch (msg) {
+          case "successRequest":
+            alert("우왕! 친구요청을 보냈어! 기다료봐!!!");
+            break;
+          case "notEnoughGam":
+            alert("곶 감 다 떨어졌네");
+            break;
+          case "alreadyFriend":
+            alert("이미 친군뎅");
+            break;
+          default:
+            console.error("무슨 일인지 나도 몰랑", msg);
+        }
+      } else {
+        console.error(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error("Error sending the request:", error);
+    }
+  };
+
+  const ringingSiren = async (
+    opponentUserId,
+    token,
+    reportType,
+    reportContent,
+    imagePreviews
+  ) => {
+    try {
+      const url = `${SPRING_API_URL}/siren/makefriend/${opponentUserId}`;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const bodyData = {
+        reportType: reportType,
+        reportContent: reportContent,
+        imagePreviews: imagePreviews,
+        connectedTime: connectedTime,
+      };
+      const response = await axios.post(url, bodyData, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+      if (response.data.statusCode === 200) {
+        const msg = response.data.item.msg;
+        console.log(msg);
+      } else {
+        console.error(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error("Error sending the request:", error);
+    }
+  };
+
+  const handleSubmitSiren = (reportType, reportContent, imagePreviews) => {
+    ringingSiren(
+      opponentUserId,
+      token,
+      reportType,
+      reportContent,
+      imagePreviews
+    );
+  };
+
+  const handleMakefriend = () => {
+    makeFriendRequest(opponentUserId, token);
+  };
+
   return (
     <>
+      <div id="linkbutton">
+        <Link className="toplink" onClick={handleOpenSirenPopup}>
+          <NotificationImportantIcon
+            style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
+          />
+          신고하기
+        </Link>
+        <Link className="toplink" onClick={handleOpenFriendPopup}>
+          <GroupAddIcon
+            style={{
+              verticalAlign: "middle",
+              color: "#b7d4fa",
+              marginRight: "5px",
+            }}
+          />
+          친구추가
+        </Link>
+      </div>
+      <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
+        <h2>신고 하기</h2>
+        <p>"{opponentNickname}"님을 신고하시겠어요?</p>
+      </PopupSiren>
+
+      <PopupFriend
+        isOpen={isFriendPopupOpen}
+        onClose={handleCloseFriendPopup}
+        handleMakefriend={handleMakefriend}
+      >
+        <h2>친구 추가</h2>
+        <p>곶감 5개 주면 안 잡아먹지~~~</p>
+        <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
+      </PopupFriend>
+
       <div id="myStreamState">
-        <Button variant="text" color="primary" onClick={handleCameraOnOff}>
-          {isCameraOff ? <DesktopAccessDisabledIcon /> : <DesktopWindowsIcon />}
-        </Button>
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
           style={{

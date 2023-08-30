@@ -1,4 +1,5 @@
-import { Button, TextField } from '@mui/material';
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { Button, IconButton, TextField } from '@mui/material';
 import Box from '@mui/material/Box';
 import Container from '@mui/material/Container';
 import CssBaseline from '@mui/material/CssBaseline';
@@ -14,7 +15,7 @@ import React, { useEffect, useState } from 'react';
 import DaumPostcode from "react-daum-postcode";
 import thumbImage from '../../public/01.png';
 
-const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) => {
+const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3, backClick }) => {
     const [progress, setProgress] = useState(0);
     const [open, setOpen] = useState(false);
 
@@ -122,11 +123,25 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
         <ThemeProvider theme={theme1}>
             <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
-                <Box sx={{
-                    minHeight: '608.57px',
-                    maxHeight: '608.57px',
-                    marginTop: 12.5,
-                }}>
+                <Box
+                    sx={{
+                        position: 'relative', // 추가
+                        minHeight: '608.57px',
+                        maxHeight: '608.57px',
+                        marginTop: 12.5
+                    }}
+                >
+                    <IconButton
+                        sx={{
+                            position: 'absolute',
+                            top: "-70px",
+                        }}
+                        onClick={() => {
+                            backClick();
+                        }}
+                    >
+                        <ArrowBackIosIcon />
+                    </IconButton>
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥을 이용할
                     </Typography>
@@ -168,6 +183,7 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3 }) =
                             sx={{
                                 color: 'black',
                                 height: '44px',
+                                fontFamily: "font-medium",
                                 mt: 3,
                                 mb: 2,
                                 backgroundColor: '#FEA53D', // 평소 색상
