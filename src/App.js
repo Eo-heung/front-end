@@ -35,6 +35,7 @@ import CreateBoard from "./components/moims/CreateBoard";
 import PictureLib from "./components/moims/PictureLib";
 import MoimSchedule from "./components/moims/MoimSchedule";
 import MoimUsers from "./components/moims/MoimUsers";
+import Mymoim from "./components/moims/Mymoim";
 
 function App() {
   return (
@@ -70,7 +71,6 @@ function App() {
               path="/multichattingstart"
               element={<ButtonWithNewWindow></ButtonWithNewWindow>}
             />
-            <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
             <Route path="/charge" element={<Charge></Charge>}></Route>
             <Route
               path="/modify-moim/:moimId"
@@ -89,9 +89,13 @@ function App() {
               element={<ListAcceptMoim></ListAcceptMoim>}
             ></Route>
             <Route
-              path="/moim-controller"
-              element={<MoimController></MoimController>
-              }></Route>
+              path="/my-moim-list"
+              element={<Mymoim></Mymoim>}
+            ></Route>
+            <Route path="/moim-controller" element={<MoimController></MoimController>}>
+              <Route index element={<Mymoim></Mymoim>}></Route>
+              <Route path="list-moim" element={<ListMoim></ListMoim>}></Route>
+            </Route>
             <Route path="/:moimId/moim-board" element={<MoimBoard></MoimBoard>}>
               <Route index element={
                 <div style={{ display: "flex", flexDirection: "column" }}>

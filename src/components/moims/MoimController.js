@@ -1,18 +1,39 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useLocation, useNavigate, Outlet } from 'react-router-dom';
 import BasicBoard from '../utils/BasicBoard';
-import Mymoim from './Mymoim';
-import ListMoim from './ListMoim';
 import TabButton from '../utils/TabButton';
 import { TabContainer, TabContent } from '../utils/StyledTab';
 
 const MoimController = () => {
-    const [activeTab, setActiveTab] = useState("내 모임");
+    const navi = useNavigate();
+    const location = useLocation();
+
+    const [activeTab, setActiveTab] = useState("");
     const [hoveredButton, setHoveredButton] = useState(null);
-    const [clickCount, setClickCount] = useState({ "내 모임": 0, "새로운 모임 찾기": 0 });
+
+    const tabPaths = {
+        "내 모임": "",
+        "새로운 모임 찾기": "list-moim"
+    };
+
+    console.log("location.pathname  ", location.pathname);
+
+    useEffect(() => {
+        const matchedLabel = Object.keys(tabPaths).find(label => {
+            if (tabPaths[label] === "") {
+                return `/moim-controller` === location.pathname;
+            }
+            return `/moim-controller/${tabPaths[label]}` === location.pathname;
+        });
+
+        console.log("tabPaths  ", tabPaths);
+        console.log("before  ", matchedLabel);
+        setActiveTab(matchedLabel || "내 모임");
+        console.log("after  ", matchedLabel);
+    }, [location.pathname]);
 
     const handleTabClick = (label) => {
-        setActiveTab(label);
-        setClickCount(prev => ({ ...prev, [label]: prev[label] + 1 }));
+        navi(`/moim-controller/${tabPaths[label]}`);
     };
 
     return (
@@ -36,10 +57,7 @@ const MoimController = () => {
                 />
             </TabContainer>
             <TabContent>
-                {activeTab === "내 모임" ?
-                    <Mymoim key={`my-moim-${clickCount["내 모임"]}`} />
-                    :
-                    <ListMoim key={`list-moim-${clickCount["새로운 모임 찾기"]}`} />}
+                <Outlet />
             </TabContent>
         </BasicBoard>
     );
