@@ -5,7 +5,7 @@
   align-items: center;
   width: 100vw;
   height: 100vh;
-  background-color: rgba(0, 0, 0, 0.5); /* 배경을 약간 어둡게 설정 */
+  background-color: rgba(0, 0, 0, 0.3);
   position: fixed;
   top: 0;
   left: 0;
@@ -21,4 +21,44 @@
   max-height: 400vh;
   box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3); /* 팝업에 약간의 그림자 추가 */
   margin-bottom: 15vh;
+  z-index: 10010;
+}
+
+.select-container {
+  position: relative;
+  width: 200px;
+  font-family: "Arial", sans-serif;
+}
+
+.styled-select {
+  appearance: none; /* 브라우저의 기본 select 스타일 제거 */
+  outline: none;
+  width: 100%;
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+  background-color: #fff;
+  font-size: 16px;
+  transition: border-color 0.3s;
+}
+
+.styled-select:hover {
+  border-color: #777;
+}
+
+.styled-select:focus {
+  border-color: #555;
+}
+
+/* 아래의 코드는 select 박스에 드롭다운 화살표를 모던하게 디자인하기 위한 스타일입니다. */
+.select-container::after {
+  content: "\25BC"; /* 아래 화살표 유니코드 */
+  position: absolute;
+  top: 50%;
+  right: 10px;
+  transform: translateY(-50%);
+  pointer-events: none; /* 마우스 이벤트를 받지 않도록 설정 */
+  font-size: 12px;
+  color: #777;
 }

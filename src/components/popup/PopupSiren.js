@@ -1,35 +1,37 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import "../../css/partials/Popup.css";
-import {
-  Select,
-  MenuItem,
-  FormControl,
-  InputLabel,
-  TextField,
-  Box,
-} from "@mui/material";
+import { TextField, Box } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 
-const Popup = ({ isOpen, onClose, children }) => {
+const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
   const [reportType, setReportType] = useState("욕설");
   const [reportContent, setReportContent] = useState("");
-  const [selectedImages, setSelectedImages] = useState([]);
-  const [imagePreviews, setImagePreviews] = useState([]);
+  const [selectedImages, setSelectedImages] = useState([]); // 파일구조
+  const [imagePreviews, setImagePreviews] = useState([]); // base64
+
+  useEffect(() => {
+    setReportType("욕설");
+    setReportContent("");
+    setSelectedImages([]);
+    setImagePreviews([]);
+  }, [onClose]);
 
   const handleMouseDown = (e) => {
     setIsDragging(true);
     setStartPos({ x: e.clientX, y: e.clientY });
   };
-  const handleTypeChange = (event) => {
+
+  const handleReportTypeChange = (event) => {
     setReportType(event.target.value);
   };
 
   const handleContentChange = (event) => {
     setReportContent(event.target.value);
   };
+
   const handleMouseMove = (e) => {
     if (!isDragging) return;
     const dx = e.clientX - startPos.x;
@@ -107,56 +109,35 @@ const Popup = ({ isOpen, onClose, children }) => {
           onMouseDown={handleMouseDown}
         >
           {children}
-          <Box
-            onClick={() => document.getElementById("reportContent").focus()} // Box 클릭 시 TextField 활성화
-            sx={{
-              display: "flex",
-              flexDirection: "column",
-              gap: 2,
-              maxWidth: "400px",
-              margin: "0 auto",
-              padding: "20px",
-              zIndex: 100000,
-            }}
-          >
-            <FormControl fullWidth variant="outlined">
-              {" "}
-              {/* FormControl 클릭 시 Select 오픈 */}
-              <InputLabel>신고 유형</InputLabel>
-              <Select
-                id="reportType"
-                label="신고 유형"
-                value={reportType}
-                onChange={handleTypeChange}
-                sx={{
-                  zIndex: 100000,
-                }}
-              >
-                <MenuItem value={"욕설"}>욕설</MenuItem>
-                <MenuItem value={"type1"}>비하</MenuItem>
-                <MenuItem value={"type2"}>음란</MenuItem>
-                <MenuItem value={"type3"}>사기</MenuItem>
-              </Select>
-            </FormControl>
 
+          <div class="select-container">
+            <select
+              class="styled-select"
+              value={reportType}
+              onChange={handleReportTypeChange}
+            >
+              <option value="욕설">욕설</option>
+              <option value="비하">비하</option>
+              <option value="음란">음란</option>
+              <option value="사기">사기</option>
+            </select>
+          </div>
+          <Box sx={{ mt: 2 }}>
             <TextField
               id="reportContent"
               fullWidth
               variant="outlined"
               multiline
               rows={4}
+              style={{ marginBottom: "10px" }}
               label="신고 내용"
               value={reportContent}
               onChange={handleContentChange}
-              sx={{
-                zIndex: 100000,
-              }}
             />
-          </Box>
-          <Box sx={{ mt: 2 }}>
             <input
               type="file"
               onChange={handleImageChange}
+              style={{ marginBottom: "10px" }}
               accept="image/*"
               multiple // 여러 파일 선택 허용
             />
@@ -176,9 +157,23 @@ const Popup = ({ isOpen, onClose, children }) => {
               />
             ))}
           </Box>
+
           <div>
-            <button onClick={onClose}>신고하기</button>
-            <button onClick={onClose}>닫기</button>
+            <button
+              onClick={() => {
+                handleSubmitSiren(
+                  reportType,
+                  reportContent,
+                  selectedImages,
+                  imagePreviews
+                );
+                onClose();
+              }}
+              style={{ marginRight: "10px" }}
+            >
+              신고하기
+            </button>
+            <button onClick={onClose}>취소</button>
           </div>
         </div>
       </div>

@@ -451,9 +451,51 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     }
   };
 
+  const ringingSiren = async (
+    opponentUserId,
+    token,
+    reportType,
+    reportContent,
+    imagePreviews
+  ) => {
+    try {
+      const url = `${SPRING_API_URL}/siren/makefriend/${opponentUserId}`;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const bodyData = {
+        reportType: reportType,
+        reportContent: reportContent,
+        imagePreviews: imagePreviews,
+        connectedTime: connectedTime,
+      };
+      const response = await axios.post(url, bodyData, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+      if (response.data.statusCode === 200) {
+        const msg = response.data.item.msg;
+        console.log(msg);
+      } else {
+        console.error(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error("Error sending the request:", error);
+    }
+  };
+
+  const handleSubmitSiren = (reportType, reportContent, imagePreviews) => {
+    ringingSiren(
+      opponentUserId,
+      token,
+      reportType,
+
+      reportContent,
+      imagePreviews
+    );
+  };
+
   const handleMakefriend = () => {
     makeFriendRequest(opponentUserId, token);
-    console.log(opponentUserId, token);
   };
 
   return (
@@ -481,9 +523,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           친구추가
         </Link>
       </div>
-      <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
+      <PopupSiren
+        isOpen={isSirenPopupOpen}
+        onClose={handleCloseSirenPopup}
+        handleSubmitSiren={handleSubmitSiren}
+      >
         <h2>신고 하기</h2>
-
         <p>"{opponentNickname}"님을 신고하시겠어요?</p>
       </PopupSiren>
 
