@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 
 
 
@@ -17,7 +18,7 @@ const NaverHandler = () => {
             console.log(code);
 
             // 데이터를 백엔드에 전송
-            axios.post('http://localhost:9000/NaverToken', {
+            axios.post(`${SPRING_API_URL}/NaverToken`, {
                 state: state,
                 client_id: client_id,
                 client_secret: client_secret,

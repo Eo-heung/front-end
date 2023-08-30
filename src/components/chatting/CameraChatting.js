@@ -15,6 +15,7 @@ import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import PopupSiren from "../popup/PopupSiren";
 import PopupFriend from "../popup/PopupFriend";
+import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -30,15 +31,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const peerFaceRef = useRef(null);
   const [messages, setMessages] = useState([]);
   const [myNickname, setMyNickname] = useState("");
-  const [myUserId, setMyUserId] = useState("");
-
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
-  const userId = decodeURIComponent(getCookie("userId") || "");
-
   const [opponentNickname, setOpponentNickname] = useState("");
-  const [opponentUserId, setOpponentUserId] = useState("");
-
   const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
   const [roomName, setRoomName] = useState("");
@@ -49,8 +44,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [connectedTime, setConnectedTime] = useState("");
 
   const textChatVisibleRef = useRef(textChatVisible);
-  const token = sessionStorage.getItem("ACCESS_TOKEN");
-
   const chatIcon = textChatVisible ? (
     <SpeakerNotesOffIcon />
   ) : (
@@ -86,10 +79,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:4000");
+    socket.current = io(`${NODE_API_URL}`);
     setMyNickname(getCookie("userNickname"));
-    setMyUserId(getCookie("userId"));
-
     fetchNickname(); // 여기서 닉네임을 가져옴
 
     startChatting();
@@ -117,7 +108,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const opponentNickname = data.opponentNickname;
       const opponentUserId = data.opponentUserId;
       console.log(
-        `You (${userNickname},${userId}) are matched with user ${opponentNickname} in room ${roomName}`
+        `You (${userNickname}) are matched with user ${opponentNickname} in room ${roomName}`
       );
       setConnectionStatus("매칭됨");
 
@@ -125,7 +116,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setRoomName(roomName);
 
       setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
-      setOpponentUserId(opponentUserId);
+
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
       // 예: setOpponentNickname(opponentNickname);
     });
@@ -326,12 +317,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
-    const userId = getCookie("userId");
     fetchNickname(); // 여기서 닉네임을 가져옴
-    socket.current.emit("request_random_chat", {
-      nickname: userNickname,
-      userId: userId,
-    });
+    socket.current.emit("request_random_chat", { nickname: userNickname });
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
@@ -375,10 +362,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://localhost:4000/nickname", {
+      const response = await axios.get(`${NODE_API_URL}/nickname`, {
         params: {
           nickname: userNickname,
-          userId: userId,
         },
       });
       // 응답 데이터를 콘솔에 출력
@@ -396,7 +382,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handlechargeClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://localhost:1234/chattingcharge",
+      `${REDIRECT_URL}/chattingcharge`,
       "_blank",
       "width=800,height=600"
     );
@@ -429,7 +415,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const makeFriendRequest = async (opponentUserId, token) => {
     try {
-      const url = `http://localhost:9000/friend/makefriend/${opponentUserId}`;
+      const url = `${SPRING_API_URL}/friend/makefriend/${opponentUserId}`;
 
       const config = {
         headers: {
@@ -512,6 +498,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       </PopupFriend>
 
       <div id="myStreamState">
+        <Button variant="text" color="primary" onClick={handleCameraOnOff}>
+          {isCameraOff ? <DesktopAccessDisabledIcon /> : <DesktopWindowsIcon />}
+        </Button>
         {/* <h1>Socket.io 연결 상태: {connectionStatus}</h1> */}
         <div
           style={{

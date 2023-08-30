@@ -2,10 +2,10 @@ import React from "react";
 
 const Footer = () => {
   return (
-    <div style={{ float: "right" }}>
+    <div style={{ float: "left" }}>
       <footer>
         <div className="copyRight">
-          Copyright ⓒ 2023 by T-co All rights reserved.
+          Copyright 2023 by T-co All rights reserved.
         </div>
       </footer>
     </div>

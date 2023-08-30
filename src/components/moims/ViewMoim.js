@@ -6,6 +6,7 @@ import { styled } from '@mui/system';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import { useCookies } from 'react-cookie';
+import { SPRING_API_URL } from '../../config';
 
 const StyledTypography = styled(Typography)`
     margin-bottom: 10px;
@@ -82,7 +83,7 @@ const ViewMoim = () => {
     useEffect(() => {
         const getMoimDetail = async () => {
             try {
-                const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+                const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
 
                 console.log(response.data);
 
@@ -101,7 +102,7 @@ const ViewMoim = () => {
 
     const deleteMoim = async () => {
         try {
-            const response = await axios.delete(`http://localhost:9000/moim/delete-moim/${moimId}`);
+            const response = await axios.delete(`${SPRING_API_URL}/moim/delete-moim/${moimId}`);
 
             if (response.status === 200) {
                 alert("모집글이 삭제되었습니다.");
@@ -124,7 +125,7 @@ const ViewMoim = () => {
     useEffect(() => {
         const getUserMoimStatus = async () => {
             try {
-                const response = await axios.get(`http://localhost:9000/moimReg/check-registration-state/${moimId}`, {
+                const response = await axios.get(`${SPRING_API_URL}/moimReg/check-registration-state/${moimId}`, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
@@ -141,7 +142,7 @@ const ViewMoim = () => {
 
     const cancelMoimApplication = async () => {
         try {
-            const response = await axios.post(`http://localhost:9000/moimReg/${status.moimRegId}/applicant-state?nowStatus=CANCELED`, {}, {
+            const response = await axios.post(`${SPRING_API_URL}/moimReg/${status.moimRegId}/applicant-state?nowStatus=CANCELED`, {}, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }

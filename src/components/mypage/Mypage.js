@@ -1,34 +1,13 @@
 import styled from "@emotion/styled";
-import {
-  Box,
-  Button,
-  Container,
-  Divider,
-  FormControl,
-  FormControlLabel,
-  Grid,
-  Link,
-  MenuItem,
-  Paper,
-  Radio,
-  RadioGroup,
-  Select,
-  Tab,
-  Table,
-  TableBody,
-  TableCell,
-  TableHead,
-  TableRow,
-  Tabs,
-  TextField,
-  Typography,
-} from "@mui/material";
+import { Box, Button, Container, Divider, FormControl, FormControlLabel, Grid, Link, MenuItem, Paper, Radio, RadioGroup, Select, Tab, Table, TableBody, TableCell, TableHead, TableRow, Tabs, TextField, Typography, } from "@mui/material";
 import Dialog from "@mui/material/Dialog";
 import DialogContent from "@mui/material/DialogContent";
 import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
+import basicProfile from "../../public/basic_profile.png";
 
 const TabButton = styled.button`
   width: 17%;
@@ -132,7 +111,7 @@ const Mypage = () => {
   useEffect(() => {
     // 예를 들면 아래와 같이 DB에서 데이터를 가져온다고 가정합니다.
     axios
-      .post("http://localhost:9000/hobby/gethobby")
+      .post(`${SPRING_API_URL}/hobby/gethobby`)
       .then((res) => res.data)
       .then((data) => {
         const interests = [];
@@ -212,7 +191,7 @@ const Mypage = () => {
   const checkPhone = async (tel) => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/checkphone",
+        `${SPRING_API_URL}/checkphone`,
         tel
       );
       console.log(response.data);
@@ -233,7 +212,7 @@ const Mypage = () => {
       console.log(userinfo);
 
       const response = await axios.post(
-        "http://localhost:9000/mypage/changephone",
+        `${SPRING_API_URL}/mypage/changephone`,
         userinfo,
         {
           headers: {
@@ -252,7 +231,7 @@ const Mypage = () => {
   const checkPassword = async (userPw) => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/checkpassword",
+        `${SPRING_API_URL}/mypage/checkpassword`,
         { userPw: userPw },
         {
           headers: {
@@ -273,7 +252,7 @@ const Mypage = () => {
         userPw: userPw,
       };
       const response = await axios.post(
-        "http://localhost:9000/mypage/changepassword",
+        `${SPRING_API_URL}/mypage/changepassword`,
         userinfo,
         {
           headers: {
@@ -290,7 +269,7 @@ const Mypage = () => {
   const getProfileImage = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/getprofileimage",
+        `${SPRING_API_URL}/mypage/getprofileimage`,
         {},
         {
           headers: {
@@ -325,7 +304,7 @@ const Mypage = () => {
 
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/changeprofileimage",
+        `${SPRING_API_URL}/mypage/changeprofileimage`,
         formData,
         {
           headers: {
@@ -635,7 +614,7 @@ const Mypage = () => {
   const fetchUserInfo = async () => {
     try {
       const response = await axios.post(
-        "http://localhost:9000/mypage/myinfo",
+        `${SPRING_API_URL}/mypage/myinfo`,
         {},
         {
           headers: {
@@ -676,7 +655,7 @@ const Mypage = () => {
   useEffect(() => {
     axios
       .post(
-        "http://localhost:9000/mypage/mymoim",
+        `${SPRING_API_URL}/mypage/mymoim`,
         {}, // This is the request body. It's empty in this case.
         {
           headers: {
@@ -699,7 +678,7 @@ const Mypage = () => {
   const editInfo = () => {
     axios
       .post(
-        "http://localhost:9000/mypage/editinfo",
+        `${SPRING_API_URL}/mypage/editinfo`,
         {
           userName: userName,
           userAddr1: userAddr1,
@@ -729,7 +708,7 @@ const Mypage = () => {
   const getFriendList = async () => {
     axios
       .post(
-        "http://localhost:9000/friend/friendList",
+        `${SPRING_API_URL}/friend/friendList`,
         {},
         {
           headers: {
@@ -749,7 +728,7 @@ const Mypage = () => {
   const getRequestFriendList = async () => {
     axios
       .post(
-        "http://localhost:9000/friend/requestFriendList",
+        `${SPRING_API_URL}/friend/requestFriendList`,
         {},
         {
           headers: {
@@ -768,7 +747,7 @@ const Mypage = () => {
   const getPaymentList = async () => {
     axios
       .post(
-        "http://localhost:9000/paymentList",
+        `${SPRING_API_URL}/paymentList`,
         {},
         {
           headers: {
@@ -787,7 +766,7 @@ const Mypage = () => {
 
   const acceptRequestFriend = async (id, requestValue) => {
     axios
-      .post(`http://localhost:9000/friend/requestFriend/${id}`, {
+      .post(`${SPRING_API_URL}/friend/requestFriend/${id}`, {
         id: requestValue,
       })
       .then((res) => {
@@ -808,7 +787,7 @@ const Mypage = () => {
     }
 
     axios
-      .post(`http://localhost:9000/friend/deleteFriend/${id}`, {})
+      .post(`${SPRING_API_URL}/friend/deleteFriend/${id}`, {})
       .then((res) => {
         console.log(res.data);
         getRequestFriendList();
@@ -825,7 +804,7 @@ const Mypage = () => {
       return; // 사용자가 취소를 누르면 여기에서 함수를 종료합니다
     } else {
       axios
-        .post(`http://localhost:9000/cancelPayment/${id}`, {})
+        .post(`${SPRING_API_URL}/cancelPayment/${id}`, {})
         .then((res) => {
           console.log(res.data);
           alert(res.data.item.msg);
@@ -925,16 +904,16 @@ const Mypage = () => {
                             style={{ padding: "24px 24px 24px 50px" }}
                           >
                             {[
-                              ["닉네임", userName],
+                              ["닉네임", userName || "닉네임을 입력해주세요."],
                               [
                                 "내 지역",
-                                `${userAddr1} ${userAddr2} ${userAddr3}`,
+                                `${userAddr1 || "지역을 입력해주세요."} ${userAddr2 || ""} ${userAddr3 || ""}`,
                               ],
-                              ["관심사", userHobby1 || ""],
+                              ["관심사", userHobby1 || "관심사를 입력해주세요."],
                               ["좋아하는 음악 장르", userHobby2 || ""],
                               ["좋아하는 음식 종류", userHobby3 || ""],
                               ["그 외 관심사", userRecommend || ""],
-                              ["상태메세지", userStatusMessage || ""],
+                              ["상태메세지", userStatusMessage || "상태메세지를 입력해주세요."],
                             ].map(([label, value]) => (
                               <>
                                 <Grid container spacing={2} alignItems="center">
@@ -1066,11 +1045,11 @@ const Mypage = () => {
                                           "좋아하는 음식 종류",
                                         ].includes(label)
                                           ? getHobbyNameByCode(
-                                              value,
-                                              interests,
-                                              musicGenres,
-                                              foodTypes
-                                            )
+                                            value,
+                                            interests,
+                                            musicGenres,
+                                            foodTypes
+                                          )
                                           : value}
                                       </div>
                                     )}
@@ -1107,7 +1086,7 @@ const Mypage = () => {
                               id="previewImage"
                               src={
                                 imageFile ||
-                                "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                                basicProfile
                               }
                               alt="프로필 사진"
                               style={{
@@ -1214,11 +1193,11 @@ const Mypage = () => {
                           style={{ padding: "24px 500px 24px 50px" }}
                         >
                           {[
-                            ["휴대폰 번호", userTel],
+                            ["휴대폰 번호", userTel || "휴대폰을 인증해주세요."],
                             ["비밀번호", ""],
                             ["생년월일", userBirth || ""],
-                            ["성별", userGender || ""],
-                            ["이메일", userEmail || ""],
+                            ["성별", userGender || "성별을 입력해주세요."],
+                            ["이메일", userEmail || "이메일을 입력해주세요."],
                             ["가입일", userRegdate || ""],
                           ].map(([label, value]) => (
                             <>
@@ -1234,7 +1213,7 @@ const Mypage = () => {
                                 </Grid>
                                 <Grid item xs={8}>
                                   {isEditing &&
-                                  !["생년월일", "가입일"].includes(label) ? (
+                                    !["생년월일", "가입일"].includes(label) ? (
                                     label === "휴대폰 번호" ? (
                                       <div>
                                         <Typography
@@ -1320,26 +1299,26 @@ const Mypage = () => {
                                     <div sx={{ width: "650px" }}>
                                       {label === "휴대폰 번호"
                                         ? value.replace(
-                                            /^(\d{3})(\d{4})(\d{4})$/,
-                                            "$1 - $2 - $3"
-                                          )
+                                          /^(\d{3})(\d{4})(\d{4})$/,
+                                          "$1 - $2 - $3"
+                                        )
                                         : label === "생년월일"
-                                        ? `${value.slice(0, 4)}년 ${value.slice(
+                                          ? `${value.slice(0, 4)}년 ${value.slice(
                                             4,
                                             6
                                           )}월 ${value.slice(6, 8)}일`
-                                        : label === "가입일"
-                                        ? value
-                                            .slice(0, 10)
-                                            .replace(/-/g, "년 ")
-                                            .replace(/-/g, "월 ") + "일"
-                                        : label === "성별"
-                                        ? userGender === 1
-                                          ? "남자"
-                                          : userGender === 0
-                                          ? "여자"
-                                          : ""
-                                        : value}
+                                          : label === "가입일"
+                                            ? value
+                                              .slice(0, 10)
+                                              .replace(/-/g, "년 ")
+                                              .replace(/-/g, "월 ") + "일"
+                                            : label === "성별"
+                                              ? userGender === 1
+                                                ? "남자"
+                                                : userGender === 0
+                                                  ? "여자"
+                                                  : ""
+                                              : value}
                                     </div>
                                   )}
                                   {/* Example Modal component */}
@@ -1580,26 +1559,26 @@ const Mypage = () => {
                                             )
                                               .toString()
                                               .padStart(2, "0")}월 ${new Date(
-                                              payment.payDate
-                                            )
-                                              .getDate()
-                                              .toString()
-                                              .padStart(2, "0")}일(${new Date(
-                                              payment.payDate
-                                            )
-                                              .getHours()
-                                              .toString()
-                                              .padStart(2, "0")}:${new Date(
-                                              payment.payDate
-                                            )
-                                              .getMinutes()
-                                              .toString()
-                                              .padStart(2, "0")}:${new Date(
-                                              payment.payDate
-                                            )
-                                              .getSeconds()
-                                              .toString()
-                                              .padStart(2, "0")})`) ||
+                                                payment.payDate
+                                              )
+                                                .getDate()
+                                                .toString()
+                                                .padStart(2, "0")}일(${new Date(
+                                                  payment.payDate
+                                                )
+                                                  .getHours()
+                                                  .toString()
+                                                  .padStart(2, "0")}:${new Date(
+                                                    payment.payDate
+                                                  )
+                                                    .getMinutes()
+                                                    .toString()
+                                                    .padStart(2, "0")}:${new Date(
+                                                      payment.payDate
+                                                    )
+                                                      .getSeconds()
+                                                      .toString()
+                                                      .padStart(2, "0")})`) ||
                                             "날짜 확인 불가"}
                                         </Typography>
                                       </div>
@@ -1694,7 +1673,7 @@ const Mypage = () => {
                                           src={
                                             friend.profile
                                               ? `data:image/jpeg;base64,${friend.profile}`
-                                              : "https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                                              : basicProfile
                                           }
                                           alt="프로필 사진"
                                           style={{
@@ -1703,11 +1682,10 @@ const Mypage = () => {
                                             borderRadius: "25px",
                                             marginRight: "8px",
                                             border: "2px solid white",
-                                            boxShadow: `0 0 5px 2px ${
-                                              friend.online
-                                                ? "#05FF00"
-                                                : "#B6B6B6"
-                                            }`,
+                                            boxShadow: `0 0 5px 2px ${friend.online
+                                              ? "#05FF00"
+                                              : "#B6B6B6"
+                                              }`,
                                           }}
                                         />
                                       </div>

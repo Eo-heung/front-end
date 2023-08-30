@@ -58,18 +58,17 @@ const Main = () => {
                     }}
                   >
                     <Carousel
-                      height={190}
+                      height="30vh"
                       animation="slide"
-                      duration={200}
-                      interval={5000}
+                      duration={2000}
                       indicators={true}
-                      // indicatorContainerProps={{
-                      //   style: {
-                      //     zIndex: 1,
-                      //     marginTop: "-4vh",
-                      //     position: "relative",
-                      //   },
-                      // }}
+                      indicatorContainerProps={{
+                        style: {
+                          zIndex: 1,
+                          marginTop: "-35px",
+                          position: "relative",
+                        },
+                      }}
                     >
                       {imageUrls.map((url, index) => (
                         <img
