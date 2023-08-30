@@ -1,3 +1,4 @@
+import axios from 'axios';
 import React, { useState } from 'react';
 import Password1 from './password/Password1';
 import Password2 from './password/Password2';
@@ -18,18 +19,19 @@ const Password = () => {
 
     const backClick = () => {
         setPageIndex(pageIndex + -1);
-    }
+    };
+
 
     const renderPage = () => {
         switch (pageIndex) {
             case 0:
                 return <Password1 handleClick={handleClick} />;
             case 1:
-                return <Password2 handleClick={handleClick} setUserTel={setUserTel} setCheckNum={setCheckNum} />;
+                return <Password2 handleClick={handleClick} setUserTel={setUserTel} setCheckNum={setCheckNum} backClick={backClick} />;
             case 2:
-                return <Password3 handleClick={handleClick} backClick={backClick} checkNum={checkNum} />;
+                return <Password3 handleClick={handleClick} backClick={backClick} checkNum={checkNum} userTel={userTel} />;
             case 3:
-                return <Password4 handleClick={handleClick} setUserPw={setUserPw} />;
+                return <Password4 handleClick={handleClick} setUserPw={setUserPw} userTel={userTel} backClick={backClick} />;
             default:
                 return <Password1 />;
         }

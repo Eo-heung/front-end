@@ -1,3 +1,5 @@
+import ArrowBackIosIcon from "@mui/icons-material/ArrowBackIos";
+import { IconButton } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -9,9 +11,12 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
+import axios from "axios";
 import PropTypes from "prop-types";
 import React, { useEffect, useState } from "react";
-import thumbImage from "../../public/image.png";
+import { useNavigate } from "react-router-dom";
+import { SPRING_API_URL } from "../../config";
+import thumbImage from "../../public/04.png";
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled("div")(({ progress }) => ({
@@ -26,27 +31,65 @@ const Circle = styled("div")(({ progress }) => ({
   zIndex: 2,
   transition: "left 500ms ease-out",
 }));
-function LinearProgressWithLabel(props) {
+
+function LinearProgressWithLabel() {
+  const [progress, setProgress] = useState(66);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setProgress(100);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
   return (
-    <Box sx={{ display: "flex", alignItems: "center" }}>
-      <Box sx={{ width: "100%", mr: 1 }}>
-        <LinearProgress variant="determinate" {...props} />
+    <Box
+      sx={{
+        position: "relative",
+        display: "flex",
+        alignItems: "center",
+        width: "100%",
+        height: "20px",
+      }}
+    >
+      <Box sx={{ position: "relative", flex: 14, marginRight: "10px" }}>
+        <LinearProgress variant="determinate" value={progress} />
+        <Circle progress={progress} />
       </Box>
-      <Box sx={{ minWidth: 50 }}>
-        <Typography variant="body2" color="text.secondary">{`${Math.round(
-          props.value
-        )}%`}</Typography>
+      <Box sx={{ flex: 1, marginLeft: 3 }}>
+        <Typography variant="body2" color="black" sx={{ width: "30px" }}>
+          {"3 / 3"}
+        </Typography>
       </Box>
     </Box>
   );
 }
 
-const Password4 = ({ setUserPw }) => {
+const Password4 = ({ setUserPw, userTel, backClick }) => {
   const [password, setPassword] = useState("");
   const [confirmPassword, setConfirmPassword] = useState("");
   const [passwordMatch, setPasswordMatch] = useState(true);
   const [progress, setProgress] = useState(66);
   const [isAuthenticated, setIsAuthenticated] = useState(false);
+  const navi = useNavigate();
+
+  function ProgressWithLabel(props) {
+    return (
+      <Box sx={{ display: "flex", alignItems: "center" }}>
+        <Box sx={{ width: "100%", mr: 1 }}>
+          <LinearProgress variant="determinate" {...props} />
+        </Box>
+        <Box sx={{ minWidth: 50 }}>
+          <Typography variant="body2" color="text.secondary">{`${Math.round(
+            props.value
+          )}%`}</Typography>
+        </Box>
+      </Box>
+    );
+  }
 
   useEffect(() => {
     const timer = setTimeout(() => {
@@ -66,42 +109,6 @@ const Password4 = ({ setUserPw }) => {
     },
   });
 
-  function LinearProgressWithLabel() {
-    const [progress, setProgress] = useState(66);
-
-    React.useEffect(() => {
-      const timer = setTimeout(() => {
-        setProgress(100);
-      }, 500);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }, []);
-
-    return (
-      <Box
-        sx={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          height: "20px",
-        }}
-      >
-        <Box sx={{ position: "relative", flex: 14 }}>
-          <LinearProgress variant="determinate" value={progress} />
-          <Circle progress={progress} />
-        </Box>
-        <Box sx={{ flex: 1, marginLeft: 1 }}>
-          <Typography variant="body2" color="text.secondary">{`${Math.round(
-            progress
-          )}%`}</Typography>
-        </Box>
-      </Box>
-    );
-  }
-
   LinearProgressWithLabel.propTypes = {
     value: PropTypes.number.isRequired,
   };
@@ -118,10 +125,38 @@ const Password4 = ({ setUserPw }) => {
 
   const handleSubmit = (event) => {
     event.preventDefault();
+
+    // 비밀번호의 길이 확인
+    if (password.length < 8 || password.length > 20) {
+      alert("8-20자 사이의 비밀번호를 설정해주세요.");
+      return; // 함수 실행을 여기서 종료
+    }
+
     if (password === confirmPassword) {
       setIsAuthenticated(true);
       console.log("비밀번호 일치:", password);
       setUserPw(() => password);
+
+      const changePassword = async () => {
+        try {
+          const response = await axios.post(`${SPRING_API_URL}/resetpassword`, {
+            userId: userTel,
+            userPw: password,
+          });
+
+          if (response.data.statusCode === 200) {
+            alert("비밀번호가 성공적으로 변경되었습니다.");
+            navi("/login");
+          } else {
+            alert("비밀번호 변경에 실패하였습니다. 다시 시도해주세요.");
+          }
+        } catch (error) {
+          console.log(error);
+          alert("서버 오류가 발생하였습니다.");
+        }
+      };
+
+      changePassword();
     } else {
       setIsAuthenticated(false);
       setPasswordMatch(false);
@@ -133,36 +168,51 @@ const Password4 = ({ setUserPw }) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs">
+      <Container component="main" maxWidth="xs" style={{ overflow: "hidden" }}>
         <CssBaseline />
         <Box
           sx={{
-            height: "608.57px",
-            marginTop: 8,
+            position: "relative", // 추가
+            minHeight: "608.57px",
+            maxHeight: "608.57px",
+            marginTop: 12.5,
           }}
         >
+          <IconButton
+            sx={{
+              position: "absolute",
+              top: "-70px",
+            }}
+            onClick={() => {
+              backClick();
+            }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
           <Typography
             variant="h5"
-            fontSize="10pt"
+            fontSize="12pt"
             gutterBottom
             textAlign={"center"}
+            style={{ fontFamily: "font-medium", color: "gray" }}
           >
             어흥!
           </Typography>
-          <br></br>
-          <br></br>
-          <Typography variant="h6" fontSize="20pt" textAlign={"center"}>
+          <Typography
+            variant="h1"
+            fontSize="18pt"
+            textAlign={"center"}
+            style={{ fontFamily: "font-medium", color: "black" }}
+          >
             변경할 비밀번호를 입력해주세요
           </Typography>
-          <br></br>
-          <br></br>
           <Box
             component="form"
             noValidate
             onSubmit={handleSubmit}
             sx={{ mt: 3 }}
           >
-            <Grid container spacing={2}>
+            <Grid container spacing={2} style={{ marginTop: "60px" }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -172,6 +222,7 @@ const Password4 = ({ setUserPw }) => {
                   name="password"
                   type="password"
                   autoComplete="new-password"
+                  inputProps={{ minLength: 8, maxLength: 20 }}
                   value={password}
                   onChange={handlePasswordChange}
                 />
@@ -185,6 +236,7 @@ const Password4 = ({ setUserPw }) => {
                   name="confirmPassword"
                   type="password"
                   autoComplete="new-password"
+                  inputProps={{ minLength: 8, maxLength: 20 }}
                   value={confirmPassword}
                   onChange={handleConfirmPasswordChange}
                   error={!passwordMatch}
@@ -209,11 +261,14 @@ const Password4 = ({ setUserPw }) => {
                 variant="contained"
                 color="primary"
                 sx={{
+                  color: "black",
+                  height: "44px",
                   mt: 3,
                   mb: 2,
-                  backgroundColor: isAuthenticated ? "#4CAF50" : "#FFB471",
+                  fontFamily: "font-medium",
+                  backgroundColor: "#FEA53D", // 평소 색상
                   "&:hover": {
-                    backgroundColor: isAuthenticated ? "#4CAF50" : "#E55C25",
+                    backgroundColor: "#FEB158", // 호버 시 색상
                   },
                 }}
               >
@@ -224,17 +279,22 @@ const Password4 = ({ setUserPw }) => {
                   비밀번호 변경에 성공했어요!
                 </Typography>
               )}
-              <Link href="/login" variant="body2">
+              <Link
+                href="/login"
+                variant="body2"
+                sx={{ float: "right" }}
+                style={{ fontFamily: "font-medium" }}
+              >
                 로그인하러가기
               </Link>
-              <ThemeProvider theme={theme}>
-                <Box sx={{ width: "100%", marginTop: "40%" }}>
-                  <LinearProgressWithLabel value={progress} />
-                </Box>
-              </ThemeProvider>
             </Box>
           </Box>
         </Box>
+        <ThemeProvider theme={theme}>
+          <Box sx={{ width: "100%", height: "50px", marginTop: "-8%" }}>
+            <LinearProgressWithLabel value={progress} />
+          </Box>
+        </ThemeProvider>
       </Container>
     </ThemeProvider>
   );

@@ -1,12 +1,17 @@
-import React, { useState, useEffect } from "react";
-// import '../../css/partials/Style.css';
-import { data } from "./data.js";
-import { Link } from "react-router-dom";
+import React, { useEffect, useState } from "react";
+import basicProfile from "../../public/basic_profile.png";
 
-const Nav = () => {
+const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
-  const [friend, setFriend] = useState(data);
+  const getCookie = (userNicknamename) => {
+    const value = `; ${document.cookie}`;
+    const parts = value.split(`; ${userNicknamename}=`);
+    if (parts.length === 2) {
+      return parts.pop().split(";").shift();
+    }
+  };
 
+  const userNickname = decodeURIComponent(getCookie("userNickname") || "");
   const [appoint, setAppoint] = useState(null);
   const exAppo = [
     { startTime: new Date("2023-08-06T10:00:00"), content: "아침 회의" },
@@ -27,45 +32,72 @@ const Nav = () => {
     );
 
     setAppoint(closest);
+    getFriendList();
   }, []);
   // style={{ width: '45%' }}
   function List(props) {
+    const friend = props.friend;
+
+    // 글자 수가 10자 초과일 때 '...'을 추가하는 로직
+    const displayName = friend.user_name.length > 10
+      ? friend.user_name.substring(0, 10) + "..."
+      : friend.user_name;
+
     return (
-      <tr>
-        <td style={{ width: "100px" }}>{props.friend.pic}</td>
-        <td style={{ width: "100px" }}>{props.friend.fName}</td>
-        <td style={{ width: "50px" }}>{props.friend.log}</td>
-      </tr>
+      <>
+        <tr key={friend.user_name}>
+          <td style={{ width: "90px", paddingLeft: "5px" }}>
+            <img
+              style={{
+                border: "2px solid white",
+                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"
+                  }`,
+              }}
+              src={friend.profile && `data:image/jpeg;base64,${friend.profile}` || basicProfile}
+              alt="프로필 사진"
+            />
+          </td>
+          <td style={{ width: "170px" }}>{displayName}</td>
+        </tr>
+      </>
     );
   }
 
+
   return (
-    <div className="sb-nav-fixed mainpage">
+    <div className="sb-nav-fixed">
       <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
           <nav className="sb-sidenav accordion sb-sidenav-light">
             {/* 프로필 영역 */}
             <div className="sb-sidenav-profile">
-              {/* <div className="sidenav-profile-welcome" style={{ height: '10%' }}>
-                                <h4>ooo님, 오늘도 어흥!</h4>
-                            </div> */}
-              <div className="sidenav-profile-mypic" style={{ height: "60%" }}>
+              <div className="sidenav-profile-mypic">
                 <img
+                  alt="프로필 이미지"
                   className="sidenav-profile-img"
-                  src="https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize"
+                  style={{
+                    maxWidth: "100%",
+                    height: "auto",
+                  }}
+                  src={basicProfile}
                 ></img>
               </div>
-              <div
-                className="sidenav-profile-appoint"
-                style={{ height: "20%" }}
-              >
-                <h4>000님,</h4>
-                <h4>오늘의 약속이에요!</h4>
+              <div className="sidenav-profile-appoint">
+                <span style={{ fontSize: "1.2rem" }}>{userNickname}</span>
+                <span style={{ fontSize: "1rem" }}> 님</span>
+                <br />
+                <div
+                  style={{
+                    fontSize: "1.1rem",
+                    marginTop: "6px",
+                    paddingLeft: "3px",
+                    color: "gray",
+                  }}
+                >
+                  아농하세요!
+                </div>
               </div>
-              <div
-                className="sidenav-profile-appointList"
-                style={{ height: "15%" }}
-              >
+              <div className="sidenav-profile-appointList">
                 <div className="sidenav-profile-appointListItem">
                   {appoint ? (
                     <tr>
@@ -92,9 +124,15 @@ const Nav = () => {
               </div>
               <div className="sb-sidenav-fri-container">
                 <table className="sb-sidenav-fri">
-                  {friend.map((a, i) => {
-                    return <List friend={friend[i]} i={i}></List>;
-                  })}
+                  {friends.length > 0 ? (
+                    friends.map((a, i) => <List friend={a} key={i} />)
+                  ) : (
+                    <tr>
+                      <td style={{ width: "260px", textAlign: "center" }}>
+                        활동중인 친구가 없습니다.
+                      </td>
+                    </tr>
+                  )}
                 </table>
               </div>
             </div>
