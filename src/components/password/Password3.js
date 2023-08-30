@@ -1,3 +1,5 @@
+import ArrowBackIosIcon from '@mui/icons-material/ArrowBackIos';
+import { IconButton } from "@mui/material";
 import Box from "@mui/material/Box";
 import Button from "@mui/material/Button";
 import Container from "@mui/material/Container";
@@ -9,10 +11,11 @@ import TextField from "@mui/material/TextField";
 import Typography from "@mui/material/Typography";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from "@mui/system";
-import React, { useEffect, useState } from "react";
-import thumbImage from '../../public/04.png';
-import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import React, { useEffect, useState } from "react";
+import { useNavigate } from 'react-router-dom';
+import { SPRING_API_URL } from "../../config";
+import thumbImage from '../../public/04.png';
 
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled("div")(({ progress }) => ({
@@ -28,6 +31,34 @@ const Circle = styled("div")(({ progress }) => ({
   transition: "left 500ms ease-out",
 }));
 
+function LinearProgressWithLabel() {
+  const [progress, setProgress] = useState(33);
+
+  useEffect(() => {
+    const timer = setTimeout(() => {
+      setProgress(66);
+    }, 500);
+
+    return () => {
+      clearTimeout(timer);
+    };
+  }, []);
+
+  return (
+    <Box sx={{ position: "relative", display: "flex", alignItems: "center", width: "100%", height: "20px", }}>
+      <Box sx={{ position: "relative", flex: 14, marginRight: "10px" }}>
+        <LinearProgress variant="determinate" value={progress} />
+        <Circle progress={progress} />
+      </Box>
+      <Box sx={{ flex: 1, marginLeft: 3 }}>
+        <Typography variant="body2" color="black" sx={{ width: "30px" }} >
+          {"2 / 3"}
+        </Typography>
+      </Box>
+    </Box>
+  );
+}
+
 const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
   const [progress, setProgress] = useState(0);
   const [hasError, setHasError] = useState(false);
@@ -35,7 +66,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
 
   const idCheck = async () => {
     try {
-      const response = await axios.post('http://localhost:9000/idcheck', {
+      const response = await axios.post(`${SPRING_API_URL}/idcheck`, {
         userId: userTel
       });
       console.log(response);
@@ -83,40 +114,6 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
 
   const defaultTheme = createTheme();
 
-  function LinearProgressWithLabel() {
-    const [progress, setProgress] = useState(33);
-
-    useEffect(() => {
-      const timer = setTimeout(() => {
-        setProgress(66);
-      }, 500);
-
-      return () => {
-        clearTimeout(timer);
-      };
-    }, []);
-
-    return (
-      <Box
-        sx={{
-          position: "relative",
-          display: "flex",
-          alignItems: "center",
-          width: "100%",
-          height: "20px",
-        }}
-      >
-        <Box sx={{ position: "relative", flex: 14 }}>
-          <LinearProgress variant="determinate" value={progress} />
-          <Circle progress={progress} />
-        </Box>
-        <Box sx={{ flex: 1, marginLeft: 1 }}>
-          <Typography variant="body2" color="text.secondary"
-            sx={{ width: '30px' }}>{'2 / 3'}</Typography>
-        </Box>
-      </Box>
-    );
-  }
 
   const theme = createTheme({
     palette: {
@@ -132,17 +129,28 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
         <CssBaseline />
         <Box
           sx={{
+            position: 'relative', // 추가
             minHeight: '608.57px',
             maxHeight: '608.57px',
             marginTop: 12.5
           }}
         >
+          <IconButton
+            sx={{
+              position: 'absolute',
+              top: "-70px",
+            }}
+            onClick={() => {
+              backClick();
+            }}
+          >
+            <ArrowBackIosIcon />
+          </IconButton>
           <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
             인증번호를 보내드렸어요!
           </Typography>
           <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
-            문자함에서 확인한
-            <br />내 인증번호를 입력해주세요!
+            내 인증번호를 입력해주세요!
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
 
@@ -182,11 +190,14 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
                 variant="contained"
                 color="primary"
                 sx={{
+                  color: 'black',
+                  height: '44px',
+                  fontFamily: "font-medium",
                   mt: 3,
                   mb: 2,
-                  backgroundColor: "#FFB471", // 평소 색상
-                  "&:hover": {
-                    backgroundColor: "#E55C25", // 호버 시 색상
+                  backgroundColor: '#FEA53D', // 평소 색상
+                  '&:hover': {
+                    backgroundColor: '#FEB158', // 호버 시 색상
                   },
                 }}
               >

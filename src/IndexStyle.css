@@ -242,6 +242,21 @@ label {
   }
 }
 
+/* 모든 내용을 감싸는 css 시작*/
+
+.layoutWrapper {
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+
+/* 메인을 감쌀 */
+.layoutContent {
+  flex: 1;
+}
+
+/* 모든 내용을 감싸는 css 종료*/
+
 /* 사이드바 프로필 시작 */
 .sb-sidenav-profile {
   margin: 10px 10px 10px 10px;
@@ -363,9 +378,6 @@ table tr:last-child td {
 /*푸터 카피라이트 시작*/
 .copyRight {
   text-align: right;
-  position: fixed;
-  bottom: 0;
-  left: 0;
   width: 100%;
   z-index: -10;
 }

@@ -10,6 +10,13 @@ import EoheungImg from "../../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import "../../css/partials/CameraChatting.css";
+import { Link } from "react-router-dom";
+import GroupAddIcon from "@mui/icons-material/GroupAdd";
+import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
+import PopupSiren from "../popup/PopupFriend";
+import PopupFriend from "../popup/PopupFriend";
+import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
+
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -52,7 +59,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   }, [textChatVisible]);
 
   useEffect(() => {
-    socket.current = io("http://localhost:4000");
+    socket.current = io(`${NODE_API_URL}`);
     setMyNickname(getCookie("userNickname"));
     fetchNickname(); // 여기서 닉네임을 가져옴
 
@@ -330,7 +337,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   async function fetchNickname() {
     try {
-      const response = await axios.get("http://localhost:4000/nickname", {
+      const response = await axios.get(`${NODE_API_URL}/nickname`, {
         params: {
           nickname: userNickname,
         },
@@ -351,7 +358,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handlechargeClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://localhost:1234/chattingcharge",
+      `${REDIRECT_URL}/chattingcharge`,
       "_blank",
       "width=800,height=600"
     );
@@ -382,6 +389,48 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     }
   };
 
+  const makeFriendRequest = async (opponentUserId, token) => {
+    try {
+      const url = `${SPRING_API_URL}/friend/makefriend/${opponentUserId}`;
+
+      const config = {
+        headers: {
+          Authorization: token,
+          "Content-Type": "application/json",
+        },
+      };
+
+      const response = await axios.post(url, null, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+
+      if (response.data.statusCode === 200) {
+        const msg = response.data.item.msg;
+
+        console.log(msg);
+        switch (msg) {
+          case "successRequest":
+            alert("우왕! 친구요청을 보냈어! 기다료봐!!!");
+            break;
+          case "notEnoughGam":
+            alert("곶 감 다 떨어졌네");
+            break;
+          case "alreadyFriend":
+            alert("이미 친군뎅");
+            break;
+          default:
+            console.error("무슨 일인지 나도 몰랑", msg);
+        }
+      } else {
+        console.error(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error("Error sending the request:", error);
+    }
+  };
+
+  const handleMakefriend = () => {
+    makeFriendRequest(opponentUserId, token);
+    console.log(opponentUserId, token);
+  };
   return (
     <>
       <div id="myStreamState">

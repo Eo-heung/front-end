@@ -6,6 +6,7 @@ import { Box, Typography, Button } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard';
+import { SPRING_API_URL } from '../../config';
 
 const StyledForm = styled('form')`
     display: flex;
@@ -88,7 +89,7 @@ const ApplyMoim = () => {
     useEffect(() => {
         const fetchMoimData = async () => {
             try {
-                const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+                const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
                 const data = response.data.item.moimDTO;
 
                 setMoimData({
@@ -117,7 +118,7 @@ const ApplyMoim = () => {
     useEffect(() => {
         const fetchProfileImage = async () => {
             try {
-                const response = await axios.post('http://localhost:9000/mypage/getprofileimage', {}, {
+                const response = await axios.post(`${SPRING_API_URL}/mypage/getprofileimage`, {}, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
@@ -222,7 +223,7 @@ const ApplyMoim = () => {
         }
 
         try {
-            const response = await axios.post(`http://localhost:9000/moimReg/apply-moim/${moimId}`, formData, {
+            const response = await axios.post(`${SPRING_API_URL}/moimReg/apply-moim/${moimId}`, formData, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
                     'Content-Type': 'multipart/form-data'

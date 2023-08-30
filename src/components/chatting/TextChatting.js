@@ -2,6 +2,9 @@ import React, { useState, useEffect, useRef } from "react";
 import axios from "axios";
 import io from "socket.io-client";
 import "../../css/partials/TextChatting.css";
+import Link from "react-router-dom";
+import { NODE_API_URL } from "../../config";
+
 
 function TextChatting() {
   const [roomName, setRoomName] = useState("");
@@ -14,7 +17,7 @@ function TextChatting() {
   const socket = useRef();
 
   useEffect(() => {
-    socket.current = io("http://localhost:4000");
+    socket.current = io(`${NODE_API_URL}`);
 
     const handleMessage = (message) => {
       setMessages((prevMessages) => [

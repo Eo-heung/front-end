@@ -7,6 +7,7 @@ import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
 import { throttle } from 'lodash';
+import { SPRING_API_URL } from '../../config';
 
 const StyledContainer = styled('div')`
     position: fixed;
@@ -189,7 +190,7 @@ const ListAcceptMoim = () => {
 
     const fetchMoimData = async () => {
         try {
-            const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+            const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
             const data = response.data.item.moimDTO;
 
             if (isMounted.current) {
@@ -213,8 +214,8 @@ const ListAcceptMoim = () => {
             setIsLoading(true);
 
             const apiEndPoint = orderBy === 'ascending'
-                ? `http://localhost:9000/moimReg/get-applicant-list/asc/${moimId}`
-                : `http://localhost:9000/moimReg/get-applicant-list/desc/${moimId}`;
+                ? `${SPRING_API_URL}/moimReg/get-applicant-list/asc/${moimId}`
+                : `${SPRING_API_URL}/moimReg/get-applicant-list/desc/${moimId}`;
 
             const response = await axios.post(apiEndPoint, {}, {
                 headers: {
@@ -276,7 +277,7 @@ const ListAcceptMoim = () => {
             };
             console.log(payload);
 
-            const response = await axios.post(`http://localhost:9000/moimReg/${moimRegId}/applicant-state?nowStatus=${nowStatus}`, payload, {
+            const response = await axios.post(`${SPRING_API_URL}/moimReg/${moimRegId}/applicant-state?nowStatus=${nowStatus}`, payload, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }

@@ -5,6 +5,7 @@ import { Box, Typography, Button } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard';
+import { SPRING_API_URL } from '../../config';
 
 const StyledForm = styled('form')`
     display: flex;
@@ -80,7 +81,7 @@ const AcceptMoim = () => {
 
     const fetchMoimData = async () => {
         try {
-            const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+            const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
             const data = response.data.item.moimDTO;
 
             if (isMounted.current) {
@@ -97,7 +98,7 @@ const AcceptMoim = () => {
 
     const fetchApplicant = async () => {
         try {
-            const response = await axios.get(`http://localhost:9000/moimReg/get-applicant/${moimId}/${moimRegId}`, {
+            const response = await axios.get(`${SPRING_API_URL}/moimReg/get-applicant/${moimId}/${moimRegId}`, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }
@@ -136,7 +137,7 @@ const AcceptMoim = () => {
             };
             console.log(payload);
 
-            const response = await axios.post(`http://localhost:9000/moimReg/${moimRegId}/applicant-state?nowStatus=${nowStatus}`, payload, {
+            const response = await axios.post(`${SPRING_API_URL}/moimReg/${moimRegId}/applicant-state?nowStatus=${nowStatus}`, payload, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }
