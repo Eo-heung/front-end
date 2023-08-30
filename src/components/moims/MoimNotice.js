@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate } from 'react-router-dom';
 import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent, BoardMessage } from '../utils/StyledBoard';
 import { ButtonZone, StyledButton } from '../utils/StyledCreate';
+import { SPRING_API_URL } from '../../config';
 
 const MoimNotice = (props) => {
     const navi = useNavigate();
@@ -18,7 +19,7 @@ const MoimNotice = (props) => {
             }
 
             try {
-                const response = await axios.post(`http://localhost:9000/board/${moimId}/view-board/${boardId}`, {}, {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/view-board/${boardId}`, {}, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
@@ -37,6 +38,29 @@ const MoimNotice = (props) => {
         navi(`/${moimId}/create-board/${boardId}`, { state: { boardType: "NOTICE" } });
     };
 
+    const handleDeleteClick = async () => {
+        if (!window.confirm("정말로 게시글을 삭제하시겠어요?")) {
+            return;
+        }
+
+        try {
+            const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/delete-board/${boardId}`, {}, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                }
+            });
+
+            if (response.data.statusCode === 200) {
+                alert(response.data.item.msg);
+                navi(`/${moimId}/moim-board?label=공지 게시판`);
+            } else {
+                alert(response.data.errorMessage);
+            }
+        } catch (error) {
+            console.error("Error deleting the board", error);
+        }
+    };
+
     return (
         <BoardContainer>
             <BoardTitle>{boardDetail && boardDetail.boardTitle}</BoardTitle>
@@ -47,7 +71,7 @@ const MoimNotice = (props) => {
             <BoardContent>{boardDetail && boardDetail.boardContent}</BoardContent>
             <ButtonZone>
                 <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
-                <StyledButton type="button" variant="contained" size="large">삭제</StyledButton>
+                <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
             </ButtonZone>
         </BoardContainer>
     );

@@ -8,7 +8,13 @@ export const StyledForm = styled('form')`
     align-items: center;
     gap: 20px;
     width: 100%;
-`;
+    max-width: 700px;
+    `;
+
+export const StyledBox = styled(Box)`
+        margin-top: 1rem;
+        width: 100%;
+    `;
 
 export const WriteZone = styled('div')`
     display: flex;
@@ -17,11 +23,6 @@ export const WriteZone = styled('div')`
     gap: 20px;
     width: 100%;
     margin-bottom: 1.5rem;
-`;
-
-export const StyledBox = styled(Box)`
-    margin-top: 1rem;
-    width: 100%;
 `;
 
 export const PageTitle = styled('h3')`

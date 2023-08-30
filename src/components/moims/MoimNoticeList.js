@@ -3,6 +3,7 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StyledBasicContainer, StyledPaper, StyledContainer, Styled, StyledHead, StyledRow, StyledCell, StyledHeaderCell, StyledMainHeaderCell, StyledText } from '../utils/StyledTable';
 import { stubFalse } from 'lodash';
+import { SPRING_API_URL } from '../../config';
 
 const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, setBoardId }) => {
     const navi = useNavigate();
@@ -19,7 +20,7 @@ const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, se
 
         const fetchNotices = async () => {
             try {
-                const response = await axios.post(`http://localhost:9000/board/${moimId}/notice-board`, {}, {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/notice-board`, {}, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }

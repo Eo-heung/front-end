@@ -7,6 +7,7 @@ import { Button, Box, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import BasicBoard from '../utils/BasicBoard';
+import { SPRING_API_URL } from '../../config';
 
 const CreateBoard = () => {
     const navi = useNavigate();
@@ -15,6 +16,8 @@ const CreateBoard = () => {
     const { moimId, boardId } = useParams();
     const location = useLocation();
     const boardType = location.state?.boardType;
+
+    console.log("boardType", boardType);
 
     const multipleFileInputRef = useRef(null);
     const singleFileInputRef = useRef(null);
@@ -103,13 +106,10 @@ const CreateBoard = () => {
         let imgSrc;
 
         if (isFreePic) {
-            // freePics (새로 추가된 이미지나 교체된 이미지)의 경우
             imgSrc = URL.createObjectURL(pic);
         } else if (typeof pic === 'object' && pic instanceof File) {
-            // boardPics에서 File 객체 형태로 저장된 이미지 (새로 교체된 이미지)의 경우
             imgSrc = URL.createObjectURL(pic);
         } else {
-            // boardPics에서 base64 문자열로 저장된 이미지의 경우
             imgSrc = `data:image/jpeg;base64,${pic}`;
         }
 
@@ -146,7 +146,7 @@ const CreateBoard = () => {
     useEffect(() => {
         const fetchBoardData = async () => {
             try {
-                const response = await axios.post(`http://localhost:9000/board/${moimId}/view-board/${boardId}`, {}, {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/view-board/${boardId}`, {}, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
@@ -189,10 +189,8 @@ const CreateBoard = () => {
         }
 
         try {
-            console.log("11111");
             if (boardId) {
-                console.log("22222");
-                const response = await axios.post(`http://localhost:9000/board/${moimId}/modify-board/${boardId}`, formData, {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/modify-board/${boardId}`, formData, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
                         'Content-Type': 'multipart/form-data'
@@ -236,7 +234,7 @@ const CreateBoard = () => {
                 navi(`/${moimId}/moim-board?label=자유 게시판`);
                 break;
             case 'NOTICE':
-                navi(`${moimId}/moim-board?label=공지 게시판`);
+                navi(`/${moimId}/moim-board?label=공지 게시판`);
                 break;
             default:
                 console.error("Unknown boardType", boardType);
@@ -249,10 +247,10 @@ const CreateBoard = () => {
 
         switch (boardType) {
             case 'FREE':
-                navi(`/${moimId}/free-board`);
+                navi(`/${moimId}/moim-board?label=자유 게시판`);
                 break;
             case 'NOTICE':
-                navi(`${moimId}/notice-board`);
+                navi(`/${moimId}/moim-board?label=공지 게시판`);
                 break;
             default:
                 console.error("Unknown boardType", boardType);
@@ -292,7 +290,7 @@ const CreateBoard = () => {
                         <h5 fontWeight="bold" style={{ marginTop: "1.2rem" }}>
                             첨부 사진
                         </h5>
-                        <div>
+                        <div styled={{ width: "700px" }}>
                             {(boardId && boardPics.length > 0) || boardInputs.freePics.length > 0 ? (
                                 <>
                                     <input ref={singleFileInputRef} type="file" accept="image/*" hidden onChange={handleSingleImageUpload} />
@@ -320,7 +318,11 @@ const CreateBoard = () => {
                         </div>
                     </WriteZone>
                     <ButtonZone>
-                        <StyledButton type="submit" variant="contained" size="large">등록</StyledButton>
+                        {boardId ?
+                            <StyledButton type="submit" variant="contained" size="large">수정</StyledButton>
+                            :
+                            <StyledButton type="submit" variant="contained" size="large">등록</StyledButton>
+                        }
                         <StyledButton type="button" variant="contained" size="large" onClick={handleCancel}>취소</StyledButton>
                     </ButtonZone>
                 </StyledForm>

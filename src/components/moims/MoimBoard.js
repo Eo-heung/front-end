@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { styled } from '@mui/system';
-import { useParams, useSearchParams } from 'react-router-dom';
+import { useParams, useSearchParams, useLocation } from 'react-router-dom';
 import BasicBoard from '../utils/BasicBoard';
 import TabButton from '../utils/TabButton';
 import { TabContainer, TabContent } from '../utils/StyledTab';
@@ -11,6 +11,8 @@ import PictureLib from './PictureLib';
 import MoimSchedule from './MoimSchedule';
 import MoimUsers from './MoimUsers';
 import FreeBoard from './FreeBoard';
+import MoimNotice from './MoimNotice';
+import { SPRING_API_URL } from '../../config';
 
 const ListContainer = styled('div')`
     display: flex;
@@ -36,11 +38,12 @@ const MoimBoard = () => {
 
     const [searchParams] = useSearchParams();
     const labelFromUrl = searchParams.get("label");
+    const location = useLocation();
 
     useEffect(() => {
         const fetchMoimData = async () => {
             try {
-                const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+                const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
                 const data = response.data.item.moimDTO;
 
                 setMoimData({
@@ -74,7 +77,8 @@ const MoimBoard = () => {
         if (labelFromUrl && tabLabels.includes(labelFromUrl)) {
             setActiveTab(labelFromUrl);
         }
-    }, [labelFromUrl]);
+        console.log("labelFromUrl", labelFromUrl);
+    }, [labelFromUrl, location.key]);
 
     const handleTabClick = (label) => {
         if (label === moimData.moimTitle) {
@@ -136,10 +140,16 @@ const MoimBoard = () => {
                 {activeTab === "멤버" && <MoimUsers moimId={moimId} key={`moim-users-${clickCount["멤버"]}`} />}
                 {activeTab === "공지 게시판" && <MoimNoticeList
                     moimId={moimId}
+                    setActiveTab={setActiveTab}
                     setBoardType={setBoardType}
                     setBoardId={setBoardId}
                     key={`moim-notice-board-list-${clickCount["공지 게시판"]}`} />}
-                {activeTab === "게시글" && <FreeBoard type={boardType} moimId={moimId} boardId={boardId} key={`free-board-${clickCount["게시글"]}`} />}
+                {activeTab === "게시글" && (
+                    boardType === "FREE" ?
+                        <FreeBoard type={boardType} moimId={moimId} boardId={boardId} key={`free-board-${clickCount["게시글"]}`} />
+                        :
+                        <MoimNotice type={boardType} moimId={moimId} boardId={boardId} key={`notice-board-${clickCount["게시글"]}`} />
+                )}
             </TabContent>
         </BasicBoard>
     );

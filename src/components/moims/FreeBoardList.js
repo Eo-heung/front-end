@@ -3,6 +3,8 @@ import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
 import { StyledBasicContainer, StyledPaper, StyledContainer, Styled, StyledHead, StyledRow, StyledCell, StyledHeaderCell, StyledMainHeaderCell, StyledText } from '../utils/StyledTable';
 import { stubFalse } from 'lodash';
+import { SPRING_API_URL } from '../../config';
+import ListPagination from '../utils/Pagination';
 
 const FreeBoardList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, setBoardId }) => {
     const navi = useNavigate();
@@ -22,13 +24,14 @@ const FreeBoardList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, set
 
         const fetchFreeBoards = async () => {
             try {
-                const response = await axios.post(`http://localhost:9000/board/${moimId}/free-board`, {}, {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/free-board`, {}, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                     }
                 });
                 setBoards(response.data.content);
                 setBoardType(response.data.content.boardType);
+                console.log("하이하이", response.data.content);
             } catch (err) {
                 console.error("Error fetching free boards", err);
             }
@@ -86,6 +89,9 @@ const FreeBoardList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, set
                             ))}
                         </tbody>
                     </Styled>
+                    {!isMainPage ? (
+                        <ListPagination></ListPagination>
+                    ) : null}
                 </StyledContainer>
             </StyledPaper>
         </StyledBasicContainer>
