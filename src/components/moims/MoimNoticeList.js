@@ -1,25 +1,35 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import { StyledBasicContainer, StyledPaper, StyledContainer, Styled, StyledHead, StyledRow, StyledCell, StyledHeaderCell, StyledMainHeaderCell, StyledText, StyledFooter } from '../utils/StyledTable';
-import { stubFalse } from 'lodash';
+import { ListMoimSearchContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton } from '../utils/StyledListMoim';
 import { SPRING_API_URL } from '../../config';
 import ListPagination from '../utils/Pagination';
-import { ListMoimSearchContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton } from '../utils/StyledListMoim';
 
-const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, setBoardId }) => {
+const MoimNoticeList = ({ setActiveTab }) => {
     const navi = useNavigate();
+    const location = useLocation();
 
     const { moimId } = useParams();
     const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
 
     const [notices, setNotices] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const [page, setPage] = useState(1);
-    const [isLastPage, setIsLastPage] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [searchType, setSearchType] = useState("all");
     const [orderBy, setOrderBy] = useState("descending");
+
+    const [isMainPage, setIsMainPage] = useState(
+        location.pathname.split("/").pop() === "" || location.pathname.split("/").pop() === "moim-board"
+    );
+
+    useEffect(() => {
+        setIsMainPage(
+            location.pathname.split("/").pop() === "" || location.pathname.split("/").pop() === "moim-board"
+        );
+    }, [location.pathname]);
 
     useEffect(() => {
         const verifyUserRole = async () => {
@@ -39,21 +49,21 @@ const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, se
         verifyUserRole();
     }, [moimId]);
 
-    const fetchNotices = async () => {
+    const fetchNotices = async (currentPage) => {
         try {
             const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/notice-board`, {}, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 },
                 params: {
-                    page: page - 1,
+                    currentPage: currentPage - 1,
                     keyword: keyword,
                     searchType: searchType,
                     orderBy: orderBy
                 }
             });
-            setNotices(response.data.content);
-            setBoardType(response.data.content.boardType);
+            setNotices(response.data.item.content);
+            setTotalPages(response.data.paginationInfo.totalPages);
         } catch (err) {
             console.error("Error fetching moim notices", err);
         }
@@ -65,14 +75,18 @@ const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, se
             return;
         }
 
-        fetchNotices();
-    }, [moimId]);
+        fetchNotices(currentPage);
+    }, [moimId, currentPage, keyword, searchType, orderBy]);
 
     const handleSearch = () => {
-        setPage(1);
-        setNotices([]);
+        setCurrentPage(1);
         fetchNotices();
         console.log("검색", notices);
+    };
+
+    const onPageChange = (e, page) => {
+        console.log("Page changed to: ", page);
+        setCurrentPage(page);
     };
 
     return (
@@ -84,7 +98,7 @@ const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, se
                             {isMainPage ? (
                                 <StyledRow>
                                     <StyledMainHeaderCell>
-                                        <StyledText onClick={() => setActiveTab("공지 게시판")}>
+                                        <StyledText onClick={() => navi(`/${moimId}/moim-board/notice-board`)}>
                                             공지 게시판
                                         </StyledText>
                                     </StyledMainHeaderCell>
@@ -113,9 +127,7 @@ const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, se
                                     <StyledCell
                                         style={{ width: "650px", cursor: "pointer" }}
                                         onClick={() => {
-                                            setActiveTab("게시글");
-                                            setBoardType("NOTICE");
-                                            setBoardId(notice.boardId);
+                                            navi(`/${moimId}/moim-board/notice-board/${notice.boardId}`);
                                         }}
                                     >
                                         {notice.boardTitle}
@@ -128,7 +140,11 @@ const MoimNoticeList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, se
                     </Styled>
                     {!isMainPage ? (
                         <StyledFooter>
-                            <ListPagination></ListPagination>
+                            <ListPagination
+                                count={totalPages}
+                                page={currentPage}
+                                onChange={onPageChange}
+                            ></ListPagination>
                             <ListMoimSearchContainer>
                                 {userRole.isLeader ? (
                                     <ListMoimTextField

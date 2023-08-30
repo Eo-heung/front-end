@@ -1,41 +1,53 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { StyledBasicContainer, StyledPaper, StyledContainer, Styled, StyledHead, StyledRow, StyledCell, StyledHeaderCell, StyledMainHeaderCell, StyledText, StyledFooter } from '../utils/StyledTable';
-import { stubFalse } from 'lodash';
+import { ListMoimSearchContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton } from '../utils/StyledListMoim';
 import { SPRING_API_URL } from '../../config';
 import ListPagination from '../utils/Pagination';
-import { ListMoimSearchContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton } from '../utils/StyledListMoim';
 
-const FreeBoardList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, setBoardId }) => {
+const FreeBoardList = ({ setActiveTab }) => {
     const navi = useNavigate();
+    const location = useLocation();
 
     const { moimId } = useParams();
 
     const [boards, setBoards] = useState([]);
+    const [totalPages, setTotalPages] = useState(0);
+    const [currentPage, setCurrentPage] = useState(1);
 
-    const [page, setPage] = useState(1);
-    const [isLastPage, setIsLastPage] = useState(false);
     const [keyword, setKeyword] = useState("");
     const [searchType, setSearchType] = useState("all");
     const [orderBy, setOrderBy] = useState("descending");
 
-    const fetchFreeBoards = async () => {
+    const [isMainPage, setIsMainPage] = useState(
+        location.pathname.split("/").pop() === "" || location.pathname.split("/").pop() === "moim-board"
+    );
+
+    useEffect(() => {
+        setIsMainPage(
+            location.pathname.split("/").pop() === "" || location.pathname.split("/").pop() === "moim-board"
+        );
+    }, [location.pathname]);
+
+    const fetchFreeBoards = async (currentPage) => {
+        console.log("Fetching boards for page: ", currentPage);
         try {
             const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/free-board`, {}, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 },
                 params: {
-                    page: page - 1,
+                    currentPage: currentPage - 1,
                     keyword: keyword,
                     searchType: searchType,
                     orderBy: orderBy
                 }
             });
 
-            setBoards(response.data.content);
-            setBoardType(response.data.content.boardType);
+            setBoards(response.data.item.content);
+            setTotalPages(response.data.paginationInfo.totalPages);
+            console.log("boards", response.data);
         } catch (err) {
             console.error("Error fetching free boards", err);
         }
@@ -47,14 +59,18 @@ const FreeBoardList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, set
             return;
         }
 
-        fetchFreeBoards();
-    }, [moimId]);
+        fetchFreeBoards(currentPage);
+    }, [moimId, currentPage, keyword, searchType, orderBy]);
 
     const handleSearch = () => {
-        setPage(1);
-        setBoards([]);
+        setCurrentPage(1);
         fetchFreeBoards();
         console.log("검색", boards);
+    };
+
+    const onPageChange = (e, page) => {
+        console.log("Page changed to: ", page);
+        setCurrentPage(page);
     };
 
     return (
@@ -66,7 +82,7 @@ const FreeBoardList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, set
                             {isMainPage ? (
                                 <StyledRow>
                                     <StyledMainHeaderCell>
-                                        <StyledText onClick={() => setActiveTab("자유 게시판")}>
+                                        <StyledText onClick={() => navi(`/${moimId}/moim-board/free-board`)}>
                                             자유 게시판
                                         </StyledText>
                                     </StyledMainHeaderCell>
@@ -87,28 +103,49 @@ const FreeBoardList = ({ isMainPage = stubFalse, setActiveTab, setBoardType, set
                                 </StyledRow>
                             )}
                         </StyledHead>
-                        <tbody>
-                            {Array.isArray(boards) && boards.slice(0, isMainPage ? 5 : boards.length).map((board) => (
-                                <StyledRow key={board.boardId}>
-                                    <StyledCell
-                                        style={{ width: "650px", cursor: "pointer" }}
-                                        onClick={() => {
-                                            setActiveTab("게시글");
-                                            setBoardType("FREE");
-                                            setBoardId(board.boardId);
-                                        }}
-                                    >
-                                        {board.boardTitle}
-                                    </StyledCell>
-                                    <StyledCell style={{ width: "180px" }}>{board.userName}</StyledCell>
-                                    <StyledCell style={{ width: "170px" }}>{board.boardRegdate.slice(0, 10)}</StyledCell>
-                                </StyledRow>
-                            ))}
-                        </tbody>
+                        {isMainPage ? (
+                            <tbody>
+                                {Array.isArray(boards) && boards.slice(0, isMainPage ? 5 : boards.length).map((board) => (
+                                    <StyledRow key={board.boardId}>
+                                        <StyledCell
+                                            style={{ width: "650px", cursor: "pointer" }}
+                                            onClick={() => {
+                                                navi(`/${moimId}/moim-board/free-board/${board.boardId}`);
+                                            }}
+                                        >
+                                            {board.boardTitle}
+                                        </StyledCell>
+                                        <StyledCell style={{ width: "180px" }}>{board.userName}</StyledCell>
+                                        <StyledCell style={{ width: "170px" }}>{board.boardRegdate.slice(0, 10)}</StyledCell>
+                                    </StyledRow>
+                                ))}
+                            </tbody>
+                        ) : (
+                            (<tbody>
+                                {Array.isArray(boards) && boards.slice(0, isMainPage ? 5 : boards.length).map((board) => (
+                                    <StyledRow key={board.boardId}>
+                                        <StyledCell
+                                            style={{ width: "650px", cursor: "pointer" }}
+                                            onClick={() => {
+                                                navi(`/${moimId}/moim-board/free-board/${board.boardId}`);
+                                            }}
+                                        >
+                                            {board.boardTitle}
+                                        </StyledCell>
+                                        <StyledCell style={{ width: "180px" }}>{board.userName}</StyledCell>
+                                        <StyledCell style={{ width: "170px" }}>{board.boardRegdate.slice(0, 10)}</StyledCell>
+                                    </StyledRow>
+                                ))}
+                            </tbody>)
+                        )}
                     </Styled>
                     {!isMainPage ? (
                         <StyledFooter>
-                            <ListPagination></ListPagination>
+                            <ListPagination
+                                count={totalPages}
+                                page={currentPage}
+                                onChange={onPageChange}
+                            ></ListPagination>
                             <ListMoimSearchContainer>
                                 <ListMoimTextField
                                     style={{ marginLeft: "5rem" }}
