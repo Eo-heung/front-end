@@ -34,6 +34,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const chatContainerRef = useRef(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
   const [opponentNickname, setOpponentNickname] = useState("");
+  const [opponentUserId, setOpponentUserId] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
   const socket = useRef();
   const [roomName, setRoomName] = useState("");
@@ -44,6 +45,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [connectedTime, setConnectedTime] = useState("");
 
   const textChatVisibleRef = useRef(textChatVisible);
+  const token = sessionStorage.getItem("ACCESS_TOKEN");
+
   const chatIcon = textChatVisible ? (
     <SpeakerNotesOffIcon />
   ) : (
@@ -116,6 +119,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setRoomName(roomName);
 
       setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
+      setOpponentUserId(opponentUserId);
 
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
       // 예: setOpponentNickname(opponentNickname);
@@ -488,7 +492,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       opponentUserId,
       token,
       reportType,
-
       reportContent,
       imagePreviews
     );

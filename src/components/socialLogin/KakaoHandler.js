@@ -1,6 +1,7 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { useCookies } from "react-cookie";
 import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 
 const KakaoHandler = () => {
@@ -61,11 +62,19 @@ const KakaoHandler = () => {
             .then((res) => {
               console.log("데이터 성공 :");
               console.log(res);
+              const currentDate = new Date();
+              const currentYear = currentDate.getFullYear();
+
               axios
                 .post(`${SPRING_API_URL}/kakaoLogin`, {
                   userId: res.data.kakao_account.email,
-                  userBirth: res.data.kakao_account.birthday,
-                  userNickname: res.data.kakao_account.nickname,
+                  userBirth:
+                    currentYear -
+                    res.data.kakao_account.age_range.split("~").map(Number)[0] +
+                    res.data.kakao_account.birthday,
+                  userName: res.data.kakao_account.profile.nickname,
+                  userGender: res.data.kakao_account.gender === "male" ? 1 : 0,
+                  userEmail: res.data.kakao_account.email,
                 })
                 .then((res) => {
                   alert(`${res.data.item.userName}님 환영합니다.`);
