@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import axios from "axios";
 import MicIcon from "@mui/icons-material/Mic";
@@ -16,6 +17,7 @@ import NotificationImportantIcon from "@mui/icons-material/NotificationImportant
 import PopupSiren from "../popup/PopupSiren";
 import PopupFriend from "../popup/PopupFriend";
 import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
 
 const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [isMuted, setIsMuted] = useState(false);
@@ -51,6 +53,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const textChatVisibleRef = useRef(textChatVisible);
   const token = sessionStorage.getItem("ACCESS_TOKEN");
+  const navigate = useNavigate();
 
   const chatIcon = textChatVisible ? (
     <SpeakerNotesOffIcon />
@@ -518,23 +521,35 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   return (
     <>
       <div id="linkbutton">
-        <Link className="toplink" onClick={handleOpenSirenPopup}>
-          <NotificationImportantIcon
-            style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
+        <Link
+          to="#"
+          className="toplink"
+          onClick={() => navigate(-1)}
+          style={{ textDecoration: "none", color: "#333" }}
+        >
+          <MeetingRoomIcon
+            style={{ verticalAlign: "middle", color: "#fcbe71" }}
           />
-          신고하기
+          뒤로가기
         </Link>
-        <Link className="toplink" onClick={handleOpenFriendPopup}>
-          <GroupAddIcon
-            style={{
-              verticalAlign: "middle",
-              color: "#b7d4fa",
-              marginRight: "5px",
-            }}
-          />
-          친구추가{opponentUserId}
-        </Link>
+
+        {/* 나머지 링크들 */}
+        <div style={{ display: "flex" }}>
+          <Link className="toplink" onClick={handleOpenSirenPopup}>
+            <NotificationImportantIcon
+              style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
+            />
+            신고하기
+          </Link>
+          <Link className="toplink" onClick={handleOpenFriendPopup}>
+            <GroupAddIcon
+              style={{ verticalAlign: "middle", color: "#b7d4fa" }}
+            />
+            친구추가{opponentUserId}
+          </Link>
+        </div>
       </div>
+
       <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
         <h2>신고 하기</h2>
         <p>"{opponentNickname}"님을 신고하시겠어요?</p>
