@@ -224,7 +224,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       socket.current.off("answer");
       socket.current.off("ice");
       socket.current.disconnect();
-
       socket.current.on("typing", handleTyping);
       if (myStreamRef.current) {
         myStreamRef.current.getTracks().forEach((track) => {
@@ -328,14 +327,12 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
-    const userId = getCookie("userId");
-
     fetchNickname(); // 여기서 닉네임을 가져옴
+    // const userId = getCookie("userId");
+
     socket.current.emit("request_random_chat", {
       nickname: userNickname,
-      userId: userId,
     });
-    socket.current.emit("request_random_chat", { nickname: userNickname });
 
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
