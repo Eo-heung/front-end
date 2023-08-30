@@ -1,14 +1,17 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent, BoardLinkButton } from '../utils/StyledBoard';
 import { ButtonZone, StyledButton } from '../utils/StyledCreate';
 import { SPRING_API_URL } from '../../config';
 import { useCookies } from 'react-cookie';
 
-const FreeBoard = (props) => {
+const FreeBoard = () => {
     const navi = useNavigate();
-    const { moimId, boardId, type } = props;
+    const { moimId, boardId } = useParams();
+    const boardType = "FREE";
+
+    const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
 
     const [boardDetail, setBoardDetail] = useState(null);
     const [boardPics, setBoardPics] = useState([]);
@@ -18,12 +21,25 @@ const FreeBoard = (props) => {
     const isLoginUserTheWriter = boardDetail && boardDetail.userId === cookie.userId;
 
     useEffect(() => {
-        const fetchBoardDetail = async () => {
-            if (!props.type) {
-                console.error("Board type is not set");
-                return;
-            }
+        const verifyUserRole = async () => {
+            try {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/verify-role`, {}, {
+                    headers: {
+                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                    }
+                });
 
+                setUserRole(response.data.item);
+            } catch (err) {
+                console.error("Error verifying user role", err);
+            }
+        };
+
+        verifyUserRole();
+    }, [moimId]);
+
+    useEffect(() => {
+        const fetchBoardDetail = async () => {
             try {
                 const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/view-board/${boardId}`, {}, {
                     headers: {
@@ -40,7 +56,7 @@ const FreeBoard = (props) => {
         };
 
         fetchBoardDetail();
-    }, [moimId, boardId, props.type]);
+    }, [moimId, boardId, boardType]);
 
     const handleEditClick = () => {
         navi(`/${moimId}/create-board/${boardId}`, { state: { boardType: "FREE" } });
@@ -87,29 +103,25 @@ const FreeBoard = (props) => {
                     />
                 ))
             }
-            {isLoginUserTheWriter ? (
-                <>
-                    <ButtonZone style={{ marginTop: "1.5rem" }}>
+            <ButtonZone style={{ marginTop: "1.5rem" }}>
+                {isLoginUserTheWriter && (
+                    <>
                         <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
                         <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
-                    </ButtonZone>
-                    <ButtonZone>
-                        <BoardLinkButton
-                            type="button"
-                            variant="text"
-                            size="large"
-                        >목록으로 돌아가기</BoardLinkButton>
-                    </ButtonZone>
-                </>
-            ) : (
-                <ButtonZone>
-                    <BoardLinkButton
-                        type="button"
-                        variant="text"
-                        size="large"
-                    >목록으로 돌아가기</BoardLinkButton>
-                </ButtonZone>
-            )}
+                    </>
+                )}
+                {!isLoginUserTheWriter && userRole.isLeader && (
+                    <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                )}
+            </ButtonZone>
+            <ButtonZone>
+                <BoardLinkButton
+                    type="button"
+                    variant="text"
+                    size="large"
+                    onClick={() => navi(`/${moimId}/moim-board/free-board`)}
+                >목록으로 돌아가기</BoardLinkButton>
+            </ButtonZone>
         </BoardContainer>
     );
 };

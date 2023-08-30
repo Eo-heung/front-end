@@ -1,13 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { useNavigate } from 'react-router-dom';
-import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent, BoardMessage } from '../utils/StyledBoard';
+import { useNavigate, useParams } from 'react-router-dom';
+import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent, BoardLinkButton } from '../utils/StyledBoard';
 import { ButtonZone, StyledButton } from '../utils/StyledCreate';
 import { SPRING_API_URL } from '../../config';
 
-const MoimNotice = (props) => {
+const MoimNotice = () => {
     const navi = useNavigate();
-    const { moimId, boardId, type } = props;
+    const { moimId, boardId } = useParams();
+    const boardType = "NOTICE";
 
     const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
 
@@ -34,11 +35,6 @@ const MoimNotice = (props) => {
 
     useEffect(() => {
         const fetchBoardDetail = async () => {
-            if (!props.type) {
-                console.error("Board type is not set");
-                return;
-            }
-
             try {
                 const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/view-board/${boardId}`, {}, {
                     headers: {
@@ -54,7 +50,7 @@ const MoimNotice = (props) => {
         };
 
         fetchBoardDetail();
-    }, [moimId, boardId, props.type]);
+    }, [moimId, boardId, boardType]);
 
     const handleEditClick = () => {
         navi(`/${moimId}/create-board/${boardId}`, { state: { boardType: "NOTICE" } });
@@ -102,11 +98,30 @@ const MoimNotice = (props) => {
                 ))
             }
             {userRole.isLeader ? (
-                <ButtonZone style={{ marginTop: "1.5rem" }}>
-                    <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
-                    <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                <>
+                    <ButtonZone style={{ marginTop: "1.5rem" }}>
+                        <StyledButton type="button" variant="contained" size="large" onClick={handleEditClick}>수정</StyledButton>
+                        <StyledButton type="button" variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                    </ButtonZone>
+                    <ButtonZone>
+                        <BoardLinkButton
+                            type="button"
+                            variant="text"
+                            size="large"
+                            onClick={() => navi(`/${moimId}/moim-board/notice-board`)}
+                        >목록으로 돌아가기</BoardLinkButton>
+                    </ButtonZone>
+                </>
+            ) : (
+                <ButtonZone>
+                    <BoardLinkButton
+                        type="button"
+                        variant="text"
+                        size="large"
+                        onClick={() => navi(`/${moimId}/moim-board/notice-board`)}
+                    >목록으로 돌아가기</BoardLinkButton>
                 </ButtonZone>
-            ) : null}
+            )}
         </BoardContainer>
     );
 };
