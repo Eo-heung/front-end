@@ -1,12 +1,22 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
+import { useCookies } from "react-cookie";
 import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 
 
 
-
 const NaverHandler = () => {
+    const [cookies, setCookie] = useCookies(["userNickname", "userId"]);
+    const loginSuccessHandler = (data) => {
+        console.log("Received data:", data);
+        if (data.userName) {
+            setCookie('userNickname', data.userName, { path: '/' });
+        }
+        if (data.userId) {
+            setCookie('userId', data.userId, { path: '/' });
+        }
+    };
     const navi = useNavigate();
     const state = 'false';
     const grant_type = "authorization_code";
@@ -29,6 +39,7 @@ const NaverHandler = () => {
                     localStorage.setItem("REFRESH_TOKEN", res.data.item.token);
                     sessionStorage.setItem("ACCESS_TOKEN", res.data.item.token);
                     sessionStorage.setItem("userId", res.data.item.userId);
+                    loginSuccessHandler(res.data.item);
                     navi("/");
                 })
                 .catch(error => {
