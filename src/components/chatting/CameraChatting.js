@@ -118,7 +118,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const opponentNickname = data.opponentNickname;
       const opponentUserId = data.opponentUserId;
       console.log(
-        `You (${userNickname}) are matched with user ${opponentNickname} in room ${roomName}`
+        `You (${userNickname}) are matched with user ${opponentNickname} ${opponentUserId} in room ${roomName}`
       );
       setConnectionStatus("매칭됨");
 
@@ -352,8 +352,9 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
-    fetchNickname(); // 여기서 닉네임을 가져옴
     const userId = getCookie("userId");
+
+    fetchNickname(); // 여기서 닉네임을 가져옴
 
     socket.current.emit("request_random_chat", {
       nickname: userNickname,
@@ -565,7 +566,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
               marginRight: "5px",
             }}
           />
-          친구추가
+          친구추가{opponentUserId}
         </Link>
       </div>
       <PopupSiren
@@ -582,7 +583,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         onClose={handleCloseFriendPopup}
         handleMakefriend={handleMakefriend}
       >
-        <h2>친구 추가</h2>
+        <h2>친구 추가{opponentUserId}</h2>
         <p>곶감 5개 주면 안 잡아먹지~~~</p>
         <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
       </PopupFriend>
