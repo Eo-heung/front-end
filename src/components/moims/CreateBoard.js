@@ -223,17 +223,7 @@ const CreateBoard = () => {
     };
 
     const handleCancel = () => {
-        switch (boardType) {
-            case 'FREE':
-                navi(`/${moimId}/moim-board?label=자유 게시판`);
-                break;
-            case 'NOTICE':
-                navi(`/${moimId}/moim-board?label=공지 게시판`);
-                break;
-            default:
-                console.error("Unknown boardType", boardType);
-                break;
-        }
+        navi(-1);
     };
 
     const handleSuccess = () => {
@@ -241,10 +231,10 @@ const CreateBoard = () => {
 
         switch (boardType) {
             case 'FREE':
-                navi(`/${moimId}/moim-board?label=자유 게시판`);
+                navi(`/${moimId}/moim-board/free-board`);
                 break;
             case 'NOTICE':
-                navi(`/${moimId}/moim-board?label=공지 게시판`);
+                navi(`/${moimId}/moim-board/notice-board`);
                 break;
             default:
                 console.error("Unknown boardType", boardType);
@@ -257,10 +247,10 @@ const CreateBoard = () => {
 
         switch (boardType) {
             case 'FREE':
-                navi(`/${moimId}/moim-board?label=자유 게시판`);
+                navi(`/${moimId}/moim-board/free-board`);
                 break;
             case 'NOTICE':
-                navi(`/${moimId}/moim-board?label=공지 게시판`);
+                navi(`/${moimId}/moim-board/notice-board`);
                 break;
             default:
                 console.error("Unknown boardType", boardType);
