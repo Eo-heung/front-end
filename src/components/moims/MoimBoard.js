@@ -1,13 +1,12 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
-import { styled } from '@mui/system';
 import { useParams, useLocation, useNavigate, Outlet } from 'react-router-dom';
 import BasicBoard from '../utils/BasicBoard';
 import TabButton from '../utils/TabButton';
 import { TabContainer, TabContent } from '../utils/StyledTab';
 import { SPRING_API_URL } from '../../config';
 import { Modal, Box, Typography } from '@mui/material';
-import { StyledButton } from '../utils/StyledCreate';
+import { ButtonZone, StyledButton } from '../utils/StyledCreate';
 
 const style = {
     position: 'absolute',
@@ -62,6 +61,10 @@ const MoimBoard = () => {
         navi(`/apply-moim/${moimId}`);
     };
 
+    const handleCancle = () => {
+        navi(-1);
+    };
+
     const tabPaths = {
         "메인": "",
         "자유 게시판": "free-board",
@@ -73,18 +76,23 @@ const MoimBoard = () => {
         "공지 게시글": "notice-board/:boardId"
     };
 
+    console.log("location.pathname  ", location.pathname);
+
     useEffect(() => {
-        const currentPath = location.pathname.split("/").slice(-2).join('/'); // 마지막 두 세그먼트를 가져옵니다.
         const matchedLabel = Object.keys(tabPaths).find(label => {
-            if (tabPaths[label].includes(":boardId")) { // 동적 경로인 경우
-                const regex = new RegExp(tabPaths[label].replace(":boardId", "\\d+")); // :boardId를 숫자로 바꿔서 매칭합니다.
-                return regex.test(currentPath);
+            if (tabPaths[label].includes(":boardId")) {
+                const regex = new RegExp(`^/${moimId}/moim-board/${tabPaths[label].replace(":boardId", "\\d+")}$`);
+                return regex.test(location.pathname);
             }
-            return tabPaths[label] === currentPath;
+            return `/${moimId}/moim-board/${tabPaths[label]}` === location.pathname;
         });
 
+        console.log("tabPaths  ", tabPaths);
+        console.log("before  ", matchedLabel);
         setActiveTab(matchedLabel || "메인");
-    }, [location.pathname]);
+        console.log("after  ", matchedLabel);
+    }, [location.pathname, moimId]);
+
 
     const handleTabClick = (label) => {
         navi(`/${moimId}/moim-board/${tabPaths[label]}`);
@@ -128,7 +136,10 @@ const MoimBoard = () => {
                             <Typography id="modal-moim-description" sx={{ mt: 2 }}>
                                 가입한 모임원만 볼 수 있어요. 가입 신청하시겠어요?
                             </Typography>
-                            <StyledButton type="button" variant="contained" size="large" onClick={handleJoinClick}>신청 화면으로</StyledButton>
+                            <ButtonZone>
+                                <StyledButton type="button" variant="contained" size="large" onClick={handleJoinClick}>신청 화면으로</StyledButton>
+                                <StyledButton type="button" variant="contained" size="large" onClick={handleCancle}>뒤로가기</StyledButton>
+                            </ButtonZone>
                         </Box>
                     </Modal>
                 </>
