@@ -42,8 +42,16 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
         transition: "left 500ms ease-out"
     }));
 
-    const defaultTheme = createTheme();
-
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
     function LinearProgressWithLabel() {
         const [progress, setProgress] = useState(16.67);
 
@@ -128,9 +136,11 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
                                 <Link sx={{
                                     float: 'right',
                                     textDecoration: 'none',
+                                    color: 'gray',
                                     '&:hover': {
                                         textDecoration: 'underline',
-                                        color: '#1976d2' // 호버 시 원하는 배경색
+                                        color: '#FEA53D', // 호버 시 원하는 배경색
+                                        cursor: 'pointer'
                                     },
                                 }} onClick={backClick}>인증번호가 안왔나요?</Link>
                             </Grid>

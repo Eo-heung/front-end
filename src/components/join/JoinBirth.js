@@ -131,7 +131,16 @@ const JoinBirth = ({ handleClick, setUserBirth, setUserGender, backClick }) => {
 
     };
 
-    const defaultTheme = createTheme();
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
 
     const theme = createTheme({
         palette: {

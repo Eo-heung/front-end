@@ -84,8 +84,16 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
         transition: "left 500ms ease-out"
     }));
 
-    const defaultTheme = createTheme();
-
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
     function LinearProgressWithLabel() {
         const [progress, setProgress] = useState(66.66);
 

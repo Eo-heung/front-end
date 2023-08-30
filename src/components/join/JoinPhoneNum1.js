@@ -8,18 +8,19 @@ import IconButton from '@mui/material/IconButton';
 import LinearProgress from '@mui/material/LinearProgress';
 import TextField from '@mui/material/TextField';
 import Typography from '@mui/material/Typography';
-import { ThemeProvider, createTheme } from '@mui/material/styles';
+import { ThemeProvider, createTheme } from "@mui/material/styles";
 import { styled } from '@mui/system';
 import axios from 'axios';
 import React, { useEffect, useState } from 'react';
 import { SPRING_API_URL } from "../../config";
 import thumbImage from '../../public/01.png';
-
+import { useNavigate } from 'react-router';
 
 
 const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
     const [progress, setProgress] = useState(0);
     const [isTelValid, setIsTelValid] = useState(true);
+    const navi = useNavigate();
 
     const checkPhone = (tel) => {
         axios.post(`${SPRING_API_URL}/checkphone`, tel)
@@ -32,19 +33,52 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
             });
     };
 
-    const handleSubmit = (e) => {
+    const checkFullUserInfo = async (tel) => {
+        try {
+            const response = await axios.post(`${SPRING_API_URL}/checkuser`, { userId: tel });
+
+            if (response.data.item.msg === "canJoin") {
+                console.log(response.data);
+                return false;  // Not already registered
+            }
+            if (response.data.item.msg === "canNotJoin") {
+                console.log(response.data);
+                return true;  // Already registered
+            }
+        } catch (error) {
+            console.error('An error occurred:', error);
+        }
+        return false;  // Default value
+    };
+
+    const handleSubmit = async (e) => {
         e.preventDefault();
         const data = new FormData(e.currentTarget);
+
         if (!/^(01[016789]{1})[0-9]{3,4}[0-9]{4}$/.test(data.get('userTel'))) {
             setIsTelValid(false);
-        } else {
-            setIsTelValid(true);
-            setUserTel(() => data.get('userTel'))
-            checkPhone(data.get('userTel'));
-            alert("인증번호를 발송해드렸습니다.");
-            handleClick();
+            return;
+        }
+
+        setIsTelValid(true);
+
+        try {
+            const alreadyRegistered = await checkFullUserInfo(data.get('userTel'));
+
+            if (alreadyRegistered) {
+                alert('이미 가입된 회원입니다.');
+                navi("/login") //true
+            } else {
+                checkPhone(data.get('userTel'));
+                setUserTel(() => data.get('userTel'));
+                handleClick() //false
+            }
+        } catch (error) {
+            console.error("An error occurred during handleSubmit:", error);
         }
     };
+
+
 
 
 
@@ -61,8 +95,6 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
         zIndex: 2,
         transition: "left 500ms ease-out"
     }));
-
-    const defaultTheme = createTheme();
 
     function LinearProgressWithLabel() {
         const [progress, setProgress] = useState(0);
@@ -105,6 +137,16 @@ const JoinPhoneNum1 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
         },
     });
 
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
 
     return (
         <ThemeProvider theme={defaultTheme}>

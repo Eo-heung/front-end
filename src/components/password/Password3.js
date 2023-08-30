@@ -112,8 +112,16 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
     setHasError(containsNonDigit);
   };
 
-  const defaultTheme = createTheme();
-
+  const defaultTheme = createTheme({
+    palette: {
+      primary: {
+        main: '#FEA53D',
+      },
+      secondary: {
+        main: '#FEB158',
+      },
+    },
+  });
 
   const theme = createTheme({
     palette: {
@@ -170,7 +178,16 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
                     hasError ? "숫자 이외의 다른 문자가 입력되었습니다." : ""
                   } // 에러 메시지
                 />
-                <Link sx={{ float: "right", cursor: 'pointer' }} onClick={backClick} >
+                <Link sx={{
+                  float: "right", textDecoration: 'none',
+                  color: 'gray',
+                  fontFamily: "font-medium",
+                  '&:hover': {
+                    textDecoration: 'underline',
+                    color: '#FEA53D', // 호버 시 원하는 배경색
+                    cursor: 'pointer',
+                  },
+                }} onClick={backClick} >
                   전화번호를 잘못입력하셨나요??
                 </Link>
               </Grid>
@@ -203,7 +220,17 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
               >
                 인증하기
               </Button>
-              <Link href="/login" variant="body2" sx={{ float: "right" }} onClick={backClick} style={{ fontFamily: "font-medium" }}>
+              <Link href="/login" variant="body2" sx={{
+                float: "right", textDecoration: 'none',
+                color: 'gray',
+                fontFamily: "font-medium",
+                '&:hover': {
+                  textDecoration: 'underline',
+                  color: '#FEA53D', // 호버 시 원하는 배경색
+                  cursor: 'pointer',
+                },
+              }}
+              >
                 로그인하러가기
               </Link>
             </Box>

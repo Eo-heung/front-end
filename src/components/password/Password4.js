@@ -160,8 +160,16 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
         }
     };
 
-    const defaultTheme = createTheme();
-
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
@@ -257,7 +265,17 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
                                     비밀번호 변경에 성공했어요!
                                 </Typography>
                             )}
-                            <Link href="/login" variant="body2" sx={{ float: "right" }} style={{ fontFamily: "font-medium" }}>
+                            <Link href="/login" variant="body2" sx={{
+                                float: "right", textDecoration: 'none',
+                                color: 'gray',
+                                fontFamily: "font-medium",
+                                '&:hover': {
+                                    textDecoration: 'underline',
+                                    color: '#FEA53D', // 호버 시 원하는 배경색
+                                    cursor: 'pointer',
+                                },
+                            }}
+                            >
                                 로그인하러가기
                             </Link>
                         </Box>

@@ -51,8 +51,16 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
         transition: "left 500ms ease-out"
     }));
 
-    const defaultTheme = createTheme();
-
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
     function LinearProgressWithLabel() {
         const [progress, setProgress] = useState(33.33);
 
