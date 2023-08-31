@@ -83,6 +83,7 @@ const Mypage = () => {
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const [paymentList, setPaymentList] = useState([]);
   const [userStatus, setUserStatus] = useState(false);
+  const [userTotalGam, setUserTotalGam] = useState(0);
   const phoneInputRef = createRef();
   const verificationCodeRef = createRef();
   const serverCodeRef = useRef(null);
@@ -395,6 +396,7 @@ const Mypage = () => {
       setUserRecommend(response.data.item.userRecommend);
       setUserStatusMessage(response.data.item.userStatusMessage);
       setUserStatus(response.data.item.online);
+      setUserTotalGam(response.data.item.totalGam);
     } catch (error) {
       console.error("유저 정보를 가져오는 데 실패했습니다:", error);
     }
@@ -517,6 +519,8 @@ const Mypage = () => {
       axios.post(`http://localhost:9000/cancelPayment/${id}`, {
       }).then((res) => {
         alert(res.data.item.msg);
+        getPaymentList();
+        fetchUserInfo();
       }).catch((error) => {
         console.error(error);
         alert(
@@ -818,10 +822,13 @@ const Mypage = () => {
                 <StyledContainer sx={{ marginLeft: "400px", width: "67%" }}>
                   <Paper elevation={3}>
                     <UserInfoSection>
-                      <Grid item xs={12}>
+                      <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h1" fontSize="18pt" sx={{ fontWeight: "bold", marginBottom: "5px", marginLeft: "20px", marginTop: "8px", }}>
                           활동내역
                         </Typography>
+                        <span>
+                          현재 곶감 수 : {userTotalGam} 개
+                        </span>
                       </Grid>
                       <Tabs value={value} onChange={handleChange} sx={{ marginLeft: "20px" }}>
                         <Tab label={<div>소모임</div>} />
@@ -892,10 +899,19 @@ const Mypage = () => {
                                           <span>{(payment.payDate && `${new Date(payment.payDate).getFullYear()}년 ${(new Date(payment.payDate).getMonth() + 1).toString().padStart(2, "0")}월 ${new Date(payment.payDate).getDate().toString().padStart(2, "0")}일(${new Date(payment.payDate).getHours().toString().padStart(2, "0")}:${new Date(payment.payDate).getMinutes().toString().padStart(2, "0")}:${new Date(payment.payDate).getSeconds().toString().padStart(2, "0")})`) || "날짜 확인 불가"}</span>
                                         </Typography>
                                       </div>
-                                      <Button variant="text" onClick={() => cancelPayment(payment.imp_uid)} sx={{ color: "red" }}>
-                                        <span>결제 취소</span>
-                                      </Button>
+                                      {payment.refund ?
+                                        <Button variant="text" onClick={() => cancelPayment(payment.impUid)} sx={{ color: "red" }}>
+                                          <span>결제취소</span>
+                                        </Button>
+                                        :
+                                        <Button variant="text" disabled>
+                                          <span>취소불가</span>
+                                        </Button>
+                                      }
                                     </div>
+                                    <Typography variant="body2" sx={{ marginBottom: "6px" }}>
+                                      <span>결제명 : {payment.name}</span>
+                                    </Typography>
                                     <Typography variant="body2" sx={{ marginBottom: "6px" }}>
                                       <span>금액 : {payment.value + " 원" || "금액 없음"}</span>
                                     </Typography>
