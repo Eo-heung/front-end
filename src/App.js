@@ -36,6 +36,9 @@ import PictureLib from "./components/moims/PictureLib";
 import MoimSchedule from "./components/moims/MoimSchedule";
 import MoimUsers from "./components/moims/MoimUsers";
 import Mymoim from "./components/moims/Mymoim";
+import MyBoardList from "./components/moims/MyBoardList";
+import MyCommentList from "./components/moims/MyCommentList";
+import MyMoimInfo from "./components/moims/MyMoimInfo";
 
 function App() {
   return (
@@ -110,6 +113,9 @@ function App() {
               <Route path="picture-lib" element={<PictureLib></PictureLib>} />
               <Route path="moim-schedule" element={<MoimSchedule></MoimSchedule>} />
               <Route path="moim-users" element={<MoimUsers></MoimUsers>} />
+              <Route path="my-moim-info" element={<MyMoimInfo></MyMoimInfo>}></Route>
+              <Route path="my-boards" element={<MyBoardList></MyBoardList>}></Route>
+              <Route path="my-comments" element={<MyCommentList></MyCommentList>}></Route>
             </Route>
             <Route
               path="/:moimId/create-board"

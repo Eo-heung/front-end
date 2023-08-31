@@ -28,7 +28,7 @@ const MoimBoard = () => {
     const [activeTab, setActiveTab] = useState("");
     const [hoveredButton, setHoveredButton] = useState(null);
 
-    const tabLabels = ["메인", "자유 게시판", "사진첩", "일정", "멤버", "공지 게시판", "자유 게시글", "공지 게시글"];
+    const tabLabels = ["메인", "자유 게시판", "사진첩", "일정", "멤버", "공지 게시판", "자유 게시글", "공지 게시글", "내 정보", "내 글 목록", "내 댓글 목록"];
 
     const location = useLocation();
 
@@ -73,7 +73,11 @@ const MoimBoard = () => {
         "멤버": "moim-users",
         "공지 게시판": "notice-board",
         "자유 게시글": "free-board/:boardId",
-        "공지 게시글": "notice-board/:boardId"
+        "공지 게시글": "notice-board/:boardId",
+        "내 정보": "my-moim-info",
+        "내 글 목록": "my-boards",
+        "내 댓글 목록": "my-comments"
+
     };
 
     console.log("location.pathname  ", location.pathname);
@@ -113,7 +117,7 @@ const MoimBoard = () => {
                                 onTabClick={() => handleTabClick(label)}
                                 onMouseEnter={() => setHoveredButton(label)}
                                 onMouseLeave={() => setHoveredButton(null)}
-                                style={(label === "공지 게시판" || label === "자유 게시글" || label === "공지 게시글") ? { display: "none" } : {}}
+                                style={(label === "공지 게시판" || label === "자유 게시글" || label === "공지 게시글" || label === "내 정보" || label === "내 글 목록" || label === "내 댓글 목록") ? { display: "none" } : {}}
                             />
                         ))}
                     </TabContainer>

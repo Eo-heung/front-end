@@ -1,5 +1,7 @@
 import React, { useEffect, useState } from "react";
+import { useLocation } from 'react-router-dom';
 import basicProfile from "../../public/basic_profile.png";
+import MoimProfileArea from "./MoimProfileArea";
 
 const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
@@ -18,6 +20,11 @@ const Nav = ({ getFriendList, friends }) => {
     { startTime: new Date("2023-08-07T12:30:00"), content: "점심 약속" },
     { startTime: new Date("2023-08-07T23:00:00"), content: "오후 회의" },
   ];
+
+  const location = useLocation();
+
+  const match = /\/(\d+)\/(moim-board|create-board)/.exec(location.pathname);
+  const moimId = match ? match[1] : null;
 
   useEffect(() => {
     // 현재 시간 이후의 약속을 필터링
@@ -63,59 +70,62 @@ const Nav = ({ getFriendList, friends }) => {
     );
   }
 
-
   return (
     <div className="sb-nav-fixed">
       <div id="layoutSidenav">
         <div id="layoutSidenav_nav">
           <nav className="sb-sidenav accordion sb-sidenav-light">
             {/* 프로필 영역 */}
-            <div className="sb-sidenav-profile">
-              <div className="sidenav-profile-mypic">
-                <img
-                  alt="프로필 이미지"
-                  className="sidenav-profile-img"
-                  style={{
-                    maxWidth: "100%",
-                    height: "auto",
-                  }}
-                  src={basicProfile}
-                ></img>
-              </div>
-              <div className="sidenav-profile-appoint">
-                <span style={{ fontSize: "1.2rem" }}>{userNickname}</span>
-                <span style={{ fontSize: "1rem" }}> 님</span>
-                <br />
-                <div
-                  style={{
-                    fontSize: "1.1rem",
-                    marginTop: "6px",
-                    paddingLeft: "3px",
-                    color: "gray",
-                  }}
-                >
-                  아농하세요!
+            {moimId ? (
+              <MoimProfileArea moimId={moimId}></MoimProfileArea>
+            ) : (
+              <div className="sb-sidenav-profile">
+                <div className="sidenav-profile-mypic">
+                  <img
+                    alt="프로필 이미지"
+                    className="sidenav-profile-img"
+                    style={{
+                      maxWidth: "100%",
+                      height: "auto",
+                    }}
+                    src={basicProfile}
+                  ></img>
+                </div>
+                <div className="sidenav-profile-appoint">
+                  <span style={{ fontSize: "1.2rem" }}>{userNickname}</span>
+                  <span style={{ fontSize: "1rem" }}> 님</span>
+                  <br />
+                  <div
+                    style={{
+                      fontSize: "1.1rem",
+                      marginTop: "6px",
+                      paddingLeft: "3px",
+                      color: "gray",
+                    }}
+                  >
+                    아농하세요!
+                  </div>
+                </div>
+                <div className="sidenav-profile-appointList">
+                  <div className="sidenav-profile-appointListItem">
+                    {appoint ? (
+                      <tr>
+                        <td>
+                          {appoint.startTime.toLocaleTimeString("ko-KR", {
+                            hour: "2-digit",
+                            minute: "2-digit",
+                            hour12: true,
+                          })}
+                        </td>
+                        <td style={{ textAlign: "center" }}>{appoint.content}</td>
+                      </tr>
+                    ) : (
+                      <li>약속이 없어요!</li>
+                    )}
+                  </div>
                 </div>
               </div>
-              <div className="sidenav-profile-appointList">
-                <div className="sidenav-profile-appointListItem">
-                  {appoint ? (
-                    <tr>
-                      <td>
-                        {appoint.startTime.toLocaleTimeString("ko-KR", {
-                          hour: "2-digit",
-                          minute: "2-digit",
-                          hour12: true,
-                        })}
-                      </td>
-                      <td style={{ textAlign: "center" }}>{appoint.content}</td>
-                    </tr>
-                  ) : (
-                    <li>약속이 없어요!</li>
-                  )}
-                </div>
-              </div>
-            </div>
+            )}
 
             {/* 친구영역 */}
             <div className="sb-sidenav-friend">
