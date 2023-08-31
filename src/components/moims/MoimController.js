@@ -13,7 +13,7 @@ const MoimController = () => {
 
     const tabPaths = {
         "내 모임": "",
-        "새로운 모임 찾기": "list-moim"
+        "새 모임 찾기": "list-moim"
     };
 
     console.log("location.pathname  ", location.pathname);
@@ -48,7 +48,7 @@ const MoimController = () => {
                     onMouseLeave={() => setHoveredButton(null)}
                 />
                 <TabButton
-                    label="새로운 모임 찾기"
+                    label="새 모임 찾기"
                     activeTab={activeTab}
                     hoveredButton={hoveredButton}
                     onTabClick={handleTabClick}

@@ -133,7 +133,7 @@ const Mymoim = () => {
                         onKeyDown={handleKeyDown} />
                     <ListMoimSearchButton variant="contained" size="large" onClick={handleSearch}>검색</ListMoimSearchButton>
                     <ListMoimSearchButton variant="contained" size="large" onClick={handleOrderBy}>
-                        {orderBy === 'ascending' ? '최신순' : '등록순'}
+                        {orderBy === 'ascending' ? '최신순' : '가입순'}
                     </ListMoimSearchButton>
                 </ListMoimSearchContainer>
             </MyMoimContainer>
