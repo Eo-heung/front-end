@@ -136,10 +136,10 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
                                 <Link sx={{
                                     float: 'right',
                                     textDecoration: 'none',
-                                    color: 'gray',
+                                    color: '#1976d2',
                                     '&:hover': {
                                         textDecoration: 'underline',
-                                        color: '#FEA53D', // 호버 시 원하는 배경색
+                                        color: '#1976d2',
                                         cursor: 'pointer'
                                     },
                                 }} onClick={backClick}>인증번호가 안왔나요?</Link>

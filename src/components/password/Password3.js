@@ -180,11 +180,11 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
                 />
                 <Link sx={{
                   float: "right", textDecoration: 'none',
-                  color: 'gray',
+                  color: '#1976d2',
                   fontFamily: "font-medium",
                   '&:hover': {
                     textDecoration: 'underline',
-                    color: '#FEA53D', // 호버 시 원하는 배경색
+                    color: '#1976d2', // 호버 시 원하는 배경색
                     cursor: 'pointer',
                   },
                 }} onClick={backClick} >
@@ -222,11 +222,11 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
               </Button>
               <Link href="/login" variant="body2" sx={{
                 float: "right", textDecoration: 'none',
-                color: 'gray',
+                color: '#1976d2',
                 fontFamily: "font-medium",
                 '&:hover': {
                   textDecoration: 'underline',
-                  color: '#FEA53D', // 호버 시 원하는 배경색
+                  color: '#1976d2', // 호버 시 원하는 배경색
                   cursor: 'pointer',
                 },
               }}
