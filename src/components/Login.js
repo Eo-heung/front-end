@@ -26,9 +26,14 @@ const Login = () => {
   const navi = useNavigate();
   const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
+  const [userGender, setuserGender] = useState("");
   const [token, setToken] = useState();
   const [remember, setRemember] = useState(false);
-  const [cookies, setCookie] = useCookies(["userNickname", "userAddr3"]);
+  const [cookies, setCookie] = useCookies([
+    "userNickname",
+    "userAddr3",
+    "userGender",
+  ]);
 
   const loginSuccessHandler = (data) => {
     console.log("Received data:", data);
@@ -40,6 +45,10 @@ const Login = () => {
     }
     if (data.userId) {
       setCookie("userId", data.userId, { path: "/" });
+    }
+
+    if (data.userGender) {
+      setCookie("userGender", data.userGender, { path: "/" });
     }
   };
 
