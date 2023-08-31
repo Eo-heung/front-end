@@ -5,6 +5,7 @@ import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent, Boar
 import { ButtonZone, StyledButton } from '../utils/StyledCreate';
 import { SPRING_API_URL } from '../../config';
 import { useCookies } from 'react-cookie';
+import MoimComment from '../utils/MoimComment';
 
 const FreeBoard = () => {
     const navi = useNavigate();
@@ -103,6 +104,7 @@ const FreeBoard = () => {
                     />
                 ))
             }
+            <MoimComment moimId={moimId} boardId={boardId}></MoimComment>
             <ButtonZone style={{ marginTop: "1.5rem" }}>
                 {isLoginUserTheWriter && (
                     <>
