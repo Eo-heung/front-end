@@ -234,7 +234,7 @@ const ApplyMoim = () => {
 
             if (response.data.item) {
                 alert("신청이 완료되었습니다.");
-                navi("/list-moim");
+                navi("/moim-controller/list-moim");
             }
         } catch (e) {
             console.error("Error sending data", e);
@@ -270,7 +270,7 @@ const ApplyMoim = () => {
                     </ButtonRow>
                 </StyledBox>
             </StyledForm>
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
+            <StyledLink to="/moim-controller/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };

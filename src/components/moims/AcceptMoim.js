@@ -188,7 +188,7 @@ const AcceptMoim = () => {
                     </ButtonRow>
                 </StyledBox>
             </StyledForm>
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
+            <StyledLink to="/moim-controller/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };
