@@ -6,6 +6,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
+import { SPRING_API_URL } from "../../config";
 import basicProfile from "../../public/basic_profile.png";
 
 const TabButton = styled.button`
@@ -102,7 +103,7 @@ const Mypage = () => {
   const [filter, setFilter] = useState({ status: "전체", category: "전체" });
 
   useEffect(() => {
-    axios.post("http://localhost:9000/hobby/gethobby")
+    axios.post(`${SPRING_API_URL}/hobby/gethobby`)
       .then((res) => res.data)
       .then((data) => {
         const interests = [];
@@ -139,7 +140,7 @@ const Mypage = () => {
 
   const checkPhone = async (tel) => {
     try {
-      const response = await axios.post("http://localhost:9000/checkphone", tel);
+      const response = await axios.post(`${SPRING_API_URL}/checkphone`, tel);
       return response.data.item;
     } catch (error) {
       console.error("An error occurred:", error);
@@ -153,7 +154,7 @@ const Mypage = () => {
         userEmail: userEmail,
         userGender: userGender,
       };
-      await axios.post("http://localhost:9000/mypage/changephone", userinfo, {
+      await axios.post(`${SPRING_API_URL}/mypage/changephone`, userinfo, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -167,7 +168,7 @@ const Mypage = () => {
 
   const checkPassword = async (userPw) => {
     try {
-      const response = await axios.post("http://localhost:9000/mypage/checkpassword", { userPw: userPw }, {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/checkpassword`, { userPw: userPw }, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -181,7 +182,7 @@ const Mypage = () => {
   const changePassword = async (userPw) => {
     try {
       const userinfo = { userPw: userPw, };
-      await axios.post("http://localhost:9000/mypage/changepassword", userinfo, {
+      await axios.post(`${SPRING_API_URL}/mypage/changepassword`, userinfo, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -193,7 +194,7 @@ const Mypage = () => {
 
   const getProfileImage = async () => {
     try {
-      const response = await axios.post("http://localhost:9000/mypage/getprofileimage", {}, {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/getprofileimage`, {}, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -223,7 +224,7 @@ const Mypage = () => {
     formData.append("fileData", imageFile);
 
     try {
-      await axios.post("http://localhost:9000/mypage/changeprofileimage", formData, {
+      await axios.post(`${SPRING_API_URL}/mypage/changeprofileimage`, formData, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
           "Content-Type": "multipart/form-data",
@@ -376,7 +377,7 @@ const Mypage = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await axios.post("http://localhost:9000/mypage/myinfo", {}, {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/myinfo`, {}, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -411,7 +412,7 @@ const Mypage = () => {
   }, []);
 
   useEffect(() => {
-    axios.post("http://localhost:9000/mypage/mymoim", {}, {
+    axios.post(`${SPRING_API_URL}/mypage/mymoim`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -427,7 +428,7 @@ const Mypage = () => {
   }
 
   const editInfo = () => {
-    axios.post("http://localhost:9000/mypage/editinfo", {
+    axios.post(`${SPRING_API_URL}/mypage/editinfo`, {
       userName: userName,
       userAddr1: userAddr1,
       userAddr2: userAddr2,
@@ -450,7 +451,7 @@ const Mypage = () => {
   // 친구 관리하기
 
   const getFriendList = async () => {
-    axios.post("http://localhost:9000/friend/friendList", {}, {
+    axios.post(`${SPRING_API_URL}/friend/friendList`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -462,7 +463,7 @@ const Mypage = () => {
   };
 
   const getRequestFriendList = async () => {
-    axios.post("http://localhost:9000/friend/requestFriendList", {}, {
+    axios.post(`${SPRING_API_URL}/friend/requestFriendList`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -474,7 +475,7 @@ const Mypage = () => {
   };
 
   const getPaymentList = async () => {
-    axios.post("http://localhost:9000/paymentList", {}, {
+    axios.post(`${SPRING_API_URL}/paymentList`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -486,7 +487,7 @@ const Mypage = () => {
   };
 
   const acceptRequestFriend = async (id, requestValue) => {
-    axios.post(`http://localhost:9000/friend/requestFriend/${id}`, {
+    axios.post(`${SPRING_API_URL}/friend/requestFriend/${id}`, {
       id: requestValue,
     }).then((res) => {
       getRequestFriendList();
@@ -502,7 +503,7 @@ const Mypage = () => {
     if (!userConfirmed) {
       return;
     }
-    axios.post(`http://localhost:9000/friend/deleteFriend/${id}`, {
+    axios.post(`${SPRING_API_URL}/friend/deleteFriend/${id}`, {
     }).then((res) => {
       getRequestFriendList();
       getFriendList();
@@ -516,7 +517,7 @@ const Mypage = () => {
     if (!userConfirmed) {
       return;
     } else {
-      axios.post(`http://localhost:9000/cancelPayment/${id}`, {
+      axios.post(`${SPRING_API_URL}/cancelPayment/${id}`, {
       }).then((res) => {
         alert(res.data.item.msg);
         getPaymentList();
