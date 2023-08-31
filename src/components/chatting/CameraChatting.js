@@ -13,7 +13,7 @@ import "../../css/partials/CameraChatting.css";
 import { Link } from "react-router-dom";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
-import PopupSiren from "../popup/PopupFriend";
+import PopupSiren from "../popup/PopupSiren";
 import PopupFriend from "../popup/PopupFriend";
 import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
 
@@ -47,6 +47,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const [showNotification, setShowNotification] = useState(false);
   const [isSirenPopupOpen, setIsSirenPopupOpen] = useState(false);
   const [isFriendPopupOpen, setIsFriendPopupOpen] = useState(false);
+  const [connectedTime, setConnectedTime] = useState("");
 
   const textChatVisibleRef = useRef(textChatVisible);
   const token = sessionStorage.getItem("ACCESS_TOKEN");
@@ -62,6 +63,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const handleOpenSirenPopup = () => {
     setIsSirenPopupOpen(true);
+    console.log(connectedTime);
   };
 
   const handleCloseSirenPopup = () => {
@@ -115,9 +117,8 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       const roomName = data.roomName;
       const opponentNickname = data.opponentNickname;
       const opponentUserId = data.opponentUserId;
-
       console.log(
-        `You (${userNickname},${userId}) are matched with user ${opponentNickname} in room ${roomName}`
+        `You (${userNickname}) are matched with user ${opponentNickname} ${opponentUserId} in room ${roomName}`
       );
       setConnectionStatus("매칭됨");
 
@@ -126,11 +127,16 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
       setOpponentNickname(opponentNickname); // 이 부분에서 상태를 업데이트
       setOpponentUserId(opponentUserId);
+
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
       // 예: setOpponentNickname(opponentNickname);
     });
 
     socket.current.on("welcome", async () => {
+      const currentTime = new Date();
+      setConnectedTime(currentTime);
+
+      console.log("Current Time:", currentTime);
       console.log("welcome");
 
       myDataChannel.current =
@@ -322,11 +328,14 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
     const userId = getCookie("userId");
+
     fetchNickname(); // 여기서 닉네임을 가져옴
+
     socket.current.emit("request_random_chat", {
       nickname: userNickname,
       userId: userId,
     });
+
     setConnectionStatus("상대 찾는 중 ...");
     setIsStartChatting(!isStartChatting);
     if (socket.current.disconnected) {
@@ -376,7 +385,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           userId: userId,
         },
       });
-
       // 응답 데이터를 콘솔에 출력
       console.log(response);
     } catch (error) {
@@ -461,10 +469,52 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     }
   };
 
+  const ringingSiren = async (
+    opponentUserId,
+    token,
+    reportType,
+    reportContent,
+    imagePreviews
+  ) => {
+    try {
+      const url = `${SPRING_API_URL}/siren/makefriend/${opponentUserId}`;
+      const config = {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      };
+      const bodyData = {
+        reportType: reportType,
+        reportContent: reportContent,
+        imagePreviews: imagePreviews,
+        connectedTime: connectedTime,
+      };
+      const response = await axios.post(url, bodyData, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+      if (response.data.statusCode === 200) {
+        const msg = response.data.item.msg;
+        console.log(msg);
+      } else {
+        console.error(response.data.errorMessage);
+      }
+    } catch (error) {
+      console.error("Error sending the request:", error);
+    }
+  };
+
+  const handleSubmitSiren = (reportType, reportContent, imagePreviews) => {
+    ringingSiren(
+      opponentUserId,
+      token,
+      reportType,
+      reportContent,
+      imagePreviews
+    );
+  };
+
   const handleMakefriend = () => {
     makeFriendRequest(opponentUserId, token);
-    console.log(opponentUserId, token);
   };
+
   return (
     <>
       <div id="linkbutton">
@@ -482,7 +532,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
               marginRight: "5px",
             }}
           />
-          친구추가
+          친구추가{opponentUserId}
         </Link>
       </div>
       <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
@@ -495,7 +545,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         onClose={handleCloseFriendPopup}
         handleMakefriend={handleMakefriend}
       >
-        <h2>친구 추가</h2>
+        <h2>친구 추가{opponentUserId}</h2>
         <p>곶감 5개 주면 안 잡아먹지~~~</p>
         <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
       </PopupFriend>
@@ -511,9 +561,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           {/* 상대방 비디오 혹은 대기 이미지 */}
           {connectionStatus === "매칭됨" ? (
             <div className="opponent-nickname">
-              <span className="nickname-label">
-                {opponentNickname},{opponentUserId}
-              </span>
+              <span className="nickname-label">{opponentNickname}</span>
               <video
                 ref={peerFaceRef}
                 className="video-style3"
@@ -534,7 +582,6 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
           />
         </div>
         <div className="button-container">
-          <h1>{userId}</h1>
           <button
             className="start-button"
             onClick={handleStartRandomChat}
