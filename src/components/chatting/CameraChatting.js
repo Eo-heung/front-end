@@ -558,8 +558,15 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         <Link
           to="#"
           className="toplink"
-          onClick={() => navigate(-1)}
-          style={{ textDecoration: "none", color: "#333" }}
+          onClick={(e) => {
+            e.preventDefault();
+            window.location.reload();
+          }}
+          style={{
+            textDecoration: "none",
+            color: "#333",
+            paddingInlineStart: "2vw",
+          }}
         >
           <MeetingRoomIcon
             style={{ verticalAlign: "middle", color: "#fcbe71" }}
@@ -575,9 +582,18 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
             />
             신고하기
           </Link>
-          <Link className="toplink" onClick={handleOpenFriendPopup}>
+          <Link
+            className="toplink"
+            onClick={handleOpenFriendPopup}
+            style={{
+              paddingInlineEnd: "1.5vw",
+            }}
+          >
             <GroupAddIcon
-              style={{ verticalAlign: "middle", color: "#b7d4fa" }}
+              style={{
+                verticalAlign: "middle",
+                color: "#b7d4fa",
+              }}
             />
             친구추가{opponentUserId}
           </Link>

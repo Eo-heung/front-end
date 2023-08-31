@@ -99,7 +99,7 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
   return (
     <ThemeProvider theme={theme}>
       <div
-        className="popup-overlay"
+        className="popup-overlay custom-popup"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       >
@@ -142,21 +142,29 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
               accept="image/*"
               multiple // 여러 파일 선택 허용
             />
-            {imagePreviews.map((preview, idx) => (
-              <img
-                key={idx}
-                src={preview}
-                alt={`Selected Preview ${idx}`}
-                style={{
-                  width: "30%",
-                  maxHeight: "200px",
-                  marginTop: "10px",
-                  marginLeft: idx > 0 ? "5%" : "0%",
-                  objectFit: "contain",
-                  border: "1px solid #ccc",
-                }}
-              />
-            ))}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            >
+              {imagePreviews.map((preview, idx) => (
+                <img
+                  key={idx}
+                  src={preview}
+                  alt={`Selected Preview ${idx}`}
+                  style={{
+                    width: "30%",
+                    maxHeight: "200px",
+                    marginTop: "10px",
+                    marginLeft: idx > 0 ? "5%" : "0%",
+                    objectFit: "contain",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              ))}
+            </div>
           </Box>
 
           <div>
