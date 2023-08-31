@@ -73,8 +73,7 @@ export const ImageAttaZone = styled('div')`
     flex-direction: column;
     justify-content: center;
     align-items: center;
-    width: 100%;
-    max-width: 700px;
+    width: 700px;
     height: 200px;
     border: 1px solid grey;
 `;

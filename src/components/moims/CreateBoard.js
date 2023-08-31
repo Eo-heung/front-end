@@ -1,13 +1,38 @@
 import React, { useState, useRef, useCallback, useEffect } from 'react';
+import { styled } from '@mui/system';
 import { useCookies } from 'react-cookie';
 import { useNavigate, useParams, useLocation } from 'react-router-dom';
 import axios from 'axios';
-import { StyledForm, WriteZone, StyledBox, PageTitle, StyledButton, CounterTypography, CounterBox, StyledTextField, StyledLink, ImageAttaZone, ButtonZone } from '../utils/StyledCreate';
+import { StyledForm, WriteZone, StyledBox, PageTitle, StyledButton, StyledTextField, ImageAttaZone, ButtonZone } from '../utils/StyledCreate';
 import { Button, Box, Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import BasicBoard from '../utils/BasicBoard';
 import { SPRING_API_URL } from '../../config';
+
+const PicAddButton = styled(Button)`
+    margin-top: 5px;
+    border-color: #FCBE71;
+    color: grey;
+    font-weight: bold;
+    cursor: pointer;
+    &:hover {
+        border-color: #FCBE71;
+        background-color: #FCBE71;
+        color: #fff;
+    }
+`;
+
+const ImageContainer = styled('div')`
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: start;
+    align-items: center;
+    width: 700px;
+    padding: 1rem;
+    border: 1px solid grey;
+    border-radius: 8px;
+`;
 
 const CreateBoard = () => {
     const navi = useNavigate();
@@ -62,10 +87,8 @@ const CreateBoard = () => {
     };
 
     const handleImageRemove = (indexToRemove) => {
-        const mergedPics = [...boardPics, ...boardInputs.freePics];
-
         if (indexToRemove < boardPics.length) {
-            const newBoardPics = mergedPics.filter((_, index) => index !== indexToRemove);
+            const newBoardPics = boardPics.filter((_, index) => index !== indexToRemove);
             setBoardPics(newBoardPics);
         } else {
             const indexInFreePics = indexToRemove - boardPics.length;
@@ -114,7 +137,7 @@ const CreateBoard = () => {
         }
 
         return (
-            <div key={index} style={{ position: 'relative', display: 'inline-block', marginRight: '10px' }}>
+            <div key={index} style={{ position: 'relative', display: 'inline-block', marginRight: '1rem', marginBottom: '1rem', width: "300px" }}>
                 <img
                     src={imgSrc}
                     alt={`게시글 사진 ${index}`}
@@ -129,7 +152,7 @@ const CreateBoard = () => {
                         backgroundColor: "white",
                         color: "red",
                         cursor: "pointer",
-                        padding: "5px 5px",
+                        padding: "2px 5px",
                         borderRadius: "50%"
                     }}
                     onClick={(e) => {
@@ -142,6 +165,27 @@ const CreateBoard = () => {
             </div>
         );
     };
+
+    function base64ToBlob(base64) {
+        if (typeof base64 !== 'string') {
+            return base64;
+        }
+
+        const byteString = atob(base64.split(',')[1]);
+        const mimeString = base64.split(',')[0].split(':')[1].split(';')[0];
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ab], { type: mimeString });
+    }
+
+    function blobToFile(blob, filename) {
+        return new File([blob], filename, { type: blob.type });
+    }
 
     useEffect(() => {
         const fetchBoardData = async () => {
@@ -183,9 +227,26 @@ const CreateBoard = () => {
         formData.append("boardType", boardType);
 
         if (freePics) {
-            freePics.forEach((pic, index) => {
-                formData.append(`freePic-${index}`, pic);
+            freePics.forEach((pic) => {
+                formData.append("file", pic);
             });
+        }
+
+        boardPics.forEach((pic, index) => {
+            let formattedPic = pic;
+
+            if (typeof pic === 'string' && !pic.startsWith("data:image/jpeg;base64,")) {
+                formattedPic = `data:image/jpeg;base64,${pic}`;
+            }
+
+            const blob = base64ToBlob(formattedPic);
+            const file = blobToFile(blob, `boardPic-${index}.jpeg`);
+            formData.append("file", file);
+        });
+
+
+        for (let [key, value] of formData.entries()) {
+            console.log("formData key: ", key, "formData value: ", value);
         }
 
         try {
@@ -205,7 +266,7 @@ const CreateBoard = () => {
                 }
             } else {
                 console.log("33333");
-                const response = await axios.post(`http://localhost:9000/board/${moimId}/create-board`, formData, {
+                const response = await axios.post(`${SPRING_API_URL}/board/${moimId}/create-board`, formData, {
                     headers: {
                         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
                         'Content-Type': 'multipart/form-data'
@@ -277,6 +338,7 @@ const CreateBoard = () => {
                             onChange={handleInputChange}
                             variant="outlined"
                             placeholder="제목을 입력해주세요."
+                            multiline minRows={1}
                         />
                         <h5 fontWeight="bold">내용</h5>
                         <StyledTextField
@@ -285,18 +347,26 @@ const CreateBoard = () => {
                             onChange={handleInputChange}
                             variant="outlined"
                             placeholder="내용을 입력해주세요."
-                            multiline rows={4}
+                            multiline minRows={4}
                         />
                         <h5 fontWeight="bold" style={{ marginTop: "1.2rem" }}>
                             첨부 사진
                         </h5>
-                        <div styled={{ width: "700px" }}>
+                        <div>
                             {(boardId && boardPics.length > 0) || boardInputs.freePics.length > 0 ? (
-                                <>
-                                    <input ref={singleFileInputRef} type="file" accept="image/*" hidden onChange={handleSingleImageUpload} />
-                                    {boardPics.map((pic, index) => renderPreviewImage(pic, index))}
-                                    {boardInputs.freePics.map((freePic, index) => renderPreviewImage(freePic, index, true))}
-                                </>
+                                <ImageContainer>
+                                    <div style={{ width: '700px', display: 'flex', flexWrap: 'wrap' }}>
+                                        <input ref={singleFileInputRef} type="file" accept="image/*" hidden onChange={handleSingleImageUpload} />
+                                        {boardPics.map((pic, index) => renderPreviewImage(pic, index))}
+                                        {boardInputs.freePics.map((freePic, index) => renderPreviewImage(freePic, index, true))}
+                                    </div>
+                                    <div style={{ width: '100%', display: 'flex', justifyContent: 'center', marginTop: '1rem' }}>
+                                        <PicAddButton type="button" variant="outlined" size="small" onClick={triggerFileInput}>
+                                            추가
+                                            <input ref={multipleFileInputRef} type="file" accept="image/*" multiple hidden onChange={handleImageUpload}></input>
+                                        </PicAddButton>
+                                    </div>
+                                </ImageContainer>
                             ) : (
                                 <ImageAttaZone>
                                     <Button onClick={triggerFileInput} style={{ color: grey[600], padding: "11% 42.1%" }}>
