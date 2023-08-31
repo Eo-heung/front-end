@@ -17,7 +17,7 @@ import PopupSiren from "../popup/PopupSiren";
 import PopupFriend from "../popup/PopupFriend";
 import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
 
-const CameraChatting = ({ selectedCamera, selectedMic }) => {
+const CameraChatting = ({ selectedCamera, selectedMic, selectedGender }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
@@ -353,12 +353,15 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
     const userId = getCookie("userId");
+    const userGender = getCookie("userGender");
 
     fetchNickname(); // 여기서 닉네임을 가져옴
 
     socket.current.emit("request_random_chat", {
       nickname: userNickname,
       userId: userId,
+      userGender: userGender,
+      selectedGender: selectedGender,
     });
 
     setConnectionStatus("상대 찾는 중 ...");
