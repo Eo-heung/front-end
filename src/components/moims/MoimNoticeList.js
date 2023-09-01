@@ -107,6 +107,9 @@ const MoimNoticeList = ({ setActiveTab }) => {
                                         <StyledText onClick={() => navi(`/${moimId}/moim-board/notice-board`)}>
                                             공지 게시판
                                         </StyledText>
+                                        <StyledText style={{ fontSize: "0.8rem", marginLeft: "30px" }} onClick={() => navi(`/${moimId}/moim-board/notice-board`)}>
+                                            더보기
+                                        </StyledText>
                                     </StyledMainHeaderCell>
                                     <StyledMainHeaderCell>
                                         {userRole.isLeader ? (
@@ -121,7 +124,7 @@ const MoimNoticeList = ({ setActiveTab }) => {
                                 </StyledRow>
                             ) : (
                                 <StyledRow>
-                                    <StyledHeaderCell style={{ width: "650px", fontSize: "1.2rem" }}>공지 목록</StyledHeaderCell>
+                                    <StyledHeaderCell style={{ width: "650px", fontSize: "1.2rem" }}>공지 제목</StyledHeaderCell>
                                     <StyledHeaderCell style={{ width: "180px" }}>작성자</StyledHeaderCell>
                                     <StyledHeaderCell style={{ width: "170px" }}>작성일</StyledHeaderCell>
                                 </StyledRow>

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { useLocation } from 'react-router-dom';
 import basicProfile from "../../public/basic_profile.png";
 import MoimProfileArea from "./MoimProfileArea";
+import MoimMemberList from "./MoimMemberList";
 
 const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
@@ -128,28 +129,32 @@ const Nav = ({ getFriendList, friends }) => {
             )}
 
             {/* 친구영역 */}
-            <div className="sb-sidenav-friend">
-              <div className="sb-sidenav-friend-title">
-                <h5>접속한 친구목록</h5>
+            {moimId ? (
+              <MoimMemberList moimId={moimId}></MoimMemberList>
+            ) : (
+              <div className="sb-sidenav-friend">
+                <div className="sb-sidenav-friend-title">
+                  <h5>접속한 친구목록</h5>
+                </div>
+                <div className="sb-sidenav-fri-container">
+                  <table className="sb-sidenav-fri">
+                    {friends.length > 0 ? (
+                      friends.map((a, i) => <List friend={a} key={i} />)
+                    ) : (
+                      <tr>
+                        <td style={{ width: "260px", textAlign: "center" }}>
+                          활동중인 친구가 없습니다.
+                        </td>
+                      </tr>
+                    )}
+                  </table>
+                </div>
               </div>
-              <div className="sb-sidenav-fri-container">
-                <table className="sb-sidenav-fri">
-                  {friends.length > 0 ? (
-                    friends.map((a, i) => <List friend={a} key={i} />)
-                  ) : (
-                    <tr>
-                      <td style={{ width: "260px", textAlign: "center" }}>
-                        활동중인 친구가 없습니다.
-                      </td>
-                    </tr>
-                  )}
-                </table>
-              </div>
-            </div>
+            )}
           </nav>
-        </div>
-      </div>
-    </div>
+        </div >
+      </div >
+    </div >
   );
 };
 

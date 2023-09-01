@@ -91,6 +91,9 @@ const FreeBoardList = ({ setActiveTab }) => {
                                         <StyledText onClick={() => navi(`/${moimId}/moim-board/free-board`)}>
                                             자유 게시판
                                         </StyledText>
+                                        <StyledText style={{ fontSize: "0.8rem", marginLeft: "30px" }} onClick={() => navi(`/${moimId}/moim-board/free-board`)}>
+                                            더보기
+                                        </StyledText>
                                     </StyledMainHeaderCell>
                                     <StyledMainHeaderCell>
                                         <StyledText
@@ -103,7 +106,7 @@ const FreeBoardList = ({ setActiveTab }) => {
                                 </StyledRow>
                             ) : (
                                 <StyledRow>
-                                    <StyledHeaderCell style={{ width: "650px", fontSize: "1.2rem" }}>제목</StyledHeaderCell>
+                                    <StyledHeaderCell style={{ width: "650px", fontSize: "1.2rem" }}>자유글 제목</StyledHeaderCell>
                                     <StyledHeaderCell style={{ width: "180px" }}>작성자</StyledHeaderCell>
                                     <StyledHeaderCell style={{ width: "170px" }}>작성일</StyledHeaderCell>
                                 </StyledRow>

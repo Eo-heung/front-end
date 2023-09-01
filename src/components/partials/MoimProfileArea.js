@@ -3,14 +3,35 @@ import axios from 'axios';
 import { styled } from '@mui/system';
 import basicProfile from "../../public/basic_profile.png";
 import { SPRING_API_URL } from '../../config';
-import { Button } from '@mui/material';
 import { Link } from 'react-router-dom';
+import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
+import { grey } from '@mui/material/colors';
 
 const InfoZone = styled('div')`
     display: flex;
     align-items: center;
     width: 90%;
-    margin-left: 50px;
+    margin-left: 30%;
+`;
+
+const MyPicContainer = styled('div')`
+    padding-top: 10px;
+    padding-bottom: 20px;
+    position: relative;
+`;
+
+const MyPicEditButton = styled('div')`
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    bottom: 3%;
+    right: 17%;
+    width: 22%;
+    height: 31%;
+    background-color: #fff;
+    border-radius: 100%; 
+    cursor: pointer;
 `;
 
 const MyInfoLink = styled(Link)`
@@ -26,15 +47,6 @@ const MyInfoLink = styled(Link)`
 `;
 
 const MoimProfileArea = ({ moimId }) => {
-    const getCookie = (userNicknamename) => {
-        const value = `; ${document.cookie}`;
-        const parts = value.split(`; ${userNicknamename}=`);
-        if (parts.length === 2) {
-            return parts.pop().split(";").shift();
-        }
-    };
-
-    const userNickname = decodeURIComponent(getCookie("userNickname") || "");
     const [moimData, setMoimData] = useState({
         moimTitle: ""
     });
@@ -63,17 +75,26 @@ const MoimProfileArea = ({ moimId }) => {
 
     return (
         <div className="sb-sidenav-profile">
-            <div className="sidenav-profile-mypic">
+            <MyPicContainer>
                 <img
                     alt="모임 프로필 이미지"
                     className="sidenav-profile-img"
                     style={{
                         maxWidth: "100%",
-                        height: "auto",
+                        height: "auto"
                     }}
                     src={basicProfile}
                 ></img>
-            </div>
+                <MyPicEditButton title="모임 프로필 사진을 수정할 수 있어요.">
+                    <ChangeCircleOutlinedIcon
+                        fontSize="large"
+                        style={{
+                            marginBottom: "0.2rem",
+                            color: grey[600]
+                        }}
+                    />
+                </MyPicEditButton>
+            </MyPicContainer>
             <div className="sidenav-profile-appoint">
                 <span style={{ fontSize: "1.2rem" }}>"{moimData.moimTitle}"</span>
                 <br />
@@ -105,7 +126,7 @@ const MoimProfileArea = ({ moimId }) => {
                         <li>약속이 있어요!</li>
                     )}
                     <InfoZone>
-                        <MyInfoLink to={`${moimId}/moim-board/my-moim-info`}>내 정보 관리</MyInfoLink>
+                        <MyInfoLink to={`${moimId}/moim-board/my-moim-info`}>내 글 관리</MyInfoLink>
                     </InfoZone>
                 </div>
             </div>
