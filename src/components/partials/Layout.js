@@ -15,37 +15,34 @@ const Layout = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
-      try {
-        const res = await axios.post(
-          `${SPRING_API_URL}/getUserInfo`,
-          {},
-          {
+
+      if (sessionStorage.getItem("ACCESS_TOKEN") != null) {
+        try {
+          const res = await axios.post(`${SPRING_API_URL}/getUserInfo`, {}, {
             headers: {
               Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
             },
+          });
+
+          const banDateObj = new Date(res.data.item.ban);
+          const formattedBanDate = `${banDateObj.getFullYear()}년 ${banDateObj.getMonth() + 1}월 ${banDateObj.getDate()}일 ${banDateObj.getHours()}시 ${banDateObj.getMinutes()}분 ${banDateObj.getSeconds()}초`;
+          const banDateTime = banDateObj.getTime();
+          const currentDateTime = new Date().getTime();
+
+
+          if (res.data.item.ban && banDateTime > currentDateTime) {
+            sessionStorage.removeItem("ACCESS_TOKEN");
+            localStorage.removeItem("REFRESH_TOKEN");
+            alert(`${formattedBanDate}까지 이용이 금지되었어요.. 고객센터로 문의해주세요!`);
+            navi("/login");
           }
-        );
 
-        console.log(res.data);
-        const banDateObj = new Date(res.data.item.ban);
-
-        const formattedBanDate = `${banDateObj.getFullYear()}년 ${
-          banDateObj.getMonth() + 1
-        }월 ${banDateObj.getDate()}일 ${banDateObj.getHours()}시 ${banDateObj.getMinutes()}분 ${banDateObj.getSeconds()}초`;
-
-        const banDateTime = banDateObj.getTime();
-        const currentDateTime = new Date().getTime();
-
-        if (res.data.item.ban && banDateTime > currentDateTime) {
-          sessionStorage.removeItem("ACCESS_TOKEN");
-          localStorage.removeItem("REFRESH_TOKEN");
-          alert(`${formattedBanDate}까지 이용이 금지되었어요..
-          고객센터로 문의해주세요!`);
-          navi("/login");
+          setIsUserInfoLoaded(true);
+        } catch (error) {
+          console.error(error);
         }
-        setIsUserInfoLoaded(true);
-      } catch (error) {
-        console.error(error);
+      } else {
+        navi("/login");
       }
     };
 
