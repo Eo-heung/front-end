@@ -2,6 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { SPRING_API_URL } from '../../config';
 import QuitModal from '../../components/utils/QuitModal';
+import DeleteMoimModal from '../utils/DeleteMoimModal';
 
 const MoimMemberList = ({ moimId }) => {
     const [moimData, setMoimData] = useState({
@@ -11,6 +12,7 @@ const MoimMemberList = ({ moimId }) => {
     const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
 
     const [isQuitModalOpen, setIsQuitModalOpen] = useState(false);
+    const [isDeleteModalOpen, setIsDeleteModalOpen] = useState(false);
 
     const fetchMoimData = async () => {
         try {
@@ -69,11 +71,19 @@ const MoimMemberList = ({ moimId }) => {
 
     const handleModalOpen = () => {
         setIsQuitModalOpen(true);
-    }
+    };
 
     const handleModalClose = () => {
         setIsQuitModalOpen(false);
-    }
+    };
+
+    const handleDeleteModalOpen = () => {
+        setIsDeleteModalOpen(true);
+    };
+
+    const handleDeleteModalClose = () => {
+        setIsDeleteModalOpen(false);
+    };
 
     return (
         <>
@@ -94,7 +104,13 @@ const MoimMemberList = ({ moimId }) => {
             <div style={{ textAlign: "end", paddingRight: "4%", cursor: "pointer" }}>
                 {userRole.isLeader ? (
                     <>
-                        <div style={{ color: "grey" }} onClick={handleModalOpen}>모임 삭제</div>
+                        <div style={{ color: "grey" }} onClick={handleDeleteModalOpen}>모임 삭제</div>
+                        <DeleteMoimModal
+                            isOpen={isDeleteModalOpen}
+                            onClose={handleDeleteModalClose}
+                            moimId={moimId}
+                            moimTitle={moimData.moimTitle}
+                        />
                     </>
                 ) : (
                     <>
