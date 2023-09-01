@@ -10,7 +10,6 @@ import Button from "@mui/material/Button";
 import EoheungImg from "../../css/partials/랜덤.png";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
-import "../../css/partials/CameraChatting.css";
 import { Link } from "react-router-dom";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
@@ -18,6 +17,7 @@ import PopupSiren from "../popup/PopupSiren";
 import PopupFriend from "../popup/PopupFriend";
 import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
 import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import "../../css/partials/CameraChatting.css";
 
 const CameraChatting = ({ selectedCamera, selectedMic, selectedGender }) => {
   const [isMuted, setIsMuted] = useState(false);

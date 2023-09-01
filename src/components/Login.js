@@ -26,7 +26,6 @@ const Login = () => {
   const navi = useNavigate();
   const [userId, setUserId] = useState("");
   const [userPw, setUserPw] = useState("");
-  const [userGender, setuserGender] = useState("");
   const [token, setToken] = useState();
   const [remember, setRemember] = useState(false);
   const [cookies, setCookie] = useCookies([
@@ -46,8 +45,7 @@ const Login = () => {
     if (data.userId) {
       setCookie("userId", data.userId, { path: "/" });
     }
-
-    if (data.userGender) {
+    if (typeof data.userGender !== "undefined" && data.userGender !== null) {
       setCookie("userGender", data.userGender, { path: "/" });
     }
   };

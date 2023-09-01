@@ -58,15 +58,6 @@
   flex-direction: column;
 }
 
-.sent {
-  background-color: #e6f7ff;
-  color: #000;
-  text-align: right;
-  margin: 15px 10px; /* 위아래 간격 조정 */
-  border-radius: 20px; /* 둥글게 만들기 위해 값 증가 */
-  margin-left: 40%;
-}
-
 .received {
   background-color: #d4e1f2;
   color: #000;
@@ -87,8 +78,6 @@
 #chat-container::-webkit-scrollbar {
   display: none; /* Chrome, Safari에서 스크롤바 숨김 */
 }
-
-/* App.css */
 
 /* 시작 화면 스타일 */
 
@@ -321,6 +310,7 @@
   justify-content: flex-start; /* 기본적으로 왼쪽에 메시지를 정렬 */
   width: 100%;
 }
+
 .camtext .chat-message {
   display: inline-block;
   padding: 10px;
@@ -379,7 +369,6 @@
 }
 
 /* TextChatting.css */
-
 /* 타이핑 인디케이터 스타일 */
 .camtext #typing-indicator {
   position: absolute;
