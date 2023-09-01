@@ -1,11 +1,10 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback, useRef } from 'react';
 import axios from 'axios';
 import { styled } from '@mui/system';
-import basicProfile from "../../public/basic_profile.png";
 import { SPRING_API_URL } from '../../config';
 import { Link } from 'react-router-dom';
 import ChangeCircleOutlinedIcon from '@mui/icons-material/ChangeCircleOutlined';
-import { grey } from '@mui/material/colors';
+import ProfileModal from '../utils/ProfileModal';
 
 const InfoZone = styled('div')`
     display: flex;
@@ -50,50 +49,157 @@ const MoimProfileArea = ({ moimId }) => {
     const [moimData, setMoimData] = useState({
         moimTitle: ""
     });
+    const [moimProfile, setMoimProfile] = useState(null);
+    const singleFileInputRef = useRef(null);
+
+    const [isOpen, setIsOpen] = useState(false);
+    const [selectedImagePreview, setSelectedImagePreview] = useState(null);
 
     const [appoint, setAppoint] = useState(null);
 
+    const fetchMoimData = async () => {
+        try {
+            const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
+            const data = response.data.item.moimDTO;
+
+            setMoimData({
+                moimTitle: data.moimTitle
+            });
+
+            return response.data.item;
+
+        } catch (err) {
+            console.error("Error fetching moim data", err);
+        }
+    };
+
+    const fetchMoimProfile = async () => {
+        try {
+            const response = await axios.get(`${SPRING_API_URL}/moimReg/view-moim-profile/${moimId}`, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                }
+            });
+            const data = response.data.item.applicantDetails;
+            setMoimProfile(data.moimProfileBase64);
+
+            console.log("data.moimProfileBase64", data.moimProfileBase64);
+        } catch (err) {
+            console.error("Error fetching moim profile data", err);
+        }
+    };
+
     useEffect(() => {
-        const fetchMoimData = async () => {
-            try {
-                const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
-                const data = response.data.item.moimDTO;
-
-                setMoimData({
-                    moimTitle: data.moimTitle
-                });
-
-                return response.data.item;
-
-            } catch (e) {
-                console.error("Error fetching moim data", e);
-            }
-        };
-
         fetchMoimData();
+        fetchMoimProfile();
     }, [moimId]);
+
+    const handleProfileChange = (e) => {
+        if (e.target.files[0]) {
+            const selectedProfile = e.target.files[0];
+            const profileURL = URL.createObjectURL(selectedProfile);
+
+            setSelectedImagePreview(profileURL);
+            setIsOpen(true);
+        }
+    };
+
+    function base64ToBlob(base64) {
+        // base64가 File 객체인 경우 바로 반환
+        if (typeof base64 === 'object' && base64 instanceof File) {
+            return base64;
+        }
+
+        // base64 문자열 형식 확인
+        const matches = base64.match(/^data:([A-Za-z-+/]+);base64,(.+)$/);
+
+        if (!matches || matches.length !== 3) {
+            console.error('Provided string is not a valid base64 format');
+            return null;
+        }
+
+        const byteString = atob(matches[2]);
+        const mimeString = matches[1] || 'application/octet-stream'; // mimeString이 없으면 기본값 설정
+
+        const ab = new ArrayBuffer(byteString.length);
+        const ia = new Uint8Array(ab);
+
+        for (let i = 0; i < byteString.length; i++) {
+            ia[i] = byteString.charCodeAt(i);
+        }
+
+        return new Blob([ab], { type: mimeString });
+    };
+
+    function blobToFile(blob, filename) {
+        const type = blob && blob.type ? blob.type : 'application/octet-stream'; // blob.type이 유효하지 않은 경우 기본값 설정
+        return new File([blob], filename, { type });
+    };
+
+    const handleConfirm = async () => {
+        if (!selectedImagePreview) return;
+
+        const blob = base64ToBlob(selectedImagePreview);
+        const file = blobToFile(blob, "profileImage.png");
+
+        const formData = new FormData();
+        formData.append("moimProfile", file);
+
+        try {
+            const response = await axios.post(`${SPRING_API_URL}/moimReg/modify-moim-profile/${moimId}`, formData, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                    "Content-Type": "multipart/form-data"
+                }
+            }
+            );
+            console.log(response.data);
+
+            setIsOpen(false);
+            setSelectedImagePreview(null);
+            fetchMoimProfile();
+        } catch (err) {
+            console.error("Error uploading updatedProfile", err);
+        }
+    };
 
     return (
         <div className="sb-sidenav-profile">
             <MyPicContainer>
-                <img
-                    alt="모임 프로필 이미지"
-                    className="sidenav-profile-img"
-                    style={{
-                        maxWidth: "100%",
-                        height: "auto"
-                    }}
-                    src={basicProfile}
-                ></img>
-                <MyPicEditButton title="모임 프로필 사진을 수정할 수 있어요.">
+                {moimProfile &&
+                    <img
+                        key={moimProfile}
+                        alt="모임 프로필 이미지"
+                        className="sidenav-profile-img"
+                        src={`data:image/png;base64,${moimProfile}`}
+                    ></img>
+                }
+                <MyPicEditButton
+                    title="클릭하면 모임 프로필 사진을 수정할 수 있어요."
+                    onClick={() => singleFileInputRef.current.click()}
+                >
                     <ChangeCircleOutlinedIcon
                         fontSize="large"
                         style={{
                             marginBottom: "0.2rem",
-                            color: grey[600]
+                            color: "#FCBE71"
                         }}
                     />
+                    <input
+                        type="file"
+                        accept="image/*" hidden
+                        ref={singleFileInputRef}
+                        style={{ display: "none" }}
+                        onChange={handleProfileChange}
+                    />
                 </MyPicEditButton>
+                <ProfileModal
+                    isOpen={isOpen}
+                    onClose={() => setIsOpen(false)}
+                    onConfirm={handleConfirm}
+                    profileImage={selectedImagePreview}
+                    moimTitle={moimData.moimTitle}
+                />
             </MyPicContainer>
             <div className="sidenav-profile-appoint">
                 <span style={{ fontSize: "1.2rem" }}>"{moimData.moimTitle}"</span>
