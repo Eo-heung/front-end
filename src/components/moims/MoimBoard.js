@@ -55,6 +55,13 @@ const MoimBoard = () => {
         };
 
         verifyUserRole();
+
+        return () => {
+            setActiveTab("");
+            setHoveredButton(null);
+            setUserRole({ isMember: false, isLeader: false });
+            setOpen(false);
+        };
     }, [moimId]);
 
     const handleJoinClick = () => {

@@ -96,8 +96,6 @@ const MyCommentList = ({ setActiveTab }) => {
         }
     };
 
-
-
     useEffect(() => {
         fetchComments(currentPage);
     }, [moimId, currentPage]);

@@ -60,6 +60,16 @@ const FreeBoardList = ({ setActiveTab }) => {
         }
 
         fetchFreeBoards(currentPage);
+
+        return () => {
+            setBoards([]);
+            setTotalPages(0);
+            setCurrentPage(1);
+            setKeyword("");
+            setSearchType("all");
+            setOrderBy("descending");
+            setIsMainPage(false);
+        };
     }, [moimId, currentPage, keyword, searchType, orderBy]);
 
     const handleSearch = () => {

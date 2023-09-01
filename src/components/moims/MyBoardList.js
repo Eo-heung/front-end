@@ -130,6 +130,7 @@ const MyBoardList = ({ setActiveTab }) => {
                                 {Array.isArray(boards) && boards.slice(0, isInfoPage ? 5 : boards.length).map((board) => (
                                     <StyledRow key={board.boardId}>
                                         <StyledCell
+                                            title="제목을 클릭하면 게시글 페이지로 이동해요."
                                             style={{ width: "650px", cursor: "pointer" }}
                                             onClick={() => {
                                                 navi(`/${moimId}/moim-board/free-board/${board.boardId}`);

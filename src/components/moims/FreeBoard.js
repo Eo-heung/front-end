@@ -57,6 +57,11 @@ const FreeBoard = () => {
         };
 
         fetchBoardDetail();
+
+        return () => {
+            setBoardDetail(null);
+            setBoardPics([]);
+        };
     }, [moimId, boardId, boardType]);
 
     const handleEditClick = () => {

@@ -31,6 +31,12 @@ const MoimNotice = () => {
         };
 
         verifyUserRole();
+
+        return () => {
+            setUserRole({ isMember: false, isLeader: false });
+            setBoardDetail(null);
+            setBoardPics([]);
+        };
     }, [moimId]);
 
     useEffect(() => {
@@ -50,6 +56,11 @@ const MoimNotice = () => {
         };
 
         fetchBoardDetail();
+
+        return () => {
+            setBoardDetail(null);
+            setBoardPics([]);
+        };
     }, [moimId, boardId, boardType]);
 
     const handleEditClick = () => {

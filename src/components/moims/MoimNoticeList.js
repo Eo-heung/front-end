@@ -47,6 +47,11 @@ const MoimNoticeList = ({ setActiveTab }) => {
         };
 
         verifyUserRole();
+
+        return () => {
+            setUserRole({ isMember: false, isLeader: false });
+            setIsMainPage(false);
+        };
     }, [moimId]);
 
     const fetchNotices = async (currentPage) => {
@@ -76,6 +81,16 @@ const MoimNoticeList = ({ setActiveTab }) => {
         }
 
         fetchNotices(currentPage);
+
+        return () => {
+            setNotices([]);
+            setTotalPages(0);
+            setCurrentPage(1);
+            setKeyword("");
+            setSearchType("all");
+            setOrderBy("descending");
+            setIsMainPage(false);
+        };
     }, [moimId, currentPage, keyword, searchType, orderBy]);
 
     const handleSearch = () => {
