@@ -96,11 +96,14 @@ const MoimProfileArea = ({ moimId }) => {
 
     const handleProfileChange = (e) => {
         if (e.target.files[0]) {
-            const selectedProfile = e.target.files[0];
-            const profileURL = URL.createObjectURL(selectedProfile);
+            const reader = new FileReader();
 
-            setSelectedImagePreview(profileURL);
-            setIsOpen(true);
+            reader.onloadend = function () {
+                setSelectedImagePreview(reader.result);
+                setIsOpen(true);
+            }
+
+            reader.readAsDataURL(e.target.files[0]);
         }
     };
 
