@@ -85,7 +85,10 @@ const MyBoardList = ({ setActiveTab }) => {
                                 <StyledRow>
                                     <StyledMainHeaderCell>
                                         <StyledText onClick={() => navi(`/${moimId}/moim-board/my-boards`)}>
-                                            내 글 목록 +더보기
+                                            내 글 목록
+                                        </StyledText>
+                                        <StyledText style={{ fontSize: "0.8rem", marginLeft: "30px" }} onClick={() => navi(`/${moimId}/moim-board/my-boards`)}>
+                                            더보기
                                         </StyledText>
                                     </StyledMainHeaderCell>
                                     <StyledMainHeaderCell>

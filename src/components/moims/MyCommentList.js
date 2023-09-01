@@ -8,7 +8,7 @@ import { SPRING_API_URL } from '../../config';
 import { Button } from '@mui/material';
 import ListPagination from '../utils/Pagination';
 import CommentModal from '../utils/CommentModal';
-import { useLocation, useParams, useNavigate } from 'react-router-dom';
+import { useLocation, useParams, useNavigate, Link } from 'react-router-dom';
 import { ListMoimLoadingText } from '../utils/StyledListMoim';
 import { StyledText } from '../utils/StyledTable';
 
@@ -56,7 +56,6 @@ const MyCommentList = ({ setActiveTab }) => {
 
     const { moimId } = useParams();
 
-    const [commentContent, setCommentContent] = useState("");
     const [comments, setComments] = useState([]);
 
     const [keyword, setKeyword] = useState("");
@@ -96,6 +95,8 @@ const MyCommentList = ({ setActiveTab }) => {
             console.error(err);
         }
     };
+
+
 
     useEffect(() => {
         fetchComments(currentPage);
@@ -151,9 +152,14 @@ const MyCommentList = ({ setActiveTab }) => {
         <>
             <CommentList>
                 {isInfoPage ? (
-                    <StyledText onClick={() => navi(`/${moimId}/moim-board/my-comments`)}>
-                        내 댓글 목록 +더보기
-                    </StyledText>
+                    <div style={{ display: "flex", alignItems: "center", gap: "30px" }}>
+                        <StyledText onClick={() => navi(`/${moimId}/moim-board/my-comments`)}>
+                            내 댓글 목록
+                        </StyledText>
+                        <StyledText style={{ fontSize: "0.8rem" }} onClick={() => navi(`/${moimId}/moim-board/my-comments`)}>
+                            더보기
+                        </StyledText>
+                    </div>
                 ) : (
                     <CommentListTitle>
                         내 댓글 목록
@@ -167,20 +173,23 @@ const MyCommentList = ({ setActiveTab }) => {
                                     <BoardInfo>{comment.userName}</BoardInfo>
                                     <BoardInfo>{comment.commentRegdate.slice(0, 10)}</BoardInfo>
                                 </BoardInfoRow>
-                                <StyledTextField
-                                    name="boardComment"
-                                    variant="outlined"
-                                    multiline
-                                    size="medium"
-                                    InputProps={{
-                                        readOnly: true,
-                                    }}
-                                    value={comment.commentContent || ""}
-                                ></StyledTextField>
+                                <div onClick={() => navi(`/${moimId}/moim-board/free-board/${comment.boardId}`)}>
+                                    <StyledTextField
+                                        name="boardComment"
+                                        variant="outlined"
+                                        multiline
+                                        size="medium"
+                                        InputProps={{
+                                            readOnly: true,
+                                        }}
+                                        value={comment.commentContent || ""}
+                                        title="댓글을 클릭하면 게시글로 이동해요."
+                                    ></StyledTextField>
+                                </div>
                                 {isInfoPage ? null : (
                                     <CommentButtonZone>
                                         <CommentButton type="button" variant="outlined" size="small" onClick={() => handleEditComment(comment)}>수정</CommentButton>
-                                        <CommentButton type="button" variant="outlined" size="small" onClick={handleDeleteClick(comment.commentId, comment.boardId)}>삭제</CommentButton>
+                                        <CommentButton type="button" variant="outlined" size="small" onClick={handleDeleteClick(comment.boardId, comment.commentId)}>삭제</CommentButton>
                                     </CommentButtonZone>
                                 )}
                             </div>
