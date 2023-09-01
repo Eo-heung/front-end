@@ -13,6 +13,7 @@ const StartCamera = () => {
   const [hasCamera, setHasCamera] = useState(true);
   const [selectedCameraId, setSelectedCameraId] = useState(null);
   const [selectedMicId, setSelectedMicId] = useState(null);
+  const [selectedGenderOption, setSelectedGenderOption] = useState(null);
 
   useEffect(() => {
     initCall();
@@ -163,7 +164,15 @@ const StartCamera = () => {
     setSelectedMicId(micValue);
   };
 
-  const handleStartChatting = () => {
+  const handleGenderOptionChange = async (e) => {
+    // await getMedia()
+    const genderValue = e.target.value;
+    // console.log(micValue);
+    setSelectedGenderOption(genderValue);
+  };
+
+  const handleStartChatting = (genderValue) => {
+    setSelectedGenderOption(genderValue);
     setIsStartedChatting(true);
   };
   return (
@@ -204,11 +213,32 @@ const StartCamera = () => {
                           >
                             {/* getCameras 함수에서 <option> 추가될 것임 */}
                           </select>
+                          {/* <select
+                            value={genderOption}
+                            onChange={handleGenderOptionChange}
+                            className="start-select"
+                          >
+                            <option value="all">아무나 만나기</option>
+                            <option value="male">남자만 만나기</option>
+                            <option value="female">여자만 만나기</option>
+                          </select> */}
                           <Button
                             className="start-button"
-                            onClick={handleStartChatting}
+                            onClick={() => handleStartChatting("any")}
                           >
-                            채팅시작
+                            모두
+                          </Button>
+                          <Button
+                            className="start-button"
+                            onClick={() => handleStartChatting("male")}
+                          >
+                            남자
+                          </Button>
+                          <Button
+                            className="start-button"
+                            onClick={() => handleStartChatting("female")}
+                          >
+                            여자
                           </Button>
                         </div>
                       </div>
@@ -224,6 +254,7 @@ const StartCamera = () => {
                   <CameraChatting
                     selectedCamera={selectedCameraId}
                     selectedMic={selectedMicId}
+                    selectedGender={selectedGenderOption}
                   />
                 )}
               </div>
