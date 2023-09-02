@@ -243,7 +243,7 @@ const MoimAppList = () => {
 
                     return (
                         currentStatus !== "종료" ? (
-                            <ListMoimLink>
+                            <div onClick={() => navi(`/${moimId}/moim-board/moim-app/${app.appBoardId}`)}>
                                 <ListMoimCard variant="outlined">
                                     <AlertZone>
                                         <AlertContent>
@@ -273,7 +273,7 @@ const MoimAppList = () => {
                                         </CardContent>
                                     </ListMoimCardInfo>
                                 </ListMoimCard>
-                            </ListMoimLink>
+                            </div>
                         ) : (
                             <ListMoimCard variant="outlined" notClickable={currentStatus === "종료"}>
                                 <AlertZone>

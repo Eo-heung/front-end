@@ -42,6 +42,7 @@ import MyMoimInfo from "./components/moims/MyMoimInfo";
 import CreateAppointment from "./components/appointment/CreateAppointment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
+import ViewAppointment from "./components/appointment/ViewAppointment";
 
 function App() {
   return (
@@ -115,6 +116,7 @@ function App() {
                 <Route path="notice-board" element={<MoimNoticeList />} />
                 <Route path="notice-board/:boardId" element={<MoimNotice type="NOTICE" />} />
                 <Route path="picture-lib" element={<PictureLib></PictureLib>} />
+                <Route path="moim-app/:appBoardId" element={<ViewAppointment></ViewAppointment>} />
                 <Route path="moim-app-list" element={<MoimAppList></MoimAppList>} />
                 <Route path="moim-users" element={<MoimUsers></MoimUsers>} />
                 <Route path="my-moim-info" element={<MyMoimInfo></MyMoimInfo>}></Route>
