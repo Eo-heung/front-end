@@ -308,10 +308,10 @@ const CreateBoard = () => {
 
         switch (boardType) {
             case 'FREE':
-                navi(`/${moimId}/moim-board/free-board`);
+                navi(`/${moimId}/moim-board/free-board/${boardId}`);
                 break;
             case 'NOTICE':
-                navi(`/${moimId}/moim-board/notice-board`);
+                navi(`/${moimId}/moim-board/notice-board/${boardId}`);
                 break;
             default:
                 console.error("Unknown boardType", boardType);
