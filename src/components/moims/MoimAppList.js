@@ -15,7 +15,7 @@ const MoimAppList = () => {
     const [isLoading, setIsLoading] = useState(false);
     const [isLastPage, setIsLastPage] = useState(false);
     const [scrollActive, setScrollActive] = useState(false);
-
+    const [initialLoad, setInitialLoad] = useState(true);
 
     const [state, setState] = useState({
         data: [],
@@ -37,7 +37,7 @@ const MoimAppList = () => {
         const scrollTop = document.documentElement.scrollTop;
         const clientHeight = document.documentElement.clientHeight;
 
-        if (scrollTop + clientHeight >= scrollHeight - 100) {
+        if (scrollTop + clientHeight >= scrollHeight - 100 && !initialLoad) {
             if (!isLastPage && !isLoading) {
                 setCurrentPage(prevPage => prevPage + 1);
             }
@@ -62,18 +62,7 @@ const MoimAppList = () => {
         </Button>
     );
 
-    useEffect(() => {
-        window.addEventListener('scroll', scrollHandler);
-        return () => {
-            window.removeEventListener('scroll', scrollHandler);
-        };
-    }, [scrollHandler]);
-
-    useEffect(() => {
-        fetchData();
-    }, [currentPage]);
-
-    const fetchData = () => {
+    const fetchData = (page, appType) => {
         setIsLoading(true);
 
         console.log("currentPage", currentPage);
@@ -96,9 +85,6 @@ const MoimAppList = () => {
                 const apps = Object.values(response.data.item.content);
                 const newData = apps.filter(app => !state.data.some(d => d.appBoardId === app.appBoardId));
                 setIsLastPage(response.data.lastPage);
-                if (!response.data.lastPage) {
-                    setCurrentPage(prev => prev + 1);
-                }
                 setState(prev => ({
                     ...prev,
                     data: [...prev.data, ...newData],
@@ -106,12 +92,23 @@ const MoimAppList = () => {
             })
             .then(() => {
                 setIsLoading(false);
+                setInitialLoad(false);
             })
             .catch(error => {
                 console.log("Error fetching data: ", error);
-                setState(prev => ({ ...prev, isLoading: false }));
             });
     };
+
+    useEffect(() => {
+        window.addEventListener('scroll', scrollHandler);
+        return () => {
+            window.removeEventListener('scroll', scrollHandler);
+        };
+    }, [scrollHandler]);
+
+    useEffect(() => {
+        fetchData(currentPage, state.appType);
+    }, [currentPage, state.appType]);
 
     const handleOrderBy = () => {
         setCurrentPage(1);
@@ -120,7 +117,6 @@ const MoimAppList = () => {
             data: [],
             orderBy: prev.orderBy === "ascending" ? "descending" : "ascending"
         }));
-        fetchData();
     };
 
     const handleSearch = () => {
@@ -129,7 +125,6 @@ const MoimAppList = () => {
             ...prev,
             data: []
         }));
-        fetchData();
     };
 
     const handleKeyDown = (e) => {
