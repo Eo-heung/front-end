@@ -132,6 +132,7 @@ export const ListMoimLink = styled(Link)`
 `;
 
 export const ListMoimCard = styled(Card)`
+    position: relative;
     display: flex;
     gap: 1.5rem;
     margin-bottom: 1.5rem;
@@ -142,7 +143,10 @@ export const ListMoimCard = styled(Card)`
     cursor: pointer;
     &:hover {
         border: 1px solid #FCBE71;
-        }
+    }
+    ${props => props.notClickable && `
+        pointer-events: none;
+    `}
 `;
 
 export const ListMoimCardMedia = styled(CardMedia)`
