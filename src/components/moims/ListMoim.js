@@ -163,7 +163,7 @@ const ListMoim = () => {
                     </ListMoimSelect>
                     <ListMoimSearchButton variant="contained" size="large" onClick={handleSearch}>검색</ListMoimSearchButton>
                     <ListMoimSearchButton variant="contained" size="large" onClick={handleOrderBy}>
-                        {orderBy === 'ascending' ? '최신순' : '등록순'}
+                        {orderBy === 'descending' ? '등록순' : '최신순'}
                     </ListMoimSearchButton>
                     <ListMoimButton component={ListMoimStyledLink} to="/create-moim" variant="contained" size="large">
                         새로운 모임 만들기
