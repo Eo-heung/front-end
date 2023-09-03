@@ -13,6 +13,30 @@ import 'dayjs/locale/ko';
 
 dayjs.locale('ko');
 
+const AlertZone = styled('div')`
+    position: absolute;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    top: 0;
+    right: 0;
+    width: 25%;
+    height: 33%;
+    z-index: 10;
+`;
+
+const AlertContent = styled('div')`
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    width: 70%;
+    height: 70%;
+    border: 2px solid #FCBE71;
+    border-radius: 8px;
+    color: grey;
+    font-size: 1.3rem;
+`;
+
 const AppInfoRow = styled('div')`
     display: flex;
     align-items: flex-start;
@@ -32,8 +56,19 @@ const ViewAppointment = () => {
     const [appBoardDetail, setAppBoardDetail] = useState({});
 
     const [cookie] = useCookies("userId");
-    const isCurrentUserTheHost = appBoardDetail && appBoardDetail.userId === cookie.userId;
+    const isCurrentUserTheHost = appBoardDetail && appBoardDetail.user === cookie.userId;
     const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
+
+    const now = dayjs();
+    const appStart = dayjs(appBoardDetail.appStart);
+    const appEnd = dayjs(appBoardDetail.appEnd);
+    const currentStatus = getCurrentStatus(appStart, appEnd, now);
+
+    function getCurrentStatus(appStart, appEnd, now) {
+        if (now.isBefore(appStart)) return "모집중";
+        if (now.isAfter(appEnd)) return "종료";
+        return "진행중";
+    }
 
     const verifyUserRole = async () => {
         try {
@@ -83,6 +118,7 @@ const ViewAppointment = () => {
 
             if (response.data && response.data.statusCode === 201) {
                 alert("신청이 성공적으로 완료되었어요.");
+                navi(`${moimId}/moim-board/moim-app-list`);
             } else {
                 throw new Error(response.data.errorMessage || "신청 중 오류가 발생했어요.");
             }
@@ -103,7 +139,7 @@ const ViewAppointment = () => {
 
             if (response.status === 200) {
                 alert("만남 모집글을 삭제했어요.");
-                window.location.href = "/moim-controller/list-moim";
+                navi(`${moimId}/moim-board/moim-app-list`);
             }
         } catch (error) {
             console.error("Failed to delete moim:", error);
@@ -120,7 +156,12 @@ const ViewAppointment = () => {
     };
 
     return (
-        <BoardContainer>
+        <BoardContainer style={{ width: "83%" }}>
+            <AlertZone>
+                <AlertContent>
+                    {currentStatus}
+                </AlertContent>
+            </AlertZone>
             <h1 style={{ marginTop: "0.5rem", marginBottom: "1rem" }}>{appBoardDetail && appBoardDetail.appTitle}</h1>
             <AppInfoRow>
                 <BoardInfo>{appBoardDetail && appBoardDetail.userName}</BoardInfo>
@@ -135,26 +176,23 @@ const ViewAppointment = () => {
             </AppInfoRow>
             <AppInfoRow>
                 <StyledTypography variant="body1">
-                    {appBoardDetail && appBoardDetail.appStart && dayjs(appBoardDetail.appStart).format("MM월 DD일 a hh시 mm분 ~ ")}
-                    {appBoardDetail && appBoardDetail.appEnd && dayjs(appBoardDetail.appEnd).format("MM월 DD일 a hh시 mm분")}
+                    {appBoardDetail && appBoardDetail.appStart && dayjs(appBoardDetail.appStart).format("YY.MM.DD. a hh:mm ~ ")}
+                    {appBoardDetail && appBoardDetail.appEnd && dayjs(appBoardDetail.appEnd).format("YY.MM.DD. a hh:mm")}
                 </StyledTypography>
             </AppInfoRow>
             <BoardContent variant="body1">{appBoardDetail && appBoardDetail.appContent}</BoardContent>
-            {isCurrentUserTheHost ?
-                (<ButtonZone>
+            <ButtonZone>
+                {isCurrentUserTheHost ? (
                     <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
-                </ButtonZone>)
-                :
-                (!isCurrentUserTheHost && userRole.isLeader ?
-                    (<ButtonZone>
+                ) : (
+                    <>
                         <StyledButton variant="contained" size="large" onClick={handleApplyApp}>신청</StyledButton>
-                        <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
-                    </ButtonZone>)
-                    :
-                    (<ButtonZone>
-                        <StyledButton variant="contained" size="large" onClick={handleApplyApp}>신청</StyledButton>
-                    </ButtonZone>)
+                        {userRole.isLeader && (
+                            <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
+                        )}
+                    </>
                 )}
+            </ButtonZone>
             <h5 style={{ cursor: "pointer" }} onClick={() => navi(-1)}>목록으로 돌아가기</h5>
         </BoardContainer>
     );

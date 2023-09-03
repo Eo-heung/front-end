@@ -2,6 +2,7 @@ import { styled } from '@mui/system';
 import { Button } from '@mui/material';
 
 export const BoardContainer = styled('div')`
+    position: relative;
     display: flex;
     flex-direction: column;
     align-items: flex-start;
