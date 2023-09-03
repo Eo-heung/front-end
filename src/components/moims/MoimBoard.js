@@ -28,7 +28,7 @@ const MoimBoard = () => {
     const [activeTab, setActiveTab] = useState("");
     const [hoveredButton, setHoveredButton] = useState(null);
 
-    const tabLabels = ["메인", "자유 게시판", "사진첩", "만남", "멤버", "공지 게시판", "자유 게시글", "공지 게시글", "내 정보", "내 글 목록", "내 댓글 목록"];
+    const tabLabels = ["메인", "자유 게시판", "만남", "멤버", "공지 게시판", "자유 게시글", "공지 게시글", "내 정보", "내 글 목록", "내 댓글 목록"];
 
     const location = useLocation();
 

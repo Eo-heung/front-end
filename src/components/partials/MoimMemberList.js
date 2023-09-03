@@ -101,10 +101,10 @@ const MoimMemberList = ({ moimId }) => {
                     </table>
                 </div>
             </div>
-            <div style={{ textAlign: "end", paddingRight: "4%", cursor: "pointer" }}>
+            <div style={{ width: "25%", marginLeft: "5%" }}>
                 {userRole.isLeader ? (
                     <>
-                        <div style={{ color: "grey" }} onClick={handleDeleteModalOpen}>모임 삭제</div>
+                        <div style={{ color: "grey", cursor: "pointer" }} onClick={handleDeleteModalOpen}>모임 삭제</div>
                         <DeleteMoimModal
                             isOpen={isDeleteModalOpen}
                             onClose={handleDeleteModalClose}
@@ -114,7 +114,7 @@ const MoimMemberList = ({ moimId }) => {
                     </>
                 ) : (
                     <>
-                        <div style={{ color: "grey" }} onClick={handleModalOpen}>모임 탈퇴</div>
+                        <div style={{ color: "grey", cursor: "pointer" }} onClick={handleModalOpen}>모임 탈퇴</div>
                         <QuitModal
                             isOpen={isQuitModalOpen}
                             onClose={handleModalClose}
