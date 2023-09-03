@@ -240,40 +240,8 @@ const MoimAppList = () => {
                     }
 
                     return (
-                        currentStatus !== "종료" ? (
-                            <div onClick={() => navi(`/${moimId}/moim-board/moim-app/${app.appBoardId}`)}>
-                                <ListMoimCard variant="outlined">
-                                    <AlertZone>
-                                        <AlertContent>
-                                            {currentStatus}
-                                        </AlertContent>
-                                    </AlertZone>
-                                    <ListMoimCardInfo>
-                                        <CardContent>
-                                            <Typography variant="body1">{app.appType}</Typography>
-                                            <Typography gutterBottom variant="h4">{app.appTitle}</Typography>
-                                            <ListMoimMoimInfoRow>
-                                                <h6>인원</h6>
-                                                <Typography variant="body1">{app.appFixedUser || "1"}/{app.maxAppUser}</Typography>
-                                                {app.appType === "OFFLINE" &&
-                                                    <>
-                                                        <h6>장소</h6>
-                                                        <Typography variant="body1">{app.appLocation}</Typography>
-                                                    </>
-                                                }
-                                            </ListMoimMoimInfoRow>
-                                            <ListInfoRow>
-                                                <h6>시작</h6>
-                                                <Typography variant="body1">{appStart.format("MM.DD. a")}</Typography>
-                                                <h6>종료</h6>
-                                                <Typography variant="body1">{appEnd.format("MM.DD. a")}</Typography>
-                                            </ListInfoRow>
-                                        </CardContent>
-                                    </ListMoimCardInfo>
-                                </ListMoimCard>
-                            </div>
-                        ) : (
-                            <ListMoimCard variant="outlined" notClickable={currentStatus === "종료"}>
+                        <div onClick={() => navi(`/${moimId}/moim-board/moim-app/${app.appBoardId}`)}>
+                            <ListMoimCard variant="outlined">
                                 <AlertZone>
                                     <AlertContent>
                                         {currentStatus}
@@ -295,14 +263,14 @@ const MoimAppList = () => {
                                         </ListMoimMoimInfoRow>
                                         <ListInfoRow>
                                             <h6>시작</h6>
-                                            <Typography variant="body1">{appStart.format("MM-DD / HH:mm")}</Typography>
+                                            <Typography variant="body1">{appStart.format("MM.DD. a")}</Typography>
                                             <h6>종료</h6>
-                                            <Typography variant="body1">{appEnd.format("MM-DD / HH:mm")}</Typography>
+                                            <Typography variant="body1">{appEnd.format("MM.DD. a")}</Typography>
                                         </ListInfoRow>
                                     </CardContent>
                                 </ListMoimCardInfo>
                             </ListMoimCard>
-                        )
+                        </div>
                     );
                 })}
                 {isLoading && <ListMoimLoadingText>새로운 목록을 불러오고 있어요.</ListMoimLoadingText>}

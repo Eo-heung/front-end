@@ -112,11 +112,11 @@ const CreateAppointment = () => {
             alert("올바른 모임 인원을 입력해주세요.");
             return false;
         }
-        if (appStart.isAfter(appEnd) ||
-            (appStart.isSame(appEnd, 'day') && appStart.isSame(appEnd, 'hour') && appStart.isSame(appEnd, 'minute'))) {
-            alert("시작일시와 종료일시를 올바르게 설정해주세요.");
-            return false;
-        }
+        // if (appStart.isAfter(appEnd) ||
+        //     (appStart.isSame(appEnd, 'day') && appStart.isSame(appEnd, 'hour') && appStart.isSame(appEnd, 'minute'))) {
+        //     alert("시작일시와 종료일시를 올바르게 설정해주세요.");
+        //     return false;
+        // }
         return true;
     };
 

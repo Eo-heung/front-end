@@ -54,10 +54,14 @@ const ViewAppointment = () => {
     const { moimId, appBoardId } = useParams();
 
     const [appBoardDetail, setAppBoardDetail] = useState({});
+    const [appMembers, setAppMembers] = useState([]);
 
     const [cookie] = useCookies("userId");
     const isCurrentUserTheHost = appBoardDetail && appBoardDetail.user === cookie.userId;
     const [userRole, setUserRole] = useState({ isMember: false, isLeader: false });
+    const [isUserApplied, setIsUserApplied] = useState(false);
+
+    const [currentPage, setCurrentPage] = useState(1);
 
     const now = dayjs();
     const appStart = dayjs(appBoardDetail.appStart);
@@ -84,9 +88,31 @@ const ViewAppointment = () => {
         }
     };
 
+    const fetchAppMembers = async () => {
+        try {
+            const response = await axios.get(`${SPRING_API_URL}/appointment/${moimId}/member-list/${appBoardId}?test=memeber`, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                },
+                params: {
+                    currentPage: currentPage - 1
+                }
+            });
+
+            if (response.status === 200) {
+                console.log("신청자 목록 ", response.data.item.content);
+                setAppMembers(response.data.item.content);
+                const isApplied = response.data.item.content.some(member => member.appFixedUser === cookie.userId);
+                setIsUserApplied(isApplied);
+            }
+        } catch (error) {
+            console.error("Error fetching app members:", error);
+        }
+    };
+
     const getAppBoardDetail = async () => {
         try {
-            const response = await axios.get(`${SPRING_API_URL}/appointment/${moimId}/list/${appBoardId}`, {
+            const response = await axios.get(`${SPRING_API_URL}/appointment/${moimId}/list/${appBoardId}?test=detail`, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }
@@ -94,7 +120,7 @@ const ViewAppointment = () => {
 
             console.log("response.data", response.data);
 
-            if (response.status === 200) {
+            if (response.data) {
                 setAppBoardDetail(response.data.item.appBoardDetail);
             }
         } catch (error) {
@@ -105,7 +131,7 @@ const ViewAppointment = () => {
     useEffect(() => {
         verifyUserRole();
         getAppBoardDetail();
-
+        fetchAppMembers();
     }, [moimId]);
 
     const handleApplyApp = async () => {
@@ -118,7 +144,7 @@ const ViewAppointment = () => {
 
             if (response.data && response.data.statusCode === 201) {
                 alert("신청이 성공적으로 완료되었어요.");
-                navi(`${moimId}/moim-board/moim-app-list`);
+                navi(`/${moimId}/moim-board/moim-app-list`);
             } else {
                 throw new Error(response.data.errorMessage || "신청 중 오류가 발생했어요.");
             }
@@ -131,7 +157,7 @@ const ViewAppointment = () => {
 
     const deleteApp = async () => {
         try {
-            const response = await axios.delete(`${SPRING_API_URL}/appoinment/${moimId}/list/${appBoardId}/delete`, {
+            const response = await axios.delete(`${SPRING_API_URL}/appointment/${moimId}/list/${appBoardId}/delete`, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }
@@ -139,7 +165,7 @@ const ViewAppointment = () => {
 
             if (response.status === 200) {
                 alert("만남 모집글을 삭제했어요.");
-                navi(`${moimId}/moim-board/moim-app-list`);
+                navi(`/${moimId}/moim-board/moim-app-list`);
             }
         } catch (error) {
             console.error("Failed to delete moim:", error);
@@ -154,6 +180,8 @@ const ViewAppointment = () => {
             deleteApp();
         }
     };
+
+    console.log("IsUserApplied", isUserApplied);
 
     return (
         <BoardContainer style={{ width: "83%" }}>
@@ -186,7 +214,9 @@ const ViewAppointment = () => {
                     <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
                 ) : (
                     <>
-                        <StyledButton variant="contained" size="large" onClick={handleApplyApp}>신청</StyledButton>
+                        {!isUserApplied && (
+                            <StyledButton variant="contained" size="large" onClick={handleApplyApp}>신청</StyledButton>
+                        )}
                         {userRole.isLeader && (
                             <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
                         )}
