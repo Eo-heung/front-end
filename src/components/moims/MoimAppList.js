@@ -8,7 +8,9 @@ import { ListMoimContainer, ListMoimCategoryContainer, ListMoimSearchContainer, 
 import { SPRING_API_URL } from '../../config';
 import dayjs from 'dayjs';
 import utc from 'dayjs/plugin/utc';
+import 'dayjs/locale/ko';
 
+dayjs.locale('ko');
 dayjs.extend(utc);
 
 const ListInfoRow = styled('div')`
@@ -77,10 +79,6 @@ const MoimAppList = () => {
 
     const now = dayjs();
 
-    function formatDate(localDateTimeString) {
-        return dayjs(localDateTimeString).format("MM월 DD일 HH시 mm분");
-    }
-
     function getCurrentStatus(appStart, appEnd, now) {
         if (now.isBefore(appStart)) return "모집중";
         if (now.isAfter(appEnd)) return "종료";
@@ -100,10 +98,13 @@ const MoimAppList = () => {
 
         if (scrollTop + clientHeight >= scrollHeight - 100 && !initialLoad) {
             if (!isLastPage && !isLoading) {
-                setCurrentPage(prevPage => prevPage + 1);
+                setCurrentPage(prevPage => {
+                    fetchData(prevPage, prevPage + 9, state.appType);
+                    return prevPage + 10;
+                });
             }
         }
-    }, [isLastPage, isLoading]);
+    }, [isLastPage, isLoading, initialLoad]);
 
     const renderAppTypeButton = (label) => (
         <Button
@@ -123,39 +124,55 @@ const MoimAppList = () => {
         </Button>
     );
 
-    const fetchData = (page, appType) => {
+    const fetchData = (startPage = 1, endPage = 10, appType, keyword, searchType) => {
         setIsLoading(true);
 
-        axios.get(`${SPRING_API_URL}/appointment/${moimId}/list`, {
-            headers: {
-                Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
-            },
-            params: {
-                currentPage: currentPage - 1,
-                appType: state.appType,
-                keyword: state.keyword,
-                searchType: state.searchType,
-                orderBy: state.orderBy
-            }
-        })
-            .then(response => {
-                console.log("fetchData", response.data);
+        let requests = [];
+
+        for (let i = startPage; i <= endPage; i++) {
+            let request = axios.get(`${SPRING_API_URL}/appointment/${moimId}/list`, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                },
+                params: {
+                    currentPage: i - 1,
+                    appType: state.appType,
+                    keyword: state.keyword,
+                    searchType: state.searchType,
+                    orderBy: state.orderBy
+                }
+            });
+
+            requests.push(request);
+        }
+
+        Promise.all(requests).then(responses => {
+            responses.forEach(response => {
+                console.log("response", response);
+
                 const apps = Object.values(response.data.item.content);
                 const newData = apps.filter(app => !state.data.some(d => d.appBoardId === app.appBoardId));
-                setIsLastPage(response.data.lastPage);
+
                 setState(prev => ({
                     ...prev,
                     data: [...prev.data, ...newData],
                 }));
-            })
-            .then(() => {
-                setIsLoading(false);
-                setInitialLoad(false);
-            })
-            .catch(error => {
-                console.log("Error fetching data: ", error);
+
+                if (response.data.lastPage) {
+                    setIsLastPage(true);
+                }
             });
+
+            setIsLoading(false);
+            setInitialLoad(false);
+        }).catch(error => {
+            console.log("Error fetching data: ", error);
+        });
     };
+
+    useEffect(() => {
+        fetchData();
+    }, []);
 
     useEffect(() => {
         window.addEventListener('scroll', scrollHandler);
@@ -165,8 +182,8 @@ const MoimAppList = () => {
     }, [scrollHandler]);
 
     useEffect(() => {
-        fetchData(currentPage, state.appType);
-    }, [currentPage, state.appType]);
+        fetchData(1, 10);
+    }, [state.orderBy]);
 
     const handleOrderBy = () => {
         setCurrentPage(1);
@@ -175,8 +192,13 @@ const MoimAppList = () => {
             data: [],
             orderBy: prev.orderBy === "ascending" ? "descending" : "ascending"
         }));
-        fetchData();
     };
+
+    useEffect(() => {
+        if (state.data.length === 0) {
+            fetchData(1, 10);
+        }
+    }, [state.data]);
 
     const handleSearch = () => {
         setCurrentPage(1);
@@ -184,7 +206,6 @@ const MoimAppList = () => {
             ...prev,
             data: []
         }));
-        fetchData();
     };
 
     const handleKeyDown = (e) => {
@@ -255,20 +276,20 @@ const MoimAppList = () => {
                                             <Typography variant="body1">{app.appType}</Typography>
                                             <Typography gutterBottom variant="h4">{app.appTitle}</Typography>
                                             <ListMoimMoimInfoRow>
-                                                <h6>만남인원</h6>
+                                                <h6>인원</h6>
                                                 <Typography variant="body1">{app.appFixedUser || "1"}/{app.maxAppUser}</Typography>
                                                 {app.appType === "OFFLINE" &&
                                                     <>
-                                                        <h6>만남장소</h6>
+                                                        <h6>장소</h6>
                                                         <Typography variant="body1">{app.appLocation}</Typography>
                                                     </>
                                                 }
                                             </ListMoimMoimInfoRow>
                                             <ListInfoRow>
-                                                <h6>시작일시</h6>
-                                                <Typography variant="body1">{appStart.format('MM월DD일 HH시 mm분')}</Typography>
-                                                <h6>종료일시</h6>
-                                                <Typography variant="body1">{appEnd.format('MM월DD일 HH시 mm분')}</Typography>
+                                                <h6>시작</h6>
+                                                <Typography variant="body1">{appStart.format('MM-DD / a HH:mm')}</Typography>
+                                                <h6>종료</h6>
+                                                <Typography variant="body1">{appEnd.format('MM-DD / a HH:mm')}</Typography>
                                             </ListInfoRow>
                                         </CardContent>
                                     </ListMoimCardInfo>
@@ -286,20 +307,20 @@ const MoimAppList = () => {
                                         <Typography variant="body1">{app.appType}</Typography>
                                         <Typography gutterBottom variant="h4">{app.appTitle}</Typography>
                                         <ListMoimMoimInfoRow>
-                                            <h6>만남인원</h6>
+                                            <h6>인원</h6>
                                             <Typography variant="body1">{app.appFixedUser || "1"}/{app.maxAppUser}</Typography>
                                             {app.appType === "OFFLINE" &&
                                                 <>
-                                                    <h6>만남장소</h6>
+                                                    <h6>장소</h6>
                                                     <Typography variant="body1">{app.appLocation}</Typography>
                                                 </>
                                             }
                                         </ListMoimMoimInfoRow>
                                         <ListInfoRow>
-                                            <h6>시작일시</h6>
-                                            <Typography variant="body1">{appStart.format('MM월DD일 HH시 mm분')}</Typography>
-                                            <h6>종료일시</h6>
-                                            <Typography variant="body1">{appEnd.format('MM월DD일 HH시 mm분')}</Typography>
+                                            <h6>시작</h6>
+                                            <Typography variant="body1">{appStart.format("MM-DD / HH:mm")}</Typography>
+                                            <h6>종료</h6>
+                                            <Typography variant="body1">{appEnd.format("MM-DD / HH:mm")}</Typography>
                                         </ListInfoRow>
                                     </CardContent>
                                 </ListMoimCardInfo>
