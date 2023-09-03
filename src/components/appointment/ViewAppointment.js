@@ -1,16 +1,27 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import { useNavigate, useParams } from 'react-router-dom';
-import { BoardContainer, BoardInfoRow, BoardTitle, BoardInfo, BoardContent, BoardLinkButton } from '../utils/StyledBoard';
+import { BoardContainer, BoardInfo, BoardContent } from '../utils/StyledBoard';
 import { ButtonZone, StyledButton } from '../utils/StyledCreate';
 import { Typography } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import { styled } from '@mui/system';
 import { useCookies } from 'react-cookie';
 import { SPRING_API_URL } from '../../config';
+import dayjs from "dayjs";
+import 'dayjs/locale/ko';
+
+dayjs.locale('ko');
+
+const AppInfoRow = styled('div')`
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    margin-bottom: 0.5rem;
+    gap: 30px;
+`;
 
 const StyledTypography = styled(Typography)`
-    margin-bottom: 10px;
     color: ${grey[600]};
 `;
 
@@ -111,18 +122,23 @@ const ViewAppointment = () => {
     return (
         <BoardContainer>
             <h1 style={{ marginTop: "0.5rem", marginBottom: "1rem" }}>{appBoardDetail && appBoardDetail.appTitle}</h1>
-            <BoardInfoRow>
-                <h5>주최자</h5>
+            <AppInfoRow>
                 <BoardInfo>{appBoardDetail && appBoardDetail.userName}</BoardInfo>
-            </BoardInfoRow>
-            <BoardInfoRow>
+            </AppInfoRow>
+            <AppInfoRow>
+                <StyledTypography variant="body1">{appBoardDetail && appBoardDetail.appFixedUser || "1"}/{appBoardDetail && appBoardDetail.maxAppUser}</StyledTypography>
                 {appBoardDetail && appBoardDetail.appType === "ONLINE" ? (
                     <StyledTypography variant="body1">온라인</StyledTypography>
                 ) : (
                     <StyledTypography variant="body1">{appBoardDetail && appBoardDetail.appLocation}</StyledTypography>
                 )}
-                <StyledTypography variant="body1">{appBoardDetail && appBoardDetail.appFixedUser || "1"}/{appBoardDetail && appBoardDetail.maxAppUser}</StyledTypography>
-            </BoardInfoRow>
+            </AppInfoRow>
+            <AppInfoRow>
+                <StyledTypography variant="body1">
+                    {appBoardDetail && appBoardDetail.appStart && dayjs(appBoardDetail.appStart).format("MM월 DD일 a hh시 mm분 ~ ")}
+                    {appBoardDetail && appBoardDetail.appEnd && dayjs(appBoardDetail.appEnd).format("MM월 DD일 a hh시 mm분")}
+                </StyledTypography>
+            </AppInfoRow>
             <BoardContent variant="body1">{appBoardDetail && appBoardDetail.appContent}</BoardContent>
             {isCurrentUserTheHost ?
                 (<ButtonZone>
@@ -139,7 +155,7 @@ const ViewAppointment = () => {
                         <StyledButton variant="contained" size="large" onClick={handleApplyApp}>신청</StyledButton>
                     </ButtonZone>)
                 )}
-            <h5 onClick={() => navi(-1)}>목록으로 돌아가기</h5>
+            <h5 style={{ cursor: "pointer" }} onClick={() => navi(-1)}>목록으로 돌아가기</h5>
         </BoardContainer>
     );
 };

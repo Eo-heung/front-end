@@ -10,7 +10,10 @@ import BasicBoard from '../utils/BasicBoard';
 import { SPRING_API_URL } from '../../config';
 import { ListMoimMenuItem, ListMoimSelect } from '../utils/StyledListMoim';
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
+import 'dayjs/locale/ko';
+
+dayjs.locale('ko');
 
 const InfoZone = styled('div')`
     display: flex;
@@ -109,7 +112,8 @@ const CreateAppointment = () => {
             alert("올바른 모임 인원을 입력해주세요.");
             return false;
         }
-        if (appStart.isAfter(appEnd) || appStart.isSame(appEnd)) {
+        if (appStart.isAfter(appEnd) ||
+            (appStart.isSame(appEnd, 'day') && appStart.isSame(appEnd, 'hour') && appStart.isSame(appEnd, 'minute'))) {
             alert("시작일시와 종료일시를 올바르게 설정해주세요.");
             return false;
         }
