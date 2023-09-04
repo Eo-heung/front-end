@@ -31,7 +31,7 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
     const Circle = styled('div')(({ progress }) => ({
         position: 'absolute',
-        left: `calc(${progress}% - 5px)`,
+        left: `calc(${progress}% - 15px)`,
         top: '50%',
         transform: 'translateY(-50%)',
         width: '40px',
@@ -42,8 +42,16 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
         transition: "left 500ms ease-out"
     }));
 
-    const defaultTheme = createTheme();
-
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
     function LinearProgressWithLabel() {
         const [progress, setProgress] = useState(16.67);
 
@@ -82,20 +90,20 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
 
     return (
         <ThemeProvider theme={defaultTheme}>
-            <Container component="main" maxWidth="xs" minHeight='608.57px' maxHeight='608.57px' style={{ overflow: 'hidden' }}>
+            <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
                 <CssBaseline />
                 <Box
                     sx={{
                         position: 'relative', // 추가
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
+                        minHeight: '80vh',
+                        maxHeight: '80vh',
                         marginTop: 12.5
                     }}
                 >
                     <IconButton
                         sx={{
                             position: 'absolute',
-                            top: "-70px",
+                            top: "-9.1vh",
                         }}
                         onClick={() => {
                             backClick();
@@ -111,7 +119,7 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
                         내 인증번호는?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
+                        <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required
@@ -120,17 +128,16 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
                                     label="인증번호 입력"
                                     name="code"
                                     autoComplete="off"
-                                    inputProps={{ maxLength: 6, pattern: "\\d{6}" }}
-                                    sx={{
-                                        marginBottom: '5px'
-                                    }}
+                                    inputProps={{ maxLength: 11, pattern: "\\d{6}" }}
                                 />
                                 <Link sx={{
                                     float: 'right',
                                     textDecoration: 'none',
+                                    color: '#1976d2',
                                     '&:hover': {
                                         textDecoration: 'underline',
-                                        color: '#1976d2' // 호버 시 원하는 배경색
+                                        color: '#1976d2',
+                                        cursor: 'pointer'
                                     },
                                 }} onClick={backClick}>인증번호가 안왔나요?</Link>
                             </Grid>
@@ -151,7 +158,7 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
                                 color="primary"
                                 sx={{
                                     color: 'black',
-                                    height: '44px',
+                                    height: '5.7vh',
                                     fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
@@ -169,7 +176,7 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+                    <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

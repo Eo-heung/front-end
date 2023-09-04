@@ -105,10 +105,12 @@ const Header = ({ getFriendList, userId }) => {
       {},
       JSON.stringify({ status: "offline" })
     );
+
     removeCookie('userId')
     removeCookie('userNickname')
     removeCookie('userAddr3')
     removeCookie('userGender')
+
     sessionStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
     sessionStorage.removeItem("userId");

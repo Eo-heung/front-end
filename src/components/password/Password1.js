@@ -19,8 +19,8 @@ const Password1 = ({ handleClick }) => {
         <Box
           sx={{
             position: 'relative',
-            minHeight: '608.57px',
-            maxHeight: '608.57px',
+            minHeight: '80vh',
+            maxHeight: '80vh',
             marginTop: 8,
             display: 'flex',        // 추가: 가운데 정렬을 위한 flex 설정
             flexDirection: 'column', // 세로 방향으로 내용 배치
@@ -30,7 +30,7 @@ const Password1 = ({ handleClick }) => {
           <IconButton
             sx={{
               position: 'absolute',
-              top: "-34px",
+              top: "-5.3vh",
               left: '0'
             }}
             onClick={() => {
@@ -54,7 +54,7 @@ const Password1 = ({ handleClick }) => {
           color="primary"
           sx={{
             color: 'black',
-            height: '44px',
+            height: '5.7vh',
             mb: 2,
             fontFamily: "font-medium",
             backgroundColor: '#FEA53D', // 평소 색상
