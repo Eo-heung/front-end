@@ -25,6 +25,7 @@ import Charge from "./components/charge/Payment";
 import ButtonWithNewWindow from "./components/multichat/components/ButtonWithNewWindow";
 import MultiChatting from "./components/multichat/components/VideoRoomComponent";
 import ChattingPayment from "./components/chatting/ChattingPayment";
+import ChattingWithFriend from "./components/chatting/ChattingWithFriend";
 function App() {
   return (
     <>
@@ -59,6 +60,10 @@ function App() {
               path="/multichattingstart"
               element={<ButtonWithNewWindow></ButtonWithNewWindow>}
             />
+            <Route
+              path="/talk"
+              element={<ChattingWithFriend></ChattingWithFriend>}
+            ></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
             <Route path="/charge" element={<Charge></Charge>}></Route>
             <Route
@@ -82,13 +87,12 @@ function App() {
             path="/multichatting"
             element={<MultiChatting></MultiChatting>}
           ></Route>
+
           <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
           <Route path="/login" element={<Login></Login>}></Route>
           <Route path="/oauth" element={<NaverHandler></NaverHandler>}></Route>
           <Route path="/signup" element={<SignUp></SignUp>}></Route>
           <Route path="/findpassword" element={<Password></Password>}></Route>
-
-
 
           <Route
             path="/chattingcharge"

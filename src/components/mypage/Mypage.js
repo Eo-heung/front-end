@@ -6,6 +6,7 @@ import DialogTitle from "@mui/material/DialogTitle";
 import axios from "axios";
 import React, { createRef, useEffect, useRef, useState } from "react";
 import DaumPostcode from "react-daum-postcode";
+import { SPRING_API_URL } from "../../config";
 import basicProfile from "../../public/basic_profile.png";
 
 const TabButton = styled.button`
@@ -83,6 +84,7 @@ const Mypage = () => {
   const [isPasswordModalOpen, setPasswordModalOpen] = useState(false);
   const [paymentList, setPaymentList] = useState([]);
   const [userStatus, setUserStatus] = useState(false);
+  const [userTotalGam, setUserTotalGam] = useState(0);
   const phoneInputRef = createRef();
   const verificationCodeRef = createRef();
   const serverCodeRef = useRef(null);
@@ -101,7 +103,7 @@ const Mypage = () => {
   const [filter, setFilter] = useState({ status: "전체", category: "전체" });
 
   useEffect(() => {
-    axios.post("http://localhost:9000/hobby/gethobby")
+    axios.post(`${SPRING_API_URL}/hobby/gethobby`)
       .then((res) => res.data)
       .then((data) => {
         const interests = [];
@@ -138,7 +140,7 @@ const Mypage = () => {
 
   const checkPhone = async (tel) => {
     try {
-      const response = await axios.post("http://localhost:9000/checkphone", tel);
+      const response = await axios.post(`${SPRING_API_URL}/checkphone`, tel);
       return response.data.item;
     } catch (error) {
       console.error("An error occurred:", error);
@@ -152,7 +154,7 @@ const Mypage = () => {
         userEmail: userEmail,
         userGender: userGender,
       };
-      await axios.post("http://localhost:9000/mypage/changephone", userinfo, {
+      await axios.post(`${SPRING_API_URL}/mypage/changephone`, userinfo, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -166,7 +168,7 @@ const Mypage = () => {
 
   const checkPassword = async (userPw) => {
     try {
-      const response = await axios.post("http://localhost:9000/mypage/checkpassword", { userPw: userPw }, {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/checkpassword`, { userPw: userPw }, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -180,7 +182,7 @@ const Mypage = () => {
   const changePassword = async (userPw) => {
     try {
       const userinfo = { userPw: userPw, };
-      await axios.post("http://localhost:9000/mypage/changepassword", userinfo, {
+      await axios.post(`${SPRING_API_URL}/mypage/changepassword`, userinfo, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -192,7 +194,7 @@ const Mypage = () => {
 
   const getProfileImage = async () => {
     try {
-      const response = await axios.post("http://localhost:9000/mypage/getprofileimage", {}, {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/getprofileimage`, {}, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -222,7 +224,7 @@ const Mypage = () => {
     formData.append("fileData", imageFile);
 
     try {
-      await axios.post("http://localhost:9000/mypage/changeprofileimage", formData, {
+      await axios.post(`${SPRING_API_URL}/mypage/changeprofileimage`, formData, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
           "Content-Type": "multipart/form-data",
@@ -375,7 +377,7 @@ const Mypage = () => {
 
   const fetchUserInfo = async () => {
     try {
-      const response = await axios.post("http://localhost:9000/mypage/myinfo", {}, {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/myinfo`, {}, {
         headers: {
           Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
         },
@@ -395,6 +397,7 @@ const Mypage = () => {
       setUserRecommend(response.data.item.userRecommend);
       setUserStatusMessage(response.data.item.userStatusMessage);
       setUserStatus(response.data.item.online);
+      setUserTotalGam(response.data.item.totalGam);
     } catch (error) {
       console.error("유저 정보를 가져오는 데 실패했습니다:", error);
     }
@@ -409,7 +412,7 @@ const Mypage = () => {
   }, []);
 
   useEffect(() => {
-    axios.post("http://localhost:9000/mypage/mymoim", {}, {
+    axios.post(`${SPRING_API_URL}/mypage/mymoim`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -425,7 +428,7 @@ const Mypage = () => {
   }
 
   const editInfo = () => {
-    axios.post("http://localhost:9000/mypage/editinfo", {
+    axios.post(`${SPRING_API_URL}/mypage/editinfo`, {
       userName: userName,
       userAddr1: userAddr1,
       userAddr2: userAddr2,
@@ -448,7 +451,7 @@ const Mypage = () => {
   // 친구 관리하기
 
   const getFriendList = async () => {
-    axios.post("http://localhost:9000/friend/friendList", {}, {
+    axios.post(`${SPRING_API_URL}/friend/friendList`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -460,7 +463,7 @@ const Mypage = () => {
   };
 
   const getRequestFriendList = async () => {
-    axios.post("http://localhost:9000/friend/requestFriendList", {}, {
+    axios.post(`${SPRING_API_URL}/friend/requestFriendList`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -472,7 +475,7 @@ const Mypage = () => {
   };
 
   const getPaymentList = async () => {
-    axios.post("http://localhost:9000/paymentList", {}, {
+    axios.post(`${SPRING_API_URL}/paymentList`, {}, {
       headers: {
         Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
       },
@@ -484,7 +487,7 @@ const Mypage = () => {
   };
 
   const acceptRequestFriend = async (id, requestValue) => {
-    axios.post(`http://localhost:9000/friend/requestFriend/${id}`, {
+    axios.post(`${SPRING_API_URL}/friend/requestFriend/${id}`, {
       id: requestValue,
     }).then((res) => {
       getRequestFriendList();
@@ -500,7 +503,7 @@ const Mypage = () => {
     if (!userConfirmed) {
       return;
     }
-    axios.post(`http://localhost:9000/friend/deleteFriend/${id}`, {
+    axios.post(`${SPRING_API_URL}/friend/deleteFriend/${id}`, {
     }).then((res) => {
       getRequestFriendList();
       getFriendList();
@@ -514,9 +517,11 @@ const Mypage = () => {
     if (!userConfirmed) {
       return;
     } else {
-      axios.post(`http://localhost:9000/cancelPayment/${id}`, {
+      axios.post(`${SPRING_API_URL}/cancelPayment/${id}`, {
       }).then((res) => {
         alert(res.data.item.msg);
+        getPaymentList();
+        fetchUserInfo();
       }).catch((error) => {
         console.error(error);
         alert(
@@ -818,10 +823,13 @@ const Mypage = () => {
                 <StyledContainer sx={{ marginLeft: "400px", width: "67%" }}>
                   <Paper elevation={3}>
                     <UserInfoSection>
-                      <Grid item xs={12}>
+                      <Grid item xs={12} sx={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
                         <Typography variant="h1" fontSize="18pt" sx={{ fontWeight: "bold", marginBottom: "5px", marginLeft: "20px", marginTop: "8px", }}>
                           활동내역
                         </Typography>
+                        <span>
+                          현재 곶감 수 : {userTotalGam} 개
+                        </span>
                       </Grid>
                       <Tabs value={value} onChange={handleChange} sx={{ marginLeft: "20px" }}>
                         <Tab label={<div>소모임</div>} />
@@ -892,10 +900,19 @@ const Mypage = () => {
                                           <span>{(payment.payDate && `${new Date(payment.payDate).getFullYear()}년 ${(new Date(payment.payDate).getMonth() + 1).toString().padStart(2, "0")}월 ${new Date(payment.payDate).getDate().toString().padStart(2, "0")}일(${new Date(payment.payDate).getHours().toString().padStart(2, "0")}:${new Date(payment.payDate).getMinutes().toString().padStart(2, "0")}:${new Date(payment.payDate).getSeconds().toString().padStart(2, "0")})`) || "날짜 확인 불가"}</span>
                                         </Typography>
                                       </div>
-                                      <Button variant="text" onClick={() => cancelPayment(payment.imp_uid)} sx={{ color: "red" }}>
-                                        <span>결제 취소</span>
-                                      </Button>
+                                      {payment.refund ?
+                                        <Button variant="text" onClick={() => cancelPayment(payment.impUid)} sx={{ color: "red" }}>
+                                          <span>결제취소</span>
+                                        </Button>
+                                        :
+                                        <Button variant="text" disabled>
+                                          <span>취소불가</span>
+                                        </Button>
+                                      }
                                     </div>
+                                    <Typography variant="body2" sx={{ marginBottom: "6px" }}>
+                                      <span>결제명 : {payment.name}</span>
+                                    </Typography>
                                     <Typography variant="body2" sx={{ marginBottom: "6px" }}>
                                       <span>금액 : {payment.value + " 원" || "금액 없음"}</span>
                                     </Typography>
