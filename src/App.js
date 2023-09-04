@@ -43,6 +43,7 @@ import CreateAppointment from "./components/appointment/CreateAppointment";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ViewAppointment from "./components/appointment/ViewAppointment";
+import ListMoimMember from "./components/moims/ListMoimMember";
 
 function App() {
   return (
@@ -89,14 +90,6 @@ function App() {
                 element={<ApplyMoim></ApplyMoim>}
               ></Route>
               <Route
-                path="/accept-moim/:moimId/:moimRegId"
-                element={<AcceptMoim></AcceptMoim>}
-              ></Route>
-              <Route
-                path="/list-accept-moim/:moimId"
-                element={<ListAcceptMoim></ListAcceptMoim>}
-              ></Route>
-              <Route
                 path="/my-moim-list"
                 element={<Mymoim></Mymoim>}
               ></Route>
@@ -122,6 +115,9 @@ function App() {
                 <Route path="my-moim-info" element={<MyMoimInfo></MyMoimInfo>}></Route>
                 <Route path="my-boards" element={<MyBoardList></MyBoardList>}></Route>
                 <Route path="my-comments" element={<MyCommentList></MyCommentList>}></Route>
+                <Route path="accept-moim" element={<ListAcceptMoim></ListAcceptMoim>}></Route>
+                <Route path="accept-moim/:moimRegId" element={<AcceptMoim></AcceptMoim>}></Route>
+                <Route path="moim-member" element={<ListMoimMember></ListMoimMember>}></Route>
               </Route>
               <Route
                 path="/:moimId/create-board"

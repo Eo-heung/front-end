@@ -28,7 +28,20 @@ const MoimBoard = () => {
     const [activeTab, setActiveTab] = useState("");
     const [hoveredButton, setHoveredButton] = useState(null);
 
-    const tabLabels = ["메인", "자유 게시판", "만남", "멤버", "공지 게시판", "자유 게시글", "공지 게시글", "내 정보", "내 글 목록", "내 댓글 목록"];
+    const tabLabels = [
+        "메인",
+        "자유 게시판",
+        "만남",
+        "멤버",
+        "신청 목록",
+        "공지 게시판",
+        "자유 게시글",
+        "공지 게시글",
+        "내 정보",
+        "내 글 목록",
+        "내 댓글 목록",
+        "멤버 게시글"
+    ];
 
     const location = useLocation();
 
@@ -77,22 +90,24 @@ const MoimBoard = () => {
         "자유 게시판": "free-board",
         "사진첩": "picture-lib",
         "만남": "moim-app-list",
-        "멤버": "moim-users",
+        "멤버": "moim-member",
+        "신청 목록": "accept-moim",
         "공지 게시판": "notice-board",
         "자유 게시글": "free-board/:boardId",
         "공지 게시글": "notice-board/:boardId",
         "내 정보": "my-moim-info",
         "내 글 목록": "my-boards",
-        "내 댓글 목록": "my-comments"
-
+        "내 댓글 목록": "my-comments",
+        "멤버 게시글": "accept-moim/:moimRegId"
     };
-
-    console.log("location.pathname  ", location.pathname);
 
     useEffect(() => {
         const matchedLabel = Object.keys(tabPaths).find(label => {
             if (tabPaths[label].includes(":boardId")) {
                 const regex = new RegExp(`^/${moimId}/moim-board/${tabPaths[label].replace(":boardId", "\\d+")}$`);
+                return regex.test(location.pathname);
+            } else if (tabPaths[label].includes(":moimRegId")) {
+                const regex = new RegExp(`^/${moimId}/moim-board/${tabPaths[label].replace(":moimRegId", "\\d+")}$`);
                 return regex.test(location.pathname);
             }
             return `/${moimId}/moim-board/${tabPaths[label]}` === location.pathname;
@@ -124,7 +139,15 @@ const MoimBoard = () => {
                                 onTabClick={() => handleTabClick(label)}
                                 onMouseEnter={() => setHoveredButton(label)}
                                 onMouseLeave={() => setHoveredButton(null)}
-                                style={(label === "공지 게시판" || label === "자유 게시글" || label === "공지 게시글" || label === "내 정보" || label === "내 글 목록" || label === "내 댓글 목록") ? { display: "none" } : {}}
+                                style={(
+                                    label === "공지 게시판"
+                                    || label === "신청 목록"
+                                    || label === "자유 게시글"
+                                    || label === "공지 게시글"
+                                    || label === "내 정보"
+                                    || label === "내 글 목록"
+                                    || label === "내 댓글 목록"
+                                    || label === "멤버 게시글") ? { display: "none" } : {}}
                             />
                         ))}
                     </TabContainer>

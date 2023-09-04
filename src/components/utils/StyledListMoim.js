@@ -14,8 +14,8 @@ export const ListMoimContainer = styled('div')`
     background-color: #fff;
     &.fixed {
         position: fixed;
-        padding: 1.5rem 3rem;
-        width: 90%;
+        padding: 1rem 1.5rem;
+        width: 100%;
         z-index: 100;
     }
     @media (max-width: 992px) {

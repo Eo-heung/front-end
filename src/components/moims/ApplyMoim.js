@@ -245,7 +245,7 @@ const ApplyMoim = () => {
         <BasicBoard>
             <StyledForm id="applyForm" onSubmit={handleSubmit}>
                 <StyledBox>
-                    <PageTitle>{`${moimData.moimTitle} 모임에 가입해요.`}</PageTitle>
+                    <PageTitle>{`"${moimData.moimTitle}" 모임에 가입해요.`}</PageTitle>
                     <div>
                         <img
                             id="previewImage"

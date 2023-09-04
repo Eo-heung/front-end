@@ -141,7 +141,7 @@ const ViewAppointment = () => {
 
     const fetchAppMembers = async () => {
         try {
-            const response = await axios.get(`${SPRING_API_URL}/appointment/${moimId}/member-list/${appBoardId}?test=memeber`, {
+            const response = await axios.get(`${SPRING_API_URL}/appointment/${moimId}/list/${appBoardId}/member-list`, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 },
@@ -166,7 +166,7 @@ const ViewAppointment = () => {
 
     const getAppBoardDetail = async () => {
         try {
-            const response = await axios.get(`${SPRING_API_URL}/appointment/${moimId}/list/${appBoardId}?test=detail`, {
+            const response = await axios.get(`${SPRING_API_URL}/appointment/${moimId}/list/${appBoardId}`, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }

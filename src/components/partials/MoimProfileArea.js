@@ -82,8 +82,6 @@ const MoimProfileArea = ({ moimId }) => {
             });
             const data = response.data.item.applicantDetails;
             setMoimProfile(data.moimProfileBase64);
-
-            console.log("data.moimProfileBase64", data.moimProfileBase64);
         } catch (err) {
             console.error("Error fetching moim profile data", err);
         }
@@ -156,7 +154,6 @@ const MoimProfileArea = ({ moimId }) => {
                 }
             }
             );
-            console.log(response.data);
 
             setIsOpen(false);
             setSelectedImagePreview(null);
