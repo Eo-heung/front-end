@@ -30,7 +30,7 @@ const Password1 = ({ handleClick }) => {
           <IconButton
             sx={{
               position: 'absolute',
-              top: "-4vh",
+              top: "-5.3vh",
               left: '0'
             }}
             onClick={() => {

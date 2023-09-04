@@ -31,7 +31,7 @@ const JoinPhoneNum2 = ({ handleClick, backClick, checkNum }) => {
     // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
     const Circle = styled('div')(({ progress }) => ({
         position: 'absolute',
-        left: `calc(${progress}% - 5px)`,
+        left: `calc(${progress}% - 15px)`,
         top: '50%',
         transform: 'translateY(-50%)',
         width: '40px',

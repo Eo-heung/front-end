@@ -30,7 +30,7 @@ function LinearProgressWithLabel() {
 
     return (
         <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-            <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
+            <Box sx={{ position: 'relative', flex: 14, marginRight: "15px" }}>
                 <LinearProgress variant="determinate" value={progress} />
                 <Circle progress={progress} />
             </Box>
@@ -43,7 +43,7 @@ function LinearProgressWithLabel() {
 
 const Circle = styled('div')(({ progress }) => ({
     position: 'absolute',
-    left: `calc(${progress}% - 5px)`,
+    left: `calc(${progress}% - 15px)`,
     top: '50%',
     transform: 'translateY(-50%)',
     width: '40px',
@@ -72,7 +72,6 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
-        console.log(password);
         setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
     };
 

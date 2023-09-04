@@ -40,7 +40,7 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
 
     const Circle = styled('div')(({ progress }) => ({
         position: 'absolute',
-        left: `calc(${progress}% - 5px)`,
+        left: `calc(${progress}% - 15px)`,
         top: '50%',
         transform: 'translateY(-50%)',
         width: '40px',
