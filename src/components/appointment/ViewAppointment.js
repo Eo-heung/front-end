@@ -10,8 +10,10 @@ import { useCookies } from 'react-cookie';
 import { SPRING_API_URL } from '../../config';
 import ListPagination from '../utils/Pagination';
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/ko';
 
+dayjs.extend(utc);
 dayjs.locale('ko');
 
 const AlertZone = styled('div')`
@@ -112,11 +114,10 @@ const ViewAppointment = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const [showMemberList, setShowMemberList] = useState(false);
-    const [memberPic, setMemberPic] = useState(null);
 
     const now = dayjs();
-    const appStart = dayjs(appBoardDetail.appStart);
-    const appEnd = dayjs(appBoardDetail.appEnd);
+    const appStart = dayjs.utc(appBoardDetail.appStart).local();
+    const appEnd = dayjs.utc(appBoardDetail.appEnd).local();
     const currentStatus = getCurrentStatus(appStart, appEnd, now);
 
     function getCurrentStatus(appStart, appEnd, now) {
@@ -153,7 +154,6 @@ const ViewAppointment = () => {
             if (response.status === 200) {
                 console.log("appMembers ", response.data.item.content);
                 setAppMembers(response.data.item.content);
-                setMemberPic(`data:image/jpeg;base64,${response.data.item.moimProfile}`)
                 setTotalPages(response.data.paginationInfo.totalPages);
 
                 const isApplied = response.data.item.content.some(member => member.appFixedUser === cookie.userId);
@@ -271,8 +271,8 @@ const ViewAppointment = () => {
                 </AppInfoRow>
                 <AppInfoRow>
                     <StyledTypography variant="body1">
-                        {appBoardDetail && appBoardDetail.appStart && dayjs(appBoardDetail.appStart).format("YY.MM.DD. a hh:mm ~ ")}
-                        {appBoardDetail && appBoardDetail.appEnd && dayjs(appBoardDetail.appEnd).format("YY.MM.DD. a hh:mm")}
+                        {appBoardDetail && appStart && appStart.format("YY.MM.DD. a hh:mm ~ ")}
+                        {appBoardDetail && appEnd && appEnd.format("YY.MM.DD. a hh:mm")}
                     </StyledTypography>
                 </AppInfoRow>
                 <BoardContent variant="body1">{appBoardDetail && appBoardDetail.appContent}</BoardContent>
@@ -284,11 +284,7 @@ const ViewAppointment = () => {
                         {appMembers.map(appMember => (
                             <div key={appMember.appFixedId}>
                                 <BoardInfoRow style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
-                                    <BoardInfo></BoardInfo>
-                                    <BoardInfo><img
-                                        src={memberPic}
-                                        alt="모임 프로필 사진"
-                                        style={{ width: "10%", height: "10%", borderRadius: "100%" }}></img> {appMember.useName}</BoardInfo>
+                                    <BoardInfo>{appMember.useName}</BoardInfo>
                                     <BoardInfo>{appMember.appState === "CONFIRM" ? "확정" : null}</BoardInfo>
                                 </BoardInfoRow>
                             </div>

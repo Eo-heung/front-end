@@ -60,13 +60,23 @@ const MoimProfileArea = ({ moimId }) => {
     const fetchMoimData = async () => {
         try {
             const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
-            const data = response.data.item.moimDTO;
+
+            console.log("모임 타이틀", response);
 
             setMoimData({
-                moimTitle: data.moimTitle
+                moimTitle: response.data.item.moimDTO.moimTitle
             });
 
-            return response.data.item;
+            const response1 = await axios.get(`${SPRING_API_URL}/moimReg/view-moim-profile/${moimId}`, {
+                headers: {
+                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
+                }
+            });
+
+            console.log(response1);
+
+            const data1 = response1.data.item.applicantDetails;
+
 
         } catch (err) {
             console.error("Error fetching moim data", err);
@@ -80,8 +90,14 @@ const MoimProfileArea = ({ moimId }) => {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }
             });
+
+            console.log(response);
+
             const data = response.data.item.applicantDetails;
+
             setMoimProfile(data.moimProfileBase64);
+
+            console.log("data.moimProfileBase64", data.moimProfileBase64);
         } catch (err) {
             console.error("Error fetching moim profile data", err);
         }
@@ -89,8 +105,8 @@ const MoimProfileArea = ({ moimId }) => {
 
     useEffect(() => {
         fetchMoimData();
-        fetchMoimProfile();
     }, [moimId]);
+
 
     const handleProfileChange = (e) => {
         if (e.target.files[0]) {
@@ -154,10 +170,12 @@ const MoimProfileArea = ({ moimId }) => {
                 }
             }
             );
+            console.log(response.data);
 
             setIsOpen(false);
-            setSelectedImagePreview(null);
-            fetchMoimProfile();
+            setSelectedImagePreview(blobToFile(response.data.item.moimProfile, 'aaa'));
+            setMoimProfile(response.data.item.moimProfile);
+            //fetchMoimProfile();
         } catch (err) {
             console.error("Error uploading updatedProfile", err);
         }

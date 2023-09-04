@@ -40,6 +40,7 @@ const MoimBoard = () => {
         "내 정보",
         "내 글 목록",
         "내 댓글 목록",
+        "만남 게시글",
         "멤버 게시글"
     ];
 
@@ -98,6 +99,7 @@ const MoimBoard = () => {
         "내 정보": "my-moim-info",
         "내 글 목록": "my-boards",
         "내 댓글 목록": "my-comments",
+        "만남 게시글": "moim-app/:appBoardId",
         "멤버 게시글": "accept-moim/:moimRegId"
     };
 
@@ -147,6 +149,7 @@ const MoimBoard = () => {
                                     || label === "내 정보"
                                     || label === "내 글 목록"
                                     || label === "내 댓글 목록"
+                                    || label === "만남 게시글"
                                     || label === "멤버 게시글") ? { display: "none" } : {}}
                             />
                         ))}

@@ -6,7 +6,7 @@ import axios from 'axios';
 import TopButton from '../utils/TopButton.js';
 import { ListMoimContainer, ListMoimCategoryContainer, ListMoimSearchContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimLink, ListMoimLoadingText, ListMoimCard, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimScrollDiv, ListMoimSearchButton, ListMoimButton } from '../utils/StyledListMoim.js';
 import { SPRING_API_URL } from '../../config';
-import dayjs from 'dayjs';
+import dayjs from "dayjs";
 import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/ko';
 
@@ -195,6 +195,50 @@ const MoimAppList = () => {
         setHideCompleted(prev => !prev);
     };
 
+    function AppItem({ app, moimId }) {
+        const appStart = dayjs.utc(app.appStart).local();
+        const appEnd = dayjs.utc(app.appEnd).local();
+        const currentStatus = getCurrentStatus(appStart, appEnd, now);
+
+        if (hideCompleted && currentStatus === "종료") {
+            return null;
+        }
+
+        return (
+            <div onClick={() => navi(`/${moimId}/moim-board/moim-app/${app.appBoardId}`)}>
+                <ListMoimCard variant="outlined">
+                    <AlertZone>
+                        <AlertContent>
+                            {currentStatus}
+                        </AlertContent>
+                    </AlertZone>
+                    <ListMoimCardInfo>
+                        <CardContent>
+                            <Typography variant="body1">{app.appType}</Typography>
+                            <Typography gutterBottom variant="h4">{app.appTitle}</Typography>
+                            <ListMoimMoimInfoRow>
+                                <h6>인원</h6>
+                                <Typography variant="body1">{app.appFixedUser || "1"}/{app.maxAppUser}</Typography>
+                                {app.appType === "OFFLINE" &&
+                                    <>
+                                        <h6>장소</h6>
+                                        <Typography variant="body1">{app.appLocation}</Typography>
+                                    </>
+                                }
+                            </ListMoimMoimInfoRow>
+                            <ListInfoRow>
+                                <h6>시작</h6>
+                                <Typography variant="body1">{appStart.format("MM.DD. a")}</Typography>
+                                <h6>종료</h6>
+                                <Typography variant="body1">{appEnd.format("MM.DD. a")}</Typography>
+                            </ListInfoRow>
+                        </CardContent>
+                    </ListMoimCardInfo>
+                </ListMoimCard>
+            </div>
+        );
+    }
+
     return (
         <>
             <ListMoimContainer className={scrollActive ? 'fixed' : ''}>
@@ -230,49 +274,7 @@ const MoimAppList = () => {
                 </ListMoimSearchContainer>
             </ListMoimContainer>
             <ListMoimScrollDiv>
-                {state.data && state.data.map(app => {
-                    const appStart = dayjs(app.appStart);
-                    const appEnd = dayjs(app.appEnd);
-                    const currentStatus = getCurrentStatus(appStart, appEnd, now);
-
-                    if (hideCompleted && currentStatus === "종료") {
-                        return null;
-                    }
-
-                    return (
-                        <div onClick={() => navi(`/${moimId}/moim-board/moim-app/${app.appBoardId}`)}>
-                            <ListMoimCard variant="outlined">
-                                <AlertZone>
-                                    <AlertContent>
-                                        {currentStatus}
-                                    </AlertContent>
-                                </AlertZone>
-                                <ListMoimCardInfo>
-                                    <CardContent>
-                                        <Typography variant="body1">{app.appType}</Typography>
-                                        <Typography gutterBottom variant="h4">{app.appTitle}</Typography>
-                                        <ListMoimMoimInfoRow>
-                                            <h6>인원</h6>
-                                            <Typography variant="body1">{app.appFixedUser || "1"}/{app.maxAppUser}</Typography>
-                                            {app.appType === "OFFLINE" &&
-                                                <>
-                                                    <h6>장소</h6>
-                                                    <Typography variant="body1">{app.appLocation}</Typography>
-                                                </>
-                                            }
-                                        </ListMoimMoimInfoRow>
-                                        <ListInfoRow>
-                                            <h6>시작</h6>
-                                            <Typography variant="body1">{appStart.format("MM.DD. a")}</Typography>
-                                            <h6>종료</h6>
-                                            <Typography variant="body1">{appEnd.format("MM.DD. a")}</Typography>
-                                        </ListInfoRow>
-                                    </CardContent>
-                                </ListMoimCardInfo>
-                            </ListMoimCard>
-                        </div>
-                    );
-                })}
+                {state.data && state.data.map(app => <AppItem key={app.appBoardId} app={app} moimId={moimId} />)}
                 {isLoading && <ListMoimLoadingText>새로운 목록을 불러오고 있어요.</ListMoimLoadingText>}
                 {isLastPage && !isLoading && <ListMoimLoadingText>모임 목록의 마지막 페이지예요.</ListMoimLoadingText>}
             </ListMoimScrollDiv>

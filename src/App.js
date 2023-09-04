@@ -44,6 +44,12 @@ import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import ViewAppointment from "./components/appointment/ViewAppointment";
 import ListMoimMember from "./components/moims/ListMoimMember";
+import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
+import 'dayjs/locale/ko';
+
+dayjs.extend(utc);
+dayjs.locale('ko');
 
 function App() {
   return (

@@ -11,8 +11,10 @@ import { SPRING_API_URL } from '../../config';
 import { ListMoimMenuItem, ListMoimSelect } from '../utils/StyledListMoim';
 import { MobileDateTimePicker } from "@mui/x-date-pickers";
 import dayjs from "dayjs";
+import utc from 'dayjs/plugin/utc';
 import 'dayjs/locale/ko';
 
+dayjs.extend(utc);
 dayjs.locale('ko');
 
 const InfoZone = styled('div')`
