@@ -97,6 +97,9 @@ const Header = ({ getFriendList, userId }) => {
 
   // 로그아웃 함수
   const logout = () => {
+    const isConfirmed = window.confirm("정말로 로그아웃 하시겠습니까?");
+    if (!isConfirmed) return;
+
     stompClient.current.send(
       `/app/online-status/${userId}`,
       {},
