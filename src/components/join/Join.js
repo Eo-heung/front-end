@@ -11,6 +11,11 @@ import secondImage from '../../public/02.png'; // 추가된 이미지 가져오�
 const Join = ({ handleClick }) => {
     const defaultTheme = createTheme();
 
+    // const viewportWidth = window.innerWidth;
+    // const viewportHeight = window.innerHeight;
+
+    // console.log(`Viewport Width: ${viewportWidth}, Viewport Height: ${viewportHeight}`);
+
     return (
         <ThemeProvider theme={defaultTheme}>
             <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
@@ -18,8 +23,8 @@ const Join = ({ handleClick }) => {
                 <Box
                     sx={{
                         position: 'relative',
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
+                        minHeight: '80vh',
+                        maxHeight: '80vh',
                         marginTop: 8,
                         display: 'flex',        // 추가: 가운데 정렬을 위한 flex 설정
                         flexDirection: 'column', // 세로 방향으로 내용 배치
@@ -29,7 +34,7 @@ const Join = ({ handleClick }) => {
                     <IconButton
                         sx={{
                             position: 'absolute',
-                            top: "-34px",
+                            top: "-4vh",
                             left: '0'
                         }}
                         onClick={() => {
@@ -38,22 +43,24 @@ const Join = ({ handleClick }) => {
                     >
                         <ArrowBackIosIcon />
                     </IconButton>
-                    <img alt='어흥 로고' src="/static/media/logo.3745e555c6be936e8008.gif" style={{ width: '150px', height: '80px', marginBottom: '20px' }} />
+                    <img alt='어흥 로고' src="/static/media/logo.3745e555c6be936e8008.gif" style={{ width: '15vw', height: 'auto', marginBottom: '0vh' }} />
+                    <hr></hr>
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥! 반가워요!
                     </Typography>
-                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black', marginBottom: '0px' }}>
+                    <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black', marginBottom: '0vh' }}>
                         당신에 대해 알려주세요!
                     </Typography>
-                    <img alt="" style={{ width: '100%', height: '100%', marginTop: '-40px' }} src={secondImage} />
+                    <img alt="" style={{ width: '100%', height: '100%', marginTop: '-5vh' }} src={secondImage} />
                 </Box>
+                <br></br>
                 <Button onClick={handleClick}
                     fullWidth
                     variant="contained"
                     color="primary"
                     sx={{
                         color: 'black',
-                        height: '44px',
+                        height: '5.7vh',
                         mb: 2,
                         fontFamily: "font-medium",
                         backgroundColor: '#FEA53D', // 평소 색상

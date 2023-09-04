@@ -165,15 +165,15 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
         <Box
           sx={{
             position: 'relative', // 추가
-            minHeight: '608.57px',
-            maxHeight: '608.57px',
+            minHeight: '80vh',
+            maxHeight: '80vh',
             marginTop: 12.5
           }}
         >
           <IconButton
             sx={{
               position: 'absolute',
-              top: "-70px",
+              top: "-9.1vh",
             }}
             onClick={() => {
               backClick();
@@ -188,7 +188,7 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
             변경할 비밀번호를 입력해주세요
           </Typography>
           <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
-            <Grid container spacing={2} style={{ marginTop: '60px' }}>
+            <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -236,7 +236,7 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
                 color="primary"
                 sx={{
                   color: 'black',
-                  height: '44px',
+                  height: '5.7vh',
                   mt: 3,
                   mb: 2,
                   fontFamily: "font-medium",
@@ -260,7 +260,7 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
           </Box>
         </Box>
         <ThemeProvider theme={theme}>
-          <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+          <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
             <LinearProgressWithLabel value={progress} />
           </Box>
         </ThemeProvider>

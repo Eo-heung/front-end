@@ -126,15 +126,15 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3, bac
                 <Box
                     sx={{
                         position: 'relative', // 추가
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
+                        minHeight: '80vh',
+                        maxHeight: '80vh',
                         marginTop: 12.5
                     }}
                 >
                     <IconButton
                         sx={{
                             position: 'absolute',
-                            top: "-70px",
+                            top: "-9.1vh",
                         }}
                         onClick={() => {
                             backClick();
@@ -149,7 +149,7 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3, bac
                         내 지역은?
                     </Typography>
                     <Box component="form" sx={{ mt: 3, width: '100%', textAlign: 'center' }}>
-                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
+                        <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
                             <Grid item xs={12} sx={{
                             }}>
 
@@ -182,10 +182,11 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3, bac
                             color="primary"
                             sx={{
                                 color: 'black',
-                                height: '44px',
+                                height: '5.7vh',
                                 fontFamily: "font-medium",
                                 mt: 3,
                                 mb: 2,
+                                marginBottom: '2vh',
                                 backgroundColor: '#FEA53D', // 평소 색상
                                 '&:hover': {
                                     backgroundColor: '#FEB158', // 호버 시 색상
@@ -194,12 +195,12 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3, bac
                         >
                             주소 검색하기
                         </Button>
-                        <Dialog open={open} onClose={handleClose} style={{ marginTop: '120px' }}>
+                        <Dialog open={open} onClose={handleClose} style={{ marginTop: '7.8vh' }}>
                             <DialogTitle>주소 검색</DialogTitle>
                             <DialogContent>
                                 <DaumPostcode
                                     autoClose
-                                    style={{ width: '400px', height: '480px' }} // 높이와 너비는 원하는 대로 조절
+                                    style={{ width: '28vw', height: '48vh' }} // 높이와 너비는 원하는 대로 조절
                                     onComplete={data => {
                                         complete(data);
                                         handleClose(); // 검색 완료 후 팝업 닫기
@@ -210,7 +211,7 @@ const JoinLocal2 = ({ handleClick, setUserAddr1, setUserAddr2, setUserAddr3, bac
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+                    <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

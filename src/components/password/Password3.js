@@ -138,15 +138,15 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
         <Box
           sx={{
             position: 'relative', // 추가
-            minHeight: '608.57px',
-            maxHeight: '608.57px',
+            minHeight: '80vh',
+            maxHeight: '80vh',
             marginTop: 12.5
           }}
         >
           <IconButton
             sx={{
               position: 'absolute',
-              top: "-70px",
+              top: "-9.1vh",
             }}
             onClick={() => {
               backClick();
@@ -162,7 +162,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
 
-            <Grid container spacing={2} style={{ marginTop: '60px' }}>
+            <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -208,7 +208,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
                 color="primary"
                 sx={{
                   color: 'black',
-                  height: '44px',
+                  height: '5.7vh',
                   fontFamily: "font-medium",
                   mt: 3,
                   mb: 2,
@@ -237,7 +237,7 @@ const Password3 = ({ handleClick, backClick, checkNum, userTel }) => {
           </Box>
         </Box>
         <ThemeProvider theme={theme}>
-          <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+          <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
             <LinearProgressWithLabel value={progress} />
           </Box>
         </ThemeProvider>

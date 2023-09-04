@@ -137,15 +137,15 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                 <Box
                     sx={{
                         position: 'relative', // 추가
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
+                        minHeight: '80vh',
+                        maxHeight: '80vh',
                         marginTop: 12.5
                     }}
                 >
                     <IconButton
                         sx={{
                             position: 'absolute',
-                            top: "-70px",
+                            top: "-9.1vh",
                         }}
                         onClick={() => {
                             backClick();
@@ -160,7 +160,7 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                         내 지역은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
+                        <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
 
                         </Grid>
 
@@ -180,9 +180,10 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                                 onClick={() => setSelectedButton('input')}
                                 sx={{
                                     color: 'black',
-                                    height: '44px',
+                                    height: '5.7vh',
                                     fontFamily: "font-medium",
                                     mt: 3,
+                                    marginBottom: '2vh',
                                     backgroundColor: '#FEA53D', // 평소 색상
                                     '&:hover': {
                                         backgroundColor: '#FEB158', // 호버 시 색상
@@ -199,7 +200,7 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                                 onClick={() => setSelectedButton('location')}
                                 sx={{
                                     color: 'black',
-                                    height: '44px',
+                                    height: '5.7vh',
                                     fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
@@ -215,7 +216,7 @@ const JoinLocal1 = ({ handleClick, doubleClick, setUserAddr1, setUserAddr2, setU
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+                    <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>
