@@ -1,7 +1,14 @@
 import React, { useState } from "react";
 import "../../css/partials/Popup.css";
 
-const Popup = ({ isOpen, onClose, handleMakefriend, children }) => {
+const Popup = ({
+  isOpen,
+  onClose,
+  handleMakefriend,
+  children,
+  opponentUserId,
+  token,
+}) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
