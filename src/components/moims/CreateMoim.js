@@ -105,7 +105,7 @@ const CreateMoim = () => {
     const [inputs, setInputs] = useState({
         moimCategory: "",
         userId: sessionStorage.getItem("userId"),
-        moimLeaderNickname: "",
+        moimNickname: "",
         moimAddr: "",
         moimTitle: "",
         maxMoimUser: "",
@@ -258,7 +258,7 @@ const CreateMoim = () => {
 
                 if (result.data.item) {
                     alert("등록이 완료되었습니다.");
-                    navi('/list-moim');
+                    navi("/moim-controller/list-moim");
                 }
             } catch (e) {
                 console.log(e);
@@ -352,7 +352,7 @@ const CreateMoim = () => {
                 </StyledBox>
                 <StyledButton type="submit" variant="contained" size="large">모임 등록</StyledButton>
             </StyledForm>
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
+            <StyledLink to="/moim-controller/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };

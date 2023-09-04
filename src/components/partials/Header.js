@@ -33,8 +33,6 @@ const Header = ({ getFriendList, userId }) => {
   useEffect(() => {
     console.log(userId);
 
-    console.log("--------------------------------");
-
     if (!sessionStorage.getItem("ACCESS_TOKEN")) {
       navi("/login");
       return; // 이후 로직 실행을 중단
@@ -93,7 +91,7 @@ const Header = ({ getFriendList, userId }) => {
 
   const menuList = [
     { text: "랜덤채팅", link: "/chatting" },
-    { text: "소모임", link: "/list-moim" },
+    { text: "소모임", link: "/moim-controller" },
     { text: "어흥톡", link: "/talk" },
   ];
 

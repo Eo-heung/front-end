@@ -2,23 +2,47 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { CardContent, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import TopButton from '../utils/TopButton.js';
+import { styled } from '@mui/system';
 import { throttle } from 'lodash';
-import { ListMoimContainer, ListMoimSearchContainer, ListMoimCategoryContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton, ListMoimPageTitle, ListMoimLink, ListMoimButton, ListMoimScrollDiv, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink, ListMoimAd, ListMoimAdContent } from '../utils/StyledListMoim.js';
+import { ListMoimSearchContainer, ListMoimTextField, ListMoimSearchButton, ListMoimLink, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink } from '../utils/StyledListMoim.js';
 import { SPRING_API_URL } from '../../config';
 
-const ListMoim = () => {
+export const MyMoimContainer = styled('div')`
+    position: fixed;
+    top: 160px;
+    right: 0;
+    left: 350px;
+    padding: 1rem 1.5rem;
+    height: 90px;
+    width: 100%;
+    z-index: 1001;
+    background-color: #fff;
+    &.fixed {
+        position: fixed;
+        padding: 1.5rem 3rem;
+        width: 90%;
+        z-index: 100;
+    }
+    @media (max-width: 992px) {
+        left: 0;
+    }
+`;
+
+export const MymoimScrollDiv = styled('div')`
+    margin-top: 75px;
+    margin-left: 1rem;
+    width: 100%;
+`;
+
+const Mymoim = () => {
     const [data, setData] = useState([]);
     const [isLoading, setIsLoading] = useState(false);
     const [page, setPage] = useState(1);
     const [isLastPage, setIsLastPage] = useState(false);
 
-    const [searchKeyword, setSearchKeyword] = useState("");
-    const [searchType, setSearchType] = useState("all");
-    const [category, setCategory] = useState("전체");
+    const [keyword, setKeyword] = useState("");
     const [scrollActive, setScrollActive] = useState(false);
     const [orderBy, setOrderBy] = useState("descending");
-
-    const [hoveredButton, setHoveredButton] = useState(null);
 
     const scrollHandler = useMemo(() =>
         throttle(() => {
@@ -42,24 +66,6 @@ const ListMoim = () => {
             }
         }, 500), [page]);
 
-    const renderCategoryButton = (label) => (
-        <Button
-            size="medium"
-            variant={category === label || hoveredButton === label ? 'contained' : 'outlined'}
-            style={{
-                backgroundColor: (category === label || hoveredButton === label) ? '#FCBE71' : '#fff',
-                borderColor: '#FCBE71',
-                color: (category === label || hoveredButton === label) ? '#fff' : '#000',
-                fontWeight: category === label ? 'bold' : 'normal',
-            }}
-            onClick={() => setCategory(label)}
-            onMouseEnter={() => setHoveredButton(label)}
-            onMouseLeave={() => setHoveredButton(null)}
-        >
-            {label}
-        </Button>
-    );
-
     useEffect(() => {
         fetchData();
         window.addEventListener('scroll', scrollHandler);
@@ -68,26 +74,16 @@ const ListMoim = () => {
         };
     }, [page, orderBy]);
 
-    useEffect(() => {
-        fetchData();
-    }, [category]);
-
     const fetchData = () => {
         setIsLoading(true);
 
-        const apiEndPoint = orderBy === 'ascending'
-            ? `${SPRING_API_URL}/moim/list-moim/asc`
-            : `${SPRING_API_URL}/moim/list-moim/desc`;
-
-        axios.post(apiEndPoint, {}, {
+        axios.post(`${SPRING_API_URL}/moim/my-moim-list`, {}, {
             headers: {
                 Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
             },
             params: {
                 page: page - 1,
-                category: category,
-                searchKeyword: searchKeyword,
-                searchType: searchType,
+                keyword: keyword,
                 orderBy: orderBy
             }
         })
@@ -126,58 +122,24 @@ const ListMoim = () => {
         }
     };
 
-    const [isHidden, setIsHidden] = useState(false);
-
-    const handleAdClick = () => {
-        setIsHidden(true);
-    };
-
     return (
         <>
-            <ListMoimContainer className={scrollActive ? 'fixed' : ''}>
-                {/* <ListMoimPageTitle>새로운 모임 목록</ListMoimPageTitle> */}
-                <ListMoimCategoryContainer>
-                    {renderCategoryButton("전체")}
-                    {renderCategoryButton("인문학/책")}
-                    {renderCategoryButton("운동")}
-                    {renderCategoryButton("요리/맛집")}
-                    {renderCategoryButton("공예/만들기")}
-                    {renderCategoryButton("원예")}
-                    {renderCategoryButton("동네친구")}
-                    {renderCategoryButton("음악/악기")}
-                    {renderCategoryButton("반려동물")}
-                    {renderCategoryButton("여행")}
-                    {renderCategoryButton("문화/여가")}
-                </ListMoimCategoryContainer>
+            <MyMoimContainer className={scrollActive ? 'fixed' : ''}>
                 <ListMoimSearchContainer>
                     <ListMoimTextField
                         variant="outlined"
                         placeholder="검색어를 입력하세요."
-                        onChange={(e) => setSearchKeyword(e.target.value)}
+                        onChange={(e) => setKeyword(e.target.value)}
                         onKeyDown={handleKeyDown} />
-                    <ListMoimSelect value={searchType} displayEmpty size="large" onChange={(e) => setSearchType(e.target.value)}>
-                        <ListMoimMenuItem value="all">전체</ListMoimMenuItem>
-                        <ListMoimMenuItem value="title">제목</ListMoimMenuItem>
-                        <ListMoimMenuItem value="content">내용</ListMoimMenuItem>
-                        <ListMoimMenuItem value="nickname">작성자</ListMoimMenuItem>
-                    </ListMoimSelect>
                     <ListMoimSearchButton variant="contained" size="large" onClick={handleSearch}>검색</ListMoimSearchButton>
                     <ListMoimSearchButton variant="contained" size="large" onClick={handleOrderBy}>
-                        {orderBy === 'descending' ? '등록순' : '최신순'}
+                        {orderBy === 'ascending' ? '최신순' : '가입순'}
                     </ListMoimSearchButton>
-                    <ListMoimButton component={ListMoimStyledLink} to="/create-moim" variant="contained" size="large">
-                        새로운 모임 만들기
-                    </ListMoimButton>
                 </ListMoimSearchContainer>
-            </ListMoimContainer>
-            <ListMoimScrollDiv>
-                <ListMoimAd isHidden={isHidden} onClick={handleAdClick}>
-                    <ListMoimAdContent>
-                        같은 관심사를 가진 또래들과 어흥 해보세요!
-                    </ListMoimAdContent>
-                </ListMoimAd>
+            </MyMoimContainer>
+            <MymoimScrollDiv>
                 {data && data.map(moim => (
-                    <ListMoimLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
+                    <ListMoimLink to={`/${moim.moimId}/moim-board`} key={moim.moimId}>
                         <ListMoimCard variant="outlined">
                             <ListMoimCardMedia
                                 component="img"
@@ -200,10 +162,10 @@ const ListMoim = () => {
                 ))}
                 {isLoading && <ListMoimLoadingText>새로운 목록을 불러오고 있어요.</ListMoimLoadingText>}
                 {isLastPage && !isLoading && <ListMoimLoadingText>모임 목록의 마지막 페이지예요.</ListMoimLoadingText>}
-            </ListMoimScrollDiv>
+            </MymoimScrollDiv>
             <TopButton />
         </>
     );
 };
 
-export default ListMoim;
+export default Mymoim;

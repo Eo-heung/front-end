@@ -66,13 +66,13 @@ const ViewMoim = () => {
     const { moimId } = useParams();
     const [id, setId] = useState(null);
     const [moimPic, setMoimPic] = useState(null);
-    const [cookie] = useCookies('userNickname');
+    const [cookie] = useCookies("userId");
     const [status, setStatus] = useState({
         status: "",
         moimRegId: ""
     });
 
-    const isCurrentUserTheHost = moimDetail.moimNickname === cookie.userNickname;
+    const isCurrentUserTheHost = moimDetail && moimDetail.userId === cookie.userId;
     const isWaiting = status.status === "WAITING";
     const isApproved = status.status === "APPROVED";
 
@@ -85,7 +85,7 @@ const ViewMoim = () => {
             try {
                 const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
 
-                console.log(response.data);
+                console.log("response.data", response.data);
 
                 if (response.data) {
                     setMoimDetail(response.data.item.moimDTO);
@@ -106,7 +106,7 @@ const ViewMoim = () => {
 
             if (response.status === 200) {
                 alert("모집글이 삭제되었습니다.");
-                window.location.href = '/list-moim';
+                window.location.href = "/moim-controller/list-moim";
             }
         } catch (error) {
             console.error("Failed to delete moim:", error);
@@ -150,7 +150,7 @@ const ViewMoim = () => {
 
             if (response.data.statusCode === 200) {
                 alert("가입 신청을 취소했어요.");
-                navi("/list-moim");
+                navi("/moim-controller/list-moim");
             }
         } catch (e) {
             console.error("Error Canceling moim application", e);
@@ -196,7 +196,7 @@ const ViewMoim = () => {
                             <StyledButton variant="contained" size="large" onClick={handleDeleteClick}>삭제</StyledButton>
                         </ButtonRow>
             }
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
+            <StyledLink to="/moim-controller/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };
