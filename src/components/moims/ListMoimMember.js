@@ -14,7 +14,7 @@ const StyledContainer = styled('div')`
     right: 0;
     left: 350px;
     padding: 1rem 1.5rem;
-    height: 160px;
+    height: 140px;
     width: 100%;
     z-index: 1001;
     background-color: #fff;
@@ -33,44 +33,6 @@ const SearchContainer = styled('div')`
     display: flex;
     align-items: center;
     gap: 10px;
-`;
-
-const StyledTextField = styled(TextField)`
-    width: 280px;
-    & .MuiOutlinedInput-root {
-        &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #FCBE71;
-        }
-        &.Mui-focused .MuiInputLabel-root {
-            color: #FCBE71;
-        }
-    }
-`;
-
-const StyledSelect = styled(Select)`
-    width: 120px;
-    &&.MuiOutlinedInput-root {
-        &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #FCBE71;
-        }
-        &.Mui-focused .MuiInputLabel-root {
-            color: #FCBE71;
-        }
-    }
-
-    && .MuiMenu-paper {
-        .MuiListItem-root:hover {
-            background-color: #FCBE71;
-            color: white;
-        }
-    }
-`;
-
-const StyledMenuItem = styled(MenuItem)`
-    &&:hover {
-        background-color: #FCBE71;
-        color: white;
-    }
 `;
 
 const SearchButton = styled(Button)`
@@ -121,7 +83,6 @@ const StyledCard = styled(Card)`
     width: 100%;
     background-color: #fff;
     color: #000;
-    cursor: pointer;
 `;
 
 const StyledCardContent = styled(CardContent)`
@@ -142,21 +103,6 @@ const ApplicantInfo = styled(Typography)`
     color: ${grey[600]};
 `;
 
-const ButtonRow = styled('div')`
-    display: flex;
-    justify-content: center;
-    margin: auto;
-    gap: 30px;
-`;
-
-const StyledButton = styled(Button)`
-    background-color: #FCBE71;
-    &:hover {
-        background-color: #FCBE71;
-        color: #fff;
-    }
-`;
-
 const ListMoimMember = () => {
     const navi = useNavigate();
 
@@ -171,8 +117,6 @@ const ListMoimMember = () => {
 
     const [applicantList, setApplicantList] = useState([]);
     const [scrollActive, setScrollActive] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState("");
-    const [searchType, setSearchType] = useState("all");
     const [orderBy, setOrderBy] = useState("descending");
 
     const scrollHandler = useMemo(() =>
@@ -219,20 +163,6 @@ const ListMoimMember = () => {
         };
     }, [moimId]);
 
-    const handleOrderBy = () => {
-        setPage(1);
-        setApplicantList([]);
-        setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
-        fetchData();
-    };
-
-    const handleSearch = () => {
-        setPage(1);
-        setApplicantList([]);
-        setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
-        fetchData();
-    }
-
     const isMounted = useRef(true);
 
     useEffect(() => {
@@ -260,25 +190,16 @@ const ListMoimMember = () => {
         }
     };
 
-    console.log(sessionStorage.getItem("ACCESS_TOKEN"));
-
-    const fetchApplicantList = async (moimId) => {
+    const fetchMemberList = async (moimId) => {
         try {
             setIsLoading(true);
 
-            const apiEndPoint = orderBy === 'ascending'
-                ? `${SPRING_API_URL}/moimReg/get-applicant-list/asc/${moimId}`
-                : `${SPRING_API_URL}/moimReg/get-applicant-list/desc/${moimId}`;
-
-            const response = await axios.post(apiEndPoint, {}, {
+            const response = await axios.get(`${SPRING_API_URL}/moimReg/member-list/${moimId}`, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 },
                 params: {
-                    page: page - 1,
-                    searchKeyword: searchKeyword,
-                    searchType: searchType,
-                    orderBy: orderBy
+                    page: page - 1
                 }
             });
 
@@ -286,7 +207,7 @@ const ListMoimMember = () => {
 
             if (response.data) {
                 setIsLastPage(response.data.lastPage);
-                return response.data.items;
+                return response.data.item.content;
             }
             return [];
         } catch (e) {
@@ -308,7 +229,7 @@ const ListMoimMember = () => {
 
     const fetchData = async () => {
         await fetchMoimData();
-        const applicantsFromServer = await fetchApplicantList(moimId);
+        const applicantsFromServer = await fetchMemberList(moimId);
         setApplicantList(applicantsFromServer);
     };
 
@@ -317,15 +238,6 @@ const ListMoimMember = () => {
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>{`"${moimData.moimTitle}" 가입자 목록`}</PageTitle>
                 <SearchContainer>
-                    <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
-                    <StyledSelect value={searchType} displayEmpty onChange={(e) => setSearchType(e.target.value)}>
-                        <StyledMenuItem value="all">전체</StyledMenuItem>
-                        <StyledMenuItem value="nickname">신청자</StyledMenuItem>
-                    </StyledSelect>
-                    <SearchButton variant="contained" size="large" onClick={handleSearch}>검색</SearchButton>
-                    <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
-                        {orderBy === 'ascending' ? '최신순' : '등록순'}
-                    </SearchButton>
                     {userRole.isLeader &&
                         <SearchButton variant="contained" onClick={() => navi(`/${moimId}/moim-board/accept-moim`)}>신청자 목록</SearchButton>
                     }
@@ -336,11 +248,11 @@ const ListMoimMember = () => {
                     applicantList.map(applicant => {
                         if (applicant.regStatus === "APPROVED" || applicant.regStatus === "LEADER") {
                             return (
-                                <div onClick={() => navi(`/${moimId}/moim-board/accept-moim/${applicant.moimRegId}`)}>
+                                <div>
                                     <StyledCard variant="outlined">
                                         <StyledCardMedia
                                             component="img"
-                                            image={applicant.moimProfile && `data:image/jpeg;base64,${applicant.moimProfile}`}
+                                            image={applicant.moimProfileBase64 && `data:image/jpeg;base64,${applicant.moimProfileBase64}`}
                                             alt="모임 프로필 사진"
                                         />
                                         <StyledCardContent>
@@ -355,9 +267,9 @@ const ListMoimMember = () => {
                                                 </ApplicantInfo>
                                             </ApplicantInfoBox>
                                             <ApplicantInfoBox border={0} my={2}>
-                                                <ApplicantTitle>가입 상태</ApplicantTitle>
+                                                <ApplicantTitle>등급</ApplicantTitle>
                                                 <ApplicantInfo variant="body1">
-                                                    {applicant.regStatus === "APPROVED" ? "가입" : applicant.regStatus}
+                                                    {applicant.regStatus === "LEADER" ? "모임장" : "모임원"}
                                                 </ApplicantInfo>
                                             </ApplicantInfoBox>
                                         </StyledCardContent>
