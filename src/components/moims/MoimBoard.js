@@ -41,7 +41,8 @@ const MoimBoard = () => {
         "내 글 목록",
         "내 댓글 목록",
         "만남 게시글",
-        "멤버 게시글"
+        "멤버 게시글",
+        "채팅"
     ];
 
     const location = useLocation();
@@ -100,7 +101,7 @@ const MoimBoard = () => {
         "내 글 목록": "my-boards",
         "내 댓글 목록": "my-comments",
         "만남 게시글": "moim-app/:appBoardId",
-        "멤버 게시글": "accept-moim/:moimRegId"
+        "신청 게시글": "accept-moim/:moimRegId"
     };
 
     useEffect(() => {
