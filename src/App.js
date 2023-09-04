@@ -57,6 +57,10 @@ function App() {
         <LocalizationProvider dateAdapter={AdapterDayjs}>
           <Routes>
             <Route path="/" element={<Layout></Layout>}>
+              <Route
+                path="/talk"
+                element={<ChattingWithFriend></ChattingWithFriend>}
+              ></Route>
               <Route path="/charge" element={<Payment></Payment>}></Route>
               <Route index element={<MainContent></MainContent>}></Route>
               <Route
@@ -85,7 +89,6 @@ function App() {
                 path="/multichattingstart"
                 element={<ButtonWithNewWindow></ButtonWithNewWindow>}
               />
-              <Route path="/charge" element={<Charge></Charge>}></Route>
               <Route
                 path="/modify-moim/:moimId"
                 element={<ModifyMoim></ModifyMoim>}
@@ -144,10 +147,7 @@ function App() {
               path="/multichattingstart"
               element={<ButtonWithNewWindow></ButtonWithNewWindow>}
             />
-            <Route
-              path="/talk"
-              element={<ChattingWithFriend></ChattingWithFriend>}
-            ></Route>
+
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
             <Route
               path="/modify-moim/:moimId"
@@ -165,27 +165,26 @@ function App() {
               path="/list-accept-moim/:moimId"
               element={<ListAcceptMoim></ListAcceptMoim>}
             ></Route>
-          </Route>
-          <Route
-            path="/multichatting"
-            element={<MultiChatting></MultiChatting>}
-          ></Route>
+            <Route
+              path="/multichatting"
+              element={<MultiChatting></MultiChatting>}
+            ></Route>
 
-          <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
-          <Route path="/login" element={<Login></Login>}></Route>
-          <Route path="/oauth" element={<NaverHandler></NaverHandler>}></Route>
-          <Route path="/signup" element={<SignUp></SignUp>}></Route>
-          <Route path="/findpassword" element={<Password></Password>}></Route>
+            <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
+            <Route path="/login" element={<Login></Login>}></Route>
+            <Route path="/oauth" element={<NaverHandler></NaverHandler>}></Route>
+            <Route path="/signup" element={<SignUp></SignUp>}></Route>
+            <Route path="/findpassword" element={<Password></Password>}></Route>
 
-          <Route
-            path="/chattingcharge"
-            element={<ChattingPayment></ChattingPayment>}
-          ></Route>
-        </Routes>
-      </LocalizationProvider>
-    </CookiesProvider>
-  </>
-);
+            <Route
+              path="/chattingcharge"
+              element={<ChattingPayment></ChattingPayment>}
+            ></Route>
+          </Routes>
+        </LocalizationProvider>
+      </CookiesProvider>
+    </>
+  );
 }
 
 export default App;
