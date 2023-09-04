@@ -8,6 +8,8 @@ import styled from "styled-components";
 import { SPRING_API_URL } from "../../config";
 import "../../css/partials/Header.css";
 import logo from "../../public/logo.gif";
+import { Remove } from "@mui/icons-material";
+import { useCookies } from "react-cookie";
 
 const StyledTypography = styled(Typography)`
   color: #000;
@@ -24,7 +26,7 @@ const Header = ({ getFriendList, userId }) => {
   const menuRef = useRef();
   const [isLogout, setIsLogout] = useState(false);
   const navi = useNavigate();
-
+  const [cookies, setCookie, removeCookie] = useCookies();
   // online, offline 기능 구현
   const stompClient = useRef(null);
 
@@ -90,6 +92,7 @@ const Header = ({ getFriendList, userId }) => {
   const menuList = [
     { text: "랜덤채팅", link: "/chatting" },
     { text: "소모임", link: "/moim-controller" },
+    { text: "어흥톡", link: "/talk" },
   ];
 
   // 로그아웃 함수
@@ -99,9 +102,13 @@ const Header = ({ getFriendList, userId }) => {
       {},
       JSON.stringify({ status: "offline" })
     );
-
+    removeCookie('userId')
+    removeCookie('userNickname')
+    removeCookie('userAddr3')
+    removeCookie('userGender')
     sessionStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
+    sessionStorage.removeItem("userId");
     setIsLogout(true);
     alert("로그아웃 성공");
   };

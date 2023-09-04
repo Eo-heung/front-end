@@ -47,9 +47,10 @@ const Nav = ({ getFriendList, friends }) => {
     const friend = props.friend;
 
     // 글자 수가 10자 초과일 때 '...'을 추가하는 로직
-    const displayName = friend.user_name.length > 10
-      ? friend.user_name.substring(0, 10) + "..."
-      : friend.user_name;
+    const displayName =
+      friend.user_name.length > 10
+        ? friend.user_name.substring(0, 10) + "..."
+        : friend.user_name;
 
     return (
       <>
@@ -58,10 +59,15 @@ const Nav = ({ getFriendList, friends }) => {
             <img
               style={{
                 border: "2px solid white",
-                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"
-                  }`,
+                boxShadow: `0 0 5px 2px ${
+                  friend.online ? "#05FF00" : "#B6B6B6"
+                }`,
               }}
-              src={friend.profile && `data:image/jpeg;base64,${friend.profile}` || basicProfile}
+              src={
+                (friend.profile &&
+                  `data:image/jpeg;base64,${friend.profile}`) ||
+                basicProfile
+              }
               alt="프로필 사진"
             />
           </td>

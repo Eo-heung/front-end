@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
+import { useNavigate } from "react-router-dom";
 import io from "socket.io-client";
 import axios from "axios";
 import MicIcon from "@mui/icons-material/Mic";
@@ -6,18 +7,19 @@ import MicOffIcon from "@mui/icons-material/MicOff";
 import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
 import DesktopAccessDisabledIcon from "@mui/icons-material/DesktopAccessDisabled";
 import Button from "@mui/material/Button";
-import EoheungImg from "../../css/partials/랜덤.png";
+import EoheungImg from "../../css/partials/랜덤.gif";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
-import "../../css/partials/CameraChatting.css";
 import { Link } from "react-router-dom";
 import GroupAddIcon from "@mui/icons-material/GroupAdd";
 import NotificationImportantIcon from "@mui/icons-material/NotificationImportant";
 import PopupSiren from "../popup/PopupSiren";
 import PopupFriend from "../popup/PopupFriend";
 import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../config";
+import MeetingRoomIcon from "@mui/icons-material/MeetingRoom";
+import "../../css/partials/CameraChatting.css";
 
-const CameraChatting = ({ selectedCamera, selectedMic }) => {
+const CameraChatting = ({ selectedCamera, selectedMic, selectedGender }) => {
   const [isMuted, setIsMuted] = useState(false);
   const [isCameraOff, setIsCameraOff] = useState(false);
   const [connectionStatus, setConnectionStatus] = useState("연결되지 않음");
@@ -51,6 +53,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
 
   const textChatVisibleRef = useRef(textChatVisible);
   const token = sessionStorage.getItem("ACCESS_TOKEN");
+  const navigate = useNavigate();
 
   const chatIcon = textChatVisible ? (
     <SpeakerNotesOffIcon />
@@ -129,14 +132,39 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
       setOpponentUserId(opponentUserId);
 
       // 필요하다면 다른 상태에 상대방의 닉네임을 저장할 수도 있습니다.
-      // 예: setOpponentNickname(opponentNickname);
     });
 
     socket.current.on("welcome", async () => {
       const currentTime = new Date();
-      setConnectedTime(currentTime);
+      const options = {
+        year: "numeric",
+        month: "2-digit",
+        day: "2-digit",
+        hour: "2-digit",
+        minute: "2-digit",
+        second: "2-digit",
+        hour12: false, // 24시간 형식으로 설정
+        timeZone: "Asia/Seoul",
+      };
 
-      console.log("Current Time:", currentTime);
+      const koreanTimeString = currentTime
+        .toLocaleString("ko-KR", options)
+        .replace(/\./g, "")
+        .replace(/ /g, " ")
+        .replace(/: /g, " ")
+        .replace(/시 /g, ":")
+        .replace(/분 /g, ":")
+        .replace(/초/, "");
+      const formattedTime = `${koreanTimeString.substr(
+        0,
+        4
+      )}년 ${koreanTimeString.substr(5, 2)}월 ${koreanTimeString.substr(
+        8,
+        2
+      )}일 ${koreanTimeString.substr(11)}`;
+
+      setConnectedTime(formattedTime);
+
       console.log("welcome");
 
       myDataChannel.current =
@@ -328,12 +356,15 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   const handleStartRandomChat = async () => {
     const nickname = getCookie("userNickname");
     const userId = getCookie("userId");
+    const userGender = getCookie("userGender");
 
     fetchNickname(); // 여기서 닉네임을 가져옴
 
     socket.current.emit("request_random_chat", {
       nickname: userNickname,
       userId: userId,
+      userGender: userGender,
+      selectedGender: selectedGender,
     });
 
     setConnectionStatus("상대 찾는 중 ...");
@@ -477,19 +508,28 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
     imagePreviews
   ) => {
     try {
-      const url = `${SPRING_API_URL}/siren/makefriend/${opponentUserId}`;
+      const url = `${SPRING_API_URL}/siren/report/${opponentUserId}`;
       const config = {
         headers: {
           Authorization: `Bearer ${token}`,
         },
       };
       const bodyData = {
-        reportType: reportType,
-        reportContent: reportContent,
-        imagePreviews: imagePreviews,
-        connectedTime: connectedTime,
+        singoCategoryCode: reportType,
+        singoContent: reportContent,
+        singoDate: connectedTime,
+        singoMsg: messages,
       };
-      const response = await axios.post(url, bodyData, config); // null은 body 파라미터로, 이 API에서는 별도의 body가 필요하지 않기 때문에 null로 설정
+      console.log(bodyData);
+      const formData = new FormData();
+      formData.append("singoImgA", imagePreviews[0]); // Assuming imagePreviews contains the file data
+      formData.append("singoImgB", imagePreviews[1]);
+      formData.append("singoImgC", imagePreviews[2]);
+      formData.append("sirenDTO", JSON.stringify(bodyData));
+
+      const response = await axios.post(url, formData, config);
+      console.log(response);
+
       if (response.data.statusCode === 200) {
         const msg = response.data.item.msg;
         console.log(msg);
@@ -518,24 +558,56 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
   return (
     <>
       <div id="linkbutton">
-        <Link className="toplink" onClick={handleOpenSirenPopup}>
-          <NotificationImportantIcon
-            style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
+        <Link
+          to="#"
+          className="toplink"
+          onClick={(e) => {
+            e.preventDefault();
+            window.location.reload();
+          }}
+          style={{
+            textDecoration: "none",
+            color: "#333",
+            paddingInlineStart: "2vw",
+          }}
+        >
+          <MeetingRoomIcon
+            style={{ verticalAlign: "middle", color: "#fcbe71" }}
           />
-          신고하기
+          뒤로가기
         </Link>
-        <Link className="toplink" onClick={handleOpenFriendPopup}>
-          <GroupAddIcon
+
+        {/* 나머지 링크들 */}
+        <div style={{ display: "flex" }}>
+          <Link className="toplink" onClick={handleOpenSirenPopup}>
+            <NotificationImportantIcon
+              style={{ verticalAlign: "middle", color: "rgb(244, 148, 148)" }}
+            />
+            신고하기
+          </Link>
+          <Link
+            className="toplink"
+            onClick={handleOpenFriendPopup}
             style={{
-              verticalAlign: "middle",
-              color: "#b7d4fa",
-              marginRight: "5px",
+              paddingInlineEnd: "1.5vw",
             }}
-          />
-          친구추가{opponentUserId}
-        </Link>
+          >
+            <GroupAddIcon
+              style={{
+                verticalAlign: "middle",
+                color: "#b7d4fa",
+              }}
+            />
+            친구추가{opponentUserId}
+          </Link>
+        </div>
       </div>
-      <PopupSiren isOpen={isSirenPopupOpen} onClose={handleCloseSirenPopup}>
+
+      <PopupSiren
+        isOpen={isSirenPopupOpen}
+        onClose={handleCloseSirenPopup}
+        handleSubmitSiren={handleSubmitSiren}
+      >
         <h2>신고 하기</h2>
         <p>"{opponentNickname}"님을 신고하시겠어요?</p>
       </PopupSiren>
@@ -545,8 +617,7 @@ const CameraChatting = ({ selectedCamera, selectedMic }) => {
         onClose={handleCloseFriendPopup}
         handleMakefriend={handleMakefriend}
       >
-        <h2>친구 추가{opponentUserId}</h2>
-        <p>곶감 5개 주면 안 잡아먹지~~~</p>
+        <h2 style={{ marginBottom: "10rem" }}>친구 추가{opponentUserId}</h2>
         <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
       </PopupFriend>
 

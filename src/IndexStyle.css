@@ -398,6 +398,7 @@ table tr:last-child td {
 .sb-nav-fixed #layoutSidenav #layoutSidenav_content {
   margin-top: 12vh;
   padding-left: 280px;
+  height: 100%;
 }
 
 #layoutSidenav {

@@ -20,11 +20,10 @@ import MainContent from "./components/partials/MainContent";
 import KakaoHandler from "./components/socialLogin/KakaoHandler";
 import NaverHandler from "./components/socialLogin/NaverHandler";
 import BasicBoard from "./components/utils/BasicBoard";
-import Charge from "./components/charge/Payment";
-
 import ButtonWithNewWindow from "./components/multichat/components/ButtonWithNewWindow";
 import MultiChatting from "./components/multichat/components/VideoRoomComponent";
 import ChattingPayment from "./components/chatting/ChattingPayment";
+import ChattingWithFriend from "./components/chatting/ChattingWithFriend";
 import MoimController from "./components/moims/MoimController";
 import MoimBoard from "./components/moims/MoimBoard";
 import FreeBoardList from "./components/moims/FreeBoardList";
@@ -138,26 +137,55 @@ function App() {
               </Route>
             </Route>
             <Route
-              path="/multichatting"
-              element={<MultiChatting></MultiChatting>}
-            ></Route>
-            <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
-            <Route path="/login" element={<Login></Login>}></Route>
-            <Route path="/oauth" element={<NaverHandler></NaverHandler>}></Route>
-            <Route path="/signup" element={<SignUp></SignUp>}></Route>
-            <Route path="/findpassword" element={<Password></Password>}></Route>
-
-
-
+              path="/textchatting"
+              element={<TextChatting></TextChatting>}
+            />
             <Route
-              path="/chattingcharge"
-              element={<ChattingPayment></ChattingPayment>}
+              path="/multichattingstart"
+              element={<ButtonWithNewWindow></ButtonWithNewWindow>}
+            />
+            <Route
+              path="/talk"
+              element={<ChattingWithFriend></ChattingWithFriend>}
             ></Route>
-          </Routes>
-        </LocalizationProvider>
-      </CookiesProvider>
-    </>
-  );
+            <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
+            <Route
+              path="/modify-moim/:moimId"
+              element={<ModifyMoim></ModifyMoim>}
+            ></Route>
+            <Route
+              path="/apply-moim/:moimId"
+              element={<ApplyMoim></ApplyMoim>}
+            ></Route>
+            <Route
+              path="/accept-moim/:moimId/:moimRegId"
+              element={<AcceptMoim></AcceptMoim>}
+            ></Route>
+            <Route
+              path="/list-accept-moim/:moimId"
+              element={<ListAcceptMoim></ListAcceptMoim>}
+            ></Route>
+          </Route>
+          <Route
+            path="/multichatting"
+            element={<MultiChatting></MultiChatting>}
+          ></Route>
+
+          <Route path="/auth" element={<KakaoHandler></KakaoHandler>}></Route>
+          <Route path="/login" element={<Login></Login>}></Route>
+          <Route path="/oauth" element={<NaverHandler></NaverHandler>}></Route>
+          <Route path="/signup" element={<SignUp></SignUp>}></Route>
+          <Route path="/findpassword" element={<Password></Password>}></Route>
+
+          <Route
+            path="/chattingcharge"
+            element={<ChattingPayment></ChattingPayment>}
+          ></Route>
+        </Routes>
+      </LocalizationProvider>
+    </CookiesProvider>
+  </>
+);
 }
 
 export default App;
