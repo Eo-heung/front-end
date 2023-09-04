@@ -2,7 +2,7 @@ import React, { useState, useEffect } from "react";
 import "../../css/partials/Popup.css";
 import { TextField, Box } from "@mui/material";
 import { ThemeProvider, createTheme } from "@mui/material/styles";
-
+import singo from "../../public/신고2.png";
 const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
@@ -46,12 +46,14 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
 
   if (!isOpen) return null;
 
-  // 이미지 파일 선택시 핸들러
   const handleImageChange = (e) => {
-    const files = Array.from(e.target.files).slice(
-      0,
-      3 - selectedImages.length
-    ); // 3개를 초과하지 않게 자르기
+    const files = Array.from(e.target.files);
+
+    if (selectedImages.length + files.length > 3) {
+      alert("최대 3개의 이미지만 첨부할 수 있습니다.");
+      e.target.value = ""; // 선택된 파일을 초기화합니다.
+      return;
+    }
 
     const updatedFiles = [...selectedImages, ...files];
     setSelectedImages(updatedFiles);
@@ -67,7 +69,6 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
       reader.readAsDataURL(file);
     });
   };
-
   const theme = createTheme({
     palette: {
       primary: {
@@ -95,7 +96,15 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
     },
     // 필요한 경우 기타 테마 설정을 여기에 추가하십시오.
   });
+  const handleImageDelete = (idx) => {
+    const updatedImages = [...selectedImages];
+    updatedImages.splice(idx, 1);
+    setSelectedImages(updatedImages);
 
+    const updatedPreviews = [...imagePreviews];
+    updatedPreviews.splice(idx, 1);
+    setImagePreviews(updatedPreviews);
+  };
   return (
     <ThemeProvider theme={theme}>
       <div
@@ -105,12 +114,27 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
       >
         <div
           className="popup-content"
-          style={{ transform: `translate(${position.x}px, ${position.y}px)` }}
+          style={{
+            transform: `translate(${position.x}px, ${position.y}px)`,
+            minHeight: "500px", // 팝업 세로 길이를 조절
+          }}
           onMouseDown={handleMouseDown}
         >
           {children}
-
-          <div class="select-container">
+          <img
+            src={singo}
+            alt="singo"
+            style={{
+              position: "absolute",
+              right: "10px",
+              top: "10px",
+              width: "40%",
+              height: "40%",
+              zIndex: 1, // 이미지가 다른 요소들 위에 표시되도록 z-index 추가
+            }}
+          />
+          <div class="select-container" style={{ marginTop: "20%" }}>
+            {/* 이미지 아래로 select-container를 이동시키기 위해 marginTop 추가 */}
             <select
               class="styled-select"
               value={reportType}
@@ -130,7 +154,8 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
               variant="outlined"
               multiline
               rows={4}
-              style={{ marginBottom: "10px" }}
+              style={{ marginBottom: "10px", marginTop: "20px" }}
+              // 이미지와 겹치지 않게 위로 여백 추가
               label="신고 내용"
               value={reportContent}
               onChange={handleContentChange}
@@ -139,8 +164,7 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
               type="file"
               onChange={handleImageChange}
               style={{ marginBottom: "10px" }}
-              accept="image/*"
-              multiple // 여러 파일 선택 허용
+              multiple
             />
             <div
               style={{
@@ -150,24 +174,43 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
               }}
             >
               {imagePreviews.map((preview, idx) => (
-                <img
-                  key={idx}
-                  src={preview}
-                  alt={`Selected Preview ${idx}`}
-                  style={{
-                    width: "30%",
-                    maxHeight: "200px",
-                    marginTop: "10px",
-                    marginLeft: idx > 0 ? "5%" : "0%",
-                    objectFit: "contain",
-                    border: "1px solid #ccc",
-                  }}
-                />
+                <div key={idx} style={{ position: "relative" }}>
+                  <img
+                    src={preview}
+                    alt={`Selected Preview ${idx}`}
+                    style={{
+                      width: "30%",
+                      maxHeight: "20%",
+                      marginTop: "10px",
+                      marginLeft: idx > 0 ? "5%" : "0%",
+                      objectFit: "contain",
+                      border: "1px solid #ccc",
+                    }}
+                  />
+                  <button
+                    style={{
+                      position: "absolute",
+                      top: 1,
+                      right: 1,
+                      color: "white",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
+                    onClick={() => handleImageDelete(idx)}
+                  >
+                    X
+                  </button>
+                </div>
               ))}
             </div>
           </Box>
 
-          <div>
+          <div
+            style={{
+              display: "flex",
+              justifyContent: "flex-end", // 이 부분을 추가하여 버튼들을 오른쪽으로 정렬
+            }}
+          >
             <button
               onClick={() => {
                 handleSubmitSiren(

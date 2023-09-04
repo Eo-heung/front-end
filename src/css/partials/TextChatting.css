@@ -1,6 +1,7 @@
 .text {
   width: 96%;
   height: 100%;
+  max-height: 100%;
   border: 1px solid #ddd;
   border-radius: 3px;
   padding: 20px;
@@ -54,7 +55,6 @@
 .text ul {
   list-style-type: none;
   padding-left: 0;
-  margin-bottom: 20px;
 }
 
 .text ul.message-list {
@@ -85,8 +85,11 @@
 }
 
 #chat-containers {
+  position: relative;
+  height: 100%;
   min-height: 450px;
   max-height: 450px;
+  margin-bottom: 20px; /* 값을 줄여서 조절 */
   overflow-y: scroll;
   scrollbar-width: none;
   -ms-overflow-style: none;
@@ -106,8 +109,6 @@
 /* TextChatting.css */
 
 #typing-indicator {
-  position: absolute;
-  bottom: 0;
   width: 100%;
   text-align: center;
   background-color: white;
@@ -117,7 +118,7 @@
 
 #typing-indicator span {
   margin-right: 10px;
-  background-color: #eee;
+  background-color: #eb8f90;
   border-radius: 12px;
   padding: 5px 10px;
   font-size: 0.8rem;
@@ -128,4 +129,15 @@
   font-size: 0.7em;
   color: #ffffff;
   margin-left: 10px;
+}
+
+.notification-badge {
+  background-color: red;
+  color: white;
+  border-radius: 50%; /* 동그란 모양을 만듭니다. */
+  width: 20px; /* 너비 설정 */
+  height: 20px; /* 높이 설정 */
+  text-align: center;
+  line-height: 20px; /* 숫자를 중앙에 위치시킵니다. */
+  font-size: 12px;
 }
