@@ -4,6 +4,7 @@ import styled from "@emotion/styled";
 import basicProfile from "../../public/basic_profile.png";
 import axios from "axios";
 import { SPRING_API_URL, NODE_API_URL } from "../../config";
+import NotificationBadge from "./NotificationBadge";
 
 const StyledContainer = styled(Container)`
   width: "100%";
@@ -15,17 +16,25 @@ const BoxContent = styled.div`
   border-radius: 8px;
 `;
 
+function getCookie(userId) {
+  const value = `; ${document.cookie}`;
+  const parts = value.split(`; ${userId}=`);
+  if (parts.length === 2) {
+    return parts.pop().split(";").shift();
+  }
+}
+
 const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
   useEffect(() => {
     getFriendList();
   }, []);
 
+  const [friends, setFriends] = useState([]);
+
   const handleSetFriendId = (friendId, friendNickname) => {
     setFriendId(friendId);
     setFriendNickname(friendNickname);
   };
-
-  const [friends, setFriends] = useState([]);
 
   const getFriendList = async () => {
     axios
@@ -40,10 +49,42 @@ const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
       )
       .then((res) => {
         setFriends(res.data.items);
+        // 친구 목록을 가져온 후에 안 읽은 메시지 목록을 가져옵니다.
+        getUnreadMessageList(res.data.items);
       })
       .catch((error) => {
         console.error(error);
       });
+  };
+
+  const getUnreadMessageList = async (currentFriends) => {
+    const friendsIds = currentFriends.map((eachFriend) => eachFriend.friendsId);
+    const data = {
+      myUserId: getCookie("userId"),
+      friendUserIds: friendsIds,
+    };
+
+    try {
+      const response = await axios.post(
+        `${NODE_API_URL}/getUnreadMessages`,
+        data
+      );
+      // 각 친구에 대한 안 읽은 메시지 수를 추가합니다.
+      const updatedFriends = currentFriends.map((friend) => {
+        const unreadCountForFriend = response.data.unreadCounts.find(
+          (count) => count.friendId === friend.friendsId
+        );
+        return {
+          ...friend,
+          unReadCount: unreadCountForFriend
+            ? unreadCountForFriend.unreadCount
+            : 0,
+        };
+      });
+      setFriends(updatedFriends);
+    } catch (error) {
+      console.error(error);
+    }
   };
 
   return (
@@ -59,7 +100,9 @@ const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
             paddingLeft: "10px",
             paddingRight: "10px",
             paddingBottom: "5px",
-            height: "100%",
+            minHeight: "635px",
+            maxHeight: "635px",
+            overflowY: "scroll",
           }}
         >
           <Typography
@@ -89,6 +132,7 @@ const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
                 paddingRight: "10px",
               }}
             >
+              {(console.log("칭구"), console.log(friend))}
               <BoxContent
                 sx={{
                   boxShadow: "0px 1px 3px rgba(0, 0, 0, 0.2)",
@@ -102,7 +146,12 @@ const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
                     marginBottom: "8px",
                   }}
                 >
-                  <div style={{ display: "flex", alignItems: "center" }}>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                    }}
+                  >
                     <div style={{ position: "relative" }}>
                       <img
                         src={
@@ -134,6 +183,7 @@ const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
                       </div>
                     </Typography>
                   </div>
+                  <NotificationBadge count={friend.unReadCount} />
                 </div>
                 <Typography variant="body2" sx={{ marginBottom: "6px" }}>
                   <div>지역 : {friend.user_addr3 || "지역 없음"}</div>

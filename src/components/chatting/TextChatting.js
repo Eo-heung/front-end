@@ -10,11 +10,11 @@ function TextChatting({ friendId, friendNickname }) {
   const [roomName, setRoomName] = useState("");
   const [messages, setMessages] = useState([]);
   const [myUserId, setMyUserId] = useState("");
+  const [myNickname, setMyNickname] = useState("");
   const [typingUsers, setTypingUsers] = useState([]);
 
   const socket = useRef();
   const chatContainerRef = useRef(null);
-  const userId = decodeURIComponent(getCookie("userId") || "");
 
   function getCookie(userId) {
     const value = `; ${document.cookie}`;
@@ -26,6 +26,10 @@ function TextChatting({ friendId, friendNickname }) {
 
   useEffect(() => {
     setMyUserId(getCookie("userId"));
+    setMyNickname(decodeURIComponent(getCookie("userNickname") || ""));
+    const sortedUserIds = [myUserId, friendId].sort();
+    const sortedRoomName = `${sortedUserIds[0]}-${sortedUserIds[1]}`;
+    setRoomName(sortedRoomName);
     socket.current = io(`${NODE_API_URL}`);
 
     const handleMessage = (message) => {
@@ -61,6 +65,9 @@ function TextChatting({ friendId, friendNickname }) {
 
   useEffect(() => {
     setMessages([]);
+    handleRoomName();
+    handleNickname();
+    handleGetMessages(friendId);
   }, [friendId]);
 
   useEffect(() => {
@@ -73,10 +80,83 @@ function TextChatting({ friendId, friendNickname }) {
       chatContainer.scrollTop = chatContainer.scrollHeight;
   };
 
-  const handleMessageSubmit = (e) => {
+  const handleRoomName = () => {
+    socket.current.emit("enter_room", roomName, () => {
+      setRoomName(roomName);
+    });
+  };
+
+  const handleNickname = () => {
+    socket.current.emit("nickname", myNickname);
+  };
+
+  const handleGetMessages = async (friendId) => {
+    try {
+      const url = `${NODE_API_URL}/getRecentMessages`;
+      const bodyData = {
+        myUserId: myUserId,
+        friendId: friendId,
+      };
+
+      const response = await axios.post(url, bodyData);
+      console.log(response.data.received);
+      response.data.received &&
+        response.data.received.map((each, index) => {
+          const parseEachJSON = JSON.parse(each.message);
+          setMessages((prevMessages) => [
+            ...prevMessages,
+            {
+              content: parseEachJSON.content,
+              sender: parseEachJSON.sender,
+              timestamp: parseEachJSON.timestamp,
+            },
+          ]);
+        });
+
+      // {messages.map((message, index) => (
+      //   <li
+      //     key={index}
+      //     className={`chat-message ${
+      //       message.sender === userId ? "sent" : "received"
+      //     } `}
+      //   >
+      //     {message.content}{" "}
+      //     <span className="message-time">
+      //       {message.timestamp && !isNaN(new Date(message.timestamp))
+      //         ? new Date(message.timestamp).toLocaleTimeString([], {
+      //             hour: "2-digit",
+      //             minute: "2-digit",
+      //           })
+      //         : ""}
+      //     </span>
+      //   </li>
+      // ))}
+    } catch (error) {
+      console.error("Error fetching nickname:", error);
+    }
+  };
+
+  const handleMessageSubmit = async (e) => {
     e.preventDefault();
     const message = e.target.message.value;
     if (message.length == 0) return;
+    try {
+      const url = `${NODE_API_URL}/sendMessage`;
+      const bodyData = {
+        myUserId: myUserId,
+        friendId: friendId,
+        message: {
+          content: `${message}`,
+          sender: myUserId,
+          timestamp: new Date(),
+        },
+      };
+
+      const response = await axios.post(url, bodyData);
+      console.log(response);
+    } catch (error) {
+      console.error("Error fetching nickname:", error);
+    }
     socket.current.emit("new_message", message, roomName, () => {
       setMessages([
         ...messages,
@@ -89,22 +169,6 @@ function TextChatting({ friendId, friendNickname }) {
     });
     e.target.message.value = "";
   };
-
-  // const handleNicknameSubmit = (e) => {
-  //   e.preventDefault();
-  //   const nickname = e.target.nickname.value;
-  //   socket.current.emit("nickname", nickname);
-  //   setMyNickname(nickname);
-  // };
-
-  // const handleRoomSubmit = (e) => {
-  //   e.preventDefault();
-  //   const roomName = e.target.roomName.value;
-  //   socket.current.emit("enter_room", roomName, () => {
-  //     setRoomHidden(false);
-  //     setRoomName(roomName);
-  //   });
-  // };
 
   const handleMessageInput = () => {
     socket.current.emit("typing", roomName);
@@ -124,7 +188,7 @@ function TextChatting({ friendId, friendNickname }) {
             ></img>
           </div>
         ) : (
-          <div id="room">
+          <div id="room" style={{ height: "100%" }}>
             <h3>{friendNickname}</h3>
             <div
               id="chat-containers"
@@ -138,7 +202,7 @@ function TextChatting({ friendId, friendNickname }) {
                   <li
                     key={index}
                     className={`chat-message ${
-                      message.sender === userId ? "sent" : "received"
+                      message.sender === myUserId ? "sent" : "received"
                     } `}
                   >
                     {message.content}{" "}
@@ -153,25 +217,29 @@ function TextChatting({ friendId, friendNickname }) {
                   </li>
                 ))}
               </ul>
-              <div
-                id="typing-indicator"
-                style={{
-                  width: "100%",
-                }}
-              >
-                {typingUsers.length > 0 && (
-                  <span>{typingUsers.join(", ")}님이 입력하고 있습니다.</span>
-                )}
-              </div>
+            </div>
+            <div
+              id="typing-indicator"
+              style={{
+                width: "100%",
+                height: "30px",
+                marginBottom: "10px",
+              }}
+            >
+              {typingUsers.length > 0 && (
+                <span style={{ height: "100%" }}>
+                  {typingUsers.join(", ")}님이 입력하고 있습니다.
+                </span>
+              )}
             </div>
             <form id="msg" onSubmit={handleMessageSubmit}>
               <input
                 type="text"
                 name="message"
-                placeholder="Type your message"
+                placeholder="메세지를 입력하세요"
                 onKeyDown={handleMessageInput}
               />
-              <button type="submit">Send</button>
+              <button type="submit">전송</button>
             </form>
           </div>
         )}
@@ -181,3 +249,19 @@ function TextChatting({ friendId, friendNickname }) {
 }
 
 export default TextChatting;
+
+// const handleNicknameSubmit = (e) => {
+//   e.preventDefault();
+//   const nickname = e.target.nickname.value;
+//   socket.current.emit("nickname", nickname);
+//   setMyNickname(nickname);
+// };
+
+// const handleRoomSubmit = (e) => {
+//   e.preventDefault();
+//   const roomName = e.target.roomName.value;
+//   socket.current.emit("enter_room", roomName, () => {
+//     setRoomHidden(false);
+//     setRoomName(roomName);
+//   });
+// };

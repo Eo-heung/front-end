@@ -1,8 +1,6 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import ChattingFriendList from "./ChattingFriendList";
 import TextChatting from "./TextChatting";
-import axios from "axios";
-import { SPRING_API_URL, NODE_API_URL } from "../../config";
 
 const ChattingWithFriend = () => {
   const [friendId, setFriendId] = useState(null);
@@ -12,8 +10,12 @@ const ChattingWithFriend = () => {
     <>
       <div class="sb-nav-fixed">
         <div id="layoutSidenav">
-          <div id="layoutSidenav_content" style={{}}>
-            <div style={{ display: "flex" }}>
+          <div id="layoutSidenav_content">
+            <div
+              style={{
+                display: "flex",
+              }}
+            >
               <div
                 style={{
                   flex: 3,
