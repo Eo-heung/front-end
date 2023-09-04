@@ -7,13 +7,13 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
   const [isDragging, setIsDragging] = useState(false);
   const [position, setPosition] = useState({ x: 0, y: 0 });
   const [startPos, setStartPos] = useState({ x: 0, y: 0 });
-  const [reportType, setReportType] = useState("욕설");
+  const [reportType, setReportType] = useState("1");
   const [reportContent, setReportContent] = useState("");
   const [selectedImages, setSelectedImages] = useState([]); // 파일구조
   const [imagePreviews, setImagePreviews] = useState([]); // base64
 
   useEffect(() => {
-    setReportType("욕설");
+    setReportType("1");
     setReportContent("");
     setSelectedImages([]);
     setImagePreviews([]);
@@ -99,7 +99,7 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
   return (
     <ThemeProvider theme={theme}>
       <div
-        className="popup-overlay"
+        className="popup-overlay custom-popup"
         onMouseMove={handleMouseMove}
         onMouseUp={handleMouseUp}
       >
@@ -116,10 +116,11 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
               value={reportType}
               onChange={handleReportTypeChange}
             >
-              <option value="욕설">욕설</option>
-              <option value="비하">비하</option>
-              <option value="음란">음란</option>
-              <option value="사기">사기</option>
+              <option value="1">욕설</option>
+              <option value="2">비하</option>
+              <option value="3">음란</option>
+              <option value="4">사기</option>
+              <option value="5">기타</option>
             </select>
           </div>
           <Box sx={{ mt: 2 }}>
@@ -141,21 +142,29 @@ const Popup = ({ isOpen, onClose, handleSubmitSiren, children }) => {
               accept="image/*"
               multiple // 여러 파일 선택 허용
             />
-            {imagePreviews.map((preview, idx) => (
-              <img
-                key={idx}
-                src={preview}
-                alt={`Selected Preview ${idx}`}
-                style={{
-                  width: "30%",
-                  maxHeight: "200px",
-                  marginTop: "10px",
-                  marginLeft: idx > 0 ? "5%" : "0%",
-                  objectFit: "contain",
-                  border: "1px solid #ccc",
-                }}
-              />
-            ))}
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "flex-start",
+                alignItems: "center",
+              }}
+            >
+              {imagePreviews.map((preview, idx) => (
+                <img
+                  key={idx}
+                  src={preview}
+                  alt={`Selected Preview ${idx}`}
+                  style={{
+                    width: "30%",
+                    maxHeight: "200px",
+                    marginTop: "10px",
+                    marginLeft: idx > 0 ? "5%" : "0%",
+                    objectFit: "contain",
+                    border: "1px solid #ccc",
+                  }}
+                />
+              ))}
+            </div>
           </Box>
 
           <div>

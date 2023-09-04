@@ -15,6 +15,7 @@ const Layout = () => {
 
   useEffect(() => {
     const getUserInfo = async () => {
+
       if (sessionStorage.getItem("ACCESS_TOKEN") != null) {
         try {
           const res = await axios.post(`${SPRING_API_URL}/getUserInfo`, {}, {
@@ -27,6 +28,7 @@ const Layout = () => {
           const formattedBanDate = `${banDateObj.getFullYear()}년 ${banDateObj.getMonth() + 1}월 ${banDateObj.getDate()}일 ${banDateObj.getHours()}시 ${banDateObj.getMinutes()}분 ${banDateObj.getSeconds()}초`;
           const banDateTime = banDateObj.getTime();
           const currentDateTime = new Date().getTime();
+
 
           if (res.data.item.ban && banDateTime > currentDateTime) {
             sessionStorage.removeItem("ACCESS_TOKEN");
@@ -46,8 +48,6 @@ const Layout = () => {
 
     getUserInfo();
   }, []);
-
-
 
   const getFriendList = async () => {
     try {
@@ -70,19 +70,17 @@ const Layout = () => {
     }
   };
 
-  return (
-    isUserInfoLoaded === true ? (
-      <div className="layoutWrapper">
-        <Header userId={userId} getFriendList={getFriendList}></Header>
-        <Nav friends={friends} getFriendList={getFriendList}></Nav>
-        <div className="layoutContent">
-          <Main ></Main>
-        </div>
-        <Footer></Footer>
+  return isUserInfoLoaded === true ? (
+    <div className="layoutWrapper">
+      <Header userId={userId} getFriendList={getFriendList}></Header>
+      <Nav friends={friends} getFriendList={getFriendList}></Nav>
+      <div className="layoutContent">
+        <Main></Main>
       </div>
-    ) : (
-      <div></div>
-    )
+      <Footer></Footer>
+    </div>
+  ) : (
+    <div></div>
   );
 };
 

@@ -94,6 +94,7 @@ const Header = ({ getFriendList, userId }) => {
   const menuList = [
     { text: "랜덤채팅", link: "/chatting" },
     { text: "소모임", link: "/list-moim" },
+    { text: "어흥톡", link: "/talk" },
   ];
 
   // 로그아웃 함수
