@@ -41,6 +41,15 @@ const Payment = () => {
   const [userAddr3, setUserAddr3] = useState('');
   const [totalGotGam, setTotalGotGam] = useState('');
   const [addGotGam, setAddGotGam] = useState('')
+  const [isChecked, setChecked] = useState(false);
+  const [agreedTerms, setAgreedTerms] = useState(false);
+
+  // const viewportWidth = window.innerWidth;
+  // const viewportHeight = window.innerHeight;
+
+  // console.log(`Viewport Width: ${viewportWidth}, Viewport Height: ${viewportHeight}`);
+
+
 
   useEffect(() => {
 
@@ -144,7 +153,10 @@ const Payment = () => {
   };
 
   const onClickPayment = () => {
-
+    if (!agreedTerms) {
+      alert("약관내용에 동의해야 결제하실 수 있습니다.");
+      return;
+    }
     const { IMP } = window;
     IMP.init('imp46524082');
 
@@ -200,29 +212,31 @@ const Payment = () => {
 
   const [hoverIndex, setHoverIndex] = useState(null);
 
+  const toggleCheck = () => {
+    setChecked(!isChecked);
+  };
 
   return (
     <div style={{ display: 'flex', justifyContent: 'center' }}> {/* 이 부분을 추가하여 두 개의 박스가 옆에 나열되도록 함 */}
       <Paper style={{
         width: '45%',
         marginTop: '6.5%',
-        marginLeft: '270px',
-        height: '590px',
-        // Paper의 오른쪽 마진 추가
-        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',  // 그림자 효과 수정
-        position: 'relative'  // 추가된 코드
+        marginLeft: '14.06vw',  // 변경된 값
+        height: '68vh',      // 변경된 값
+        boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
+        position: 'relative'
 
       }}>
         <div style={{
           position: 'absolute',
-          top: '20px',
-          right: '20px'  // 현재 곶감 수의 위치 조정
+          top: '2.5vh',
+          right: '2vw'  // 현재 곶감 수의 위치 조정
         }}>
           <Grid>{[
             ["현재 곶감 수 : ", `${totalGotGam}`, "개"]
           ]}</Grid>
         </div>
-        <hr style={{ marginTop: '60px' }}></hr>
+        <hr style={{ marginTop: '6.5vh' }}></hr>
         <div style={{ display: 'flex', flexDirection: 'column', justifyContent: 'center', alignItems: 'center', padding: '0px' }}>
           <FormControl component="fieldset" style={{ width: '70%' }}>
             <RadioGroup row value={value} onChange={handleCoinChange}>
@@ -235,15 +249,15 @@ const Payment = () => {
                   ].map(([val, label], index) => (
                     <div
                       key={index}
-                      style={{ padding: '5px 0', marginTop: '10px' }}
+                      style={{ padding: '0.5vw 0', marginTop: '10px' }}
                       onMouseEnter={() => setHoverIndex(index)}
                       onMouseLeave={() => setHoverIndex(null)}
                       onClick={() => handleCoinChange({ target: { value: val } })}
                     >
                       <div style={{
                         border: '1px solid',
-                        borderRadius: '5px',
-                        height: '50px',
+                        borderRadius: '0.5vw',
+                        height: '6vh',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -268,15 +282,15 @@ const Payment = () => {
                   ].map(([val, label], index) => (
                     <div
                       key={index}
-                      style={{ padding: '5px 0', marginTop: '10px' }}
+                      style={{ padding: '0.5vw 0', marginTop: '10px' }}
                       onMouseEnter={() => setHoverIndex(index + 5)}
                       onMouseLeave={() => setHoverIndex(null)}
                       onClick={() => handleCoinChange({ target: { value: val } })}
                     >
                       <div style={{
                         border: '1px solid',
-                        borderRadius: '5px',
-                        height: '50px',
+                        borderRadius: '0.5vw',
+                        height: '6vh',
                         display: 'flex',
                         alignItems: 'center',
                         justifyContent: 'center',
@@ -301,16 +315,17 @@ const Payment = () => {
             onBlur={handleCustomCountBlur}
             placeholder="직접입력하기 (원하는 곶감 수 입력)"
             onClick={(e) => e.stopPropagation()}
-            sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '20px' }} />
+            sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '2vh' }} />
         </div >
+        <br></br>
         <hr></hr>
-        <div style={{ height: '0px', textAlign: 'center' }}>
+        <div style={{ height: '0.2vh', textAlign: 'center' }}>
           <Grid style={{ alignItems: 'center' }}>
             {[`구매 후 총 곶감 수 : ${addGotGam}개`]}
           </Grid>
         </div>
-        <hr style={{ marginTop: '35px' }}></hr>
-        <div style={{ height: '0px', textAlign: 'center' }}>
+        <hr style={{ marginTop: '3.5vh' }}></hr>
+        <div style={{ height: '0.2vh', textAlign: 'center' }}>
           <Grid>
             {[
               ["총 결제 금액 : ", `${selectedItem.price} 원`]
@@ -319,16 +334,16 @@ const Payment = () => {
         </div>
         <hr style={{ marginTop: '35px' }}></hr>
         <div style={{ textAlign: 'center' }}>
-          <StyledButton onClick={onClickPayment} style={{ marginTop: '10px', height: '50px', width: '200px' }}>
+          <StyledButton onClick={onClickPayment} style={{ marginTop: '0.5vh', height: '5vh', width: '15vw' }}>
             결제하기
           </StyledButton>
         </div>
       </Paper>
-      <box style={{
+      <div style={{
         width: '20%',
         marginTop: '6.5%',
-        marginLeft: '70px',
-        height: '590px',
+        marginLeft: '6vw',  // 변경된 값
+        height: '68vh',      // 변경된 값
         boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
         position: 'relative'
       }}>
@@ -337,21 +352,30 @@ const Payment = () => {
         >
           약관 내용
         </div>
-        <hr style={{ marginTop: '20px' }}></hr>
-        <br></br>
-        <div style={{ fontFamily: "font-medium", color: 'gray', marginLeft: '30px', marginRight: '30px' }}>
-          1. 구매 후 7일 경과 시 자동환불이 불가능합니다.
-          <br></br>
-          <br></br>
-          2. 구매 후 곶감 사용 시 자동환불이 불가능합니다.
-          <br></br>
-          <br></br>
-          3. 잔여 곶감을 환불받고싶으시면  <a style={{ cursor: 'pointer' }}>junghyuna04@gmail.com</a>로 문의해주세요.
-          <br></br>
-          <br></br>
-          4. 잔여 곶감을 환불받을 시 수수료 10%가 요구되며 10000원 이하의 금액을 환불받을 시에는 수수료1000원이 고정 요구됩니다.
+        <hr style={{ marginTop: '2vh' }}></hr>
+        <br />
+        <div style={{ fontFamily: "font-medium", color: 'gray', marginLeft: '3vw', marginRight: '3vw' }}>
+          1. 구매 후 7일 경과 시 환불이 불가능합니다.<br /><br />
+          2. 구매 후 곶감 사용 시 환불이 불가능합니다.<br /><br />
+          3. 잔여 곶감을 환불받고싶으시면 <a>junghyuna04@gmail.com</a>로 문의해주세요.<br /><br />
+          4. 잔여 곶감을 환불받을 시 수수료 10%가 요구되며 10000원 이하의 금액을 환불받을 시에는 수수료1000원이 고정 요구됩니다.<br /><br />
         </div>
-      </box >
+        <div
+          style={{
+            display: 'flex',
+            marginTop: '20vh',
+            justifyContent: 'center',
+          }}
+          onClick={toggleCheck}
+        >
+          <input
+            type="checkbox"
+            checked={agreedTerms}
+            onChange={(e) => setAgreedTerms(e.target.checked)}
+          />          <span style={{ marginLeft: '0.5vw' }}>위 약관에 동의합니다</span>
+        </div>
+
+      </div>
     </div >
   );
 
