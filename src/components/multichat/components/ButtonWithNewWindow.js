@@ -1,4 +1,5 @@
 import React, { useRef, useCallback } from "react";
+import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../../config";
 
 const ButtonWithNewWindow = () => {
   const newWindowRef = useRef(null);
@@ -14,7 +15,7 @@ const ButtonWithNewWindow = () => {
 
   const handleClick = useCallback(() => {
     newWindowRef.current = window.open(
-      "http://localhost:1234/multichatting",
+      `${NODE_API_URL}/multichatting`,
       "_blank",
       "width=800,height=600"
     );

@@ -6,6 +6,7 @@ import { styled } from '@mui/system';
 import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
 import { throttle } from 'lodash';
+import { SPRING_API_URL } from '../../config';
 
 const StyledContainer = styled('div')`
     position: fixed;
@@ -235,8 +236,8 @@ const ListMoim = () => {
         }
 
         const apiEndPoint = orderBy === 'ascending'
-            ? "http://localhost:9000/moim/list-moim/asc"
-            : "http://localhost:9000/moim/list-moim/desc";
+            ? `${SPRING_API_URL}/moim/list-moim/asc`
+            : `${SPRING_API_URL}/moim/list-moim/desc`;
 
         axios.post(apiEndPoint, {}, {
             headers: {

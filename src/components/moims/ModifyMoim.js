@@ -6,6 +6,7 @@ import { styled } from '@mui/system';
 import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
+import { SPRING_API_URL } from '../../config';
 
 const StyledForm = styled('form')`
     display: flex;
@@ -196,7 +197,7 @@ const ModifyMoim = () => {
     useEffect(() => {
         const fetchMoimData = async () => {
             try {
-                const response = await axios.get(`http://localhost:9000/moim/view-moim/${moimId}`);
+                const response = await axios.get(`${SPRING_API_URL}/moim/view-moim/${moimId}`);
                 const data = response.data.item.moimDTO;
 
                 setInputs({
@@ -276,7 +277,7 @@ const ModifyMoim = () => {
         }
 
         const modifyMoimAxios = () => {
-            axios.post(`http://localhost:9000/moim/modify-moim/${moimId}`, inputs)
+            axios.post(`${SPRING_API_URL}/moim/modify-moim/${moimId}`, inputs)
                 .then(resultTemp => {
                     console.log(resultTemp);
 
@@ -285,7 +286,7 @@ const ModifyMoim = () => {
                     formData.append("moimPic", filePic);
                     console.log(formData);
 
-                    return axios.post(`http://localhost:9000/moim/modify-moim-pic/${moimId}`, formData, {
+                    return axios.post(`${SPRING_API_URL}/moim/modify-moim-pic/${moimId}`, formData, {
                         headers: {
                             'Content-Type': 'multipart/form-data'
                         }
