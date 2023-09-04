@@ -20,8 +20,6 @@ import MainContent from "./components/partials/MainContent";
 import KakaoHandler from "./components/socialLogin/KakaoHandler";
 import NaverHandler from "./components/socialLogin/NaverHandler";
 import BasicBoard from "./components/utils/BasicBoard";
-import Charge from "./components/charge/Payment";
-
 import ButtonWithNewWindow from "./components/multichat/components/ButtonWithNewWindow";
 import MultiChatting from "./components/multichat/components/VideoRoomComponent";
 import ChattingPayment from "./components/chatting/ChattingPayment";
@@ -65,7 +63,6 @@ function App() {
               element={<ChattingWithFriend></ChattingWithFriend>}
             ></Route>
             <Route path="/list-moim" element={<ListMoim></ListMoim>}></Route>
-            <Route path="/charge" element={<Charge></Charge>}></Route>
             <Route
               path="/modify-moim/:moimId"
               element={<ModifyMoim></ModifyMoim>}
