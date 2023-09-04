@@ -34,6 +34,16 @@ const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
   const handleSetFriendId = (friendId, friendNickname) => {
     setFriendId(friendId);
     setFriendNickname(friendNickname);
+
+    // 친구 목록에서 해당 친구의 안 읽은 메시지 개수를 0으로 설정
+    const updatedFriends = friends.map((friend) => {
+      if (friend.friendsId === friendId) {
+        return { ...friend, unReadCount: 0 };
+      }
+      return friend;
+    });
+
+    setFriends(updatedFriends);
   };
 
   const getFriendList = async () => {
@@ -183,7 +193,9 @@ const ChattingFriendList = ({ setFriendId, setFriendNickname }) => {
                       </div>
                     </Typography>
                   </div>
-                  <NotificationBadge count={friend.unReadCount} />
+                  {friend.unReadCount > 0 && (
+                    <NotificationBadge count={friend.unReadCount} />
+                  )}
                 </div>
                 <Typography variant="body2" sx={{ marginBottom: "6px" }}>
                   <div>지역 : {friend.user_addr3 || "지역 없음"}</div>

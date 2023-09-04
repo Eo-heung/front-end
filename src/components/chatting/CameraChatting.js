@@ -7,7 +7,7 @@ import MicOffIcon from "@mui/icons-material/MicOff";
 import DesktopWindowsIcon from "@mui/icons-material/DesktopWindows";
 import DesktopAccessDisabledIcon from "@mui/icons-material/DesktopAccessDisabled";
 import Button from "@mui/material/Button";
-import EoheungImg from "../../css/partials/랜덤.png";
+import EoheungImg from "../../css/partials/랜덤.gif";
 import SpeakerNotesIcon from "@mui/icons-material/SpeakerNotes";
 import SpeakerNotesOffIcon from "@mui/icons-material/SpeakerNotesOff";
 import { Link } from "react-router-dom";
@@ -617,8 +617,7 @@ const CameraChatting = ({ selectedCamera, selectedMic, selectedGender }) => {
         onClose={handleCloseFriendPopup}
         handleMakefriend={handleMakefriend}
       >
-        <h2>친구 추가{opponentUserId}</h2>
-        <p>곶감 5개 주면 안 잡아먹지~~~</p>
+        <h2 style={{ marginBottom: "10rem" }}>친구 추가{opponentUserId}</h2>
         <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
       </PopupFriend>
 
