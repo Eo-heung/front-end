@@ -110,6 +110,7 @@ const Header = ({ getFriendList, userId }) => {
     removeCookie('userGender')
     sessionStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
+    sessionStorage.removeItem("userId");
     setIsLogout(true);
     alert("로그아웃 성공");
   };
