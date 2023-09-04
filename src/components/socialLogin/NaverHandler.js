@@ -17,39 +17,55 @@ const NaverHandler = () => {
       setCookie('userId', data.userId, { path: '/' });
     }
   };
-  const navi = useNavigate();
-  const state = 'false';
-  const grant_type = "authorization_code";
-  const client_id = 'fK9M_7tC_kI7hRd4QXQG';
-  const client_secret = 'cqMyh0TQMc';
-  const [code, setCode] = useState(new URL(window.location.href).searchParams.get("code"));
-  useEffect(() => {
-    if (code) {
-      console.log(code);
+    const navi = useNavigate();
+    const state = "false";
+    const grant_type = "authorization_code";
+    const client_id = "fK9M_7tC_kI7hRd4QXQG";
+    const client_secret = "cqMyh0TQMc";
+    const [code, setCode] = useState(
+        new URL(window.location.href).searchParams.get("code")
+    );
+    useEffect(() => {
+        if (code) {
+            console.log(code);
 
-      // 데이터를 백엔드에 전송
-      axios.post(`${SPRING_API_URL}/NaverToken`, {
-        state: state,
-        client_id: client_id,
-        client_secret: client_secret,
-        code: code
-      })
-        .then((res) => {
-          alert(`${res.data.item.userName}님 환영합니다.`);
-          localStorage.setItem("REFRESH_TOKEN", res.data.item.token);
-          sessionStorage.setItem("ACCESS_TOKEN", res.data.item.token);
-          sessionStorage.setItem("userId", res.data.item.userId);
-          loginSuccessHandler(res.data.item);
-          navi("/");
-        })
-        .catch(error => {
-          // 오류 처리
-          console.error("There was an error sending the data:", error);
-        });
-    }
-  }, [code]);
+            // 데이터를 백엔드에 전송
+            axios
+                .post(`${SPRING_API_URL}/NaverToken`, {
+                    state: state,
+                    client_id: client_id,
+                    client_secret: client_secret,
+                    code: code,
+                })
+                .then((res) => {
+                    if ((res.data.item.age) > 59) {
+                        alert(`${res.data.item.userName}님 환영합니다.`);
+                        localStorage.setItem("REFRESH_TOKEN", res.data.item.token);
+                        sessionStorage.setItem("ACCESS_TOKEN", res.data.item.token);
+                        sessionStorage.setItem("userId", res.data.item.userId);
+                        loginSuccessHandler(res.data.item);
+                        navi("/");
+                    }
+                    else {
+                        axios.post(`${SPRING_API_URL}/removeId`, {},
+                            {
+                                headers: {
+                                    Authorization: `Bearer ${res.data.item.token
+                                        }`,
+                                },
+                            })
+                        alert(`만 60세 미만은 이용할 수 없습니다!!!!`);
+                        navi("/login");
+                    }
+                })
+                .catch((error) => {
+                    // 오류 처리
+                    console.error("There was an error sending the data:", error);
+                });
+        }
+    }, [code]);
 
-  return <></>;
+    return <></>;
 };
 
 export default NaverHandler;
