@@ -112,6 +112,7 @@ const ViewAppointment = () => {
     const [currentPage, setCurrentPage] = useState(1);
 
     const [showMemberList, setShowMemberList] = useState(false);
+    const [memberPic, setMemberPic] = useState(null);
 
     const now = dayjs();
     const appStart = dayjs(appBoardDetail.appStart);
@@ -152,6 +153,7 @@ const ViewAppointment = () => {
             if (response.status === 200) {
                 console.log("appMembers ", response.data.item.content);
                 setAppMembers(response.data.item.content);
+                setMemberPic(`data:image/jpeg;base64,${response.data.item.moimProfile}`)
                 setTotalPages(response.data.paginationInfo.totalPages);
 
                 const isApplied = response.data.item.content.some(member => member.appFixedUser === cookie.userId);
@@ -207,16 +209,15 @@ const ViewAppointment = () => {
                 }
             });
 
-            if (response.data && response.data.statusCode === 201) {
-                alert("신청이 성공적으로 완료되었어요.");
+            if (response.data.item.msg === "okValue") {
+                alert("만남에 참여했어요.");
                 navi(`/${moimId}/moim-board/moim-app-list`);
             } else {
-                throw new Error(response.data.errorMessage || "신청 중 오류가 발생했어요.");
+                alert(response.data.item.msg);
             }
-
         } catch (err) {
-            console.error("Error sending apply data:", err);
-            alert("신청 중 오류가 발생했어요. 다시 시도해주세요.");
+            alert("오류가 발생했어요. 다시 한 번 시도해주세요.");
+            console.error("Error creating appointment:", err);
         }
     };
 
@@ -283,7 +284,11 @@ const ViewAppointment = () => {
                         {appMembers.map(appMember => (
                             <div key={appMember.appFixedId}>
                                 <BoardInfoRow style={{ marginTop: "1rem", marginBottom: "0.2rem" }}>
-                                    <BoardInfo>{appMember.useName}</BoardInfo>
+                                    <BoardInfo></BoardInfo>
+                                    <BoardInfo><img
+                                        src={memberPic}
+                                        alt="모임 프로필 사진"
+                                        style={{ width: "10%", height: "10%", borderRadius: "100%" }}></img> {appMember.useName}</BoardInfo>
                                     <BoardInfo>{appMember.appState === "CONFIRM" ? "확정" : null}</BoardInfo>
                                 </BoardInfoRow>
                             </div>
