@@ -297,7 +297,7 @@ const ModifyMoim = () => {
 
                     if (result.data.item) {
                         alert("수정이 완료되었습니다.");
-                        navi('/list-moim');
+                        navi("/moim-controller/list-moim");
                     }
                 })
                 .catch(e => {
@@ -390,7 +390,7 @@ const ModifyMoim = () => {
                 </StyledBox>
                 <StyledButton type="submit" variant="contained" size="large">수정 완료</StyledButton>
             </StyledForm>
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
+            <StyledLink to="/moim-controller/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };

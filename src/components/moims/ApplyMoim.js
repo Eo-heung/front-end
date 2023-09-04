@@ -234,7 +234,7 @@ const ApplyMoim = () => {
 
             if (response.data.item) {
                 alert("신청이 완료되었습니다.");
-                navi("/list-moim");
+                navi("/moim-controller/list-moim");
             }
         } catch (e) {
             console.error("Error sending data", e);
@@ -245,7 +245,7 @@ const ApplyMoim = () => {
         <BasicBoard>
             <StyledForm id="applyForm" onSubmit={handleSubmit}>
                 <StyledBox>
-                    <PageTitle>{`${moimData.moimTitle} 모임에 가입해요.`}</PageTitle>
+                    <PageTitle>{`"${moimData.moimTitle}" 모임에 가입해요.`}</PageTitle>
                     <div>
                         <img
                             id="previewImage"
@@ -270,7 +270,7 @@ const ApplyMoim = () => {
                     </ButtonRow>
                 </StyledBox>
             </StyledForm>
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
+            <StyledLink to="/moim-controller/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };

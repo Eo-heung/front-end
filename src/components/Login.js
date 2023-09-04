@@ -31,6 +31,7 @@ const Login = () => {
   const [cookies, setCookie] = useCookies([
     "userNickname",
     "userAddr3",
+    "userId",
     "userGender",
   ]);
 

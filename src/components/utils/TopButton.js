@@ -35,7 +35,7 @@ function TopButton() {
 
     return trigger && (
         <PositionContainer>
-            <ScrollToTopButton color="secondary" size="large" onClick={scrollToTop}>
+            <ScrollToTopButton style={{ backgroundColor: "#FCBE71", color: "#fff" }} size="large" onClick={scrollToTop}>
                 <ArrowUpwardIcon />
             </ScrollToTopButton>
         </PositionContainer>

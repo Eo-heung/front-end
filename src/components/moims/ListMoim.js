@@ -1,179 +1,10 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { Card, CardContent, Typography, CardMedia, TextField, Select, MenuItem, Button } from '@mui/material';
-import { Link } from 'react-router-dom';
+import { CardContent, Typography, Button } from '@mui/material';
 import axios from 'axios';
-import { styled } from '@mui/system';
-import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
 import { throttle } from 'lodash';
+import { ListMoimContainer, ListMoimSearchContainer, ListMoimCategoryContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton, ListMoimPageTitle, ListMoimLink, ListMoimButton, ListMoimScrollDiv, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink, ListMoimAd, ListMoimAdContent } from '../utils/StyledListMoim.js';
 import { SPRING_API_URL } from '../../config';
-
-const StyledContainer = styled('div')`
-    position: fixed;
-    top: 115px;
-    right: 0;
-    left: 400px;
-    padding: 1.5rem 3rem;
-    height: 310px;
-    width: 90%;
-    z-index: 1001;
-    background-color: #fff;
-    &.fixed {
-        position: fixed;
-        padding: 1.5rem 3rem;
-        width: 90%;
-        z-index: 100;
-    }
-    @media (max-width: 992px) {
-        left: 0;
-    }
-`;
-
-const SearchContainer = styled('div')`
-    display: flex;
-    align-items: center;
-    gap: 10px;
-`;
-
-const CategoryContainer = styled('div')`
-    display: flex;
-    align-items: center;
-    margin-bottom: 1.5rem;
-    gap: 10px;
-`;
-
-const CategoryButton = styled(Button)`
-    background-color: #608796;
-    color: #fff;
-    &:hover {
-        background-color: #FCBE71;
-        color: #fff;
-    }
-`;
-
-const StyledTextField = styled(TextField)`
-    width: 250px;
-    & .MuiOutlinedInput-root {
-        &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #FCBE71;
-        }
-        &.Mui-focused .MuiInputLabel-root {
-            color: #FCBE71;
-        }
-    }
-`;
-
-const StyledSelect = styled(Select)`
-    &&.MuiOutlinedInput-root {
-        &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
-            border-color: #FCBE71;
-        }
-        &.Mui-focused .MuiInputLabel-root {
-            color: #FCBE71;
-        }
-    }
-
-    && .MuiMenu-paper {
-        .MuiListItem-root:hover {
-            background-color: #FCBE71;
-            color: white;
-        }
-    }
-`;
-
-const StyledMenuItem = styled(MenuItem)`
-    &&:hover {
-        background-color: #FCBE71;
-        color: white;
-    }
-`;
-
-const SearchButton = styled(Button)`
-    background-color: #FCBE71;
-    color: #fff;
-    &:hover {
-        background-color: #FCBE71;
-        color: #fff;
-    }
-`;
-
-const PageTitle = styled('h3')`
-    margin-bottom: 1.5rem;
-`;
-
-const StyledLink = styled(Link)`
-    margin: 1rem auto;
-    text-decoration: none;
-`;
-
-const StyledButton = styled(Button)`
-    margin-left: 12rem;
-    background-color: #FCBE71;
-    color: #fff;
-    &:hover {
-        background-color: #FCBE71;
-        color: #fff;
-    }
-`;
-
-const StyledScrollDiv = styled('div')`
-    margin-top: 310px;
-    margin-left: 1rem;
-    width: 90%;
-`;
-
-const LoadingText = styled('div')`
-    font-size: 2.5rem;
-    text-align: center;
-    padding: 20px 0;
-    color: grey;
-`;
-
-const StyledCard = styled(Card)`
-    display: flex;
-    gap: 1.5rem;
-    margin-bottom: 1.5rem;
-    padding: 1.5rem;
-    width: 100%;
-    background-color: #fff;
-    color: #000;
-    cursor: pointer;
-`;
-
-const StyledCardMedia = styled(CardMedia)`
-    height: 160px;
-    width: 160px;
-    
-    @media (max-width: 992px) {
-        display: none;
-    }
-`;
-
-const CardInfo = styled('div')`
-    display: flex;
-    flex-direction: column;
-    align-items: flex-start;
-    flex-grow: 1;
-`;
-
-
-const MoimInfoRow = styled('div')`
-    display: flex;
-    justify-content: flex-start;
-    gap: 30px;
-`;
-
-const EllipsisText = styled(Typography)`
-    overflow: hidden;
-    text-overflow: ellipsis;
-    white-space: nowrap;
-    width: 100%;
-    width: 600px;
-
-    @media (max-width: 992px) {
-        width: 200px;
-    }
-`;
 
 const ListMoim = () => {
     const [data, setData] = useState([]);
@@ -185,7 +16,9 @@ const ListMoim = () => {
     const [searchType, setSearchType] = useState("all");
     const [category, setCategory] = useState("전체");
     const [scrollActive, setScrollActive] = useState(false);
-    const [orderBy, setOrderBy] = useState("ascending");
+    const [orderBy, setOrderBy] = useState("descending");
+
+    const [hoveredButton, setHoveredButton] = useState(null);
 
     const scrollHandler = useMemo(() =>
         throttle(() => {
@@ -200,7 +33,7 @@ const ListMoim = () => {
             const scrollTop = document.documentElement.scrollTop;
             const clientHeight = document.documentElement.clientHeight;
 
-            if (scrollTop + clientHeight >= scrollHeight) {
+            if (scrollTop + clientHeight >= scrollHeight / 2) {
                 if (!isLastPage) {
                     setPage(prevPage => prevPage + 1);
                 }
@@ -208,6 +41,24 @@ const ListMoim = () => {
                 return;
             }
         }, 500), [page]);
+
+    const renderCategoryButton = (label) => (
+        <Button
+            size="medium"
+            variant={category === label || hoveredButton === label ? 'contained' : 'outlined'}
+            style={{
+                backgroundColor: (category === label || hoveredButton === label) ? '#FCBE71' : '#fff',
+                borderColor: '#FCBE71',
+                color: (category === label || hoveredButton === label) ? '#fff' : '#000',
+                fontWeight: category === label ? 'bold' : 'normal',
+            }}
+            onClick={() => setCategory(label)}
+            onMouseEnter={() => setHoveredButton(label)}
+            onMouseLeave={() => setHoveredButton(null)}
+        >
+            {label}
+        </Button>
+    );
 
     useEffect(() => {
         fetchData();
@@ -224,17 +75,6 @@ const ListMoim = () => {
     const fetchData = () => {
         setIsLoading(true);
 
-        let actualCategory = category;
-        let actualSearchType = searchType;
-
-        if (category === "전체") {
-            actualCategory = null;
-        }
-
-        if (searchType === "all") {
-            actualSearchType = null;
-        }
-
         const apiEndPoint = orderBy === 'ascending'
             ? `${SPRING_API_URL}/moim/list-moim/asc`
             : `${SPRING_API_URL}/moim/list-moim/desc`;
@@ -245,9 +85,9 @@ const ListMoim = () => {
             },
             params: {
                 page: page - 1,
-                category: actualCategory,
+                category: category,
                 searchKeyword: searchKeyword,
-                searchType: actualSearchType,
+                searchType: searchType,
                 orderBy: orderBy
             }
         })
@@ -274,70 +114,95 @@ const ListMoim = () => {
         fetchData();
     };
 
+    const handleSearch = () => {
+        setPage(1);
+        setData([]);
+        fetchData();
+    }
+
+    const handleKeyDown = (e) => {
+        if (e.key === "Enter") {
+            handleSearch();
+        }
+    };
+
+    const [isHidden, setIsHidden] = useState(false);
+
+    const handleAdClick = () => {
+        setIsHidden(true);
+    };
+
     return (
-        <BasicBoard>
-            <StyledContainer className={scrollActive ? 'fixed' : ''}>
-                <PageTitle>모임 목록</PageTitle>
-                <CategoryContainer>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("전체")}>전체</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("인문학/책")}>인문학/책</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("운동")}>운동</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("요리/맛집")}>요리/맛집</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("공예/만들기")}>공예/만들기</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("원예")}>원예</CategoryButton>
-                </CategoryContainer>
-                <CategoryContainer>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("동네친구")}>동네친구</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("음악/악기")}>음악/악기</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("반려동물")}>반려동물</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("여행")}>여행</CategoryButton>
-                    <CategoryButton variant="contained" size="large" onClick={() => setCategory("문화/여가")}>문화/여가</CategoryButton>
-                </CategoryContainer>
-                <SearchContainer>
-                    <StyledTextField variant="outlined" placeholder="검색어를 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
-                    <StyledSelect value={category} onChange={(e) => setSearchKeyword(e.target.value)}>
-                        <StyledMenuItem value="all">전체</StyledMenuItem>
-                        <StyledMenuItem value="title">제목</StyledMenuItem>
-                        <StyledMenuItem value="content">내용</StyledMenuItem>
-                        <StyledMenuItem value="nickname">작성자</StyledMenuItem>
-                    </StyledSelect>
-                    <SearchButton variant="contained" size="large">검색</SearchButton>
-                    <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
-                        {orderBy === 'ascending' ? '최신순' : '등록순'}
-                    </SearchButton>
-                    <StyledButton component={StyledLink} to="/create-moim" variant="contained" size="large">
+        <>
+            <ListMoimContainer className={scrollActive ? 'fixed' : ''}>
+                {/* <ListMoimPageTitle>새로운 모임 목록</ListMoimPageTitle> */}
+                <ListMoimCategoryContainer>
+                    {renderCategoryButton("전체")}
+                    {renderCategoryButton("인문학/책")}
+                    {renderCategoryButton("운동")}
+                    {renderCategoryButton("요리/맛집")}
+                    {renderCategoryButton("공예/만들기")}
+                    {renderCategoryButton("원예")}
+                    {renderCategoryButton("동네친구")}
+                    {renderCategoryButton("음악/악기")}
+                    {renderCategoryButton("반려동물")}
+                    {renderCategoryButton("여행")}
+                    {renderCategoryButton("문화/여가")}
+                </ListMoimCategoryContainer>
+                <ListMoimSearchContainer>
+                    <ListMoimTextField
+                        variant="outlined"
+                        placeholder="검색어를 입력하세요."
+                        onChange={(e) => setSearchKeyword(e.target.value)}
+                        onKeyDown={handleKeyDown} />
+                    <ListMoimSelect value={searchType} displayEmpty size="large" onChange={(e) => setSearchType(e.target.value)}>
+                        <ListMoimMenuItem value="all">전체</ListMoimMenuItem>
+                        <ListMoimMenuItem value="title">제목</ListMoimMenuItem>
+                        <ListMoimMenuItem value="content">내용</ListMoimMenuItem>
+                        <ListMoimMenuItem value="nickname">작성자</ListMoimMenuItem>
+                    </ListMoimSelect>
+                    <ListMoimSearchButton variant="contained" size="large" onClick={handleSearch}>검색</ListMoimSearchButton>
+                    <ListMoimSearchButton variant="contained" size="large" onClick={handleOrderBy}>
+                        {orderBy === 'descending' ? '등록순' : '최신순'}
+                    </ListMoimSearchButton>
+                    <ListMoimButton component={ListMoimStyledLink} to="/create-moim" variant="contained" size="large">
                         새로운 모임 만들기
-                    </StyledButton>
-                </SearchContainer>
-            </StyledContainer>
-            <StyledScrollDiv>
+                    </ListMoimButton>
+                </ListMoimSearchContainer>
+            </ListMoimContainer>
+            <ListMoimScrollDiv>
+                <ListMoimAd isHidden={isHidden} onClick={handleAdClick}>
+                    <ListMoimAdContent>
+                        같은 관심사를 가진 또래들과 어흥 해보세요!
+                    </ListMoimAdContent>
+                </ListMoimAd>
                 {data && data.map(moim => (
-                    <StyledLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
-                        <StyledCard variant="outlined">
-                            <StyledCardMedia
+                    <ListMoimLink to={`/view-moim/${moim.moimId}`} key={moim.moimId}>
+                        <ListMoimCard variant="outlined">
+                            <ListMoimCardMedia
                                 component="img"
                                 image={moim.moimPic && `data:image/jpeg;base64,${moim.moimPic}` || 'https://cdnimg.melon.co.kr/cm2/artistcrop/images/002/61/143/261143_20210325180240_500.jpg?61e575e8653e5920470a38d1482d7312/melon/resize/416/quality/80/optimize'}
                                 alt="moim image"
                             />
-                            <CardInfo>
+                            <ListMoimCardInfo>
                                 <CardContent>
-                                    <Typography variant="h6">{moim.moimCategory}</Typography>
-                                    <Typography variant="h5">{moim.moimTitle}</Typography>
-                                    <MoimInfoRow>
+                                    <Typography variant="body1">{moim.moimCategory}</Typography>
+                                    <Typography gutterBottom variant="h4">{moim.moimTitle}</Typography>
+                                    <ListMoimMoimInfoRow>
                                         <Typography variant="body1">{moim.moimAddr}</Typography>
                                         <Typography variant="body1">{moim.currentMoimUser || "1"}/{moim.maxMoimUser}</Typography>
-                                    </MoimInfoRow>
-                                    <EllipsisText variant="body1">{moim.moimContent}</EllipsisText>
+                                    </ListMoimMoimInfoRow>
+                                    <ListMoimEllipsisText variant="body1">{moim.moimContent}</ListMoimEllipsisText>
                                 </CardContent>
-                            </CardInfo>
-                        </StyledCard>
-                    </StyledLink>
+                            </ListMoimCardInfo>
+                        </ListMoimCard>
+                    </ListMoimLink>
                 ))}
-                {isLoading && <LoadingText>새로운 목록을 불러오고 있어요.</LoadingText>}
-                {isLastPage && !isLoading && <LoadingText>모임 목록의 마지막 페이지예요.</LoadingText>}
-            </StyledScrollDiv>
+                {isLoading && <ListMoimLoadingText>새로운 목록을 불러오고 있어요.</ListMoimLoadingText>}
+                {isLastPage && !isLoading && <ListMoimLoadingText>모임 목록의 마지막 페이지예요.</ListMoimLoadingText>}
+            </ListMoimScrollDiv>
             <TopButton />
-        </BasicBoard>
+        </>
     );
 };
 
