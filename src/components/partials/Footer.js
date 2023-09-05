@@ -4,9 +4,7 @@ const Footer = () => {
   return (
     <div style={{ float: "left" }}>
       <footer>
-        <div className="copyRight">
-          Copyright 2023 by T-co All rights reserved.
-        </div>
+        {/* <div className="copyRight">C 2023 by T-co All rights reserved.</div> */}
       </footer>
     </div>
   );

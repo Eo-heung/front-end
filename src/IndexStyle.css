@@ -380,7 +380,6 @@ table tr:last-child td {
 .copyRight {
   text-align: right;
   width: 100%;
-  border: "10px solid green";
   color: grey;
 }
 
@@ -611,8 +610,6 @@ table tr:last-child td {
   /* border: var(--bs-card-border-width) solid var(--bs-card-border-color); */
   border-radius: var(--bs-card-border-radius);
   border: 5px solid #ffe35a;
-
-
 }
 
 .card > hr {

@@ -145,7 +145,7 @@ const Header = ({ getFriendList, userId }) => {
               <img
                 src={logo_color}
                 style={{
-                  marginLeft: "13%",
+                  marginLeft: "15%",
                   width: "75%",
                   height: "100%",
                   //marginTop: "15px",
@@ -162,7 +162,7 @@ const Header = ({ getFriendList, userId }) => {
             height: "100%",
             display: "flex",
             alignItems: "center",
-            marginTop: "2vh"
+            marginTop: "2vh",
           }}
         >
           {!isDesktop && (
@@ -219,8 +219,6 @@ const Header = ({ getFriendList, userId }) => {
             ))}
         </div>
 
-
-        {/* 준형미안 */}
         <div
           style={{
             width: "30%",
@@ -229,42 +227,31 @@ const Header = ({ getFriendList, userId }) => {
             alignItems: "center",
             justifyContent: "flex-end",
             gap: "1.5vw",
-            marginTop: "2vh"
+            marginTop: "2vh",
           }}
         >
-          <Link className="navbar-credit" to="/charge">
-            <div style={{
-              width: "40%",
-              // height: "100%",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}>
-              <StyledTypography variant="body2">
-
-                <img
-                  src={icon_gam}
-                  style={{
-                    // marginLeft: "15px",
-                    width: "10%",
-                    height: "10%",
-                  }}
-                />
-
-                곶감개수넣자
-
-
-              </StyledTypography>
-              <div style={{
-                width: "40%",
-                // display: "flex",
-                // alignItems: "center",
-                justifyContent: "flex-end",
-              }}>
-                충전
-              </div>
-
-            </div>
+          <Link
+            className="navbar-credit"
+            to="/charge"
+            style={{ display: "inline-block", marginTop: "-15px" }}
+          >
+            <img
+              src={icon_gam}
+              style={{
+                display: "inline-block",
+                width: "30px",
+                height: "auto",
+              }}
+            />
+            <StyledTypography
+              variant="body2"
+              style={{
+                display: "inline-block",
+                verticalAlign: "middle",
+              }}
+            >
+              445개
+            </StyledTypography>
           </Link>
           <Link className="navbar-logout" to="/mypage">
             <StyledTypography variant="body2">

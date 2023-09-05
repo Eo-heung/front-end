@@ -18,7 +18,10 @@ const Nav = ({ getFriendList, friends }) => {
   const [appoint, setAppoint] = useState(null);
   const exAppo = [
     { startTime: new Date("2023-09-06T10:00:00"), content: "[운동] 아침러닝" },
-    { startTime: new Date("2023-09-06T12:30:00"), content: "[운동] 오프라인 만남" },
+    {
+      startTime: new Date("2023-09-06T12:30:00"),
+      content: "[운동] 오프라인 만남",
+    },
     { startTime: new Date("2023-09-06T23:00:00"), content: "[운동] 화상채팅" },
   ];
 
@@ -59,8 +62,9 @@ const Nav = ({ getFriendList, friends }) => {
             <img
               style={{
                 border: "2px solid white",
-                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"
-                  }`,
+                boxShadow: `0 0 5px 2px ${
+                  friend.online ? "#05FF00" : "#B6B6B6"
+                }`,
               }}
               src={
                 (friend.profile &&
@@ -86,7 +90,10 @@ const Nav = ({ getFriendList, friends }) => {
               <MoimProfileArea moimId={moimId}></MoimProfileArea>
             ) : (
               <div className="sb-sidenav-profile">
-                <div className="sidenav-profile-mypic">
+                <div
+                  className="sidenav-profile-mypic"
+                  style={{ marginTop: "5px", marginBottom: "5px" }}
+                >
                   <img
                     alt="프로필 이미지"
                     className="sidenav-profile-img"
@@ -105,7 +112,7 @@ const Nav = ({ getFriendList, friends }) => {
                     style={{
                       fontSize: "1.1rem",
                       marginTop: "6px",
-                      paddingLeft: "3px",
+                      marginBottom: "10px",
                       color: "gray",
                     }}
                   >

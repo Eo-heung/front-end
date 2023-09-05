@@ -48,11 +48,12 @@ const Main = () => {
 
   function DateComponent() {
     const today = new Date();
-    const date = `${today.getFullYear()}년 ${(today.getMonth() + 1).toString().padStart(2, '0')}월 ${today.getDate().toString().padStart(2, '0')}일`;
+    const date = `${today.getFullYear()}년 ${(today.getMonth() + 1)
+      .toString()
+      .padStart(2, "0")}월 ${today.getDate().toString().padStart(2, "0")}일`;
 
     return <span className="date">{date}</span>;
   }
-
 
   const imageUrls = [bannerImgBirthday, bannerImgPolice, bannerImgMoim];
 
@@ -91,24 +92,26 @@ const Main = () => {
               <div className="row">
                 {isDesktop && (
                   <div>
-
-                    <div style={{
-                      width: "99%",
-                      backgroundColor: "#fcbe71",
-                      height: "5vh",
-                      display: "flex",
-                      textAlign: "center",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "white",
-                      fontSize: "2vh",
-                    }}>
+                    <div
+                      style={{
+                        width: "99%",
+                        backgroundColor: "#fcbe71",
+                        height: "5vh",
+                        display: "flex",
+                        textAlign: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "white",
+                        fontSize: "2vh",
+                      }}
+                    >
                       <DateComponent /> 의 정보를 알아볼까요?
                     </div>
                     <div className="row">
-
-
-                      <div className="col-xl-6" style={{ width: "35%", marginTop: "2vh" }}>
+                      <div
+                        className="col-xl-6"
+                        style={{ width: "35%", marginTop: "2vh" }}
+                      >
                         <div className="card mb-4">
                           <div className="card-header">
                             <CardTitle>
@@ -125,7 +128,10 @@ const Main = () => {
                         </div>
                       </div>
 
-                      <div className="col-xl-6" style={{ width: "64%", marginTop: "2vh" }}>
+                      <div
+                        className="col-xl-6"
+                        style={{ width: "64%", marginTop: "2vh" }}
+                      >
                         <div className="card mb-4">
                           <div className="card-header">
                             <CardTitle>
@@ -141,8 +147,6 @@ const Main = () => {
                           </div>
                         </div>
                       </div>
-
-
                     </div>
 
                     <div
@@ -151,7 +155,6 @@ const Main = () => {
                         marginBottom: "10px",
                       }}
                     >
-
                       <Carousel
                         height="20vh"
                         animation="slide"
@@ -177,38 +180,43 @@ const Main = () => {
                           />
                         ))}
                       </Carousel>
-
                     </div>
-                    <div style={{
-                      width: "99%",
-                      backgroundColor: "#fcbe71",
-                      height: "5vh",
-                      display: "flex",
-                      textAlign: "center",
-                      alignItems: "center",
-                      justifyContent: "center",
-                      color: "white",
-                      fontSize: "2vh",
-                      marginBottom: "2vh"
-                    }}>오늘의 소식</div>
+                    <div
+                      style={{
+                        width: "99%",
+                        backgroundColor: "#fcbe71",
+                        height: "5vh",
+                        display: "flex",
+                        textAlign: "center",
+                        alignItems: "center",
+                        justifyContent: "center",
+                        color: "white",
+                        fontSize: "2vh",
+                        marginBottom: "2vh",
+                      }}
+                    >
+                      오늘의 소식
+                    </div>
 
                     {/* 뉴스으으으으으으으으으으으 */}
-                    <div className="row" style={{
-                      width: "100%",
-                      display: "flex",
-                      gap: "27px",
-                      alignItems: "center",
-                      displayItems: "center",
-                      justifyContent: "center",
-                    }}>
-
-
-                      <div className="col-xl-6" style={{ width: "15%" }} >
+                    <div
+                      className="row"
+                      style={{
+                        width: "100%",
+                        display: "flex",
+                        gap: "27px",
+                        alignItems: "center",
+                        displayItems: "center",
+                        justifyContent: "center",
+                      }}
+                    >
+                      <div className="col-xl-6" style={{ width: "15%" }}>
                         <div className="card mb-4">
-                          <div className="card-header" style={{ height: "20vh" }}>
-                            <CardTitle>
-                              얍얍
-                            </CardTitle>
+                          <div
+                            className="card-header"
+                            style={{ height: "20vh" }}
+                          >
+                            <CardTitle>얍얍</CardTitle>
                           </div>
                           <div className="card-body" style={{ height: "10vh" }}>
                             내용인가
@@ -218,7 +226,10 @@ const Main = () => {
 
                       <div className="col-xl-6" style={{ width: "15%" }}>
                         <div className="card mb-4">
-                          <div className="card-header" style={{ height: "20vh" }}>
+                          <div
+                            className="card-header"
+                            style={{ height: "20vh" }}
+                          >
                             <CardTitle>
                               <CardLink to="/">
                                 <StyledTypography variant="body1">
@@ -235,7 +246,10 @@ const Main = () => {
 
                       <div className="col-xl-6" style={{ width: "15%" }}>
                         <div className="card mb-4">
-                          <div className="card-header" style={{ height: "20vh" }}>
+                          <div
+                            className="card-header"
+                            style={{ height: "20vh" }}
+                          >
                             <CardTitle>
                               <CardLink to="/">
                                 <StyledTypography variant="body1">
@@ -252,7 +266,10 @@ const Main = () => {
 
                       <div className="col-xl-6" style={{ width: "15%" }}>
                         <div className="card mb-4">
-                          <div className="card-header" style={{ height: "20vh" }}>
+                          <div
+                            className="card-header"
+                            style={{ height: "20vh" }}
+                          >
                             <CardTitle>
                               <CardLink to="/">
                                 <StyledTypography variant="body1">
@@ -269,7 +286,10 @@ const Main = () => {
 
                       <div className="col-xl-6" style={{ width: "15%" }}>
                         <div className="card mb-4">
-                          <div className="card-header" style={{ height: "20vh" }}>
+                          <div
+                            className="card-header"
+                            style={{ height: "20vh" }}
+                          >
                             <CardTitle>
                               <CardLink to="/">
                                 <StyledTypography variant="body1">
@@ -286,7 +306,10 @@ const Main = () => {
 
                       <div className="col-xl-6" style={{ width: "15%" }}>
                         <div className="card mb-4">
-                          <div className="card-header" style={{ height: "20vh" }}>
+                          <div
+                            className="card-header"
+                            style={{ height: "20vh" }}
+                          >
                             <CardTitle>
                               <CardLink to="/">
                                 <StyledTypography variant="body1">
@@ -300,24 +323,15 @@ const Main = () => {
                           </div>
                         </div>
                       </div>
-
-
-
                     </div>
-
-
                   </div>
                 )}
               </div>
-
-
-
-
             </div>
           </main>
         </div>
-      </div >
-    </div >
+      </div>
+    </div>
   );
 };
 
