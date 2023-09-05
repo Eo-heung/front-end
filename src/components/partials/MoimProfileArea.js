@@ -72,11 +72,11 @@ const MoimProfileArea = ({ moimId }) => {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 }
             });
-
             console.log(response1);
 
             const data1 = response1.data.item.applicantDetails;
-
+            setMoimProfile(response1.data.item.msg.moimProfileBase64);
+            console.log("data.moimProfileBase64", response1.data.item.msg.moimProfileBase64);
 
         } catch (err) {
             console.error("Error fetching moim data", err);
@@ -91,13 +91,11 @@ const MoimProfileArea = ({ moimId }) => {
                 }
             });
 
-            console.log(response);
-
             const data = response.data.item.applicantDetails;
 
-            setMoimProfile(data.moimProfileBase64);
+            setMoimProfile(data.item.msg.moimProfileBase64);
 
-            console.log("data.moimProfileBase64", data.moimProfileBase64);
+            console.log("data.moimProfileBase64", data.item.msg.moimProfileBase64);
         } catch (err) {
             console.error("Error fetching moim profile data", err);
         }

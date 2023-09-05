@@ -246,6 +246,9 @@ label {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margin-left: 3%;
+  margin-right: 3%;
+  margin-top: 0.2%;
 }
 
 /* 메인을 감쌀 */
@@ -391,6 +394,8 @@ table tr:last-child td {
   left: 0;
   right: 0;
   z-index: 1030;
+  margin-left: 3%;
+  margin-right: 3%;
 }
 
 /*헤더 끝 */
@@ -406,11 +411,11 @@ table tr:last-child td {
 }
 
 #layoutSidenav #layoutSidenav_nav {
-  flex-basis: 280px;
+  flex-basis: 300px;
   flex-shrink: 0;
   transition: transform 0.15s ease-in-out;
   z-index: 1038;
-  transform: translateX(-280px);
+  transform: translateX(-300px);
 }
 
 #layoutSidenav #layoutSidenav_content {

@@ -169,8 +169,8 @@ const ListAcceptMoim = () => {
 
     const [applicantList, setApplicantList] = useState([]);
     const [scrollActive, setScrollActive] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState("");
-    const [searchType, setSearchType] = useState("all");
+    // const [searchKeyword, setSearchKeyword] = useState("");
+    // const [searchType, setSearchType] = useState("all");
     const [orderBy, setOrderBy] = useState("descending");
 
     const scrollHandler = useMemo(() =>
@@ -194,19 +194,19 @@ const ListAcceptMoim = () => {
             }
         }, 500), [page]);
 
-    const handleOrderBy = () => {
-        setPage(1);
-        setApplicantList([]);
-        setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
-        fetchData();
-    };
+    // const handleOrderBy = () => {
+    //     setPage(1);
+    //     setApplicantList([]);
+    //     setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
+    //     fetchData();
+    // };
 
-    const handleSearch = () => {
-        setPage(1);
-        setApplicantList([]);
-        setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
-        fetchData();
-    }
+    // const handleSearch = () => {
+    //     setPage(1);
+    //     setApplicantList([]);
+    //     setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
+    //     fetchData();
+    // }
 
     const isMounted = useRef(true);
 
@@ -239,18 +239,12 @@ const ListAcceptMoim = () => {
         try {
             setIsLoading(true);
 
-            const apiEndPoint = orderBy === 'ascending'
-                ? `${SPRING_API_URL}/moimReg/get-applicant-list/asc/${moimId}`
-                : `${SPRING_API_URL}/moimReg/get-applicant-list/desc/${moimId}`;
-
-            const response = await axios.post(apiEndPoint, {}, {
+            const response = await axios.post(`${SPRING_API_URL}/moimReg/get-applicant-list/desc/${moimId}`, {}, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 },
                 params: {
                     page: page - 1,
-                    searchKeyword: searchKeyword,
-                    searchType: searchType,
                     orderBy: orderBy
                 }
             });
@@ -326,7 +320,7 @@ const ListAcceptMoim = () => {
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
                 <PageTitle>{`"${moimData.moimTitle}" 신청자 목록`}</PageTitle>
                 <SearchContainer>
-                    <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
+                    {/* <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
                     <StyledSelect value={searchType} displayEmpty onChange={(e) => setSearchType(e.target.value)}>
                         <StyledMenuItem value="all">전체</StyledMenuItem>
                         <StyledMenuItem value="nickname">신청자</StyledMenuItem>
@@ -334,7 +328,7 @@ const ListAcceptMoim = () => {
                     <SearchButton variant="contained" size="large" onClick={handleSearch}>검색</SearchButton>
                     <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
                         {orderBy === 'ascending' ? '최신순' : '등록순'}
-                    </SearchButton>
+                    </SearchButton> */}
                     <SearchButton variant="contained" onClick={() => navi(`/${moimId}/moim-board/moim-member`)}>가입자 목록</SearchButton>
                 </SearchContainer>
             </StyledContainer>

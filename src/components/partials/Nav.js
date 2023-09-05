@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useLocation } from 'react-router-dom';
+import { useLocation } from "react-router-dom";
 import basicProfile from "../../public/basic_profile.png";
 import MoimProfileArea from "./MoimProfileArea";
 import MoimMemberList from "./MoimMemberList";
@@ -124,7 +124,9 @@ const Nav = ({ getFriendList, friends }) => {
                             hour12: true,
                           })}
                         </td>
-                        <td style={{ textAlign: "center" }}>{appoint.content}</td>
+                        <td style={{ textAlign: "center" }}>
+                          {appoint.content}
+                        </td>
                       </tr>
                     ) : (
                       <li>약속이 없어요!</li>
@@ -158,9 +160,9 @@ const Nav = ({ getFriendList, friends }) => {
               </div>
             )}
           </nav>
-        </div >
-      </div >
-    </div >
+        </div>
+      </div>
+    </div>
   );
 };
 

@@ -106,10 +106,10 @@ const Header = ({ getFriendList, userId }) => {
       JSON.stringify({ status: "offline" })
     );
 
-    removeCookie('userId')
-    removeCookie('userNickname')
-    removeCookie('userAddr3')
-    removeCookie('userGender')
+    removeCookie("userId");
+    removeCookie("userNickname");
+    removeCookie("userAddr3");
+    removeCookie("userGender");
 
     sessionStorage.removeItem("ACCESS_TOKEN");
     localStorage.removeItem("REFRESH_TOKEN");
@@ -224,14 +224,13 @@ const Header = ({ getFriendList, userId }) => {
             gap: "1.5vw",
           }}
         >
+          <Link className="navbar-credit" to="/charge">
+            <StyledTypography variant="body2">곶감충전</StyledTypography>
+          </Link>
           <Link className="navbar-logout" to="/mypage">
             <StyledTypography variant="body2">
               <StyledTypography variant="body2">마이페이지</StyledTypography>
             </StyledTypography>
-          </Link>
-
-          <Link className="navbar-credit" to="/charge">
-            <StyledTypography variant="body2">곶감충전</StyledTypography>
           </Link>
           <Link
             className="navbar-logout"
