@@ -33,6 +33,8 @@ function TopButton() {
         });
     };
 
+    console.log("Trigger:", trigger);
+
     return trigger && (
         <PositionContainer>
             <ScrollToTopButton style={{ backgroundColor: "#FCBE71", color: "#fff" }} size="large" onClick={scrollToTop}>

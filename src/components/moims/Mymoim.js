@@ -6,6 +6,7 @@ import { styled } from '@mui/system';
 import { throttle } from 'lodash';
 import { ListMoimSearchContainer, ListMoimTextField, ListMoimSearchButton, ListMoimLink, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink } from '../utils/StyledListMoim.js';
 import { SPRING_API_URL } from '../../config';
+import _debounce from 'lodash/debounce';
 
 export const MyMoimContainer = styled('div')`
     position: fixed;
@@ -44,33 +45,32 @@ const Mymoim = () => {
     const [scrollActive, setScrollActive] = useState(false);
     const [orderBy, setOrderBy] = useState("descending");
 
-    const scrollHandler = useMemo(() =>
-        throttle(() => {
+    const DEBOUNCE_DELAY = 500;
+    const debouncedScrollHandler = _debounce(() => {
+        if (window.scrollY > 100) {
+            setScrollActive(true);
+        } else {
+            setScrollActive(false);
+        }
 
-            if (window.scrollY > 100) {
-                setScrollActive(true);
-            } else {
-                setScrollActive(false);
+        const scrollHeight = document.documentElement.scrollHeight;
+        const scrollTop = document.documentElement.scrollTop;
+        const clientHeight = document.documentElement.clientHeight;
+
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
+            if (!isLastPage) {
+                setPage(prevPage => prevPage + 1);
             }
-
-            const scrollHeight = document.documentElement.scrollHeight;
-            const scrollTop = document.documentElement.scrollTop;
-            const clientHeight = document.documentElement.clientHeight;
-
-            if (scrollTop + clientHeight >= scrollHeight - 100) {
-                if (!isLastPage) {
-                    setPage(prevPage => prevPage + 1);
-                }
-                window.scrollTo({ scrollTop });
-                return;
-            }
-        }, 500), [page]);
+            window.scrollTo({ scrollTop });
+            return;
+        }
+    }, DEBOUNCE_DELAY);
 
     useEffect(() => {
         fetchData();
-        window.addEventListener('scroll', scrollHandler);
+        window.addEventListener('scroll', debouncedScrollHandler);
         return () => {
-            window.removeEventListener('scroll', scrollHandler);
+            window.removeEventListener('scroll', debouncedScrollHandler);
         };
     }, [page, orderBy]);
 
