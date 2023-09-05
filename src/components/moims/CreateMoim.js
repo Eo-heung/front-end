@@ -1,3 +1,4 @@
+
 import React, { useCallback, useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCookies } from "react-cookie";
@@ -25,6 +26,7 @@ const StyledForm = styled("form")`
   align-items: center;
   gap: 20px;
   width: 100%;
+
 `;
 
 const StyledBox = styled(Box)`
@@ -262,15 +264,18 @@ const CreateMoim = () => {
 
           const formData = new FormData();
 
+
           if (!moimPic) {
             fetch(basicProfile)
               .then((response) => response.blob())
               .then((blob) => {
                 const file = new File([blob], "basic_profile.png", {
                   type: "image/png",
+
                 });
                 formData.append("moimPic", file);
                 formData.append("moimId", response.data.item.moimId);
+
 
                 return axios.post(
                   `${SPRING_API_URL}/moim/create-moim-pic`,
@@ -480,6 +485,7 @@ const CreateMoim = () => {
       </StyledForm>
     </BasicBoard>
   );
+
 };
 
 export default CreateMoim;
