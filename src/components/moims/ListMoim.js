@@ -1,10 +1,10 @@
-import React, { useState, useEffect, useMemo } from 'react';
+import React, { useState, useEffect } from 'react';
 import { CardContent, Typography, Button } from '@mui/material';
 import axios from 'axios';
 import TopButton from '../utils/TopButton.js';
-import { throttle } from 'lodash';
 import { ListMoimContainer, ListMoimSearchContainer, ListMoimCategoryContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton, ListMoimPageTitle, ListMoimLink, ListMoimButton, ListMoimScrollDiv, ListMoimLoadingText, ListMoimCard, ListMoimCardMedia, ListMoimCardInfo, ListMoimMoimInfoRow, ListMoimEllipsisText, ListMoimStyledLink, ListMoimAd, ListMoimAdContent } from '../utils/StyledListMoim.js';
 import { SPRING_API_URL } from '../../config';
+import _debounce from 'lodash/debounce';
 
 const ListMoim = () => {
     const [data, setData] = useState([]);
@@ -20,27 +20,26 @@ const ListMoim = () => {
 
     const [hoveredButton, setHoveredButton] = useState(null);
 
-    const scrollHandler = useMemo(() =>
-        throttle(() => {
+    const DEBOUNCE_DELAY = 500;
+    const debouncedScrollHandler = _debounce(() => {
+        if (window.scrollY > 100) {
+            setScrollActive(true);
+        } else {
+            setScrollActive(false);
+        }
 
-            if (window.scrollY > 100) {
-                setScrollActive(true);
-            } else {
-                setScrollActive(false);
+        const scrollHeight = document.documentElement.scrollHeight;
+        const scrollTop = document.documentElement.scrollTop;
+        const clientHeight = document.documentElement.clientHeight;
+
+        if (scrollTop + clientHeight >= scrollHeight - 100) {
+            if (!isLastPage) {
+                setPage(prevPage => prevPage + 1);
             }
-
-            const scrollHeight = document.documentElement.scrollHeight;
-            const scrollTop = document.documentElement.scrollTop;
-            const clientHeight = document.documentElement.clientHeight;
-
-            if (scrollTop + clientHeight >= scrollHeight / 2) {
-                if (!isLastPage) {
-                    setPage(prevPage => prevPage + 1);
-                }
-                window.scrollTo({ scrollTop });
-                return;
-            }
-        }, 500), [page]);
+            window.scrollTo({ scrollTop });
+            return;
+        }
+    }, DEBOUNCE_DELAY);
 
     const renderCategoryButton = (label) => (
         <Button
@@ -62,9 +61,9 @@ const ListMoim = () => {
 
     useEffect(() => {
         fetchData();
-        window.addEventListener('scroll', scrollHandler);
+        window.addEventListener('scroll', debouncedScrollHandler);
         return () => {
-            window.removeEventListener('scroll', scrollHandler);
+            window.removeEventListener('scroll', debouncedScrollHandler);
         };
     }, [page, orderBy]);
 

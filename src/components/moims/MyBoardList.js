@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import axios from 'axios';
 import { useLocation, useNavigate, useParams } from 'react-router-dom';
 import { StyledBasicContainer, StyledPaper, StyledContainer, Styled, StyledHead, StyledRow, StyledCell, StyledHeaderCell, StyledMainHeaderCell, StyledText, StyledFooter } from '../utils/StyledTable';
-import { ListMoimSearchContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton } from '../utils/StyledListMoim';
+import { ListMoimSearchContainer, ListMoimTextField, ListMoimSelect, ListMoimMenuItem, ListMoimSearchButton, ListMoimLoadingText } from '../utils/StyledListMoim';
 import { SPRING_API_URL } from '../../config';
 import ListPagination from '../utils/Pagination';
 
@@ -110,20 +110,25 @@ const MyBoardList = ({ setActiveTab }) => {
                         </StyledHead>
                         {isInfoPage ? (
                             <tbody>
-                                {Array.isArray(boards) && boards.slice(0, isInfoPage ? 5 : boards.length).map((board) => (
-                                    <StyledRow key={board.boardId}>
-                                        <StyledCell
-                                            style={{ width: "650px", cursor: "pointer" }}
-                                            onClick={() => {
-                                                navi(`/${moimId}/moim-board/free-board/${board.boardId}`);
-                                            }}
-                                        >
-                                            {board.boardTitle}
-                                        </StyledCell>
-                                        <StyledCell style={{ width: "180px" }}>{board.userName}</StyledCell>
-                                        <StyledCell style={{ width: "170px" }}>{board.boardRegdate.slice(0, 10)}</StyledCell>
-                                    </StyledRow>
-                                ))}
+                                {Array.isArray(boards) && boards.length > 0 ? (
+                                    <>
+                                        {boards.slice(0, isInfoPage ? 5 : boards.length).map((board) =>
+                                            <StyledRow key={board.boardId}>
+                                                <StyledCell
+                                                    style={{ width: "650px", cursor: "pointer" }}
+                                                    onClick={() => {
+                                                        navi(`/${moimId}/moim-board/free-board/${board.boardId}`);
+                                                    }}
+                                                >
+                                                    {board.boardTitle}
+                                                </StyledCell>
+                                                <StyledCell style={{ width: "180px" }}>{board.userName}</StyledCell>
+                                                <StyledCell style={{ width: "170px" }}>{board.boardRegdate.slice(0, 10)}</StyledCell>
+                                            </StyledRow>
+                                        )}
+                                    </>
+                                ) : (
+                                    <ListMoimLoadingText>아직 작성한 게시글이 없어요.</ListMoimLoadingText>)}
                             </tbody>
                         ) : (
                             (<tbody>
