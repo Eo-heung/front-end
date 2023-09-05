@@ -8,6 +8,8 @@ import styled from "styled-components";
 import { SPRING_API_URL } from "../../config";
 import "../../css/partials/Header.css";
 import logo from "../../public/logo.gif";
+import logo_color from "../../public/logo_color.GIF";
+import icon_gam from "../../public/icon_gam.png";
 import { Remove } from "@mui/icons-material";
 import { useCookies } from "react-cookie";
 
@@ -141,11 +143,12 @@ const Header = ({ getFriendList, userId }) => {
           >
             <Link className="navbar-brand" to="/">
               <img
-                src={logo}
+                src={logo_color}
                 style={{
                   marginLeft: "13%",
-                  width: "70%",
+                  width: "75%",
                   height: "100%",
+                  //marginTop: "15px",
                   // width: "90px",
                   // height: "200px",
                 }}
@@ -159,6 +162,7 @@ const Header = ({ getFriendList, userId }) => {
             height: "100%",
             display: "flex",
             alignItems: "center",
+            marginTop: "2vh"
           }}
         >
           {!isDesktop && (
@@ -214,6 +218,9 @@ const Header = ({ getFriendList, userId }) => {
               </Link>
             ))}
         </div>
+
+
+        {/* 준형미안 */}
         <div
           style={{
             width: "30%",
@@ -222,10 +229,42 @@ const Header = ({ getFriendList, userId }) => {
             alignItems: "center",
             justifyContent: "flex-end",
             gap: "1.5vw",
+            marginTop: "2vh"
           }}
         >
           <Link className="navbar-credit" to="/charge">
-            <StyledTypography variant="body2">곶감충전</StyledTypography>
+            <div style={{
+              width: "40%",
+              // height: "100%",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "flex-end",
+            }}>
+              <StyledTypography variant="body2">
+
+                <img
+                  src={icon_gam}
+                  style={{
+                    // marginLeft: "15px",
+                    width: "10%",
+                    height: "10%",
+                  }}
+                />
+
+                곶감개수넣자
+
+
+              </StyledTypography>
+              <div style={{
+                width: "40%",
+                // display: "flex",
+                // alignItems: "center",
+                justifyContent: "flex-end",
+              }}>
+                충전
+              </div>
+
+            </div>
           </Link>
           <Link className="navbar-logout" to="/mypage">
             <StyledTypography variant="body2">

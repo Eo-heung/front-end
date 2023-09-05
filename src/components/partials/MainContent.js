@@ -6,7 +6,9 @@ import styled from "styled-components";
 import axios from "axios";
 import bannerImgPolice from "../../public/banner_police.png";
 import bannerImgBirthday from "../../public/banner_birthday.png";
+import ex_sun from "../../public/ex_sun.png";
 import bannerImgMoim from "../../public/banner_moim.png";
+import { fontSize } from "@mui/system";
 
 const Main = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 712);
@@ -45,6 +47,7 @@ const Main = () => {
     return () => window.removeEventListener("resize", handleResize);
   }, []);
 
+
   const imageUrls = [bannerImgBirthday, bannerImgPolice, bannerImgMoim];
 
   const cardHeaders = [
@@ -82,22 +85,23 @@ const Main = () => {
               <div className="row">
                 {isDesktop && (
                   <div>
-                    asdf
+
                     <div
                       className="carousel-container"
                       style={{
-                        marginTop: "1vh",
                         marginBottom: "10px",
                       }}
                     >
+
                       <Carousel
-                        height="30vh"
+                        height="20vh"
                         animation="slide"
                         duration={2000}
                         indicators={true}
                         indicatorContainerProps={{
                           style: {
                             zIndex: 1,
+                            // marginTop: "-35px",
                             marginTop: "-35px",
                             position: "relative",
                           },
@@ -108,56 +112,101 @@ const Main = () => {
                             key={index}
                             src={url}
                             style={{
-                              maxWidth: "100%",
-                              height: "auto",
+                              width: "100%",
+                              height: "100%",
                             }}
                           />
                         ))}
                       </Carousel>
+
                     </div>
-                  </div>
-                )}
-              </div>
-              <div className="row">
-                {/* {cardHeaders.map((header, index) => ( */}
-                {weatherState.loading === false ? (
-                  <div className="col-xl-6">
-                    <div className="card mb-4">
-                      <div className="card-header">
-                        <CardTitle>
-                          <CardLink to="/">
+
+
+                    {/* 뉴스으으으으으으으으으으으 */}
+                    <div className="row" style={{
+                      width: "100%",
+                      display: "flex",
+                      gap: "29.5px",
+                      alignItems: "center",
+                      displayItems: "center",
+                      justifyContent: "center",
+                    }}>
+
+
+                      <div className="col-xl-6" style={{ width: "49%" }} >
+                        <div className="card mb-4">
+                          <div className="card-header" style={{ height: "5vh" }}>
+
+                            <CardTitle>
+                              얍얍
+                            </CardTitle>
+                          </div>
+                          <div className="card-body" style={{ height: "57.5vh" }}>
                             <StyledTypography variant="body1">
-                              오늘 날씨는 어때
+                              내용
                             </StyledTypography>
-                          </CardLink>
-                        </CardTitle>
-                      </div>
-                      <div className="card-body">
-                        <div>
-                          <div>{(weatherState.temp - 273.15).toFixed(0)}°</div>
-                          <img src={imgSrc} alt="weather icon" />
-                          {weatherState.desc}
-                          <div>
-                            최고: {(weatherState.temp_max - 273.15).toFixed(0)}°
                           </div>
-                          <div>
-                            최저: {(weatherState.temp_min - 273.15).toFixed(0)}°
-                          </div>
-                          <div>{weatherState.humidity}%</div>
                         </div>
                       </div>
+
+                      <div className="col-xl-6" style={{ width: "49%" }}>
+                        <div className="card mb-4">
+                          <div className="card-header" style={{ height: "5vh" }}>
+                            <CardTitle>
+                              <CardLink to="/">
+                                오늘 날씨는 어때??
+                              </CardLink>
+                            </CardTitle>
+                          </div>
+                          <div className="card-body" style={{ height: "24.5vh" }}>
+                            <StyledTypography variant="body1">
+                              <img
+                                src={ex_sun}
+                                style={{
+                                  // marginLeft: "15px",
+                                  width: "30%",
+                                  height: "30%",
+                                  marginBottom: "30px"
+                                }}
+                              />
+                              내용
+                            </StyledTypography>
+                          </div>
+                        </div>
+
+                        <div className="card mb-4">
+                          <div className="card-header" style={{ height: "5vh" }}>
+                            <CardTitle>
+                              <CardLink to="/">
+                                이게 제목이지
+                              </CardLink>
+                            </CardTitle>
+                          </div>
+                          <div className="card-body" style={{ height: "24.5vh" }}>
+                            <StyledTypography variant="body1">
+                              내용
+                            </StyledTypography>
+                          </div>
+                        </div>
+                      </div>
+
+
+
                     </div>
+
+
                   </div>
-                ) : (
-                  <div></div>
                 )}
-                {/* ))} */}
               </div>
+
+
+
+
             </div>
           </main>
         </div>
-      </div>
-    </div>
+      </div >
+    </div >
   );
 };
 
