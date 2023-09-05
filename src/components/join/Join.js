@@ -7,15 +7,9 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import * as React from 'react';
 import secondImage from '../../public/02.png'; // 추가된 이미지 가져오기
-import { Divider } from '@mui/material';
 
 const Join = ({ handleClick }) => {
     const defaultTheme = createTheme();
-
-    // const viewportWidth = window.innerWidth;
-    // const viewportHeight = window.innerHeight;
-
-    // console.log(`Viewport Width: ${viewportWidth}, Viewport Height: ${viewportHeight}`); -> vw, vh로 바꾸기 위해 전체 화면크기 확인
 
     return (
         <ThemeProvider theme={defaultTheme}>

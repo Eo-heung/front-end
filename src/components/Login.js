@@ -21,6 +21,10 @@ import { useCookies } from "react-cookie";
 import Carousel from "react-material-ui-carousel";
 import { useNavigate } from "react-router-dom";
 import { SPRING_API_URL, REDIRECT_URL } from "../config";
+import loginImage1 from '../public/login01.png';
+import loginImage2 from '../public/login02.png';
+import loginImage3 from '../public/login03.png';
+import loginImage4 from '../public/login04.png';
 
 const Login = () => {
   const navi = useNavigate();
@@ -262,7 +266,7 @@ const Login = () => {
             alignItems: "center",
           }}
         >
-          <img sx={{ width: "80%", height: "80%" }} src={src} />
+          <img src={src} />
         </Paper>
       </Box>
     );
@@ -275,7 +279,7 @@ const Login = () => {
         container
         component="main"
         sx={{
-          minWidth: "512px",
+          minWidth: "51vw",
           width: "60%",
           height: "100vh",
           alignItems: "center",
@@ -306,16 +310,28 @@ const Login = () => {
             navButtonsAlwaysVisible="true"
             indicatorContainerProps={{
               style: {
-                marginBottom: "10%",
                 textAlign: "center",
               },
             }}
             duration={1000}
-            sx={{ width: "100%", height: "100%" }}
+            sx={{ width: "100%", height: "100%", }}
           >
-            <CarouselItem src="https://item.kakaocdn.net/do/1dd07538dc742e6020f3cf7e59555cd9f43ad912ad8dd55b04db6a64cddaf76d" />
-            <CarouselItem src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F70%2Faa%2Fdb%2F70aadb580a93ca72f7b8591bf89df19d.jpg&type=a340" />
-            <CarouselItem src="https://search.pstatic.net/sunny/?src=https%3A%2F%2Fi.pinimg.com%2F736x%2F2d%2Fd3%2F65%2F2dd365fb484e791a027d03092a5de7c5.jpg&type=sc960_832" />
+            <img src={loginImage1} style={{
+              maxWidth: "100%",
+              height: "auto",
+            }} />
+            <img src={loginImage2} style={{
+              maxWidth: "100%",
+              height: "auto",
+            }} />
+            <img src={loginImage3} style={{
+              maxWidth: "100%",
+              height: "auto",
+            }} />
+            <img src={loginImage4} style={{
+              maxWidth: "100%",
+              height: "auto",
+            }} />
           </Carousel>
         </Grid>
         <Grid

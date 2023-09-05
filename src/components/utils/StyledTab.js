@@ -1,32 +1,20 @@
-import { styled } from '@mui/system';
+import { styled } from "@mui/system";
 
+export const TabContainer = styled("div")`
+  position: fixed;
+  background: #fff;
+  z-index: 1000;
+  width: 77%;
+  height: 150px;
+  top: 106px;
+  left: 360px;
+`;
 
-export const TabContainer = styled('div')`
-    position: fixed;
-    top: 80px;
-    right: 0;
-    left: 350px;
-    padding: 1.5rem;
-    height: 80px;
-    width: 100%;
-    z-index: 1001;
-    background-color: #fff;
-    &.fixed {
-        position: fixed;
-        padding: 1.5rem 3rem;
-        width: 90%;
-        z-index: 100;
-    }
-    @media (max-width: 992px) {
-        left: 0;
-    }
-    `;
-
-export const TabContent = styled('div')`
-    display: flex;
-    align-items: center;
-    margin-top: 50px;
-    padding: 1.5rem;
-    width: 100%;
-    gap: 10px;
+export const TabContent = styled("div")`
+  display: flex;
+  align-items: center;
+  margin-top: 50px;
+  padding: 1.5rem;
+  width: 100%;
+  gap: 10px;
 `;
