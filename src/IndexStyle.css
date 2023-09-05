@@ -247,7 +247,7 @@ label {
   flex-direction: column;
   min-height: 100vh;
   margin-left: 3%;
-  margin-right: 3%; 
+  margin-right: 3%;
   margin-top: 0.2%;
 }
 
@@ -394,6 +394,8 @@ table tr:last-child td {
   left: 0;
   right: 0;
   z-index: 1030;
+  margin-left: 3%;
+  margin-right: 3%;
 }
 
 /*헤더 끝 */
