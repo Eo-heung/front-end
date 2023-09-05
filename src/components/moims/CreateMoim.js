@@ -8,6 +8,7 @@ import axios from 'axios';
 import BasicBoard from '../utils/BasicBoard';
 import AddPhotoAlternateOutlinedIcon from '@mui/icons-material/AddPhotoAlternateOutlined';
 import { SPRING_API_URL } from '../../config';
+import basicProfile from "../../public/basic_profile.png";
 
 const StyledForm = styled('form')`
     display: flex;
@@ -139,7 +140,7 @@ const CreateMoim = () => {
     }, [userData]);
 
     const handleTitleChange = (e) => {
-        if (e.target.value.length <= 24) {
+        if (e.target.value.length <= 20) {
             setMoimTitleLength(e.target.value.length);
             handleInputChange(e);
         }
@@ -206,6 +207,12 @@ const CreateMoim = () => {
             return;
         }
 
+        if (parseInt(inputs.maxMoimUser) < 1) {
+            alert("모임원 수는 최소 1명 이상이어야 해요. 인원 수를 확인해주세요.");
+            document.getElementsByName("maxMoimUser")[0].focus();
+            return;
+        }
+
         const createMoimAxios = async () => {
             const userData = {
                 moimCategory: inputs.moimCategory,
@@ -224,41 +231,51 @@ const CreateMoim = () => {
                     }
                 });
 
-                console.log(response.data);
-
                 const formData = new FormData();
 
                 if (!moimPic) {
-                    try {
-                        const defaultImageRes = await axios.get('https://i.postimg.cc/h41MrLb5/170px-Ojamajo-Tap-svg.png', {
-                            responseType: 'blob'
-                        });
+                    fetch(basicProfile)
+                        .then(response => response.blob())
+                        .then(blob => {
+                            const file = new File([blob], "basic_profile.png", { type: "image/png" });
+                            formData.append("moimPic", file);
+                            formData.append("moimId", response.data.item.moimId);
 
-                        const defaultImageFile = new File([defaultImageRes.data], 'default-image.png', { type: 'image/png' });
-                        formData.append("moimPic", defaultImageFile);
-                        formData.append("moimId", response.data.item.moimId);
-                    } catch (err) {
-                        console.error("Failed to download default image:", err);
-                    }
+                            return axios.post(`${SPRING_API_URL}/moim/create-moim-pic`, formData, {
+                                headers: {
+                                    Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                                    'Content-Type': 'multipart/form-data',
+                                }
+                            });
+                        })
+                        .then(result => {
+                            console.log(result.data);
+
+                            if (result.data.item) {
+                                alert("등록이 완료되었습니다.");
+                                navi("/moim-controller/list-moim");
+                            }
+                        })
+                        .catch(e => {
+                            console.log(e);
+                        });
                 } else {
                     formData.append("moimPic", moimPic);
                     formData.append("moimId", response.data.item.moimId);
-                }
 
-                console.log(formData);
+                    const result = await axios.post(`${SPRING_API_URL}/moim/create-moim-pic`, formData, {
+                        headers: {
+                            Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+                            'Content-Type': 'multipart/form-data',
+                        }
+                    });
 
-                const result = await axios.post(`${SPRING_API_URL}/moim/create-moim-pic`, formData, {
-                    headers: {
-                        Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
-                        'Content-Type': 'multipart/form-data',
+                    console.log(result.data);
+
+                    if (result.data.item) {
+                        alert("등록이 완료되었습니다.");
+                        navi("/moim-controller/list-moim");
                     }
-                });
-
-                console.log(result.data);
-
-                if (result.data.item) {
-                    alert("등록이 완료되었습니다.");
-                    navi("/moim-controller/list-moim");
                 }
             } catch (e) {
                 console.log(e);
@@ -308,7 +325,7 @@ const CreateMoim = () => {
                             placeholder="모임명은 짧을수록 기억하기 쉬워요."
                             value={inputs.moimTitle}
                         />
-                        <CounterTypography align="right">{moimTitleLength}/24자</CounterTypography>
+                        <CounterTypography align="right">{moimTitleLength}/20자</CounterTypography>
                     </CounterBox>
                     <h5 fontWeight="bold">모집 인원</h5>
                     <StyledTextField name="maxMoimUser" placeholder="최대 50명까지 모집할 수 있어요." onChange={handleInputChange} variant="outlined" />

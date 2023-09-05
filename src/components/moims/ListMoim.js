@@ -33,7 +33,7 @@ const ListMoim = () => {
             const scrollTop = document.documentElement.scrollTop;
             const clientHeight = document.documentElement.clientHeight;
 
-            if (scrollTop + clientHeight >= scrollHeight / 2) {
+            if (scrollTop + clientHeight >= scrollHeight - 100) {
                 if (!isLastPage) {
                     setPage(prevPage => prevPage + 1);
                 }
