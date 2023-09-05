@@ -217,15 +217,15 @@ const Payment = () => {
   };
 
   return (
-    <div style={{ display: 'flex', justifyContent: 'center' }}> {/* 이 부분을 추가하여 두 개의 박스가 옆에 나열되도록 함 */}
+    <div style={{
+      display: 'flex', justifyContent: 'center',
+    }}> {/* 이 부분을 추가하여 두 개의 박스가 옆에 나열되도록 함 */}
       <Paper style={{
         width: '45%',
         marginTop: '6.5%',
         marginLeft: '14.06vw',  // 변경된 값
-        height: '68vh',      // 변경된 값
         boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
-        position: 'relative'
-
+        position: 'relative',
       }}>
         <div style={{
           position: 'absolute',
@@ -315,55 +315,58 @@ const Payment = () => {
             onBlur={handleCustomCountBlur}
             placeholder="직접입력하기 (원하는 곶감 수 입력)"
             onClick={(e) => e.stopPropagation()}
-            sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '2vh' }} />
+            sx={{ flexDirection: 'column', textAlign: 'center', width: '70%', marginTop: '2vh', marginBottom: '-1vh' }} />
         </div >
         <br></br>
-        <hr></hr>
-        <div style={{ height: '0.2vh', textAlign: 'center' }}>
-          <Grid style={{ alignItems: 'center' }}>
+        <hr style={{ marginTop: '2%', marginBottom: '2%' }}></hr>
+        <div style={{ textAlign: 'center' }}>
+          <Grid style={{ textAlign: 'center' }}>
             {[`구매 후 총 곶감 수 : ${addGotGam}개`]}
           </Grid>
         </div>
-        <hr style={{ marginTop: '3.5vh' }}></hr>
-        <div style={{ height: '0.2vh', textAlign: 'center' }}>
+        <hr style={{ marginTop: '2%', marginBottom: '2%' }}></hr>
+        <div style={{ textAlign: 'center' }}>
           <Grid>
             {[
               ["총 결제 금액 : ", `${selectedItem.price} 원`]
             ]}
           </Grid>
         </div>
-        <hr style={{ marginTop: '35px' }}></hr>
-        <div style={{ textAlign: 'center' }}>
-          <StyledButton onClick={onClickPayment} style={{ marginTop: '0.5vh', height: '5vh', width: '15vw' }}>
+        <hr style={{ marginTop: '2%', marginBottom: '5%' }}></hr>
+        <div style={{ textAlign: 'center', marginBottom: "5%" }}>
+          <StyledButton onClick={onClickPayment} style={{ height: '5vh', width: '15vw' }}>
             결제하기
           </StyledButton>
         </div>
-      </Paper>
+      </Paper >
       <div style={{
         width: '20%',
         marginTop: '6.5%',
         marginLeft: '6vw',  // 변경된 값
-        height: '68vh',      // 변경된 값
         boxShadow: '0px 4px 20px rgba(0, 0, 0, 0.2)',
-        position: 'relative'
+        position: 'relative',
+        border: "1px solid blue"
       }}>
         <div
-          style={{ textAlign: 'center', marginTop: '20px', cursor: 'pointer' }}
+          style={{ textAlign: 'center', marginTop: '2vh', marginBottom: '2vh' }}
         >
           약관 내용
         </div>
-        <hr style={{ marginTop: '2vh' }}></hr>
+        <hr style={{ marginTop: '2%', marginBottom: '2vh' }}></hr>
         <br />
         <div style={{ fontFamily: "font-medium", color: 'gray', marginLeft: '3vw', marginRight: '3vw' }}>
           1. 구매 후 7일 경과 시 환불이 불가능합니다.<br /><br />
           2. 구매 후 곶감 사용 시 환불이 불가능합니다.<br /><br />
           3. 잔여 곶감을 환불받고싶으시면 <a>junghyuna04@gmail.com</a>로 문의해주세요.<br /><br />
-          4. 잔여 곶감을 환불받을 시 수수료 10%가 요구되며 10000원 이하의 금액을 환불받을 시에는 수수료1000원이 고정 요구됩니다.<br /><br />
+          4. 잔여 곶감을 환불받을 시 수수료 10%가 요구되며 10000원 이하의 금액을 환불받을 시에는 수수료1000원이 고정 요구됩니다.
         </div>
         <div
           style={{
             display: 'flex',
-            marginTop: '20vh',
+            position: 'absolute',
+            bottom: 0,
+            width: "100%",
+            marginBottom: "40px",
             justifyContent: 'center',
           }}
           onClick={toggleCheck}
@@ -372,7 +375,8 @@ const Payment = () => {
             type="checkbox"
             checked={agreedTerms}
             onChange={(e) => setAgreedTerms(e.target.checked)}
-          />          <span style={{ marginLeft: '0.5vw' }}>위 약관에 동의합니다</span>
+          />
+          <span style={{ marginLeft: '0.5%' }}>위 약관에 동의합니다</span>
         </div>
 
       </div>
