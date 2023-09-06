@@ -7,6 +7,7 @@ import Typography from '@mui/material/Typography';
 import { ThemeProvider, createTheme } from '@mui/material/styles';
 import * as React from 'react';
 import secondImage from '../../public/02.png'; // 추가된 이미지 가져오기
+import logo from '../../public/logo_color.GIF';
 
 const Join = ({ handleClick }) => {
     const defaultTheme = createTheme();
@@ -38,7 +39,7 @@ const Join = ({ handleClick }) => {
                     >
                         <ArrowBackIosIcon />
                     </IconButton>
-                    <img alt='어흥 로고' src="/static/media/logo.3745e555c6be936e8008.gif" style={{ width: '150px', height: '80px', marginBottom: '20px' }} />
+                    <img alt='어흥 로고' src={logo} style={{ width: '150px', height: '80px', marginBottom: '20px' }} />
                     <hr></hr>
                     <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
                         어흥! 반가워요!
