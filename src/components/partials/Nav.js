@@ -110,10 +110,6 @@ const Nav = ({ getFriendList, friends }) => {
                   <img
                     alt="프로필 이미지"
                     className="sidenav-profile-img"
-                    style={{
-                      maxWidth: "100%",
-                      height: "auto",
-                    }}
                     src={imageFile || basicProfile}
                   ></img>
                 </div>
