@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import QuitModal from "../../components/utils/QuitModal";
 import { SPRING_API_URL } from "../../config";
 import DeleteMoimModal from "../utils/DeleteMoimModal";
+import moimMember from "../../public/moim_member.png";
 
 const MoimMemberList = ({ moimId }) => {
   const [moimData, setMoimData] = useState({
@@ -101,13 +102,13 @@ const MoimMemberList = ({ moimId }) => {
     <>
       <div className="sb-sidenav-friend">
         <div className="sb-sidenav-friend-title">
-          <span style={{ fontSize: "16px", fontFamily: "font-light" }}>접속한 친구목록</span>
+          <span style={{ fontSize: "16px", fontFamily: "font-light" }}>접속한 멤버목록</span>
         </div>
         <div className="sb-sidenav-fri-container">
           <table className="sb-sidenav-fri">
             <tr>
               <td style={{ width: "260px", textAlign: "center" }}>
-                활동중인 친구가 없습니다.
+                <img src={moimMember} style={{ width: "100%", borderRadius: 0 }}></img>
               </td>
             </tr>
           </table>
