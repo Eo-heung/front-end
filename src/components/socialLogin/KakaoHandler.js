@@ -64,40 +64,57 @@ const KakaoHandler = () => {
               console.log(res);
               const currentDate = new Date();
               const currentYear = currentDate.getFullYear();
-              const Age = res.data.kakao_account.age_range.split("~").map(Number)[0];
+              const ageRange = res.data.kakao_account.age_range;
 
-              axios
-                .post(`${SPRING_API_URL}/kakaoLogin`, {
-                  userId: res.data.kakao_account.email,
-                  userBirth:
-                    currentYear -
-                    res.data.kakao_account.age_range.split("~").map(Number)[0] +
-                    res.data.kakao_account.birthday,
-                  userName: res.data.kakao_account.profile.nickname,
-                  userGender: res.data.kakao_account.gender === "male" ? 1 : 0,
-                  userEmail: res.data.kakao_account.email,
-                })
-                .then((res) => {
-                  if (Age > 19) {
-                    alert(`${res.data.item.userName}님 환영합니다.`);
-                    localStorage.setItem("REFRESH_TOKEN", res.data.item.token);
-                    sessionStorage.setItem("ACCESS_TOKEN", res.data.item.token);
-                    sessionStorage.setItem("userId", res.data.item.userId);
-                    loginSuccessHandler(res.data.item);
-                    navi("/");
-                  }
-                  else {
-                    axios.post(`${SPRING_API_URL}/removeId`, {},
-                      {
-                        headers: {
-                          Authorization: `Bearer ${res.data.item.token
-                            }`,
-                        },
-                      })
-                    alert(`만 60세 미만은 이용할 수 없습니다!!!!`);
-                    navi("/login");
-                  }
-                });
+              if (ageRange) {
+                const Age = ageRange.split("~").map(Number)[0];
+
+                axios
+                  .post(`${SPRING_API_URL}/kakaoLogin`, {
+                    userId: res.data.kakao_account.email,
+                    userBirth:
+                      currentYear -
+                      Age +
+                      res.data.kakao_account.birthday,
+                    userName: res.data.kakao_account.profile.nickname,
+                    userGender:
+                      res.data.kakao_account.gender === "male" ? 1 : 0,
+                    userEmail: res.data.kakao_account.email,
+                  })
+                  .then((res) => {
+                    if (Age > 19) {
+                      alert(`${res.data.item.userName}님 환영합니다.`);
+                      localStorage.setItem("REFRESH_TOKEN", res.data.item.token);
+                      sessionStorage.setItem(
+                        "ACCESS_TOKEN",
+                        res.data.item.token
+                      );
+                      sessionStorage.setItem(
+                        "userId",
+                        res.data.item.userId
+                      );
+                      loginSuccessHandler(res.data.item);
+                      navi("/");
+                    } else {
+                      axios.post(
+                        `${SPRING_API_URL}/removeId`,
+                        {},
+                        {
+                          headers: {
+                            Authorization: `Bearer ${res.data.item.token}`,
+                          },
+                        }
+                      );
+                      alert(`만 60세 미만은 이용할 수 없습니다!!!!`);
+                      navi("/login");
+                    }
+                  });
+              } else {
+                // ageRange가 정의되지 않았을 때 사용자에게 알람을 보내는 코드
+                alert("나이를 설정해주세요!");
+                navi("/login");
+                // 또는 다른 사용자 피드백을 제공하는 방법으로 변경 가능
+              }
             });
         } else {
           console.log("없어!");

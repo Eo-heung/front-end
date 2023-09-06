@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef, useMemo } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { Link, useNavigate, useParams } from "react-router-dom";
 import { styled } from "@mui/system";
 import {
@@ -15,7 +15,7 @@ import {
 import { grey } from "@mui/material/colors";
 import axios from "axios";
 import TopButton from "../utils/TopButton.js";
-import { throttle } from "lodash";
+import { debounce } from 'lodash';
 import { SPRING_API_URL } from "../../config";
 
 const StyledContainer = styled("div")`
@@ -117,7 +117,7 @@ const ListMoimMember = () => {
   const navi = useNavigate();
 
   const [isLoading, setIsLoading] = useState(false);
-  const [page, setPage] = useState(1);
+  const [currentPage, setCurrentPage] = useState(1);
   const [isLastPage, setIsLastPage] = useState(false);
 
   const { moimId } = useParams();
@@ -132,28 +132,23 @@ const ListMoimMember = () => {
   const [scrollActive, setScrollActive] = useState(false);
   const [orderBy, setOrderBy] = useState("descending");
 
-  const scrollHandler = useMemo(
-    () =>
-      throttle(() => {
-        if (window.scrollY > 100) {
-          setScrollActive(true);
-        } else {
-          setScrollActive(false);
-        }
+  const scrollHandler = useCallback(
+    debounce(() => {
+      if (window.scrollY > 100) {
+        setScrollActive(true);
+      } else {
+        setScrollActive(false);
+      }
 
-        const scrollHeight = document.documentElement.scrollHeight;
-        const scrollTop = document.documentElement.scrollTop;
-        const clientHeight = document.documentElement.clientHeight;
+      const scrollHeight = document.documentElement.scrollHeight;
+      const scrollTop = document.documentElement.scrollTop;
+      const clientHeight = document.documentElement.clientHeight;
 
-        if (scrollTop + clientHeight >= scrollHeight) {
-          if (!isLastPage) {
-            setPage((prevPage) => prevPage + 1);
-          }
-          window.scrollTo({ scrollTop });
-          return;
-        }
-      }, 500),
-    [page]
+      if (scrollTop + clientHeight >= scrollHeight - 100 && !isLastPage) {
+        setCurrentPage((prevPage) => prevPage + 1);
+      }
+    }, 500),
+    [isLastPage]
   );
 
   useEffect(() => {
@@ -221,7 +216,7 @@ const ListMoimMember = () => {
             Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
           },
           params: {
-            page: page - 1,
+            currentPage: currentPage - 1,
           },
         }
       );
@@ -230,9 +225,8 @@ const ListMoimMember = () => {
 
       if (response.data) {
         setIsLastPage(response.data.lastPage);
-        return response.data.item.content;
+        setApplicantList((prevList) => [...prevList, ...response.data.item.content]);
       }
-      return [];
     } catch (e) {
       console.error("Error fetching applicant list data", e);
       return [];
@@ -242,19 +236,16 @@ const ListMoimMember = () => {
   };
 
   useEffect(() => {
-    fetchData();
+    if (currentPage === 1) {
+      fetchMoimData();
+    }
+    fetchMemberList(moimId);
     window.addEventListener("scroll", scrollHandler);
 
     return () => {
       window.removeEventListener("scroll", scrollHandler);
     };
-  }, [moimId, page, orderBy]);
-
-  const fetchData = async () => {
-    await fetchMoimData();
-    const applicantsFromServer = await fetchMemberList(moimId);
-    setApplicantList(applicantsFromServer);
-  };
+  }, [moimId, currentPage, orderBy]);
 
   return (
     <>
@@ -281,52 +272,52 @@ const ListMoimMember = () => {
       <StyledScrollDiv>
         {applicantList && applicantList.length > 0
           ? applicantList.map((applicant) => {
-              if (
-                applicant.regStatus === "APPROVED" ||
-                applicant.regStatus === "LEADER"
-              ) {
-                return (
-                  <div>
-                    <StyledCard variant="outlined">
-                      <StyledCardMedia
-                        component="img"
-                        image={
-                          applicant.moimProfileBase64 &&
-                          `data:image/jpeg;base64,${applicant.moimProfileBase64}`
-                        }
-                        alt="모임 프로필 사진"
-                      />
-                      <StyledCardContent>
-                        <ApplicantInfoBox border={0} my={0}>
-                          <ApplicantTitle>가입자</ApplicantTitle>
-                          <ApplicantInfo variant="body1">
-                            {applicant.applicantUserNickname}
-                          </ApplicantInfo>
-                        </ApplicantInfoBox>
-                        <ApplicantInfoBox border={0} my={2}>
-                          <ApplicantTitle>가입일</ApplicantTitle>
-                          <ApplicantInfo variant="body1">
-                            {applicant.subscribeDate.slice(0, 10)}
-                          </ApplicantInfo>
-                        </ApplicantInfoBox>
-                        <ApplicantInfoBox border={0} my={2}>
-                          <ApplicantTitle>등급</ApplicantTitle>
-                          <ApplicantInfo variant="body1">
-                            {applicant.regStatus === "LEADER"
-                              ? "모임장"
-                              : "모임원"}
-                          </ApplicantInfo>
-                        </ApplicantInfoBox>
-                      </StyledCardContent>
-                    </StyledCard>
-                  </div>
-                );
-              }
-              return null;
-            })
+            if (
+              applicant.regStatus === "APPROVED" ||
+              applicant.regStatus === "LEADER"
+            ) {
+              return (
+                <div>
+                  <StyledCard variant="outlined">
+                    <StyledCardMedia
+                      component="img"
+                      image={
+                        applicant.moimProfileBase64 &&
+                        `data:image/jpeg;base64,${applicant.moimProfileBase64}`
+                      }
+                      alt="모임 프로필 사진"
+                    />
+                    <StyledCardContent>
+                      <ApplicantInfoBox border={0} my={0}>
+                        <ApplicantTitle>가입자</ApplicantTitle>
+                        <ApplicantInfo variant="body1">
+                          {applicant.applicantUserNickname}
+                        </ApplicantInfo>
+                      </ApplicantInfoBox>
+                      <ApplicantInfoBox border={0} my={2}>
+                        <ApplicantTitle>가입일</ApplicantTitle>
+                        <ApplicantInfo variant="body1">
+                          {applicant.subscribeDate.slice(0, 10)}
+                        </ApplicantInfo>
+                      </ApplicantInfoBox>
+                      <ApplicantInfoBox border={0} my={2}>
+                        <ApplicantTitle>등급</ApplicantTitle>
+                        <ApplicantInfo variant="body1">
+                          {applicant.regStatus === "LEADER"
+                            ? "모임장"
+                            : "모임원"}
+                        </ApplicantInfo>
+                      </ApplicantInfoBox>
+                    </StyledCardContent>
+                  </StyledCard>
+                </div>
+              );
+            }
+            return null;
+          })
           : !isLoading && (
-              <NoApplicantText>아직은 가입자가 없어요.</NoApplicantText>
-            )}
+            <NoApplicantText>아직은 가입자가 없어요.</NoApplicantText>
+          )}
         {isLoading && <LoadingText>새로운 목록을 불러오고 있어요.</LoadingText>}
         {isLastPage && !isLoading && (
           <LoadingText>가입자 목록의 마지막 페이지예요.</LoadingText>

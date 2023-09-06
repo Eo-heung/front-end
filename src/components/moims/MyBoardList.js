@@ -121,6 +121,13 @@ const MyBoardList = ({ setActiveTab }) => {
                                                     }}
                                                 >
                                                     {board.boardTitle}
+                                                    {board && board.commentCnt > 0 && (
+                                                        <>
+                                                            <span style={{ marginLeft: "2%", color: "grey" }}>
+                                                                [{board.commentCnt}]
+                                                            </span>
+                                                        </>
+                                                    )}
                                                 </StyledCell>
                                                 <StyledCell style={{ width: "180px" }}>{board.userName}</StyledCell>
                                                 <StyledCell style={{ width: "170px" }}>{board.boardRegdate.slice(0, 10)}</StyledCell>
