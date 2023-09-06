@@ -3,6 +3,8 @@ import { useLocation } from "react-router-dom";
 import basicProfile from "../../public/basic_profile.png";
 import MoimProfileArea from "./MoimProfileArea";
 import MoimMemberList from "./MoimMemberList";
+import { SPRING_API_URL, REDIRECT_URL } from "../../config";
+import axios from "axios";
 
 const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
@@ -13,7 +15,19 @@ const Nav = ({ getFriendList, friends }) => {
       return parts.pop().split(";").shift();
     }
   };
-
+  const getProfileImage = async () => {
+    try {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/getprofileimage`, {}, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+        },
+      });
+      setImageFile(`data:image/jpeg;base64,${response.data.item}`);
+    } catch (error) {
+      console.error("An error occurred:", error);
+    }
+  };
+  const [imageFile, setImageFile] = useState(null);
   const userNickname = decodeURIComponent(getCookie("userNickname") || "");
   const [appoint, setAppoint] = useState(null);
   const exAppo = [
@@ -41,7 +55,7 @@ const Nav = ({ getFriendList, friends }) => {
       (prev, curr) => (prev.startTime < curr.startTime ? prev : curr),
       futureAppointments[0]
     );
-
+    getProfileImage();
     setAppoint(closest);
     getFriendList();
   }, []);
@@ -62,9 +76,8 @@ const Nav = ({ getFriendList, friends }) => {
             <img
               style={{
                 border: "2px solid white",
-                boxShadow: `0 0 5px 2px ${
-                  friend.online ? "#05FF00" : "#B6B6B6"
-                }`,
+                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"
+                  }`,
               }}
               src={
                 (friend.profile &&
@@ -101,7 +114,7 @@ const Nav = ({ getFriendList, friends }) => {
                       maxWidth: "100%",
                       height: "auto",
                     }}
-                    src={basicProfile}
+                    src={imageFile || basicProfile}
                   ></img>
                 </div>
                 <div className="sidenav-profile-appoint">

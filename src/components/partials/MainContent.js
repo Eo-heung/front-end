@@ -1,19 +1,17 @@
-import React, { useState, useEffect } from "react";
-import { Link as RouterLink } from "react-router-dom";
-import Carousel from "react-material-ui-carousel";
-import { Paper, Typography, Button, IconButton } from "@mui/material";
-import styled from "styled-components";
-import axios from "axios";
-import bannerImgPolice from "../../public/banner_police.png";
-import bannerImgBirthday from "../../public/banner_birthday.png";
-import ex_weather from "../../public/test.png";
-import bannerImgMoim from "../../public/banner_moim.png";
-import { fontSize } from "@mui/system";
+import { Button, Paper, Typography } from "@mui/material";
 import Card from "@mui/material/Card";
-import FavoriteIcon from "@mui/icons-material/Favorite";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
 import CardMedia from "@mui/material/CardMedia";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
+import Carousel from "react-material-ui-carousel";
+import { Link as RouterLink } from "react-router-dom";
+import styled from "styled-components";
+import bannerImgBirthday from "../../public/banner_birthday.png";
+import bannerImgMoim from "../../public/banner_moim.png";
+import bannerImgPolice from "../../public/banner_police.png";
+import ex_weather from "../../public/test.png";
 
 const Main = () => {
   const [isDesktop, setIsDesktop] = useState(window.innerWidth > 712);
@@ -190,8 +188,8 @@ const Main = () => {
                         </Typography>
                       </CardContent>
                       <CardActions>
-                        <Button size="small">공유하기</Button>
-                        <Button size="small">바로가기</Button>
+                        <Button size="small"><span style={{ fontFamily: "font-light" }}>공유하기</span></Button>
+                        <Button size="small"><span style={{ fontFamily: "font-light" }}>바로가기</span></Button>
                       </CardActions>
                     </Card>
                     <Card
@@ -219,8 +217,8 @@ const Main = () => {
                         </Typography>
                       </CardContent>
                       <CardActions>
-                        <Button size="small">공유하기</Button>
-                        <Button size="small">바로가기</Button>
+                        <Button size="small"><span style={{ fontFamily: "font-light" }}>공유하기</span></Button>
+                        <Button size="small"><span style={{ fontFamily: "font-light" }}>바로가기</span></Button>
                       </CardActions>
                     </Card>
                     <Card
@@ -248,8 +246,8 @@ const Main = () => {
                         </Typography>
                       </CardContent>
                       <CardActions>
-                        <Button size="small">공유하기</Button>
-                        <Button size="small">바로가기</Button>
+                        <Button size="small"><span style={{ fontFamily: "font-light" }}>공유하기</span></Button>
+                        <Button size="small"><span style={{ fontFamily: "font-light" }}>바로가기</span></Button>
                       </CardActions>
                     </Card>
                   </div>
