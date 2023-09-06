@@ -1,17 +1,16 @@
 import MenuIcon from "@mui/icons-material/Menu";
 import Typography from "@mui/material/Typography";
 import { Stomp } from "@stomp/stompjs";
+import axios from "axios";
 import React, { useEffect, useRef, useState } from "react";
+import { useCookies } from "react-cookie";
 import { Link, useNavigate } from "react-router-dom";
 import SockJS from "sockjs-client";
 import styled from "styled-components";
 import { SPRING_API_URL } from "../../config";
 import "../../css/partials/Header.css";
-import logo from "../../public/logo.gif";
-import logo_color from "../../public/logo_color.GIF";
 import icon_gam from "../../public/icon_gam.png";
-import { Remove } from "@mui/icons-material";
-import { useCookies } from "react-cookie";
+import logo_color from "../../public/logo_color.GIF";
 
 const StyledTypography = styled(Typography)`
   color: #000;
@@ -29,6 +28,7 @@ const Header = ({ getFriendList, userId }) => {
   const [isLogout, setIsLogout] = useState(false);
   const navi = useNavigate();
   const [cookies, setCookie, removeCookie] = useCookies();
+  const [userTotalGam, setUserTotalGam] = useState();
   // online, offline 기능 구현
   const stompClient = useRef(null);
 
@@ -85,7 +85,21 @@ const Header = ({ getFriendList, userId }) => {
     }
   }, [userId]);
 
+  const fetchUserInfo = async () => {
+    try {
+      const response = await axios.post(`${SPRING_API_URL}/mypage/myinfo`, {}, {
+        headers: {
+          Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`,
+        },
+      });
+      setUserTotalGam(response.data.item.totalGam);
+    } catch (error) {
+      console.error("유저 정보를 가져오는 데 실패했습니다:", error);
+    }
+  };
+
   useEffect(() => {
+    fetchUserInfo();
     const handleResize = () => setIsDesktop(window.innerWidth > 992);
     window.addEventListener("resize", handleResize);
     return () => window.removeEventListener("resize", handleResize);
@@ -102,11 +116,13 @@ const Header = ({ getFriendList, userId }) => {
     const isConfirmed = window.confirm("정말로 로그아웃 하시겠습니까?");
     if (!isConfirmed) return;
 
-    stompClient.current.send(
-      `/app/online-status/${userId}`,
-      {},
-      JSON.stringify({ status: "offline" })
-    );
+    if (stompClient.current) {
+      stompClient.current.send(
+        `/app/online-status/${userId}`,
+        {},
+        JSON.stringify({ status: "offline" })
+      );
+    }
 
     removeCookie("userId");
     removeCookie("userNickname");
@@ -144,6 +160,7 @@ const Header = ({ getFriendList, userId }) => {
             <Link className="navbar-brand" to="/">
               <img
                 src={logo_color}
+                alt="메인"
                 style={{
                   marginLeft: "15%",
                   width: "75%",
@@ -237,6 +254,7 @@ const Header = ({ getFriendList, userId }) => {
           >
             <img
               src={icon_gam}
+              alt="곶감"
               style={{
                 display: "inline-block",
                 width: "30px",
@@ -250,12 +268,12 @@ const Header = ({ getFriendList, userId }) => {
                 verticalAlign: "middle",
               }}
             >
-              445개
+              <span style={{ fontSize: '16px' }}>{userTotalGam ? userTotalGam : 0} 개</span>
             </StyledTypography>
           </Link>
           <Link className="navbar-logout" to="/mypage">
             <StyledTypography variant="body2">
-              <StyledTypography variant="body2">마이페이지</StyledTypography>
+              <StyledTypography variant="body2"><span style={{ fontSize: '16px' }}>마이페이지</span></StyledTypography>
             </StyledTypography>
           </Link>
           <Link
@@ -266,7 +284,7 @@ const Header = ({ getFriendList, userId }) => {
               marginRight: "3vw",
             }}
           >
-            <StyledTypography variant="body2">로그아웃</StyledTypography>
+            <StyledTypography variant="body2"><span style={{ fontSize: '16px' }}>로그아웃</span></StyledTypography>
           </Link>
         </div>
       </nav>

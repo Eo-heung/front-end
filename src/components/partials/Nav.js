@@ -1,8 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { useLocation } from "react-router-dom";
 import basicProfile from "../../public/basic_profile.png";
-import MoimProfileArea from "./MoimProfileArea";
 import MoimMemberList from "./MoimMemberList";
+import MoimProfileArea from "./MoimProfileArea";
 
 const Nav = ({ getFriendList, friends }) => {
   //DB에서 Orderby로 끌어오기
@@ -62,9 +62,8 @@ const Nav = ({ getFriendList, friends }) => {
             <img
               style={{
                 border: "2px solid white",
-                boxShadow: `0 0 5px 2px ${
-                  friend.online ? "#05FF00" : "#B6B6B6"
-                }`,
+                boxShadow: `0 0 5px 2px ${friend.online ? "#05FF00" : "#B6B6B6"
+                  }`,
               }}
               src={
                 (friend.profile &&
@@ -148,7 +147,7 @@ const Nav = ({ getFriendList, friends }) => {
             ) : (
               <div className="sb-sidenav-friend">
                 <div className="sb-sidenav-friend-title">
-                  <h5>접속한 친구목록</h5>
+                  <span style={{ fontSize: "16px", fontFamily: "font-light" }}>접속한 친구목록</span>
                 </div>
                 <div className="sb-sidenav-fri-container">
                   <table className="sb-sidenav-fri">

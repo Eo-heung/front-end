@@ -1,7 +1,7 @@
-import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { SPRING_API_URL } from "../../config";
+import React, { useEffect, useState } from "react";
 import QuitModal from "../../components/utils/QuitModal";
+import { SPRING_API_URL } from "../../config";
 import DeleteMoimModal from "../utils/DeleteMoimModal";
 
 const MoimMemberList = ({ moimId }) => {
@@ -101,7 +101,7 @@ const MoimMemberList = ({ moimId }) => {
     <>
       <div className="sb-sidenav-friend">
         <div className="sb-sidenav-friend-title">
-          <h5>접속한 친구목록</h5>
+          <span style={{ fontSize: "16px", fontFamily: "font-light" }}>접속한 친구목록</span>
         </div>
         <div className="sb-sidenav-fri-container">
           <table className="sb-sidenav-fri">
