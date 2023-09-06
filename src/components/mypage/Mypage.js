@@ -536,23 +536,26 @@ const Mypage = () => {
       <div id="layoutSidenav">
         <div style={{ marginTop: "12vh", position: "relative", display: "flex", flexDirection: "column", justifyContent: "space-between", minWidth: 0, flexGrow: 1, }}>
           <div>
-            <div className="tabs" style={{ marginLeft: "424px", marginTop: "10px" }}>
+            <div className="tabs" style={{ marginLeft: "424px", marginTop: "10px", }}>
               <TabButton
                 className={activeTab === "tab1" ? "active" : ""}
-                onClick={() => { setActiveTab("tab1"); setIsEditing(false); }}>
+                onClick={() => { setActiveTab("tab1"); setIsEditing(false); }}
+                style={{ fontSize: "16px" }}>
                 프로필
               </TabButton>
               <TabButton
                 className={activeTab === "tab2" ? "active" : ""}
-                onClick={() => { setActiveTab("tab2"); setIsEditing(false); }}>
+                onClick={() => { setActiveTab("tab2"); setIsEditing(false); }}
+                style={{ fontSize: "16px" }}>
                 내 정보
               </TabButton>
-              <TabButton className={activeTab === "tab3" ? "active" : ""} onClick={() => { setActiveTab("tab3"); setIsEditing(false); }}              >
+              <TabButton fontSize="16px" className={activeTab === "tab3" ? "active" : ""} onClick={() => { setActiveTab("tab3"); setIsEditing(false); }} style={{ fontSize: "16px" }} >
                 활동 내역
               </TabButton>
               <TabButton
                 className={activeTab === "tab4" ? "active" : ""}
-                onClick={() => { setActiveTab("tab4"); setIsEditing(false); }} >
+                onClick={() => { setActiveTab("tab4"); setIsEditing(false); }}
+                style={{ fontSize: "16px" }}>
                 친구 관리
               </TabButton>
             </div>
@@ -827,14 +830,11 @@ const Mypage = () => {
                         <Typography variant="h1" fontSize="18pt" sx={{ fontWeight: "bold", marginBottom: "5px", marginLeft: "20px", marginTop: "8px", }}>
                           활동내역
                         </Typography>
-                        <span>
-                          현재 곶감 수 : {userTotalGam} 개
-                        </span>
                       </Grid>
                       <Tabs value={value} onChange={handleChange} sx={{ marginLeft: "20px" }}>
-                        <Tab label={<div>소모임</div>} />
-                        <Tab label={<div>게시글 및 댓글관리</div>} />
-                        <Tab label={<div>결제 및 포인트</div>} />
+                        <Tab label={<div style={{ fontSize: "16px" }}>소모임</div>} />
+                        <Tab label={<div style={{ fontSize: "16px" }}>게시글 및 댓글관리</div>} />
+                        <Tab label={<div style={{ fontSize: "16px" }}>결제 및 포인트</div>} />
                       </Tabs>
                       <TabPanel value={value} index={0}>
                         {/* 내용1 (예: 필터 및 테이블) */}
@@ -897,27 +897,27 @@ const Mypage = () => {
                                     <div style={{ display: "flex", alignItems: "center", justifyContent: "space-between", marginBottom: "8px", }}>
                                       <div style={{ display: "flex", alignItems: "center", }}>
                                         <Typography variant="h6">
-                                          <span>{(payment.payDate && `${new Date(payment.payDate).getFullYear()}년 ${(new Date(payment.payDate).getMonth() + 1).toString().padStart(2, "0")}월 ${new Date(payment.payDate).getDate().toString().padStart(2, "0")}일(${new Date(payment.payDate).getHours().toString().padStart(2, "0")}:${new Date(payment.payDate).getMinutes().toString().padStart(2, "0")}:${new Date(payment.payDate).getSeconds().toString().padStart(2, "0")})`) || "날짜 확인 불가"}</span>
+                                          <span>{payment.name}</span>
                                         </Typography>
                                       </div>
                                       {payment.refund ?
-                                        <Button variant="text" onClick={() => cancelPayment(payment.impUid)} sx={{ color: "red" }}>
-                                          <span>결제취소</span>
+                                        <Button variant="outlined" onClick={() => cancelPayment(payment.impUid)} sx={{ color: "black", }}>
+                                          <span>환불 요청</span>
                                         </Button>
                                         :
-                                        <Button variant="text" disabled>
-                                          <span>취소불가</span>
+                                        <Button variant="outlined" disabled sx={{ color: 'black', }}>
+                                          <span>취소 불가</span>
                                         </Button>
                                       }
                                     </div>
                                     <Typography variant="body2" sx={{ marginBottom: "6px" }}>
-                                      <span>결제명 : {payment.name}</span>
+                                      <span style={{ paddingRight: "18px" }}>결제일</span><span style={{ color: "#6c757d" }}>{(payment.payDate && `${new Date(payment.payDate).getFullYear()}/${(new Date(payment.payDate).getMonth() + 1).toString().padStart(2, "0")}/${new Date(payment.payDate).getDate().toString().padStart(2, "0")} ${new Date(payment.payDate).getHours().toString().padStart(2, "0")}:${new Date(payment.payDate).getMinutes().toString().padStart(2, "0")}:${new Date(payment.payDate).getSeconds().toString().padStart(2, "0")}`) || "날짜 확인 불가"}</span>
                                     </Typography>
                                     <Typography variant="body2" sx={{ marginBottom: "6px" }}>
-                                      <span>금액 : {payment.value + " 원" || "금액 없음"}</span>
+                                      <span style={{ paddingRight: '30px' }}>금액</span><span style={{ color: "#6c757d" }}>{payment.value + " 원" || "금액 없음"}</span>
                                     </Typography>
                                     <Typography variant="body2">
-                                      <span>곶감 : {payment.gotGam || "0"} 개</span>
+                                      <span style={{ paddingRight: '30px' }}>곶감</span><span style={{ color: "#6c757d" }}>{payment.gotGam || "0"} 개</span>
                                     </Typography>
                                   </BoxContent>
                                 </Grid>))}
@@ -938,8 +938,8 @@ const Mypage = () => {
                         </Typography>
                       </Grid>
                       <Tabs value={value1} onChange={handleChange1} sx={{ marginLeft: "20px" }}>
-                        <Tab label={<div>내 친구</div>} />
-                        <Tab label={<div style={{ position: 'relative' }}>{requestFriends.length > 0 && <span style={{ position: 'absolute', top: -10, right: -12, background: 'red', borderRadius: '50%', width: '10px', height: '10px' }}></span>}친구 요청</div>} />
+                        <Tab label={<div style={{ fontSize: "16px" }}>내 친구</div>} />
+                        <Tab label={<div style={{ position: 'relative', fontSize: "16px" }}>{requestFriends.length > 0 && <span style={{ position: 'absolute', top: -10, right: -12, background: 'red', borderRadius: '50%', width: '10px', height: '10px' }}></span>}친구 요청</div>} />
                       </Tabs>
                       <TabPanel1 value={value1} index={0}>
                         <Grid container spacing={3} sx={{ marginTop: "5px" }}>
