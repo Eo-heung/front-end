@@ -21,7 +21,7 @@ import thumbImage from "../../public/04.png";
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled("div")(({ progress }) => ({
   position: "absolute",
-  left: `calc(${progress}% - 5px)`,
+  left: `calc(${progress}% - 15px)`,
   top: "50%",
   transform: "translateY(-50%)",
   width: "40px",
@@ -46,21 +46,13 @@ function LinearProgressWithLabel() {
   }, []);
 
   return (
-    <Box
-      sx={{
-        position: "relative",
-        display: "flex",
-        alignItems: "center",
-        width: "100%",
-        height: "20px",
-      }}
-    >
+    <Box sx={{ position: "relative", display: "flex", alignItems: "center", width: "100%", height: "20px", }}>
       <Box sx={{ position: "relative", flex: 14, marginRight: "10px" }}>
         <LinearProgress variant="determinate" value={progress} />
         <Circle progress={progress} />
       </Box>
       <Box sx={{ flex: 1, marginLeft: 3 }}>
-        <Typography variant="body2" color="black" sx={{ width: "30px" }}>
+        <Typography variant="body2" color="black" sx={{ width: "30px" }} >
           {"3 / 3"}
         </Typography>
       </Box>
@@ -168,20 +160,20 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
 
   return (
     <ThemeProvider theme={defaultTheme}>
-      <Container component="main" maxWidth="xs" style={{ overflow: "hidden" }}>
+      <Container component="main" maxWidth="xs" style={{ overflow: 'hidden' }}>
         <CssBaseline />
         <Box
           sx={{
-            position: "relative", // 추가
-            minHeight: "608.57px",
-            maxHeight: "608.57px",
-            marginTop: 12.5,
+            position: 'relative', // 추가
+            minHeight: '80vh',
+            maxHeight: '80vh',
+            marginTop: 12.5
           }}
         >
           <IconButton
             sx={{
-              position: "absolute",
-              top: "-70px",
+              position: 'absolute',
+              top: "-9.1vh",
             }}
             onClick={() => {
               backClick();
@@ -189,30 +181,14 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
           >
             <ArrowBackIosIcon />
           </IconButton>
-          <Typography
-            variant="h5"
-            fontSize="12pt"
-            gutterBottom
-            textAlign={"center"}
-            style={{ fontFamily: "font-medium", color: "gray" }}
-          >
+          <Typography variant="h5" fontSize="12pt" gutterBottom textAlign={'center'} style={{ fontFamily: "font-medium", color: 'gray' }}>
             어흥!
           </Typography>
-          <Typography
-            variant="h1"
-            fontSize="18pt"
-            textAlign={"center"}
-            style={{ fontFamily: "font-medium", color: "black" }}
-          >
+          <Typography variant="h1" fontSize="18pt" textAlign={'center'} style={{ fontFamily: "font-medium", color: 'black' }}>
             변경할 비밀번호를 입력해주세요
           </Typography>
-          <Box
-            component="form"
-            noValidate
-            onSubmit={handleSubmit}
-            sx={{ mt: 3 }}
-          >
-            <Grid container spacing={2} style={{ marginTop: "60px" }}>
+          <Box component="form" noValidate onSubmit={handleSubmit} sx={{ mt: 3 }}>
+            <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -240,18 +216,16 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
                   value={confirmPassword}
                   onChange={handleConfirmPasswordChange}
                   error={!passwordMatch}
-                  helperText={
-                    !passwordMatch ? "비밀번호가 일치하지 않습니다." : ""
-                  }
+                  helperText={!passwordMatch ? '비밀번호가 일치하지 않습니다.' : ''}
                 />
               </Grid>
             </Grid>
 
             <Box
               sx={{
-                display: "flex",
-                flexDirection: "column",
-                alignItems: "center",
+                display: 'flex',
+                flexDirection: 'column',
+                alignItems: 'center',
                 mt: 3,
               }}
             >
@@ -261,37 +235,32 @@ const Password4 = ({ setUserPw, userTel, backClick }) => {
                 variant="contained"
                 color="primary"
                 sx={{
-                  color: "black",
-                  height: "44px",
+                  color: 'black',
+                  height: '5.7vh',
                   mt: 3,
                   mb: 2,
                   fontFamily: "font-medium",
-                  backgroundColor: "#FEA53D", // 평소 색상
-                  "&:hover": {
-                    backgroundColor: "#FEB158", // 호버 시 색상
+                  backgroundColor: '#FEA53D', // 평소 색상
+                  '&:hover': {
+                    backgroundColor: '#FEB158', // 호버 시 색상
                   },
                 }}
               >
-                {isAuthenticated ? "변경 성공!" : "변경하기"}
+                {isAuthenticated ? '변경 성공!' : '변경하기'}
               </Button>
               {isAuthenticated && (
                 <Typography variant="body2" color="text.secondary" mt={1}>
                   비밀번호 변경에 성공했어요!
                 </Typography>
               )}
-              <Link
-                href="/login"
-                variant="body2"
-                sx={{ float: "right" }}
-                style={{ fontFamily: "font-medium" }}
-              >
+              <Link href="/login" variant="body2" sx={{ float: "right" }} style={{ fontFamily: "font-medium" }}>
                 로그인하러가기
               </Link>
             </Box>
           </Box>
         </Box>
         <ThemeProvider theme={theme}>
-          <Box sx={{ width: "100%", height: "50px", marginTop: "-8%" }}>
+          <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
             <LinearProgressWithLabel value={progress} />
           </Box>
         </ThemeProvider>

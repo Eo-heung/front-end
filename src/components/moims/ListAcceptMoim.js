@@ -1,28 +1,27 @@
 import React, { useState, useEffect, useRef, useMemo } from 'react';
-import { Link, useParams, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
-import { Button, Typography, Box, Card, CardContent, CardMedia, TextField } from '@mui/material';
+import { Button, Typography, Box, Card, CardContent, CardMedia, TextField, Select, MenuItem } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import axios from 'axios';
-import BasicBoard from '../utils/BasicBoard.js';
 import TopButton from '../utils/TopButton.js';
 import { throttle } from 'lodash';
 import { SPRING_API_URL } from '../../config';
 
 const StyledContainer = styled('div')`
     position: fixed;
-    top: 115px;
+    top: 160px;
     right: 0;
-    left: 400px;
-    padding: 1.5rem 3rem;
-    height: 180px;
-    width: 90%;
+    left: 350px;
+    padding: 1rem 1.5rem;
+    height: 160px;
+    width: 100%;
     z-index: 1001;
     background-color: #fff;
     &.fixed {
         position: fixed;
-        padding: 1.5rem 3rem;
-        width: 90%;
+        padding: 1rem 1.5rem;
+        width: 100%;
         z-index: 100;
     }
     @media (max-width: 992px) {
@@ -48,6 +47,32 @@ const StyledTextField = styled(TextField)`
     }
 `;
 
+const StyledSelect = styled(Select)`
+    width: 120px;
+    &&.MuiOutlinedInput-root {
+        &:hover .MuiOutlinedInput-notchedOutline, &.Mui-focused .MuiOutlinedInput-notchedOutline {
+            border-color: #FCBE71;
+        }
+        &.Mui-focused .MuiInputLabel-root {
+            color: #FCBE71;
+        }
+    }
+
+    && .MuiMenu-paper {
+        .MuiListItem-root:hover {
+            background-color: #FCBE71;
+            color: white;
+        }
+    }
+`;
+
+const StyledMenuItem = styled(MenuItem)`
+    &&:hover {
+        background-color: #FCBE71;
+        color: white;
+    }
+`;
+
 const SearchButton = styled(Button)`
     background-color: #FCBE71;
     color: #fff;
@@ -67,11 +92,6 @@ const StyledCardMedia = styled(CardMedia)`
 
 const PageTitle = styled('h3')`
     margin-bottom: 1.5rem;
-`;
-
-const CardLink = styled(Link)`
-    margin: 1rem auto;
-    text-decoration: none;
 `;
 
 const StyledScrollDiv = styled('div')`
@@ -145,12 +165,13 @@ const ListAcceptMoim = () => {
     const [isLastPage, setIsLastPage] = useState(false);
 
     const { moimId } = useParams();
-
     const [moimData, setMoimData] = useState("");
+
     const [applicantList, setApplicantList] = useState([]);
     const [scrollActive, setScrollActive] = useState(false);
-    const [searchKeyword, setSearchKeyword] = useState("");
-    const [orderBy, setOrderBy] = useState("ascending");
+    // const [searchKeyword, setSearchKeyword] = useState("");
+    // const [searchType, setSearchType] = useState("all");
+    const [orderBy, setOrderBy] = useState("descending");
 
     const scrollHandler = useMemo(() =>
         throttle(() => {
@@ -173,12 +194,19 @@ const ListAcceptMoim = () => {
             }
         }, 500), [page]);
 
-    const toggleSortOrder = () => {
-        setPage(1);
-        setApplicantList([]);
-        setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
-        fetchData();
-    };
+    // const handleOrderBy = () => {
+    //     setPage(1);
+    //     setApplicantList([]);
+    //     setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
+    //     fetchData();
+    // };
+
+    // const handleSearch = () => {
+    //     setPage(1);
+    //     setApplicantList([]);
+    //     setOrderBy(orderBy === 'ascending' ? 'descending' : 'ascending');
+    //     fetchData();
+    // }
 
     const isMounted = useRef(true);
 
@@ -207,28 +235,24 @@ const ListAcceptMoim = () => {
         }
     };
 
-    console.log(sessionStorage.getItem("ACCESS_TOKEN"));
-
     const fetchApplicantList = async (moimId) => {
         try {
             setIsLoading(true);
 
-            const apiEndPoint = orderBy === 'ascending'
-                ? `${SPRING_API_URL}/moimReg/get-applicant-list/asc/${moimId}`
-                : `${SPRING_API_URL}/moimReg/get-applicant-list/desc/${moimId}`;
-
-            const response = await axios.post(apiEndPoint, {}, {
+            const response = await axios.post(`${SPRING_API_URL}/moimReg/get-applicant-list/desc/${moimId}`, {}, {
                 headers: {
                     Authorization: `Bearer ${sessionStorage.getItem("ACCESS_TOKEN")}`
                 },
                 params: {
                     page: page - 1,
-                    searchKeyword: searchKeyword,
                     orderBy: orderBy
                 }
             });
 
+            console.log("신청자 목록", response.data);
+
             if (response.data) {
+                setIsLastPage(response.data.lastPage);
                 return response.data.items;
             }
             return [];
@@ -255,10 +279,9 @@ const ListAcceptMoim = () => {
         setApplicantList(applicantsFromServer);
     };
 
-    console.log(applicantList);
-
     const handleAcceptance = async (e, moimRegId, decision) => {
         e.preventDefault();
+        e.stopPropagation();
 
         const nowStatus = decision === "accepted" ? "APPROVED" : "REJECTED";
         const alertMessage = decision === "accepted" ? "가입 신청을 수락했어요." : "가입 신청을 거절했어요.";
@@ -275,7 +298,6 @@ const ListAcceptMoim = () => {
                 applicantUserId: applicant.applicantUserId,
                 organizerUserId: moimData.userId
             };
-            console.log(payload);
 
             const response = await axios.post(`${SPRING_API_URL}/moimReg/${moimRegId}/applicant-state?nowStatus=${nowStatus}`, payload, {
                 headers: {
@@ -285,7 +307,7 @@ const ListAcceptMoim = () => {
 
             if (response.data.statusCode === 200) {
                 alert(alertMessage);
-                window.location.replace(`/list-accept-moim/${moimRegId}`);
+                window.location.reload();
             }
         } catch (err) {
             console.error("Error occurred handling acceptance: ", err);
@@ -294,21 +316,26 @@ const ListAcceptMoim = () => {
     };
 
     return (
-        <BasicBoard>
+        <>
             <StyledContainer className={scrollActive ? 'fixed' : ''}>
-                <PageTitle>{`${moimData.moimTitle} 모임의 신청자 목록`}</PageTitle>
+                <PageTitle>{`"${moimData.moimTitle}" 신청자 목록`}</PageTitle>
                 <SearchContainer>
-                    <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
-                    <SearchButton variant="contained" size="large">검색</SearchButton>
-                    <SearchButton variant="contained" size="large" onClick={toggleSortOrder}>
+                    {/* <StyledTextField variant="outlined" placeholder="검색할 닉네임을 입력하세요." onChange={(e) => setSearchKeyword(e.target.value)} />
+                    <StyledSelect value={searchType} displayEmpty onChange={(e) => setSearchType(e.target.value)}>
+                        <StyledMenuItem value="all">전체</StyledMenuItem>
+                        <StyledMenuItem value="nickname">신청자</StyledMenuItem>
+                    </StyledSelect>
+                    <SearchButton variant="contained" size="large" onClick={handleSearch}>검색</SearchButton>
+                    <SearchButton variant="contained" size="large" onClick={handleOrderBy}>
                         {orderBy === 'ascending' ? '최신순' : '등록순'}
-                    </SearchButton>
+                    </SearchButton> */}
+                    <SearchButton variant="contained" onClick={() => navi(`/${moimId}/moim-board/moim-member`)}>가입자 목록</SearchButton>
                 </SearchContainer>
             </StyledContainer>
             <StyledScrollDiv>
                 {applicantList && applicantList.length > 0 ? (
                     applicantList.map(applicant => (
-                        <CardLink to={`/accept-moim/${moimData.moimId}/${applicant.moimRegId}`} key={applicant.applicantUserId}>
+                        <div onClick={() => navi(`/${moimId}/moim-board/accept-moim/${applicant.moimRegId}`)}>
                             <StyledCard variant="outlined">
                                 <StyledCardMedia
                                     component="img"
@@ -338,7 +365,7 @@ const ListAcceptMoim = () => {
                                     <StyledButton onClick={(e) => handleAcceptance(e, applicant.moimRegId, "declined")} variant="contained" size="large">거절</StyledButton>
                                 </ButtonRow>
                             </StyledCard>
-                        </CardLink>
+                        </div>
                     ))
                 ) : (
                     !isLoading && <NoApplicantText>아직은 신청자가 없어요.</NoApplicantText>
@@ -347,7 +374,7 @@ const ListAcceptMoim = () => {
                 {isLastPage && !isLoading && <LoadingText>신청자 목록의 마지막 페이지예요.</LoadingText>}
             </StyledScrollDiv>
             <TopButton />
-        </BasicBoard>
+        </>
     );
 };
 

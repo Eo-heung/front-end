@@ -1,9 +1,9 @@
-import * as React from 'react';
-import { styled } from '@mui/system';
+import * as React from "react";
+import { styled } from "@mui/system";
 
 const StyledContainerBase = ({ children, ...props }) => {
   return (
-    <div className="sb-nav-fixed mainpage">
+    <div className="sb-nav-fixed">
       <div id="layoutSidenav">
         <div id="layoutSidenav_content">
           <main>
@@ -20,13 +20,8 @@ const StyledContainerBase = ({ children, ...props }) => {
 };
 
 const BasicBoard = styled(StyledContainerBase)`
-  display: flex;
-  flex-direction: column;
-  align-items: flex-start;
-  padding: 0 1.5rem;
-  max-width: 1200px;
-  box-sizing: border-box;
-  text-align: left;
+  width: 100%;
+  maxheight: auto;
 `;
 
 export default BasicBoard;

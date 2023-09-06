@@ -100,7 +100,6 @@ const ImageAttaZone = styled('div')`
 const ModifyMoim = () => {
     const navi = useNavigate();
 
-    const categories = ['인문학/책', '운동', '요리/맛집', '공예/만들기', '원예', '동네친구', '음악/악기', '반려동물', '여행'];
     const [moimTitleLength, setMoimTitleLength] = useState(0);
     const [inputs, setInputs] = useState({
         moimCategory: "",
@@ -117,7 +116,7 @@ const ModifyMoim = () => {
     const [filePic, setFilePic] = useState(null);
 
     const handleTitleChange = (e) => {
-        if (e.target.value.length <= 24) {
+        if (e.target.value.length <= 20) {
             setMoimTitleLength(e.target.value.length);
             handleInputChange(e);
         }
@@ -207,6 +206,7 @@ const ModifyMoim = () => {
                     moimAddr: data.moimAddr,
                     moimTitle: data.moimTitle,
                     maxMoimUser: data.maxMoimUser.toString(),
+                    currentMoimUser: data.currentMoimUser.toString(),
                     moimContent: data.moimContent
                 });
 
@@ -276,6 +276,12 @@ const ModifyMoim = () => {
             return;
         }
 
+        if (parseInt(inputs.maxMoimUser) < parseInt(inputs.currentMoimUser)) {
+            alert("현재 모임원 수보다 적으면 안 돼요. 인원 수를 확인해주세요.");
+            document.getElementsByName("maxMoimUser")[0].focus();
+            return;
+        }
+
         const modifyMoimAxios = () => {
             axios.post(`${SPRING_API_URL}/moim/modify-moim/${moimId}`, inputs)
                 .then(resultTemp => {
@@ -297,7 +303,7 @@ const ModifyMoim = () => {
 
                     if (result.data.item) {
                         alert("수정이 완료되었습니다.");
-                        navi('/list-moim');
+                        navi("/moim-controller/list-moim");
                     }
                 })
                 .catch(e => {
@@ -315,25 +321,12 @@ const ModifyMoim = () => {
             <StyledForm id="createForm" onSubmit={handleOnClick}>
                 <StyledBox>
                     <PageTitle>모임 모집글을 수정해요.</PageTitle>
-                    <StyledFormControl variant="outlined">
-                        <FormLabel component="legend"></FormLabel>
-                        <Select
-                            name="moimCategory"
-                            value={inputs.moimCategory}
-                            onChange={handleInputChange}
-                            displayEmpty
-                            style={{ marginBottom: "1rem" }}
-                        >
-                            <MenuItem disabled value="">
-                                <em>모임 주제</em>
-                            </MenuItem>
-                            {categories.map((category) => (
-                                <StyledMenuItem key={category} value={category}>{category}</StyledMenuItem>
-                            ))}
-                        </Select>
-                    </StyledFormControl>
                     <Box border={0} my={0} display="flex" alignItems="center">
-                        <h5 fontWeight="bold" style={{ width: '110px' }}>모임장</h5>
+                        <h5 fontWeight="bold" style={{ width: '110px' }}>모임 주제</h5>
+                        <Typography variant="body1" color={grey[600]}>{inputs.moimCategory}</Typography>
+                    </Box>
+                    <Box border={0} my={0} display="flex" alignItems="center">
+                        <h5 fontWeight="bold" style={{ width: '110px', marginTop: "1.2rem" }}>모임장</h5>
                         <Typography variant="body1" color={grey[600]}>{inputs.moimNickname}</Typography>
                     </Box>
                     <h5 fontWeight="bold" style={{ width: '110px', marginTop: "1.2rem" }}>모임 지역</h5>
@@ -346,7 +339,7 @@ const ModifyMoim = () => {
                             variant="outlined"
                             value={inputs.moimTitle}
                         />
-                        <CounterTypography align="right">{moimTitleLength}/24자</CounterTypography>
+                        <CounterTypography align="right">{moimTitleLength}/20자</CounterTypography>
                     </CounterBox>
                     <h5 fontWeight="bold">모집 인원</h5>
                     <StyledTextField name="maxMoimUser" onChange={handleInputChange} variant="outlined" value={inputs.maxMoimUser} />
@@ -390,7 +383,7 @@ const ModifyMoim = () => {
                 </StyledBox>
                 <StyledButton type="submit" variant="contained" size="large">수정 완료</StyledButton>
             </StyledForm>
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
+            <StyledLink to="/moim-controller/list-moim">목록으로 돌아가기</StyledLink>
         </BasicBoard>
     );
 };

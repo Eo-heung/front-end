@@ -40,7 +40,7 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
 
     const Circle = styled('div')(({ progress }) => ({
         position: 'absolute',
-        left: `calc(${progress}% - 5px)`,
+        left: `calc(${progress}% - 15px)`,
         top: '50%',
         transform: 'translateY(-50%)',
         width: '40px',
@@ -51,8 +51,16 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
         transition: "left 500ms ease-out"
     }));
 
-    const defaultTheme = createTheme();
-
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
     function LinearProgressWithLabel() {
         const [progress, setProgress] = useState(33.33);
 
@@ -96,15 +104,15 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
                 <Box
                     sx={{
                         position: 'relative', // 추가
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
+                        minHeight: '80vh',
+                        maxHeight: '80vh',
                         marginTop: 12.5
                     }}
                 >
                     <IconButton
                         sx={{
                             position: 'absolute',
-                            top: "-70px",
+                            top: "-9.1vh",
                         }}
                         onClick={() => {
                             backClick();
@@ -119,7 +127,7 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
                         내 닉네임은?
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} style={{ marginTop: '60px', }}>
+                        <Grid container spacing={2} style={{ marginTop: '7.8vh', }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required
@@ -147,7 +155,7 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
                                 color="primary"
                                 sx={{
                                     color: 'black',
-                                    height: '44px',
+                                    height: '5.7vh',
                                     fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
@@ -163,7 +171,7 @@ const JoinName = ({ handleClick, setUserName, backClick }) => {
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+                    <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

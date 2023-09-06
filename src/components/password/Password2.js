@@ -19,7 +19,7 @@ import { SPRING_API_URL, REDIRECT_URL } from "../../config";
 // 원의 left 값을 progress에 바인딩하기 위해 styled 컴포넌트 대신 일반 함수 컴포넌트를 사용합니다.
 const Circle = styled("div")(({ progress }) => ({
   position: "absolute",
-  left: `calc(${progress}% - 5px)`,
+  left: `calc(${progress}% - 15px)`,
   top: "50%",
   transform: "translateY(-50%)",
   width: "40px",
@@ -88,8 +88,16 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
     }
   };
 
-  const defaultTheme = createTheme();
-
+  const defaultTheme = createTheme({
+    palette: {
+      primary: {
+        main: '#FEA53D',
+      },
+      secondary: {
+        main: '#FEB158',
+      },
+    },
+  });
   const theme = createTheme({
     palette: {
       primary: {
@@ -105,15 +113,15 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
         <Box
           sx={{
             position: 'relative', // 추가
-            minHeight: '608.57px',
-            maxHeight: '608.57px',
+            minHeight: '80vh',
+            maxHeight: '80vh',
             marginTop: 12.5
           }}
         >
           <IconButton
             sx={{
               position: 'absolute',
-              top: "-70px",
+              top: "-9.1vh",
             }}
             onClick={() => {
               backClick();
@@ -129,7 +137,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
             내 핸드폰 번호는?
           </Typography>
           <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-            <Grid container spacing={2} style={{ marginTop: '60px' }}>
+            <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
               <Grid item xs={12}>
                 <TextField
                   required
@@ -163,7 +171,7 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
                 color="primary"
                 sx={{
                   color: 'black',
-                  height: '44px',
+                  height: '5.7vh',
                   fontFamily: "font-medium",
                   mt: 3,
                   mb: 2,
@@ -175,14 +183,24 @@ const Password2 = ({ handleClick, setUserTel, setCheckNum, backClick }) => {
               >
                 번호인증
               </Button>
-              <Link href="/login" variant="body2" sx={{ float: "right" }} style={{ fontFamily: "font-medium" }}>
+              <Link href="/login" variant="body2" sx={{
+                float: "right", textDecoration: 'none',
+                color: '#1976d2',
+                fontFamily: "font-medium",
+                '&:hover': {
+                  textDecoration: 'underline',
+                  color: '#1976d2', // 호버 시 원하는 배경색
+                  cursor: 'pointer',
+                },
+              }}
+              >
                 로그인하러가기
               </Link>
             </Box>
           </Box>
         </Box>
         <ThemeProvider theme={theme}>
-          <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+          <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
             <LinearProgressWithLabel value={progress} />
           </Box>
         </ThemeProvider>

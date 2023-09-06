@@ -246,6 +246,9 @@ label {
   display: flex;
   flex-direction: column;
   min-height: 100vh;
+  margin-left: 3%;
+  margin-right: 3%;
+  margin-top: 0.2%;
 }
 
 /* 메인을 감쌀 */
@@ -295,7 +298,7 @@ label {
   padding: 5px 5px 5px 5%;
   margin: 20px auto;
   color: white;
-  background-color: #fcbe71;
+  background-color: #fcbd71dc;
   border-radius: 10px;
 }
 
@@ -377,7 +380,6 @@ table tr:last-child td {
 .copyRight {
   text-align: right;
   width: 100%;
-  border: "10px solid green";
   color: grey;
 }
 
@@ -391,6 +393,8 @@ table tr:last-child td {
   left: 0;
   right: 0;
   z-index: 1030;
+  margin-left: 3%;
+  margin-right: 3%;
 }
 
 /*헤더 끝 */
@@ -406,11 +410,11 @@ table tr:last-child td {
 }
 
 #layoutSidenav #layoutSidenav_nav {
-  flex-basis: 280px;
+  flex-basis: 300px;
   flex-shrink: 0;
   transition: transform 0.15s ease-in-out;
   z-index: 1038;
-  transform: translateX(-280px);
+  transform: translateX(-300px);
 }
 
 #layoutSidenav #layoutSidenav_content {
@@ -519,15 +523,15 @@ table tr:last-child td {
   flex-wrap: wrap;
   margin-top: calc(-1 * var(--bs-gutter-y));
   margin-right: calc(-0.5 * var(--bs-gutter-x));
-  margin-left: calc(-0.5 * var(--bs-gutter-x));
+  /* margin-left: calc(-0.5 * var(--bs-gutter-x)); */
 }
 
 .row > * {
   flex-shrink: 0;
   width: 100%;
   max-width: 100%;
-  padding-right: calc(var(--bs-gutter-x) * 0.5);
-  padding-left: calc(var(--bs-gutter-x) * 0.5);
+  /* padding-right: calc(var(--bs-gutter-x) * 0.5); */
+  /* padding-left: calc(var(--bs-gutter-x) * 0.5); */
   margin-top: var(--bs-gutter-y);
 }
 
@@ -573,7 +577,7 @@ table tr:last-child td {
 @media (min-width: 1200px) {
   .col-xl-6 {
     flex: 0 0 auto;
-    width: 50%;
+    /* width: 50%; */
   }
 }
 
@@ -582,7 +586,7 @@ table tr:last-child td {
   --bs-card-spacer-x: 1rem;
   --bs-card-title-spacer-y: 0.5rem;
   --bs-card-border-width: 1px;
-  --bs-card-border-color: var(--bs-border-color-translucent);
+  /* --bs-card-border-color: var(--bs-border-color-translucent); */
   --bs-card-border-radius: 0.375rem;
   --bs-card-box-shadow: ;
   --bs-card-inner-border-radius: calc(0.375rem - 1px);
@@ -603,8 +607,9 @@ table tr:last-child td {
   word-wrap: break-word;
   background-color: var(--bs-card-bg);
   background-clip: border-box;
-  border: var(--bs-card-border-width) solid var(--bs-card-border-color);
+  /* border: var(--bs-card-border-width) solid var(--bs-card-border-color); */
   border-radius: var(--bs-card-border-radius);
+  border: 5px solid #ffe35a;
 }
 
 .card > hr {

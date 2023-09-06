@@ -30,7 +30,7 @@ function LinearProgressWithLabel() {
 
     return (
         <Box sx={{ position: 'relative', display: 'flex', alignItems: 'center', width: '100%', height: '20px' }}>
-            <Box sx={{ position: 'relative', flex: 14, marginRight: "10px" }}>
+            <Box sx={{ position: 'relative', flex: 14, marginRight: "15px" }}>
                 <LinearProgress variant="determinate" value={progress} />
                 <Circle progress={progress} />
             </Box>
@@ -43,7 +43,7 @@ function LinearProgressWithLabel() {
 
 const Circle = styled('div')(({ progress }) => ({
     position: 'absolute',
-    left: `calc(${progress}% - 5px)`,
+    left: `calc(${progress}% - 15px)`,
     top: '50%',
     transform: 'translateY(-50%)',
     width: '40px',
@@ -72,7 +72,6 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
 
     const handlePasswordChange = (event) => {
         setPassword(event.target.value);
-        console.log(password);
         setPasswordMatch(true); // 입력 값이 변경될 때 에러 메시지 초기화
     };
 
@@ -99,8 +98,16 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
 
 
 
-    const defaultTheme = createTheme();
-
+    const defaultTheme = createTheme({
+        palette: {
+            primary: {
+                main: '#FEA53D',
+            },
+            secondary: {
+                main: '#FEB158',
+            },
+        },
+    });
 
     const theme = createTheme({
         palette: {
@@ -118,15 +125,15 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
                 <Box
                     sx={{
                         position: 'relative', // 추가
-                        minHeight: '608.57px',
-                        maxHeight: '608.57px',
+                        minHeight: '80vh',
+                        maxHeight: '80vh',
                         marginTop: 12.5
                     }}
                 >
                     <IconButton
                         sx={{
                             position: 'absolute',
-                            top: "-70px",
+                            top: "-9.1vh",
                         }}
                         onClick={() => {
                             backClick();
@@ -141,7 +148,7 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
                         비밀번호를 입력해 주세요
                     </Typography>
                     <Box component="form" onSubmit={handleSubmit} sx={{ mt: 3, width: '100%' }}>
-                        <Grid container spacing={2} style={{ marginTop: '60px' }}>
+                        <Grid container spacing={2} style={{ marginTop: '7.8vh' }}>
                             <Grid item xs={12} >
                                 <TextField
                                     required
@@ -153,7 +160,7 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
                                     type={showPassword1 ? 'text' : 'password'}
                                     value={password}
                                     onChange={handlePasswordChange}
-                                    sx={{ marginBottom: '16px' }}
+                                    sx={{ marginBottom: '2vh' }}
                                     InputProps={{
                                         endAdornment: (
                                             <InputAdornment position="end">
@@ -213,7 +220,7 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
                                 color="primary"
                                 sx={{
                                     color: 'black',
-                                    height: '44px',
+                                    height: '5.7vh',
                                     fontFamily: "font-medium",
                                     mt: 3,
                                     mb: 2,
@@ -229,7 +236,7 @@ const JoinPW = ({ handleClick, setUserPw, backClick }) => {
                     </Box>
                 </Box>
                 <ThemeProvider theme={theme}>
-                    <Box sx={{ width: '100%', height: "50px", marginTop: '-8%' }}>
+                    <Box sx={{ width: '100%', height: "6.5vh", marginTop: '-8%' }}>
                         <LinearProgressWithLabel value={progress} />
                     </Box>
                 </ThemeProvider>

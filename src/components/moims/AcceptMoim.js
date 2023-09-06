@@ -1,11 +1,17 @@
 import React, { useState, useEffect, useRef } from 'react';
-import { Link, useNavigate, useParams } from 'react-router-dom';
+import { useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
 import { Box, Typography, Button } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import axios from 'axios';
-import BasicBoard from '../utils/BasicBoard';
 import { SPRING_API_URL } from '../../config';
+import { BoardLinkButton } from '../utils/StyledBoard';
+
+const StyledContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+`;
 
 const StyledForm = styled('form')`
     display: flex;
@@ -28,9 +34,17 @@ const PageTitle = styled('h3')`
 `;
 
 const StyledDiv = styled('div')`
+    display: flex;
+    align-items: flex-start;
     padding: 1.5rem 3rem;
     border: 0.5px solid grey;
     border-radius: 8px;
+`;
+
+const InfoContainer = styled('div')`
+    display: flex;
+    flex-direction: column;
+    margin-left: 6%;
 `;
 
 const ApplicantInfoBox = styled(Box)`
@@ -60,11 +74,6 @@ const StyledButton = styled(Button)`
     &:hover {
         background-color: #FCBE71;
     }
-`;
-
-const StyledLink = styled(Link)`
-    margin: 1rem auto;
-    text-decoration: none;
 `;
 
 const AcceptMoim = () => {
@@ -145,7 +154,7 @@ const AcceptMoim = () => {
 
             if (response.data.statusCode === 200) {
                 alert(alertMessage);
-                navi(`/list-accept-moim/${moimId}`);
+                navi(`/${moimId}/moim-board/accept-moim`);
             }
         } catch (err) {
             console.error("Error occurred handling acceptance: ", err);
@@ -154,10 +163,15 @@ const AcceptMoim = () => {
     };
 
     return (
-        <BasicBoard>
+        <StyledContainer>
             <StyledForm>
                 <StyledBox>
-                    <PageTitle>{`${moimData.moimTitle} 모임에 가입하고 싶습니다.`}</PageTitle>
+                    {applicant.regStatus === "WAITING" &&
+                        <PageTitle>{`"${moimData.moimTitle}"에 가입하고 싶습니다.`}</PageTitle>
+                    }
+                    {applicant.regStatus === "APPROVED" &&
+                        <PageTitle>{`"${moimData.moimTitle}" 멤버`}</PageTitle>
+                    }
                     <StyledDiv>
                         <img
                             src={applicant.moimProfile && `data:image/jpeg;base64,${applicant.moimProfile}`}
@@ -165,22 +179,29 @@ const AcceptMoim = () => {
                             style={{ width: '200px', height: '200px', borderRadius: '50%', objectFit: 'cover', border: '0.5px solid #adb5bd', cursor: 'pointer', marginBottom: '1rem' }}
                         >
                         </img>
-                        <ApplicantInfoBox border={0} my={0}>
-                            <ApplicantTitle>신청자</ApplicantTitle>
-                            <ApplicantInfo variant="body1">{applicant.applicantUserNickname}</ApplicantInfo>
-                        </ApplicantInfoBox>
-                        <ApplicantInfoBox border={0} my={2}>
-                            <ApplicantTitle>지역</ApplicantTitle>
-                            <ApplicantInfo variant="body1">{applicant.applicantUserAddr}</ApplicantInfo>
-                        </ApplicantInfoBox>
-                        <ApplicantInfoBox border={0} my={2}>
-                            <ApplicantTitle>신청일</ApplicantTitle>
-                            <ApplicantInfo variant="body1">{applicant.applicationDate && applicant.applicationDate.slice(0, 10)}</ApplicantInfo>
-                        </ApplicantInfoBox>
-                        <ApplicantInfoBox border={0} my={2}>
-                            <ApplicantTitle>신청 상태</ApplicantTitle>
-                            <ApplicantInfo variant="body1">{applicant.regStatus === "WAITING" ? "가입 대기" : applicant.regStatus}</ApplicantInfo>
-                        </ApplicantInfoBox>
+                        <InfoContainer>
+                            <ApplicantInfoBox border={0} my={0}>
+                                <ApplicantTitle>신청자</ApplicantTitle>
+                                <ApplicantInfo variant="body1">{applicant.applicantUserNickname}</ApplicantInfo>
+                            </ApplicantInfoBox>
+                            <ApplicantInfoBox border={0} my={2}>
+                                <ApplicantTitle>지역</ApplicantTitle>
+                                <ApplicantInfo variant="body1">{applicant.applicantUserAddr}</ApplicantInfo>
+                            </ApplicantInfoBox>
+                            <ApplicantInfoBox border={0} my={2}>
+                                <ApplicantTitle>신청일</ApplicantTitle>
+                                <ApplicantInfo variant="body1">{applicant.applicationDate && applicant.applicationDate.slice(0, 10)}</ApplicantInfo>
+                            </ApplicantInfoBox>
+                            <ApplicantInfoBox border={0} my={2}>
+                                <ApplicantTitle>신청 상태</ApplicantTitle>
+                                {applicant.regStatus === "WAITING" &&
+                                    <ApplicantInfo variant="body1">가입 대기</ApplicantInfo>
+                                }
+                                {applicant.regStatus === "APPROVED" &&
+                                    <ApplicantInfo variant="body1">가입</ApplicantInfo>
+                                }
+                            </ApplicantInfoBox>
+                        </InfoContainer>
                     </StyledDiv>
                     <ButtonRow>
                         <StyledButton type="button" onClick={(e) => handleAcceptance(e, applicant.moimRegId, "accepted")} variant="contained" size="large">수락</StyledButton>
@@ -188,8 +209,13 @@ const AcceptMoim = () => {
                     </ButtonRow>
                 </StyledBox>
             </StyledForm>
-            <StyledLink to="/list-moim">목록으로 돌아가기</StyledLink>
-        </BasicBoard>
+            <BoardLinkButton
+                type="button"
+                variant="text"
+                size="large"
+                onClick={() => navi(`/${moimId}/moim-board/accept-moim`)}
+            >목록으로 돌아가기</BoardLinkButton>
+        </StyledContainer>
     );
 };
 
