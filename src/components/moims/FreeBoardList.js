@@ -40,13 +40,13 @@ const FreeBoardList = ({ setActiveTab }) => {
 
   const [isMainPage, setIsMainPage] = useState(
     location.pathname.split("/").pop() === "" ||
-      location.pathname.split("/").pop() === "moim-board"
+    location.pathname.split("/").pop() === "moim-board"
   );
 
   useEffect(() => {
     setIsMainPage(
       location.pathname.split("/").pop() === "" ||
-        location.pathname.split("/").pop() === "moim-board"
+      location.pathname.split("/").pop() === "moim-board"
     );
   }, [location.pathname]);
 
@@ -173,12 +173,17 @@ const FreeBoardList = ({ setActiveTab }) => {
                         <StyledCell
                           style={{ width: "650px", cursor: "pointer" }}
                           onClick={() => {
-                            navi(
-                              `/${moimId}/moim-board/free-board/${board.boardId}`
-                            );
+                            navi(`/${moimId}/moim-board/free-board/${board.boardId}`);
                           }}
                         >
                           {board.boardTitle}
+                          {board && board.commentCnt > 0 && (
+                            <>
+                              <span style={{ marginLeft: "2%", color: "grey" }}>
+                                [{board.commentCnt}]
+                              </span>
+                            </>
+                          )}
                         </StyledCell>
                         <StyledCell style={{ width: "180px" }}>
                           {board.userName}
@@ -199,12 +204,17 @@ const FreeBoardList = ({ setActiveTab }) => {
                         <StyledCell
                           style={{ width: "650px", cursor: "pointer" }}
                           onClick={() => {
-                            navi(
-                              `/${moimId}/moim-board/free-board/${board.boardId}`
-                            );
+                            navi(`/${moimId}/moim-board/free-board/${board.boardId}`);
                           }}
                         >
                           {board.boardTitle}
+                          {board && board.commentCnt > 0 && (
+                            <>
+                              <span style={{ marginLeft: "2%", color: "grey" }}>
+                                [{board.commentCnt}]
+                              </span>
+                            </>
+                          )}
                         </StyledCell>
                         <StyledCell style={{ width: "180px" }}>
                           {board.userName}
