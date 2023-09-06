@@ -598,7 +598,7 @@ const CameraChatting = ({ selectedCamera, selectedMic, selectedGender }) => {
                 color: "#b7d4fa",
               }}
             />
-            친구추가{opponentUserId}
+            친구추가
           </Link>
         </div>
       </div>
@@ -617,7 +617,7 @@ const CameraChatting = ({ selectedCamera, selectedMic, selectedGender }) => {
         onClose={handleCloseFriendPopup}
         handleMakefriend={handleMakefriend}
       >
-        <h2 style={{ marginBottom: "10rem" }}>친구 추가{opponentUserId}</h2>
+        <h2 style={{ marginBottom: "10rem" }}>친구 추가</h2>
         <p>"{opponentNickname}" 님과 친구가 되어 같이 소통해요!</p>
       </PopupFriend>
 
