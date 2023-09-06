@@ -167,7 +167,6 @@ const MoimAppList = () => {
         },
       })
       .then((response) => {
-        console.log("fetchData", response.data);
         const apps = Object.values(response.data.item.content);
         const newData = apps.filter(
           (app) => !state.data.some((d) => d.appBoardId === app.appBoardId)
