@@ -1,11 +1,11 @@
-import React, { useState, useEffect, useRef, useMemo } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
 import { Link, useNavigate, useParams } from 'react-router-dom';
 import { styled } from '@mui/system';
 import { Button, Typography, Box, Card, CardContent, CardMedia, TextField, Select, MenuItem } from '@mui/material';
 import { grey } from '@mui/material/colors';
 import axios from 'axios';
 import TopButton from '../utils/TopButton.js';
-import { throttle } from 'lodash';
+import { debounce } from 'lodash';
 import { SPRING_API_URL } from '../../config';
 
 const StyledContainer = styled('div')`
@@ -173,8 +173,8 @@ const ListAcceptMoim = () => {
     // const [searchType, setSearchType] = useState("all");
     const [orderBy, setOrderBy] = useState("descending");
 
-    const scrollHandler = useMemo(() =>
-        throttle(() => {
+    const scrollHandler = useCallback(
+        debounce(() => {
             if (window.scrollY > 100) {
                 setScrollActive(true);
             } else {
@@ -185,14 +185,12 @@ const ListAcceptMoim = () => {
             const scrollTop = document.documentElement.scrollTop;
             const clientHeight = document.documentElement.clientHeight;
 
-            if (scrollTop + clientHeight >= scrollHeight) {
-                if (!isLastPage) {
-                    setPage(prevPage => prevPage + 1);
-                }
-                window.scrollTo({ scrollTop });
-                return;
+            if (scrollTop + clientHeight >= scrollHeight && !isLastPage) {
+                setPage(prevPage => prevPage + 1);
             }
-        }, 500), [page]);
+        }, 500),
+        [isLastPage]
+    );
 
     // const handleOrderBy = () => {
     //     setPage(1);
@@ -267,7 +265,6 @@ const ListAcceptMoim = () => {
     useEffect(() => {
         fetchData();
         window.addEventListener("scroll", scrollHandler);
-
         return () => {
             window.removeEventListener("scroll", scrollHandler);
         }
