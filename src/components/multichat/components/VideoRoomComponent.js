@@ -12,7 +12,7 @@ import { SPRING_API_URL, NODE_API_URL, REDIRECT_URL } from "../../../config";
 
 var localUser = new UserModel();
 const APPLICATION_SERVER_URL =
-  process.env.NODE_ENV === "production" ? "" : "https://eoheung.store:7443";
+  process.env.NODE_ENV === "production" ? "" : "https://eoheung.store:7443/";
 
 class VideoRoomComponent extends Component {
   constructor(props) {
