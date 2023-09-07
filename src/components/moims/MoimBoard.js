@@ -109,6 +109,7 @@ const MoimBoard = () => {
     "내 댓글 목록": "my-comments",
     "만남 게시글": "moim-app/:appBoardId",
     "신청 게시글": "accept-moim/:moimRegId",
+    채팅: "multichatting",
   };
 
   useEffect(() => {
