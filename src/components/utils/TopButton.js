@@ -14,7 +14,6 @@ const PositionContainer = styled.div`
 const ScrollToTopButton = styled(Fab)`
   position: absolute;
   top: 0;
-  right: 0;
   border: none;
   background-color: transparent;
   z-index: 1001;
