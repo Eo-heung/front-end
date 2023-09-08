@@ -116,8 +116,8 @@ const ViewAppointment = () => {
     const [showMemberList, setShowMemberList] = useState(false);
 
     const now = dayjs();
-    const appStart = dayjs.utc(appBoardDetail.appStart).local();
-    const appEnd = dayjs.utc(appBoardDetail.appEnd).local();
+    const appStart = dayjs(new Date(appBoardDetail.appStart + 'Z')).local();
+    const appEnd = dayjs(new Date(appBoardDetail.appEnd + 'Z')).local();
     const currentStatus = getCurrentStatus(appStart, appEnd, now);
 
     function getCurrentStatus(appStart, appEnd, now) {
